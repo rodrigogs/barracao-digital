@@ -37,11 +37,20 @@ provider:
         - 'dynamodb:*'
       Resource: '*'
   environment:
-    PATIENTS_TABLE: ${self:custom.patientsTableName}
+    USERS_TABLE: ${self:custom.usersTableName}
+    UNITS_TABLE: ${self:custom.unitsTableName}
 
 functions:
   authorizer:
     handler: functions/authorizer/index.handler
+
+  users:
+    handler: functions/users.handler
+    events:
+      - http:
+        path: '/users'
+        cors: true
+        authorizer: authorizer
 
 resources:
   Resources:
