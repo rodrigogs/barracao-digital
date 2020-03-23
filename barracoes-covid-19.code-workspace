@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "lib"
+		},
+		{
+			"path": "frontend"
+		},
+		{
+			"path": "functions"
+		}
+	],
+	"settings": {}
+}

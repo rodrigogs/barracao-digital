@@ -1,0 +1,77 @@
+service: barracoes-covid-19
+app: barracoes-covid-19
+org: rodrigogs
+
+plugins:
+  - serverless-webpack
+  - serverless-offline
+  - serverless-finch
+  - serverless-pseudo-parameters
+
+package:
+  individually: true
+
+custom:
+  webpack:
+    webpackConfig: 'webpack.config.js'
+  client:
+    bucketName: '${self:service}-${self:provider.stage}-webapp'
+    distributionFolder: 'frontend/dist'
+  usersTableName: '${self:service}-${self:provider.stage}-users'
+  unitsTableName: '${self:service}-${self:provider.stage}-units'
+
+provider:
+  name: aws
+  profile: covid-19
+  runtime: nodejs12.x
+  stage: ${opt:stage, 'development'}
+  region: sa-east-1
+  versionFunctions: false
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - 'logs:*'
+      Resource: '*'
+    - Effect: Allow
+      Action:
+        - 'dynamodb:*'
+      Resource: '*'
+  environment:
+    PATIENTS_TABLE: ${self:custom.patientsTableName}
+
+functions:
+  authorizer:
+    handler: functions/authorizer/index.handler
+
+resources:
+  Resources:
+    # This response is needed for custom authorizer failures cors support ¯\_(ツ)_/¯
+    GatewayResponseDefault4XX:
+      Type: 'AWS::ApiGateway::GatewayResponse'
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+        ResponseType: DEFAULT_4XX
+        RestApiId:
+          Ref: 'ApiGatewayRestApi'
+    GatewayResponse:
+      Type: 'AWS::ApiGateway::GatewayResponse'
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+        ResponseType: EXPIRED_TOKEN
+        RestApiId:
+          Ref: 'ApiGatewayRestApi'
+        StatusCode: '401'
+    AuthFailureGatewayResponse:
+      Type: 'AWS::ApiGateway::GatewayResponse'
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+        ResponseType: UNAUTHORIZED
+        RestApiId:
+          Ref: 'ApiGatewayRestApi'
+        StatusCode: '401'
