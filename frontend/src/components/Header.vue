@@ -2,11 +2,11 @@
   <header class="header">
     <section class="section">
       <div class="container">
-        <router-link class="header__logo-container" v-if="isHome" to="/">
+        <router-link class="header__logo-container" v-if="!isHome" to="/">
           <img class="header__logo" alt="Barracão Covid 19" src="@/assets/logo.png"/>
         </router-link>
 
-        <div v-if="!isHome" class="header__home-menu">
+        <div v-if="isHome" class="header__home-menu">
           <router-link class="header__link" to="/foo">
             Acesso médico
           </router-link>
@@ -27,8 +27,13 @@ export default {
   components: {},
   data() {
     return {
-      isHome: false,
+      isHome: this.$router.currentRoute.name === 'Home',
     };
+  },
+  watch: {
+    $route(to) {
+      this.isHome = to.name === 'Home';
+    },
   },
 };
 </script>

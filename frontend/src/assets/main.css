@@ -131,10 +131,6 @@ h6 {
   background-color: var(--main-btn-color--disabled);
 }
 
-.btn--link {
-
-}
-
 .btn-secondary {
   margin-top: .5rem;
   padding: 1rem 2rem;
