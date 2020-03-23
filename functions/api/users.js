@@ -1,4 +1,4 @@
-const { } = require('barracoes-covid-19');
+const { userService } = require('barracoes-covid-19');
 const { getRequestContext, responseBuilder } = require('../helpers');
 
 const methods = {
