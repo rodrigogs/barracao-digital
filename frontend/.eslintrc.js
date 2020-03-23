@@ -14,6 +14,7 @@ module.exports = {
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'max-len': 'off',
-    "object-curly-newline": "off",
+    'object-curly-newline': 'off',
+    'no-param-reassign': 'off',
   },
 };
