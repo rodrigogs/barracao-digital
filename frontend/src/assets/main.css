@@ -162,3 +162,37 @@ h6 {
   color: #fff;
   background-color: var(--secondary-btn-color--disabled);
 }
+
+.field {
+  display: flex;
+  flex-direction: column;
+}
+
+.field:not(:last-child) {
+  margin-bottom: .75rem;
+}
+
+label:not(:last-child) {
+  font-size: 1rem;
+  margin-bottom: .25rem;
+  display: block;
+  font-weight: bold;
+}
+
+input {
+  padding: .75rem;
+  border-collapse: collapse;
+  border-color: var(--primary-color);
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 4px;
+  outline: var(--primary-color);
+}
+
+input::placeholder {
+  color: #9E9E9E;
+}
+
+.error {
+
+}
