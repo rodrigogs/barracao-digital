@@ -12,12 +12,14 @@
     "normalize.css": "^8.0.1",
     "vue": "^2.6.11",
     "vue-router": "^3.1.5",
-    "vue-stepper": "^1.4.2"
+    "vue-stepper": "^1.4.2",
+    "vuex": "^3.1.2"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.2.0",
     "@vue/cli-plugin-eslint": "~4.2.0",
     "@vue/cli-plugin-router": "~4.2.0",
+    "@vue/cli-plugin-vuex": "~4.2.0",
     "@vue/cli-service": "~4.2.0",
     "@vue/eslint-config-airbnb": "^5.0.2",
     "babel-eslint": "^10.0.3",

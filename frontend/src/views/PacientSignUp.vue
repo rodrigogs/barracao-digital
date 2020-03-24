@@ -1,24 +1,22 @@
 <template>
-  <section class="section">
-    <div class="container">
-      <stepper :steps="demoSteps"
-               @stepper-finished="alert">
-        <!--               @completed-step="completeStep"-->
-        <!--               @active-step="isStepActive"-->
-      </stepper>
-    </div>
-  </section>
+  <div class="container">
+    <stepper :steps="demoSteps"
+             locale="pt"
+             @stepper-finished="alert">
+      <!--               @completed-step="completeStep"-->
+      <!--               @active-step="isStepActive"-->
+    </stepper>
+  </div>
 </template>
 
 <script>
 import Stepper from 'vue-stepper';
-// This components will have the content for each stepper step.
 import StepOne from '../components/StepOne.vue';
 import StepTwo from '../components/StepTwo.vue';
 import StepThree from '../components/StepThree.vue';
 
 export default {
-  name: 'PacientSignIn',
+  name: 'PacientSignUp',
   components: {
     Stepper,
   },
@@ -71,8 +69,21 @@ export default {
       alert('end');
     },
   },
+  beforeDestroy() {
+    this.$store.commit('clearCampaign');
+  },
 };
 </script>
 
 <style>
+  .stepper-box .content {
+    margin-top: 0 !important;
+  }
+
+  .pacient-sign-up__form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: .5rem 1rem;
+  }
 </style>
