@@ -1,4 +1,4 @@
-# BARRACÕES-COVID-19
+# [BARRACÕES-COVID-19](https://github.com/rodrigogs/barracoes-covid-19/blob/master/media/Barraca%CC%83o%20Digital%20COVID-19.pdf)
 
 ## Setup
 **Make sure `bash` is available from your terminal**
