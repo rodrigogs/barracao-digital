@@ -172,14 +172,30 @@ h6 {
   margin-bottom: .75rem;
 }
 
-label:not(:last-child) {
+.field__radio-group{
+  display: flex;
+  justify-content: flex-start;
+}
+
+label {
   font-size: 1rem;
-  margin-bottom: .25rem;
   display: block;
   font-weight: bold;
 }
 
-input {
+label:not(:last-child) {
+  margin-bottom: .25rem;
+}
+
+label.radio {
+  font-weight: normal;
+}
+
+label.radio {
+  margin: .25rem;
+}
+
+input, textarea {
   padding: .75rem;
   border-collapse: collapse;
   border-color: var(--primary-color);
@@ -187,11 +203,13 @@ input {
   border-width: 1px;
   border-radius: 4px;
   outline: var(--primary-color);
+  resize: none;
 }
 
-input::placeholder {
+input::placeholder, textarea::placeholder {
   color: #9E9E9E;
 }
+
 
 .error {
 
