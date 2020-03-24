@@ -5,23 +5,23 @@
     <form class="pacient-sign-up__form" id="pacientSignUpForm " novalidate>
       <div class="field">
         <label class="label" for="name">Nome - Obrigatório</label>
-        <input :class="{'is-danger': errors.name }" v-model="form.name" name="name" id="name" class="input" type="text" placeholder="Exemplo: José da Silva">
+        <input :class="{'error': errors.name }" v-model="form.name" name="name" id="name" class="input" type="text" placeholder="Exemplo: José da Silva">
         <p v-if="errors.name" class="error">{{errors.name}}</p>
       </div>
 
       <div class="field">
         <label class="label" for="age">Idade - Obrigatório</label>
-        <input @input="onAgeInputChange" :class="{'is-danger': errors.age }" v-model="form.age" name="age" id="age" class="input" type="text" placeholder="Exemplo: 60" maxlength="3">
+        <input @input="onAgeInputChange" :class="{'error': errors.age }" v-model="form.age" name="age" id="age" class="input" type="text" placeholder="Exemplo: 60" maxlength="3">
         <p v-if="errors.age" class="error">{{errors.age}}</p>
       </div>
 
       <div class="field">
         <label class="label" for="cep">CEP - Obrigatório</label>
-        <input @input="onCEPInputChange" :class="{'is-danger': errors.cep }" v-model="form.cep" name="cep" id="cep" class="input" type="text" placeholder="Digite somente números" maxlength="9">
+        <input @input="onCEPInputChange" :class="{'error': errors.cep }" v-model="form.cep" name="cep" id="cep" class="input" type="text" placeholder="Digite somente números" maxlength="9">
         <p v-if="errors.cep" class="error">{{errors.cep}}</p>
       </div>
 
-      <p>
+      <p style="margin-bottom: 0">
         Caso não saiba seu CEP, <a href="http://www.buscacep.correios.com.br/sistemas/buscacep/BuscaCepEndereco.cfm">clique aqui</a>
       </p>
     </form>

@@ -24,15 +24,15 @@ export default {
     return {
       demoSteps: [
         {
-          icon: 'looks_one',
-          name: 'first',
-          component: StepOne,
-          completed: false,
-        },
-        {
           icon: 'looks_two',
           name: 'second',
           component: StepTwo,
+          completed: false,
+        },
+        {
+          icon: 'looks_one',
+          name: 'first',
+          component: StepOne,
           completed: false,
         },
         {
