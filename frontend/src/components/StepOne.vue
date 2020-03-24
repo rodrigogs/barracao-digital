@@ -29,6 +29,7 @@
 </template>
 
 <script>
+import utils from '../utils';
 
 export default {
   name: 'StepOne',
@@ -61,7 +62,7 @@ export default {
       if (!this.form.age) {
         this.$set(this.errors, 'age', 'Idade é obrigatório');
         isValid = false;
-      } else if (this.form.age < 0 && this.form.age > 120) {
+      } else if (this.form.age < 0 || this.form.age > 120) {
         this.$set(this.errors, 'age', 'Idade deve estar entre 0 e 120 anos');
         isValid = false;
       }
@@ -99,15 +100,18 @@ export default {
   watch: {
     form: {
       handler(newForm, oldForm) {
-        if (this.allFieldsFilled()) {
-          if (!this.isStepOneValid()) {
-            this.$emit('can-continue', { value: false });
-            return;
-          }
+        this.$emit('can-continue', { value: false });
+        utils.debounce(() => {
+          if (this.allFieldsFilled()) {
+            if (!this.isStepOneValid()) {
+              this.$emit('can-continue', { value: false });
+              return;
+            }
 
-          this.$store.commit('pacientSignUp/setStepFields', this.form);
-          this.$emit('can-continue', { value: true });
-        }
+            this.$store.commit('pacientSignUp/setStepFields', this.form);
+            this.$emit('can-continue', { value: true });
+          }
+        }, 300);
       },
       deep: true,
     },
