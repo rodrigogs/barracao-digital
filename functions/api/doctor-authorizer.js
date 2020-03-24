@@ -23,6 +23,9 @@ const basicAuthStrategy = async (token) => {
   const hashedPassword = crypto.createHash('md5').update(password).digest('hex');
 
   const user = await doctorsService.getOneByUsername(username);
+  console.log({
+    user, username, password, hashedPassword,
+  });
   if (!user || user.password !== hashedPassword) {
     throw new Error('Unauthorized');
   }

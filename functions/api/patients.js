@@ -5,18 +5,37 @@ const methods = {
   async GET(ctx) {
     try {
       const {
-        pathParameters = {},
+        consumer: user,
+        pathParameters,
+        queryStringParameters,
       } = ctx;
-      if (pathParameters.cep && !pathParameters.id) {
+
+      const { cep, id } = pathParameters || {};
+      const { status } = queryStringParameters || {};
+
+      if (cep) {
+        if (!user.master && (user.cep !== cep)) {
+          return responseBuilder.errors.forbidden('Você só pode visualizar dados da sua região');
+        }
+        if (status) {
+          return responseBuilder.success.ok({
+            body: await patientsService.getAllByCepAndStatus(cep, status),
+          });
+        }
         return responseBuilder.success.ok({
-          body: await patientsService.getAllByCep(pathParameters.cep),
+          body: await patientsService.getAllByCep(cep),
         });
       }
-      if (pathParameters.cep && pathParameters.id) {
-        const patient = await patientsService.getOneByCepAndId(pathParameters.cep, pathParameters.id);
+
+      if (id) {
+        const patient = await patientsService.getOneById(id);
+        if (!user.master && (user.cep !== patient.cep)) {
+          return responseBuilder.errors.forbidden('Você só pode visualizar dados da sua região');
+        }
         if (!patient) return responseBuilder.errors.notFound({ message: 'Patient Not Found' });
         return responseBuilder.success.ok({ body: patient });
       }
+
       return responseBuilder.errors.badRequest();
     } catch (err) {
       return responseBuilder.genericError(err);
@@ -26,17 +45,27 @@ const methods = {
   async POST(ctx) {
     try {
       const {
-        body,
+        consumer: user,
         pathParameters,
+        body,
       } = ctx;
+
+      const { id } = pathParameters || {};
+
       if (!pathParameters) {
         const createdPatient = await patientsService.create(body);
         return responseBuilder.success.created({ body: createdPatient });
       }
-      if (pathParameters.cep && pathParameters.id) {
-        const updatedPatient = await patientsService.update(pathParameters.cep, pathParameters.id, { status: body.status });
+
+      if (id) {
+        const patient = await patientsService.getOneById(id);
+        if (!user.master && (user.cep !== patient.cep)) {
+          return responseBuilder.errors.forbidden('Você só pode alterar dados da sua região');
+        }
+        const updatedPatient = await patientsService.update(id, { status: body.status });
         return responseBuilder.success.ok({ body: updatedPatient });
       }
+
       return responseBuilder.errors.badRequest();
     } catch (err) {
       return responseBuilder.genericError(err);

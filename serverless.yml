@@ -18,6 +18,7 @@ custom:
     bucketName: '${self:service}-${self:provider.stage}-webapp'
     distributionFolder: 'frontend/dist'
   doctorsTableName: '${self:service}-${self:provider.stage}-doctors'
+  patientsTableName: '${self:service}-${self:provider.stage}-patients'
 
 provider:
   name: aws
@@ -37,6 +38,7 @@ provider:
       Resource: '*'
   environment:
     DOCTORS_TABLE: ${self:custom.doctorsTableName}
+    PATIENTS_TABLE: ${self:custom.patientsTableName}
 
 functions:
   doctorAuthorizer:
@@ -80,6 +82,33 @@ functions:
           cors: true
           authorizer: adminAuthorizer
 
+  patients:
+    handler: functions/api/patients.handler
+    events:
+      - http:
+          method: get
+          path: '/patients/cep/{cep}'
+          cors: true
+          authorizer: doctorAuthorizer
+
+      - http:
+          method: get
+          path: '/patients/id/{id}'
+          cors: true
+          authorizer: doctorAuthorizer
+
+      - http:
+          method: post
+          path: '/patients'
+          cors: true
+          authorizer: adminAuthorizer
+
+      - http:
+          method: post
+          path: '/patients/{id}'
+          cors: true
+          authorizer: adminAuthorizer
+
   sheds:
     handler: functions/api/sheds.handler
     events:
@@ -104,33 +133,6 @@ functions:
       - http:
           method: post
           path: '/sheds/cep/{cep}/id/{id}'
-          cors: true
-          authorizer: adminAuthorizer
-
-  patients:
-    handler: functions/api/patients.handler
-    events:
-      - http:
-          method: get
-          path: '/patients/cep/{cep}'
-          cors: true
-          authorizer: doctorAuthorizer
-
-      - http:
-          method: get
-          path: '/patients/cep/{cep}/id/{id}'
-          cors: true
-          authorizer: doctorAuthorizer
-
-      - http:
-          method: post
-          path: '/patients'
-          cors: true
-          authorizer: adminAuthorizer
-
-      - http:
-          method: post
-          path: '/patients/cep/{cep}/id/{id}'
           cors: true
           authorizer: adminAuthorizer
 
@@ -180,6 +182,35 @@ resources:
             AttributeType: S
         KeySchema:
           - AttributeName: username
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 10
+          WriteCapacityUnits: 10
+        GlobalSecondaryIndexes:
+          - IndexName: cep
+            KeySchema:
+              - AttributeName: cep
+                KeyType: HASH
+              - AttributeName: sort
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 10
+              WriteCapacityUnits: 10
+    PatientsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.patientsTableName}
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+          - AttributeName: cep
+            AttributeType: S
+          - AttributeName: sort
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
             KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 10

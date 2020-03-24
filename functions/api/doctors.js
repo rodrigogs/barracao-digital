@@ -5,13 +5,18 @@ const methods = {
   async GET(ctx) {
     try {
       const {
+        consumer: user,
         pathParameters,
         queryStringParameters,
       } = ctx;
+
       const { cep, username } = pathParameters || {};
       const { active } = queryStringParameters || {};
 
       if (cep) {
+        if (!user.master && user.cep !== cep) {
+          return responseBuilder.errors.forbidden('Você só pode visualizar dados da sua região');
+        }
         const doctors = active
           ? await doctorsService.getAllByCepAndActive(cep, active === 'true')
           : await doctorsService.getAllByCep(cep);
@@ -37,17 +42,33 @@ const methods = {
   async POST(ctx) {
     try {
       const {
+        consumer: user,
         pathParameters,
         body,
       } = ctx;
+
       if (!pathParameters) {
+        if (body.master && !user.master) {
+          return responseBuilder.errors.forbidden('Somente um usário master pode criar outro usuário master');
+        }
+        if (body.admin && (!user.master && !user.admin)) {
+          if (!user.master && (body.cep !== user.cep)) {
+            return responseBuilder.errors.forbidden('Administradores só podem criar/alterar cadástros em suas regiões');
+          }
+          return responseBuilder.errors.forbidden('Somente um administrador pode criar outro administrador');
+        }
         const newDoctor = await doctorsService.create(body);
         return responseBuilder.success.created({ body: { ...newDoctor, password: undefined } });
       }
+
       if (pathParameters.username) {
-        const updatedDoctor = await doctorsService.update(pathParameters.username);
+        if (!user.master && (user.username !== pathParameters.username)) {
+          return responseBuilder.errors.forbidden('Você não pode mudar o status de outro usuário');
+        }
+        const updatedDoctor = await doctorsService.update(pathParameters.username, body);
         return responseBuilder.success.ok({ body: { ...updatedDoctor, password: undefined } });
       }
+
       return responseBuilder.errors.badRequest();
     } catch (err) {
       return responseBuilder.genericError(err);
