@@ -120,7 +120,7 @@ functions:
 
       - http:
           method: get
-          path: '/sheds/cep/{cep}/id/{id}'
+          path: '/sheds/id/{id}'
           cors: true
           authorizer: doctorAuthorizer
 
@@ -132,7 +132,7 @@ functions:
 
       - http:
           method: post
-          path: '/sheds/cep/{cep}/id/{id}'
+          path: '/sheds/{id}'
           cors: true
           authorizer: adminAuthorizer
 
