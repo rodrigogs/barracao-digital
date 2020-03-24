@@ -17,8 +17,8 @@ custom:
   client:
     bucketName: '${self:service}-${self:provider.stage}-webapp'
     distributionFolder: 'frontend/dist'
-  usersTableName: '${self:service}-${self:provider.stage}-users'
-  unitsTableName: '${self:service}-${self:provider.stage}-units'
+  doctorsTableName: '${self:service}-${self:provider.stage}-doctors'
+  patientsTableName: '${self:service}-${self:provider.stage}-patients'
 
 provider:
   name: aws
@@ -37,20 +37,104 @@ provider:
         - 'dynamodb:*'
       Resource: '*'
   environment:
-    USERS_TABLE: ${self:custom.usersTableName}
-    UNITS_TABLE: ${self:custom.unitsTableName}
+    DOCTORS_TABLE: ${self:custom.doctorsTableName}
+    PATIENTS_TABLE: ${self:custom.patientsTableName}
 
 functions:
-  authorizer:
-    handler: functions/authorizer/index.handler
+  doctorAuthorizer:
+    handler: functions/api/doctor-authorizer.handler
 
-  users:
-    handler: functions/users.handler
+  adminAuthorizer:
+    handler: functions/api/admin-authorizer.handler
+
+  healthcheck:
+    handler: functions/api/healthcheck.handler
     events:
       - http:
-        path: '/users'
-        cors: true
-        authorizer: authorizer
+          method: get
+          path: /
+          cors: true
+
+  doctors:
+    handler: functions/api/doctors.handler
+    events:
+      - http:
+          method: get
+          path: '/doctors/cep/{cep}'
+          cors: true
+          authorizer: doctorAuthorizer
+
+      - http:
+          method: get
+          path: '/doctors/username/{username}'
+          cors: true
+          authorizer: doctorAuthorizer
+
+      - http:
+          method: post
+          path: '/doctors'
+          cors: true
+          authorizer: adminAuthorizer
+
+      - http:
+          method: post
+          path: '/doctors/{username}'
+          cors: true
+          authorizer: adminAuthorizer
+
+  patients:
+    handler: functions/api/patients.handler
+    events:
+      - http:
+          method: get
+          path: '/patients/cep/{cep}'
+          cors: true
+          authorizer: doctorAuthorizer
+
+      - http:
+          method: get
+          path: '/patients/id/{id}'
+          cors: true
+          authorizer: doctorAuthorizer
+
+      - http:
+          method: post
+          path: '/patients'
+          cors: true
+          authorizer: adminAuthorizer
+
+      - http:
+          method: post
+          path: '/patients/{id}'
+          cors: true
+          authorizer: adminAuthorizer
+
+  sheds:
+    handler: functions/api/sheds.handler
+    events:
+      - http:
+          method: get
+          path: '/sheds/cep/{cep}'
+          cors: true
+          authorizer: doctorAuthorizer
+
+      - http:
+          method: get
+          path: '/sheds/id/{id}'
+          cors: true
+          authorizer: doctorAuthorizer
+
+      - http:
+          method: post
+          path: '/sheds'
+          cors: true
+          authorizer: adminAuthorizer
+
+      - http:
+          method: post
+          path: '/sheds/{id}'
+          cors: true
+          authorizer: adminAuthorizer
 
 resources:
   Resources:
@@ -84,3 +168,62 @@ resources:
         RestApiId:
           Ref: 'ApiGatewayRestApi'
         StatusCode: '401'
+    # DynamoDB Tables
+    DoctorsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.doctorsTableName}
+        AttributeDefinitions:
+          - AttributeName: username
+            AttributeType: S
+          - AttributeName: sort
+            AttributeType: S
+          - AttributeName: cep
+            AttributeType: S
+        KeySchema:
+          - AttributeName: username
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 10
+          WriteCapacityUnits: 10
+        GlobalSecondaryIndexes:
+          - IndexName: cep
+            KeySchema:
+              - AttributeName: cep
+                KeyType: HASH
+              - AttributeName: sort
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 10
+              WriteCapacityUnits: 10
+    PatientsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.patientsTableName}
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+          - AttributeName: cep
+            AttributeType: S
+          - AttributeName: sort
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 10
+          WriteCapacityUnits: 10
+        GlobalSecondaryIndexes:
+          - IndexName: cep
+            KeySchema:
+              - AttributeName: cep
+                KeyType: HASH
+              - AttributeName: sort
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 10
+              WriteCapacityUnits: 10
