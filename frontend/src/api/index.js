@@ -1,5 +1,7 @@
 import axios from 'axios';
 import { API_URL } from '@/config';
+import authAdapter from './auth';
+import patientsAdapter from './patients';
 import doctorsAdapter from './doctors';
 
 const request = axios.create({
@@ -29,4 +31,6 @@ request.interceptors.request.use(async (config) => {
 const healthCheckAdapter = async (shadowRequest) => (await shadowRequest.get('/')).data;
 
 export const healthCheck = healthCheckAdapter(request);
+export const auth = authAdapter(request);
 export const doctors = doctorsAdapter(request);
+export const patients = patientsAdapter(request);
