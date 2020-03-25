@@ -3,6 +3,8 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex';
+
 export default {
   name: 'DoctorCrud',
 
@@ -10,12 +12,22 @@ export default {
   },
 
   created() {
-
+    this.refreshList();
   },
 
   data: () => ({
-
   }),
+
+  computed: {
+    ...mapActions('doctors', [
+      'refreshList',
+    ]),
+
+    ...mapGetters('doctors', [
+      'get',
+      'list',
+    ]),
+  },
 };
 </script>
 

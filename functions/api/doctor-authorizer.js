@@ -1,5 +1,4 @@
-const crypto = require('crypto');
-const { doctorsService } = require('barracoes-covid-19');
+const { authService } = require('barracoes-covid-19');
 
 const createAccessPoliciy = (user, key, methodArn) => ({
   principalId: key,
@@ -20,14 +19,7 @@ const basicAuthStrategy = async (token) => {
     .toString('utf8')
     .split(':');
 
-  const hashedPassword = crypto.createHash('md5').update(password).digest('hex');
-
-  const user = await doctorsService.getOneByUsername(username);
-  if (!user || user.password !== hashedPassword) {
-    throw new Error('Unauthorized');
-  }
-
-  return user;
+  return authService.authorize({ username, password });
 };
 
 const signin = (type, authorizationToken) => {

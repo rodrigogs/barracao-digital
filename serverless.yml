@@ -55,6 +55,14 @@ functions:
           path: /
           cors: true
 
+  auth:
+    handler: functions/api/auth.handler
+    events:
+      - http:
+          method: post
+          path: '/auth/login'
+          cors: true
+
   doctors:
     handler: functions/api/doctors.handler
     events:
@@ -101,7 +109,6 @@ functions:
           method: post
           path: '/patients'
           cors: true
-          authorizer: adminAuthorizer
 
       - http:
           method: post

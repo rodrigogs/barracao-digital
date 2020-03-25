@@ -12,11 +12,7 @@
  */
 module.exports = async (event) => {
   const {
-    requestContext: {
-      authorizer: {
-        consumer,
-      },
-    },
+    requestContext,
     httpMethod,
     headers,
     multiValueHeaders,
@@ -26,6 +22,9 @@ module.exports = async (event) => {
     pathParameters,
   } = event;
 
+  const { authorizer } = (requestContext || {});
+  const { consumer } = (authorizer || {});
+
   return {
     httpMethod: (httpMethod || '').toUpperCase(),
     headers,
@@ -33,7 +32,7 @@ module.exports = async (event) => {
     queryStringParameters,
     multiValueQueryStringParameters,
     pathParameters,
-    body: JSON.parse(body),
-    consumer: JSON.parse(consumer),
+    body: (typeof body === 'string') ? JSON.parse(body) : undefined,
+    consumer: (typeof consumer === 'string') ? JSON.parse(consumer) : undefined,
   };
 };
