@@ -1,13 +1,4 @@
-export default {
+export const get = (state) => (username) => state.list
+  .find((doctor) => doctor.username === username);
 
-  get(state) {
-    return (username) => {
-      state.list.find((doctor) => doctor.username === username);
-    };
-  },
-
-  list(state) {
-    return state.list;
-  },
-
-};
+export const list = (state) => state.list;
