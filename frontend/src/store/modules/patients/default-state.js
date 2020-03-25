@@ -1,0 +1,15 @@
+export default {
+  name: '',
+  age: '',
+  cep: '',
+  meds: '',
+  allergies: '',
+  covenant: '',
+  has_been_assisted: false,
+  phone: '',
+  email: '',
+  whatsapp: '',
+  telegram: '',
+  hangout: '',
+  skype: '',
+};
