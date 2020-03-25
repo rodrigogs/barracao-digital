@@ -1,46 +1,48 @@
 <template>
-  <div class="container">
-    <h4 style="margin-top: 0">Contato</h4>
-    <p style="text-align: center">É como um médico irá falar com você. Coloque somente contatos que você tem acesso imediato!</p>
+  <section class="section">
+    <div class="container">
+      <h4 style="margin-top: 0">Contato</h4>
+      <p style="text-align: center">É como um médico irá falar com você. Coloque somente contatos que você tem acesso imediato!</p>
 
-    <form class="pacient-sign-up__form" id="pacientSignUpForm " novalidate>
-      <div class="field">
-        <label class="label" for="phone">Telefone - Obrigatório</label>
-        <input  @input="onPhoneInputChange" :class="{'error': errors.phone }" v-model="form.phone" name="phone" id="phone" class="input" type="text" placeholder="DDD e somente números" maxlength="15">
-        <span v-if="errors.phone" class="error">{{errors.phone}}</span>
-      </div>
+      <form class="pacient-sign-up__form" id="pacientSignUpForm " novalidate>
+        <div class="field">
+          <label class="label" for="phone">Telefone - Obrigatório</label>
+          <input  @input="onPhoneInputChange" :class="{'error': errors.phone }" v-model="form.phone" name="phone" id="phone" class="input" type="text" placeholder="DDD e somente números" maxlength="15">
+          <span v-if="errors.phone" class="error">{{errors.phone}}</span>
+        </div>
 
-      <div class="field">
-        <label class="label" for="email">Email</label>
-        <input :class="{'error': errors.email }" v-model="form.email" name="email" id="email" class="input" type="text" placeholder="seuemail@email.com" maxlength="255">
-        <span v-if="errors.email" class="error">{{errors.email}}</span>
-      </div>
+        <div class="field">
+          <label class="label" for="email">Email</label>
+          <input :class="{'error': errors.email }" v-model="form.email" name="email" id="email" class="input" type="text" placeholder="seuemail@email.com" maxlength="255">
+          <span v-if="errors.email" class="error">{{errors.email}}</span>
+        </div>
 
-      <div class="field">
-        <label class="label" for="whatsapp">Whatsapp</label>
-        <input @input="onWhatsappInputChange" :class="{'error': errors.whatsapp }" v-model="form.whatsapp" name="whatsapp" id="whatsapp" class="input" type="text" placeholder="DDD e somente números" maxlength="255">
-        <span v-if="errors.whatsapp" class="error">{{errors.whatsapp}}</span>
-      </div>
+        <div class="field">
+          <label class="label" for="whatsapp">Whatsapp</label>
+          <input @input="onWhatsappInputChange" :class="{'error': errors.whatsapp }" v-model="form.whatsapp" name="whatsapp" id="whatsapp" class="input" type="text" placeholder="DDD e somente números" maxlength="255">
+          <span v-if="errors.whatsapp" class="error">{{errors.whatsapp}}</span>
+        </div>
 
-      <div class="field">
-        <label class="label" for="telegram">Telegram</label>
-        <input @input="onTelegramInputChange" :class="{'error': errors.telegram }" v-model="form.telegram" name="telegram" id="telegram" class="input" type="text" placeholder="DDD e somente números" maxlength="255">
-        <span v-if="errors.telegram" class="error">{{errors.telegram}}</span>
-      </div>
+        <div class="field">
+          <label class="label" for="telegram">Telegram</label>
+          <input @input="onTelegramInputChange" :class="{'error': errors.telegram }" v-model="form.telegram" name="telegram" id="telegram" class="input" type="text" placeholder="DDD e somente números" maxlength="255">
+          <span v-if="errors.telegram" class="error">{{errors.telegram}}</span>
+        </div>
 
-      <div class="field">
-        <label class="label" for="hangouts">Hangouts</label>
-        <input :class="{'error': errors.hangouts }" v-model="form.hangouts" name="hangouts" id="hangouts" class="input" type="text" placeholder="Email" maxlength="255">
-        <span v-if="errors.hangouts" class="error">{{errors.hangouts}}</span>
-      </div>
+        <div class="field">
+          <label class="label" for="hangouts">Hangouts</label>
+          <input :class="{'error': errors.hangouts }" v-model="form.hangouts" name="hangouts" id="hangouts" class="input" type="text" placeholder="Email" maxlength="255">
+          <span v-if="errors.hangouts" class="error">{{errors.hangouts}}</span>
+        </div>
 
-      <div class="field">
-        <label class="label" for="skype">Skype</label>
-        <input :class="{'error': errors.skype }" v-model="form.skype" name="skype" id="skype" class="input" type="text" placeholder="Nome no Skype">
-        <span v-if="errors.skype" class="error">{{errors.skype}}</span>
-      </div>
-    </form>
-  </div>
+        <div class="field">
+          <label class="label" for="skype">Skype</label>
+          <input :class="{'error': errors.skype }" v-model="form.skype" name="skype" id="skype" class="input" type="text" placeholder="Nome no Skype">
+          <span v-if="errors.skype" class="error">{{errors.skype}}</span>
+        </div>
+      </form>
+    </div>
+  </section>
 </template>
 
 <script>
