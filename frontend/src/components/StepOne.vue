@@ -6,19 +6,19 @@
       <div class="field">
         <label class="label" for="name">Nome - Obrigatório</label>
         <input :class="{'error': errors.name }" v-model="form.name" name="name" id="name" class="input" type="text" placeholder="Exemplo: José da Silva">
-        <p v-if="errors.name" class="error">{{errors.name}}</p>
+        <span v-if="errors.name" class="error">{{errors.name}}</span>
       </div>
 
       <div class="field">
         <label class="label" for="age">Idade - Obrigatório</label>
         <input @input="onAgeInputChange" :class="{'error': errors.age }" v-model="form.age" name="age" id="age" class="input" type="text" placeholder="Exemplo: 60" maxlength="3">
-        <p v-if="errors.age" class="error">{{errors.age}}</p>
+        <span v-if="errors.age" class="error">{{errors.age}}</span>
       </div>
 
       <div class="field">
         <label class="label" for="cep">CEP - Obrigatório</label>
         <input @input="onCEPInputChange" :class="{'error': errors.cep }" v-model="form.cep" name="cep" id="cep" class="input" type="text" placeholder="Digite somente números" maxlength="9">
-        <p v-if="errors.cep" class="error">{{errors.cep}}</p>
+        <span v-if="errors.cep" class="error">{{errors.cep}}</span>
       </div>
 
       <p style="margin-bottom: 0">

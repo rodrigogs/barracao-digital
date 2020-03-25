@@ -24,6 +24,12 @@ export default {
     return {
       demoSteps: [
         {
+          icon: 'looks_3',
+          name: 'third',
+          component: StepThree,
+          completed: false,
+        },
+        {
           icon: 'looks_two',
           name: 'second',
           component: StepTwo,
@@ -33,12 +39,6 @@ export default {
           icon: 'looks_one',
           name: 'first',
           component: StepOne,
-          completed: false,
-        },
-        {
-          icon: 'looks_3',
-          name: 'third',
-          component: StepThree,
           completed: false,
         },
       ],

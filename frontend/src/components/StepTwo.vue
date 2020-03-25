@@ -6,20 +6,17 @@
     <form class="pacient-sign-up__form" id="pacientSignUpForm " novalidate>
       <div class="field">
         <label class="label" for="meds">Usa algum medicamento? Qual?</label>
-        <textarea :class="{'error': errors.meds }" v-model="form.meds" name="meds" id="meds" class="input" type="text" placeholder="Exemplo: Paracetamol, Ibuprofeno" maxlength="255"></textarea>
-        <p v-if="errors.meds" class="error">{{errors.meds}}</p>
+        <textarea v-model="form.meds" name="meds" id="meds" class="input" type="text" placeholder="Exemplo: Paracetamol, Ibuprofeno" maxlength="255"></textarea>
       </div>
 
       <div class="field">
         <label class="label" for="allergies">Possuí alergias? Quais?</label>
-        <textarea :class="{'error': errors.allergies }" v-model="form.allergies" name="allergies" id="allergies" class="input" type="text" placeholder="Exemplo: Leite, Ovo, Nozes" maxlength="255"></textarea>
-        <p v-if="errors.allergies" class="error">{{errors.allergies}}</p>
+        <textarea v-model="form.allergies" name="allergies" id="allergies" class="input" type="text" placeholder="Exemplo: Leite, Ovo, Nozes" maxlength="255"></textarea>
       </div>
 
       <div class="field">
         <label class="label" for="covenant">Possuí convênio? Qual?</label>
-        <input :class="{'error': errors.covenant }" v-model="form.covenant" name="covenant" id="covenant" class="input" type="text" placeholder="Cite seu convênio" maxlength="255">
-        <p v-if="errors.covenant" class="error">{{errors.covenant}}</p>
+        <input v-model="form.covenant" name="covenant" id="covenant" class="input" type="text" placeholder="Cite seu convênio" maxlength="255">
       </div>
 
       <div class="field">
@@ -34,7 +31,6 @@
             Não
           </label>
         </div>
-        <p v-if="errors.has_been_assisted" class="error">{{errors.has_been_assisted}}</p>
       </div>
     </form>
   </div>
