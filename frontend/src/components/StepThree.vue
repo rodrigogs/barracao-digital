@@ -18,13 +18,13 @@
 
       <div class="field">
         <label class="label" for="whatsapp">Whatsapp</label>
-        <input :class="{'error': errors.whatsapp }" v-model="form.whatsapp" name="whatsapp" id="whatsapp" class="input" type="text" placeholder="DDD e somente números" maxlength="255">
+        <input @input="onWhatsappInputChange" :class="{'error': errors.whatsapp }" v-model="form.whatsapp" name="whatsapp" id="whatsapp" class="input" type="text" placeholder="DDD e somente números" maxlength="255">
         <span v-if="errors.whatsapp" class="error">{{errors.whatsapp}}</span>
       </div>
 
       <div class="field">
         <label class="label" for="telegram">Telegram</label>
-        <input :class="{'error': errors.telegram }" v-model="form.telegram" name="telegram" id="telegram" class="input" type="text" placeholder="DDD e somente números" maxlength="255">
+        <input @input="onTelegramInputChange" :class="{'error': errors.telegram }" v-model="form.telegram" name="telegram" id="telegram" class="input" type="text" placeholder="DDD e somente números" maxlength="255">
         <span v-if="errors.telegram" class="error">{{errors.telegram}}</span>
       </div>
 
@@ -81,10 +81,24 @@ export default {
         }
       }
 
+      this.$delete(this.errors, 'hangouts');
+      if (this.form.hangouts) {
+        if (!utils.isEmailValid(this.form.hangouts)) {
+          this.$set(this.errors, 'hangouts', 'Email inválido');
+          isValid = false;
+        }
+      }
+
       return isValid;
     },
     onPhoneInputChange(e) {
       this.form.phone = utils.phoneMask(e);
+    },
+    onWhatsappInputChange(e) {
+      this.form.whatsapp = utils.phoneMask(e);
+    },
+    onTelegramInputChange(e) {
+      this.form.telegram = utils.phoneMask(e);
     },
   },
   watch: {
