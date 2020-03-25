@@ -14,9 +14,7 @@ const methods = {
       }
 
       const loggedUser = await authService.login({ username, password });
-      if (!loggedUser) {
-        return responseBuilder.errors.unauthorized();
-      }
+      if (!loggedUser) return responseBuilder.errors.unauthorized();
 
       return responseBuilder.success.ok({ body: loggedUser });
     } catch (err) {

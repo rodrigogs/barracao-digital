@@ -1,4 +1,5 @@
 const { authService } = require('barracoes-covid-19');
+const { responseBuilder } = require('../helpers');
 
 const createAccessPoliciy = (user, key, methodArn) => ({
   principalId: key,
@@ -44,6 +45,6 @@ module.exports.handler = async (event) => {
     return createAccessPoliciy(user, key, methodArn);
   } catch (err) {
     console.error('Authorization error:', err);
-    throw new Error('Unauthorized');
+    return responseBuilder.errors.unauthorized();
   }
 };
