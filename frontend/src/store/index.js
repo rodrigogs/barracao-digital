@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import pacientSignUp from './pacientSignUp';
+import patientSignUp from './patientSignUp';
 
 Vue.use(Vuex);
 
@@ -8,11 +8,11 @@ export default new Vuex.Store({
   state: () => ({}),
   mutations: {},
   modules: {
-    pacientSignUp: {
+    patientSignUp: {
       namespaced: true,
-      state: pacientSignUp.state,
-      mutations: pacientSignUp.mutations,
-      actions: pacientSignUp.actions,
+      state: patientSignUp.state,
+      mutations: patientSignUp.mutations,
+      actions: patientSignUp.actions,
     },
   },
 });

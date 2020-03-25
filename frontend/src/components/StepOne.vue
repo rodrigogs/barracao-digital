@@ -3,7 +3,7 @@
     <div class="container">
       <h4 style="margin-top: 0">Seus dados</h4>
       <p style="text-align: center">Preencha seus dados para direcionarmos seu atendimento</p>
-      <form class="pacient-sign-up__form" id="pacientSignUpForm " novalidate>
+      <form class="pacient-sign-up__form" id="patientSignUpForm " novalidate>
         <div class="field">
           <label class="label" for="name">Nome - Obrigatório</label>
           <input :class="{'error': errors.name }" v-model="form.name" name="name" id="name" class="input" type="text" placeholder="Exemplo: José da Silva">
@@ -110,7 +110,7 @@ export default {
               return;
             }
 
-            this.$store.commit('pacientSignUp/setStepFields', this.form);
+            this.$store.commit('patientSignUp/setStepFields', this.form);
             this.$emit('can-continue', { value: true });
           }
         }, 300);
