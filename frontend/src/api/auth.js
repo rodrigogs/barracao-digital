@@ -1,7 +1,8 @@
 export default (request) => ({
 
-  async checkLogin() {
-    throw new Error('Not implemented');
+  async login({ username, password }) {
+    const { data } = await request.post('/auth/login', { username, password });
+    return data;
   },
 
 });

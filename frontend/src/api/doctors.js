@@ -1,7 +1,7 @@
 export default (request) => ({
 
-  async getList() {
-    const { data } = await request.get('/doctors');
+  async getList({ cep }) {
+    const { data } = await request.get(`/doctors/cep/${cep}`);
     return data;
   },
 
