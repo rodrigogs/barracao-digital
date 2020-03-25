@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <stepper :steps="demoSteps"
+    <stepper :steps="steps"
              locale="pt"
              @stepper-finished="savePatientSignUp">
     </stepper>
@@ -8,6 +8,8 @@
 </template>
 
 <script>
+
+import { patients as patientsApi } from '@/api';
 import Stepper from 'vue-stepper';
 import StepOne from '../components/StepOne.vue';
 import StepTwo from '../components/StepTwo.vue';
@@ -20,7 +22,7 @@ export default {
   },
   data() {
     return {
-      demoSteps: [
+      steps: [
         {
           icon: 'looks_one',
           name: 'first',
@@ -44,7 +46,9 @@ export default {
   },
   methods: {
     savePatientSignUp() {
-      alert('end');
+      const patientToSignUp = this.$store.patients.getters.getPatientToSignUp();
+      const { data: registeredPatient } = patientsApi.signUpPatient(patientToSignUp);
+      console.log(registeredPatient);
     },
   },
   beforeDestroy() {
