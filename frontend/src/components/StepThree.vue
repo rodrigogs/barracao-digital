@@ -4,7 +4,7 @@
       <h4 style="margin-top: 0">Contato</h4>
       <p style="text-align: center">É como um médico irá falar com você. Coloque somente contatos que você tem acesso imediato!</p>
 
-      <form class="pacient-sign-up__form" id="pacientSignUpForm " novalidate>
+      <form class="pacient-sign-up__form" id="patientSignUpForm " novalidate>
         <div class="field">
           <label class="label" for="phone">Telefone - Obrigatório</label>
           <input  @input="onPhoneInputChange" :class="{'error': errors.phone }" v-model="form.phone" name="phone" id="phone" class="input" type="text" placeholder="DDD e somente números" maxlength="15">
@@ -113,7 +113,7 @@ export default {
             return;
           }
 
-          this.$store.commit('pacientSignUp/setStepFields', this.form);
+          this.$store.commit('patientSignUp/setStepFields', this.form);
           this.$emit('can-continue', { value: true });
         }, 300);
       },

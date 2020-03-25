@@ -4,7 +4,7 @@
       <h4 style="margin-top: 0">Informações médicas</h4>
       <p style="text-align: center">Informe sobre sua situação médica</p>
 
-      <form class="pacient-sign-up__form" id="pacientSignUpForm " novalidate>
+      <form class="pacient-sign-up__form" id="patientSignUpForm " novalidate>
         <div class="field">
           <label class="label" for="meds">Usa algum medicamento? Qual?</label>
           <textarea v-model="form.meds" name="meds" id="meds" class="input" type="text" placeholder="Exemplo: Paracetamol, Ibuprofeno" maxlength="255"></textarea>
@@ -61,7 +61,7 @@ export default {
       handler(newForm, oldForm) {
         this.$emit('can-continue', { value: false });
         utils.debounce(() => {
-          this.$store.commit('pacientSignUp/setStepFields', this.form);
+          this.$store.commit('patientSignUp/setStepFields', this.form);
           this.$emit('can-continue', { value: true });
         }, 300);
       },

@@ -27,7 +27,7 @@ export default {
     },
   },
   actions: {
-    async savePacientSignUp({ state }) {
+    async savePatientSignUp({ state }) {
       try {
         const pacient = { ...state };
         const campaignSaved = await api.savePacient(pacient);

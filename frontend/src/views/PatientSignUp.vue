@@ -2,7 +2,7 @@
   <div class="container">
     <stepper :steps="demoSteps"
              locale="pt"
-             @stepper-finished="savePacientSignUp">
+             @stepper-finished="savePatientSignUp">
     </stepper>
   </div>
 </template>
@@ -14,7 +14,7 @@ import StepTwo from '../components/StepTwo.vue';
 import StepThree from '../components/StepThree.vue';
 
 export default {
-  name: 'PacientSignUp',
+  name: 'PatientSignUp',
   components: {
     Stepper,
   },
@@ -43,7 +43,7 @@ export default {
     };
   },
   methods: {
-    savePacientSignUp() {
+    savePatientSignUp() {
       alert('end');
     },
   },
