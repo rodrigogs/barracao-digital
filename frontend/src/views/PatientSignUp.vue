@@ -45,9 +45,9 @@ export default {
     };
   },
   methods: {
-    savePatientSignUp() {
+    async savePatientSignUp() {
       const patientToSignUp = this.$store.patients.getters.getPatientToSignUp();
-      const { data: registeredPatient } = patientsApi.signUpPatient(patientToSignUp);
+      const { data: registeredPatient } = await patientsApi.signUpPatient(patientToSignUp);
       console.log(registeredPatient);
     },
   },
