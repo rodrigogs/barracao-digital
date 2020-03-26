@@ -32,44 +32,42 @@
 
 <script>
 export default {
-  name: "DoctorStatus",
+  name: 'DoctorStatus',
   data() {
     return {
       doctor: 'Little',
       message: null,
-      active: null
+      active: null,
     };
   },
   watch: {
     active(status) {
       if (status === 'start') {
-        this.message = `Olá, ${this.doctor}, você está atendendo`
+        this.message = `Olá, ${this.doctor}, você está atendendo`;
+      } else if (status === 'stop') {
+        this.message = `Olá, ${this.doctor}, você não está atendendo`;
+      } else if (status === 'signout') {
+        this.message = `Até mais, ${this.doctor}. Saindo do aplicativo...`;
       }
-      else if (status === 'stop') {
-        this.message = `Olá, ${this.doctor}, você não está atendendo`
-      }
-      else if (status === 'signout') {
-        this.message = `Até mais, ${this.doctor}. Saindo do aplicativo...`
-      }
-    }
+    },
   },
   mounted() {
-    this.message = `Olá, ${this.doctor}. Selecione uma ação para continuar`
+    this.message = `Olá, ${this.doctor}. Selecione uma ação para continuar`;
   },
   methods: {
     activate(action) {
       this.active = action;
     },
     start() {
-      this.activate("start");
+      this.activate('start');
     },
     stop() {
-      this.activate("stop");
+      this.activate('stop');
     },
     signOut() {
-      this.activate("signout");
-    }
-  }
+      this.activate('signout');
+    },
+  },
 };
 </script>
 

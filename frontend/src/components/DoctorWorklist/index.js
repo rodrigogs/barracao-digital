@@ -1,11 +1,11 @@
-import DoctorStatus from './DoctorStatus'
-import DoctorFilters from './DoctorFilters'
-import DoctorTable from './DoctorTable'
-import DoctorPatientSummary from './DoctorPatientSummary'
+import DoctorStatus from './DoctorStatus.vue';
+import DoctorFilters from './DoctorFilters.vue';
+import DoctorTable from './DoctorTable.vue';
+import DoctorPatientSummary from './DoctorPatientSummary.vue';
 
 export {
   DoctorStatus,
   DoctorFilters,
   DoctorTable,
   DoctorPatientSummary,
-}
+};
