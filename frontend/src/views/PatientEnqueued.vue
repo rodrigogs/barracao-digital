@@ -51,6 +51,15 @@
 <!--      <p>Caso aceite receber atendimento em outro horário, selecione abaixo:</p>-->
 <!--      <p>Aceito aguardar</p>-->
     </div>
+    <div v-if="!isLoading && patient.status === 'shed_not_available'" class="container">
+      <div class="patient-enqueued__big-warn">
+        O serviço online do seu CEP
+        não está ativo nesse momento.
+      </div>
+      <div class="patient-enqueued__big-warn">
+        Você pode tentar novamente tarde.
+      </div>
+    </div>
   </section>
 </template>
 
