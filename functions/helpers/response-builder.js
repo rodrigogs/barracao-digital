@@ -53,43 +53,43 @@ const noContent = (options) => {
 };
 
 // Error responses
-const badRequest = (error) => genericError({
+const badRequest = (error = {}) => genericError({
   ...error,
   statusCode: 400,
   message: error.message || 'Bad Request',
 });
 
-const unauthorized = (error) => genericError({
+const unauthorized = (error = {}) => genericError({
   ...error,
   statusCode: 401,
   message: error.message || 'Unauthorized',
 });
 
-const forbidden = (error) => genericError({
+const forbidden = (error = {}) => genericError({
   ...error,
   statusCode: 403,
   message: error.message || 'Forbidden',
 });
 
-const notFound = (error) => genericError({
+const notFound = (error = {}) => genericError({
   ...error,
   statusCode: 404,
   message: error.message || 'Not Found',
 });
 
-const methodNotAllowed = (error) => genericError({
+const methodNotAllowed = (error = {}) => genericError({
   ...error,
   statusCode: 405,
   message: error.message || 'Method Not Allowed',
 });
 
-const internalServerError = (error) => genericError({
+const internalServerError = (error = {}) => genericError({
   ...error,
   statusCode: 500,
   message: error.message || 'Internal Server Error',
 });
 
-const notImplemented = (error) => genericError({
+const notImplemented = (error = {}) => genericError({
   ...error,
   statusCode: 501,
   message: error.message || 'Not Implemented',

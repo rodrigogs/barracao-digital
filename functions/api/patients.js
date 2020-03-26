@@ -10,7 +10,7 @@ const methods = {
         queryStringParameters,
       } = ctx;
 
-      const { cep, id } = pathParameters || {};
+      const { cep, key } = pathParameters || {};
       const { status } = queryStringParameters || {};
 
       if (cep) {
@@ -27,8 +27,8 @@ const methods = {
         });
       }
 
-      if (id) {
-        const patient = await patientsService.getOneById(id);
+      if (key) {
+        const patient = await patientsService.getOneByKey(key);
         if (!user.master && (user.cep !== patient.cep)) {
           return responseBuilder.errors.forbidden('Você só pode visualizar dados da sua região');
         }
@@ -50,19 +50,19 @@ const methods = {
         body,
       } = ctx;
 
-      const { id } = pathParameters || {};
+      const { key } = pathParameters || {};
 
       if (!pathParameters) {
         const createdPatient = await patientsService.create(body);
         return responseBuilder.success.created({ body: createdPatient });
       }
 
-      if (id) {
-        const patient = await patientsService.getOneById(id);
+      if (key) {
+        const patient = await patientsService.getOneByKey(key);
         if (!user.master && (user.cep !== patient.cep)) {
           return responseBuilder.errors.forbidden('Você só pode alterar dados da sua região');
         }
-        const updatedPatient = await patientsService.update(id, { status: body.status });
+        const updatedPatient = await patientsService.update(key, { status: body.status });
         return responseBuilder.success.ok({ body: updatedPatient });
       }
 
