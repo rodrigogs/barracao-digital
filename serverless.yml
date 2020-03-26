@@ -104,7 +104,7 @@ functions:
 
       - http:
           method: get
-          path: '/patients/key/{key}'
+          path: '/patients/ticket/{ticket}'
           cors: true
           authorizer: doctorAuthorizer
 
@@ -115,7 +115,7 @@ functions:
 
       - http:
           method: post
-          path: '/patients/{key}'
+          path: '/patients/{ticket}'
           cors: true
           authorizer: adminAuthorizer
 
@@ -230,14 +230,14 @@ resources:
       Properties:
         TableName: ${self:custom.patientsTableName}
         AttributeDefinitions:
-          - AttributeName: key
+          - AttributeName: ticket
             AttributeType: S
           - AttributeName: cep
             AttributeType: S
           - AttributeName: sort
             AttributeType: S
         KeySchema:
-          - AttributeName: key
+          - AttributeName: ticket
             KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 10
