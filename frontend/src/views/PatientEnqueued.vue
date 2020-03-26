@@ -1,23 +1,53 @@
 <template>
   <section class="section">
-    <div class="container">
-
-      <div class="img-container">
-        <img src="@/assets/logo-grande.png"/>
+    <div v-if="isLoading" class="container">
+      Carregando
+    </div>
+    <div v-if="!isLoading && status === 0" class="container">
+      <div class="patient-enqueued__lightweight-warn">
+        Essa página é atualizada automaticamente a cada 1 minuto
       </div>
 
+      <div class="patient-enqueued__big-warn patient-enqueued__big-warn--blue">
+        Você esta na fila de atendimento
+      </div>
+
+      <div class="patient-enqueued__text" style="width: 250px;">
+        Estamos trabalhando, fique com o telefone e suas formas de comunicação disponiveis e online!
+      </div>
+
+      <div class="patient-enqueued__small-text">
+        Tempo na fila: 12:56
+      </div>
+
+      <div class="patient-enqueued__big-warn patient-enqueued__big-warn--red">
+        Sua senha para retorno é 4531
+      </div>
+
+      <div class="patient-enqueued__text" style="width: 220px;">
+        Caso perca a conexão, retorne a fila de atendimento usando essa senha
+      </div>
+    </div>
+    <div v-if="!isLoading && status === 1" class="container">
       <p class="home__text-container">
-        Antes de sair de casa para buscar atendimento, faça sua avaliação digital segura com um profissional.
+        Um médico está entrando em contato com você
+      </p>
+    </div>
+    <div v-if="!isLoading && status === 2" class="container">
+      <p class="home__text-container">
+        Atendimento finalizado
+      </p>
+    </div>
+    <div v-if="!isLoading && status === 3" class="container">
+      <p class="home__text-container">
+        Fulano, nossa equipe está sobrecarregada no momento.
+      </p>
+      <p>
+        Tente novamente mais tarde.
       </p>
 
-      <div class="home__button-container">
-        <router-link to="/paciente/registrar" class="btn btn--link" style="padding-top: 3rem;padding-bottom: 3rem;">
-          Entrar na sala de espera
-        </router-link>
-        <router-link to="/paciente" class="btn-secondary btn--link" block color="#FF4136">
-          Ja tenho uma senha de retorno
-        </router-link>
-      </div>
+      <p>Caso aceite receber atendimento em outro horário, selecione abaixo:</p>
+      <p>Aceito aguardar</p>
     </div>
   </section>
 </template>
@@ -26,21 +56,54 @@
 export default {
   name: 'PatientEnqueued',
   components: {},
+  data() {
+    return {
+      isLoading: false,
+      status: 0,
+    };
+  },
+  mounted() {
+    this.isLoading = false;
+  },
 };
 </script>
 
 <style>
-  .home__button-container {
-    display: flex;
-    flex-direction: column;
+  .patient-enqueued__lightweight-warn {
+    color: #6F8194;
+    width: 215px;
+    text-align: center;
+    font-size: .75rem;
+    margin: auto;
   }
 
-  .home__text-container {
-    text-align: justify;
+  .patient-enqueued__big-warn {
+    text-align: center;
+    font-size: 1.3rem;
+    margin: auto;
+    font-weight: bold;
+    margin-top: 3rem;
   }
 
-  .home__button-container > .btn--link {
-    font-size: 1.5rem;
-    text-decoration: none;
+  .patient-enqueued__big-warn--blue {
+    color: var(--main-btn-color);
+  }
+
+  .patient-enqueued__big-warn--red {
+    color: var(--secondary-btn-color);
+  }
+
+  .patient-enqueued__text {
+    margin: auto;
+    margin-top: 1rem;
+    font-size: 1rem;
+    text-align: center;
+  }
+
+  .patient-enqueued__small-text {
+    margin-top: .5rem;
+    text-align: center;
+    font-size: .75rem;
+    font-weight: bold;
   }
 </style>

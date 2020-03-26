@@ -7,6 +7,7 @@
   --secondary-btn-color: #FF4136;
   --secondary-btn-color--hover: #e53a30;
   --secondary-btn-color--disabled: #ff665e;
+  --lightweight-color: #9E9E9E;
 }
 
 html {
@@ -218,10 +219,5 @@ input, textarea {
 }
 
 input::placeholder, textarea::placeholder {
-  color: #9E9E9E;
-}
-
-
-.error {
-
+  color: var(--lightweight-color);
 }
