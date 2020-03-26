@@ -17,6 +17,7 @@ custom:
   client:
     bucketName: '${self:service}-${self:provider.stage}-webapp'
     distributionFolder: 'frontend/dist'
+  configsTableName: '${self:service}-${self:provider.stage}-configs'
   doctorsTableName: '${self:service}-${self:provider.stage}-doctors'
   patientsTableName: '${self:service}-${self:provider.stage}-patients'
 
@@ -37,8 +38,10 @@ provider:
         - 'dynamodb:*'
       Resource: '*'
   environment:
+    CONFIGS_TABLE: ${self:custom.configsTableName}
     DOCTORS_TABLE: ${self:custom.doctorsTableName}
     PATIENTS_TABLE: ${self:custom.patientsTableName}
+
 
 functions:
   doctorAuthorizer:
@@ -101,7 +104,7 @@ functions:
 
       - http:
           method: get
-          path: '/patients/id/{id}'
+          path: '/patients/key/{key}'
           cors: true
           authorizer: doctorAuthorizer
 
@@ -112,7 +115,7 @@ functions:
 
       - http:
           method: post
-          path: '/patients/{id}'
+          path: '/patients/{key}'
           cors: true
           authorizer: adminAuthorizer
 
@@ -176,6 +179,23 @@ resources:
           Ref: 'ApiGatewayRestApi'
         StatusCode: '401'
     # DynamoDB Tables
+    ConfigsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.configsTableName}
+        AttributeDefinitions:
+          - AttributeName: partition
+            AttributeType: S
+          - AttributeName: sort
+            AttributeType: S
+        KeySchema:
+          - AttributeName: partition
+            KeyType: HASH
+          - AttributeName: sort
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 10
+          WriteCapacityUnits: 10
     DoctorsTable:
       Type: AWS::DynamoDB::Table
       Properties:
@@ -210,14 +230,14 @@ resources:
       Properties:
         TableName: ${self:custom.patientsTableName}
         AttributeDefinitions:
-          - AttributeName: id
+          - AttributeName: key
             AttributeType: S
           - AttributeName: cep
             AttributeType: S
           - AttributeName: sort
             AttributeType: S
         KeySchema:
-          - AttributeName: id
+          - AttributeName: key
             KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 10
