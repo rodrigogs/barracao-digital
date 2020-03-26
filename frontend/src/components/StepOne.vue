@@ -48,7 +48,7 @@ export default {
     };
   },
   methods: {
-    allFieldsFilled() {
+    allRequiredFieldsFilled() {
       return this.form.name && this.form.age && this.form.cep;
     },
     isStepOneValid() {
@@ -104,7 +104,7 @@ export default {
       handler(newForm, oldForm) {
         this.$emit('can-continue', { value: false });
         utils.debounce(() => {
-          if (this.allFieldsFilled()) {
+          if (this.allRequiredFieldsFilled()) {
             if (!this.isStepOneValid()) {
               this.$emit('can-continue', { value: false });
               return;
@@ -119,7 +119,7 @@ export default {
     },
   },
   mounted() {
-    if (this.allFieldsFilled() && this.isStepOneValid()) {
+    if (this.allRequiredFieldsFilled() && this.isStepOneValid()) {
       this.$emit('can-continue', { value: true });
     }
   },
