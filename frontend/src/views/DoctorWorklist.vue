@@ -1,7 +1,7 @@
 <template>
-  <div class="container">
+  <div class="doctor-worklist-container">
     <DoctorStatus />
-    <div class="content">
+    <div class="doctor-worklist-content">
       <DoctorFilters />
       <DoctorTable />
       <DoctorPatientSummary />
@@ -28,10 +28,13 @@ export default {
 </script>
 
 <style scoped>
-.container {
+.doctor-worklist-container {
 }
 
-.status-container {
+.doctor-worklist-content {
+  padding-left: 16px;
+  padding-right: 16px;
+  margin-top: 6px;
 }
 
 .content {
