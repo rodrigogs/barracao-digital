@@ -14,16 +14,16 @@ import {
   DoctorStatus,
   DoctorFilters,
   DoctorTable,
-  DoctorPatientSummary
-} from "@/components/DoctorWorklist";
+  DoctorPatientSummary,
+} from '@/components/DoctorWorklist';
 
 export default {
   components: {
     DoctorStatus,
     DoctorFilters,
     DoctorTable,
-    DoctorPatientSummary
-  }
+    DoctorPatientSummary,
+  },
 };
 </script>
 

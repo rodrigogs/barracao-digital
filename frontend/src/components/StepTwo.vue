@@ -61,8 +61,8 @@ export default {
       handler(newForm, oldForm) {
         this.$emit('can-continue', { value: false });
         utils.debounce(() => {
-          this.$store.commit('patients/setStepFields', this.form);
-          this.$emit('can-continue', { value: true });
+          this.$store.dispatch('patients/setStepFields', this.form)
+            .then(this.$emit('can-continue', { value: true }));
         }, 300);
       },
       deep: true,
