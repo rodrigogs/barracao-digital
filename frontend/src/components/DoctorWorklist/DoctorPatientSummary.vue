@@ -1,94 +1,90 @@
 <template>
-  <div class="container">
-
-    <div class="header">
-      <span class="header-title">Paciente selecionado</span>
-      <span class="header-subtitle">Fulado de tal</span>
+  <div>
+    <div class="container" style="padding: 16px" v-if="!patient || !patient.id">
+      Nenhum paciente selecionado
     </div>
 
-    <div class="content">
-      <div class="content-block">
-        <h4>Alterar status</h4>
-        <select v-model="selected">
-          <option value="waiting">Aguardando</option>
-          <option value="waiting_kit">Aguardando kit</option>
-          <option value="ongoing">Em atendimento</option>
-          <option value="finished">Finalizado</option>
-        </select>
+    <div class="container" v-if="patient && patient.name">
+      <div class="header">
+        <span class="header-title">Paciente selecionado</span>
+        <span class="header-subtitle">{{ patient.name }}</span>
       </div>
 
-      <h4>Dados do paciente</h4>
-      <div class="content-block">
-        <span>Nome do paciente</span>
-        <span>Fulano</span>
-      </div>
-      <div class="content-block">
-        <span>Idade</span>
-        <span>32</span>
-      </div>
-      <div class="content-block">
-        <span>Tempo em espera</span>
-        <span>22 min</span>
+      <div class="content">
+        <div class="content-block">
+          <h4>Alterar status</h4>
+          <select v-model="patient.status">
+            <option value="waiting">Aguardando</option>
+            <option value="waiting_kit">Aguardando kit</option>
+            <option value="ongoing">Em atendimento</option>
+            <option value="finished">Finalizado</option>
+          </select>
+        </div>
+
+        <h4>Dados do paciente</h4>
+        <div class="content-block">
+          <span>Nome do paciente</span>
+          <span>{{ patient.name }}</span>
+        </div>
+        <div class="content-block">
+          <span>Idade</span>
+          <span>{{ patient.age }}</span>
+        </div>
+        <div class="content-block">
+          <span>Tempo em espera</span>
+          <span>22 min - ????</span>
+        </div>
+
+        <h4>Dados médicos</h4>
+        <div class="content-block">
+          <span>Usa algum medicamento? Quais?</span>
+          <span>{{ patient.meds }}</span>
+        </div>
+        <div class="content-block">
+          <span>Possuí alergias? Quais?</span>
+          <span>{{ patient.allergies }}</span>
+        </div>
+        <div class="content-block">
+          <span>Possuí convênio? Qual?</span>
+          <span>{{ patient.covenant }}</span>
+        </div>
+        <div class="content-block">
+          <span>Já foi atendido pelo barração online antes?</span>
+          <span>{{ patient.hasBeenAssisted ? 'Sim' : 'Não' }}</span>
+        </div>
+
+        <h4>Contatos</h4>
+        <div class="content-block">
+          <span>Telefone</span>
+          <span>{{ patient.phone }}</span>
+        </div>
+        <div class="content-block">
+          <span>Whatsapp</span>
+          <span>{{ patient.whatsapp }}</span>
+        </div>
+        <div class="content-block">
+          <span>Telegram</span>
+          <span>{{ patient.telegram }}</span>
+        </div>
+        <div class="content-block">
+          <span>Hangout</span>
+          <span>{{ patient.hangout }}</span>
+        </div>
+        <div class="content-block">
+          <span>Skype</span>
+          <span>{{ patient.skype }}</span>
+        </div>
       </div>
 
-      <h4>Dados médicos</h4>
-      <div class="content-block">
-        <span>Usa algum medicamento? Quais?</span>
-        <span>-</span>
-      </div>
-      <div class="content-block">
-        <span>Possuí alergias? Quais?</span>
-        <span>-</span>
-      </div>
-      <div class="content-block">
-        <span>Possuí convênio? Qual?</span>
-        <span>-</span>
-      </div>
-      <div class="content-block">
-        <span>Já foi atendido pelo barração online antes?</span>
-        <span>Sim</span>
-      </div>
-
-      <h4>Contatos</h4>
-      <div class="content-block">
-        <span>Telefone</span>
-        <span>48996222999</span>
-      </div>
-      <div class="content-block">
-        <span>Whatsapp</span>
-        <span>48996222999</span>
-      </div>
-      <div class="content-block">
-        <span>Telegram</span>
-        <span>48996222999</span>
-      </div>
-      <div class="content-block">
-        <span>Hangout</span>
-        <span>-</span>
-      </div>
-
-      <div class="content-block">
-        <span>Skype</span>
-        <span>-</span>
-      </div>
     </div>
-
   </div>
 </template>
 
 <script>
 export default {
   name: 'DoctorPatientSummary',
-  data() {
-    return {
-      selected: '',
-    };
-  },
-  watch: {
-    selected(value) {
-      console.log(value); // update store or call the correct api
-    },
-  },
+  props: ['patient'],
+  watch: {},
   mounted() {},
   methods: {},
 };

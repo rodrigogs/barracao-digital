@@ -4,7 +4,8 @@
     <div class="doctor-worklist-content">
       <DoctorFilters />
       <DoctorTable />
-      <DoctorPatientSummary />
+      <button @click="mock">Mockar um paciente - remover depois</button>
+      <DoctorPatientSummary v-bind:patient="patient" />
     </div>
   </div>
 </template>
@@ -23,6 +24,32 @@ export default {
     DoctorFilters,
     DoctorTable,
     DoctorPatientSummary,
+  },
+  data() {
+    return {
+      patient: null,
+    };
+  },
+  methods: {
+    mock() {
+      this.patient = {
+        name: 'Neri Fontana',
+        age: '26',
+        cep: '984519',
+        meds: 'Sim',
+        allergies: 'Não',
+        covenant: 'UNIMED',
+        hasBeenAssisted: false,
+        phone: '489961235478',
+        email: 'email@email.com',
+        whatsapp: '489961235478',
+        telegram: '489961235478',
+        hangout: 'test',
+        skype: 'test',
+        ticket: '5641',
+        status: 'ongoing',
+      };
+    },
   },
 };
 </script>
