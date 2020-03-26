@@ -1,10 +1,17 @@
 <template>
-  <div class="container">
-    <stepper :steps="steps"
-             locale="pt"
-             @stepper-finished="savePatientSignUp">
-    </stepper>
-  </div>
+  <span>
+    <div v-if="!isLoading" class="container">
+      <stepper :steps="steps"
+               locale="pt"
+               @stepper-finished="savePatientSignUp">
+      </stepper>
+    </div>
+    <div v-if="isLoading" class="container">
+      <div class="patient-enqueued__loader">
+        <div class="loader"><div></div><div></div><div></div><div></div></div>
+      </div>
+    </div>
+  </span>
 </template>
 
 <script>
@@ -42,6 +49,7 @@ export default {
           completed: false,
         },
       ],
+      isLoading: false,
     };
   },
   methods: {
