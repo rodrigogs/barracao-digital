@@ -66,6 +66,9 @@ export default {
     };
   },
   methods: {
+    allRequiredFieldsFilled() {
+      return this.form.phone;
+    },
     isStepThreeValid() {
       let isValid = true;
 
@@ -121,7 +124,7 @@ export default {
     },
   },
   mounted() {
-    if (this.allFieldsFilled() && this.isStepOneValid()) {
+    if (this.allRequiredFieldsFilled() && this.isStepThreeValid()) {
       this.$emit('can-continue', { value: true });
     }
   },
