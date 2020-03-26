@@ -10,7 +10,7 @@
         </tr>
       </thead>
       <tbody class="doctor-table__body">
-        <tr v-for="register in registers" v-bind:key="register.id">
+        <tr v-for="register in paginatedRegisters" v-bind:key="register.id">
           <td class="doctor-table__td">{{ register.name }}</td>
           <td class="doctor-table__td">{{ register.age }}</td>
           <td class="doctor-table__td">{{ register.waitTime }}</td>
@@ -19,7 +19,9 @@
       </tbody>
     </table>
     <div>
-      Paginação
+      {{ pageNumber }}/{{ totalPages }}
+      <button :disabled="!previousPageAvailable" @click="previousPage">previousPage</button>
+      <button :disabled="!nextPageAvailable" @click="nextPage">nextPage</button>
     </div>
   </div>
 </template>
@@ -32,15 +34,43 @@ export default {
   data() {
     return {
       registers: [],
+      paginatedRegisters: [],
       pageSize: 5,
       pageNumber: 1,
     };
   },
+  computed: {
+    nextPageAvailable() {
+      return this.pageNumber < (this.registers.length / this.pageSize);
+    },
+    previousPageAvailable() {
+      return !(this.pageNumber === 1);
+    },
+    totalPages() {
+      return this.registers.length / this.pageSize;
+    },
+  },
+  methods: {
+    previousPage() {
+      if (this.pageNumber === 1) return;
+      this.pageNumber -= 1;
+      this.paginate();
+    },
+    nextPage() {
+      if ((this.pageNumber + 1) === this.registers.length) return;
+      this.pageNumber += 1;
+      this.paginate();
+    },
+    paginate() {
+      let registers = this.registers || [];
+      registers = registers.slice((this.pageNumber - 1) * this.pageSize, this.pageNumber * this.pageSize);
+      this.paginatedRegisters = [...registers];
+    },
+  },
   async mounted() {
     const { data } = await axios.get('https://jsonplaceholder.typicode.com/users');
-    let registers = data || [];
-    registers = registers.slice((this.pageNumber - 1) * this.pageSize, this.pageNumber * this.pageSize);
-    this.registers = [...registers];
+    this.registers = data || [];
+    this.paginate();
   },
 };
 </script>
