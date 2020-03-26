@@ -13,18 +13,12 @@ const routes = [
   {
     path: '/paciente/registrar',
     name: 'PatientSignUp',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/PatientSignUp.vue'),
+    component: () => import('../views/PatientSignUp.vue'),
   },
   {
-    path: '/paciente/senha/:password',
+    path: '/paciente/senha/:ticket',
     name: 'PatientEnqueued',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/PatientEnqueued.vue'),
+    component: () => import('../views/PatientEnqueued.vue'),
   },
 ];
 

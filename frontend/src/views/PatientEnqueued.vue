@@ -1,7 +1,9 @@
 <template>
   <section class="section">
     <div v-if="isLoading" class="container">
-      Carregando
+      <div class="patient-enqueued__loader">
+        <div class="loader"><div></div><div></div><div></div><div></div></div>
+      </div>
     </div>
     <div v-if="!isLoading && status === 0" class="container">
       <div class="patient-enqueued__lightweight-warn">
@@ -21,7 +23,7 @@
       </div>
 
       <div class="patient-enqueued__big-warn patient-enqueued__big-warn--red">
-        Sua senha para retorno é 4531
+        Sua senha para retorno é {{patientTicket}}
       </div>
 
       <div class="patient-enqueued__text" style="width: 220px;">
@@ -29,25 +31,25 @@
       </div>
     </div>
     <div v-if="!isLoading && status === 1" class="container">
-      <p class="home__text-container">
+      <div class="patient-enqueued__big-warn patient-enqueued__big-warn--blue">
         Um médico está entrando em contato com você
-      </p>
+      </div>
     </div>
     <div v-if="!isLoading && status === 2" class="container">
-      <p class="home__text-container">
+      <div class="patient-enqueued__big-warn patient-enqueued__big-warn--blue">
         Atendimento finalizado
-      </p>
+      </div>
     </div>
     <div v-if="!isLoading && status === 3" class="container">
-      <p class="home__text-container">
+      <div class="patient-enqueued__big-warn patient-enqueued__big-warn--red">
         Fulano, nossa equipe está sobrecarregada no momento.
-      </p>
-      <p>
+      </div>
+      <div class="patient-enqueued__text">
         Tente novamente mais tarde.
-      </p>
+      </div>
 
-      <p>Caso aceite receber atendimento em outro horário, selecione abaixo:</p>
-      <p>Aceito aguardar</p>
+<!--      <p>Caso aceite receber atendimento em outro horário, selecione abaixo:</p>-->
+<!--      <p>Aceito aguardar</p>-->
     </div>
   </section>
 </template>
@@ -58,17 +60,28 @@ export default {
   components: {},
   data() {
     return {
-      isLoading: false,
-      status: 0,
+      patientTicket: 0,
+      isLoading: true,
+      status: 3,
     };
   },
+  method: {
+
+  },
   mounted() {
-    this.isLoading = false;
+    this.patientTicket = this.$route.params.ticket;
+    this.isLoading = true;
   },
 };
 </script>
 
 <style>
+  .patient-enqueued__loader {
+    display: flex;
+    justify-content: center;
+    margin-top: 3rem;
+  }
+
   .patient-enqueued__lightweight-warn {
     color: #6F8194;
     width: 215px;
