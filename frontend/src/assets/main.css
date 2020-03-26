@@ -86,6 +86,14 @@ h6 {
   }
 }
 
+select {
+  height: 40px;
+  text-decoration: none;
+  background-color: white;
+  border-radius: 4px;
+  border: 1px solid #001F3F;
+}
+
 .img-container {
   display: block;
 }

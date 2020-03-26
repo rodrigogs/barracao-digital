@@ -7,62 +7,61 @@
     </div>
 
     <div class="content">
-      <h4>Dados do paciente</h4>
+      <div class="content-block">
+        <h4>Alterar status</h4>
+        <select v-model="selected">
+          <option value="waiting">Aguardando</option>
+          <option value="waiting_kit">Aguardando kit</option>
+          <option value="ongoing">Em atendimento</option>
+          <option value="finished">Finalizado</option>
+        </select>
+      </div>
 
+      <h4>Dados do paciente</h4>
       <div class="content-block">
         <span>Nome do paciente</span>
         <span>Fulano</span>
       </div>
-
       <div class="content-block">
         <span>Idade</span>
         <span>32</span>
       </div>
-
       <div class="content-block">
         <span>Tempo em espera</span>
         <span>22 min</span>
       </div>
 
       <h4>Dados médicos</h4>
-
       <div class="content-block">
         <span>Usa algum medicamento? Quais?</span>
         <span>-</span>
       </div>
-
       <div class="content-block">
         <span>Possuí alergias? Quais?</span>
         <span>-</span>
       </div>
-
       <div class="content-block">
         <span>Possuí convênio? Qual?</span>
         <span>-</span>
       </div>
-
       <div class="content-block">
         <span>Já foi atendido pelo barração online antes?</span>
         <span>Sim</span>
       </div>
 
       <h4>Contatos</h4>
-
       <div class="content-block">
         <span>Telefone</span>
         <span>48996222999</span>
       </div>
-
       <div class="content-block">
         <span>Whatsapp</span>
         <span>48996222999</span>
       </div>
-
       <div class="content-block">
         <span>Telegram</span>
         <span>48996222999</span>
       </div>
-
       <div class="content-block">
         <span>Hangout</span>
         <span>-</span>
@@ -82,12 +81,14 @@ export default {
   name: 'DoctorPatientSummary',
   data() {
     return {
-      doctor: 'Little',
-      message: null,
-      active: null,
+      selected: '',
     };
   },
-  watch: {},
+  watch: {
+    selected(value) {
+      console.log(value); // update store or call the correct api
+    },
+  },
   mounted() {},
   methods: {},
 };
