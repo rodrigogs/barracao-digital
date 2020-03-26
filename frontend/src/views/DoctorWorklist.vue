@@ -4,7 +4,6 @@
     <div class="doctor-worklist-content">
       <DoctorFilters />
       <DoctorTable />
-      <button @click="mock">Mockar um paciente - remover depois</button>
       <DoctorPatientSummary v-bind:patient="patient" />
     </div>
   </div>
