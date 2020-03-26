@@ -5,7 +5,7 @@
         <div class="loader"><div></div><div></div><div></div><div></div></div>
       </div>
     </div>
-    <div v-if="!isLoading && status === 0" class="container">
+    <div v-if="!isLoading && patient.status === 'waiting'" class="container">
       <div class="patient-enqueued__lightweight-warn">
         Essa página é atualizada automaticamente a cada 1 minuto
       </div>
@@ -23,26 +23,26 @@
       </div>
 
       <div class="patient-enqueued__big-warn patient-enqueued__big-warn--red">
-        Sua senha para retorno é {{patientTicket}}
+        Sua senha para retorno é {{patient.ticket}}
       </div>
 
       <div class="patient-enqueued__text" style="width: 220px;">
         Caso perca a conexão, retorne a fila de atendimento usando essa senha
       </div>
     </div>
-    <div v-if="!isLoading && status === 1" class="container">
+    <div v-if="!isLoading && patient.status === 'ongoing'" class="container">
       <div class="patient-enqueued__big-warn patient-enqueued__big-warn--blue">
         Um médico está entrando em contato com você
       </div>
     </div>
-    <div v-if="!isLoading && status === 2" class="container">
+    <div v-if="!isLoading && patient.status === 'finished'" class="container">
       <div class="patient-enqueued__big-warn patient-enqueued__big-warn--blue">
         Atendimento finalizado
       </div>
     </div>
-    <div v-if="!isLoading && status === 3" class="container">
+    <div v-if="!isLoading && patient.status === 'cant_be_assisted'" class="container">
       <div class="patient-enqueued__big-warn patient-enqueued__big-warn--red">
-        Fulano, nossa equipe está sobrecarregada no momento.
+        {{patient.name}}, nossa equipe está sobrecarregada no momento.
       </div>
       <div class="patient-enqueued__text">
         Tente novamente mais tarde.
@@ -55,22 +55,35 @@
 </template>
 
 <script>
+import { patients as patientsApi } from '@/api';
+
 export default {
   name: 'PatientEnqueued',
   components: {},
   data() {
     return {
-      patientTicket: 0,
       isLoading: true,
-      status: 3,
+      patient: {},
     };
   },
   method: {
-
+    async reloadPacientData() {
+      this.isLoading = true;
+      this.patient = await patientsApi.getPatientByTicket(this.patient.ticket);
+      this.isLoading = false;
+    },
   },
-  mounted() {
-    this.patientTicket = this.$route.params.ticket;
+  async mounted() {
+    const patientTicket = this.$route.params.ticket;
     this.isLoading = true;
+    if (!patientTicket) {
+      this.$router.push('/');
+      return;
+    }
+
+    this.patient = await patientsApi.getPatientByTicket(patientTicket);
+    this.isLoading = false;
+    setInterval(this.reloadPacientData, 60000);
   },
 };
 </script>
