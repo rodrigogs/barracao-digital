@@ -61,7 +61,7 @@ export default {
       handler(newForm, oldForm) {
         this.$emit('can-continue', { value: false });
         utils.debounce(() => {
-          this.$store.commit('patientSignUp/setStepFields', this.form);
+          this.$store.commit('patients/setStepFields', this.form);
           this.$emit('can-continue', { value: true });
         }, 300);
       },
