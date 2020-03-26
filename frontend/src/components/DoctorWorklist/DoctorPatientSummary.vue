@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="container" style="padding: 16px" v-if="!patient || !patient.id">
+    <div class="container" style="padding: 16px" v-if="!patient || !patient.name">
       Nenhum paciente selecionado
     </div>
 
