@@ -1,5 +1,2 @@
-export default {
-  getPatientToSignUp(state) {
-    return state;
-  },
-};
+// eslint-disable-next-line import/prefer-default-export
+export const getPatientToSignUp = (state) => state;
