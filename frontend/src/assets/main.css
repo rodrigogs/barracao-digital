@@ -24,37 +24,31 @@ body {
 h1 {
   font-size: 2em;
   margin: 0.67em 0;
-  text-align: center;
 }
 
 h2 {
   font-size: 1.8em;
   margin: 0.67em 0;
-  text-align: center;
 }
 
 h3 {
   font-size: 1.6em;
   margin: 0.67em 0;
-  text-align: center;
 }
 
 h4 {
   font-size: 1.4em;
   margin: 0.67em 0;
-  text-align: center;
 }
 
 h5 {
   font-size: 1.2em;
   margin: 0.67em 0;
-  text-align: center;
 }
 
 h6 {
   font-size: 1em;
   margin: 0.67em 0;
-  text-align: center;
 }
 
 .section {
