@@ -54,13 +54,15 @@ export default {
   },
   methods: {
     async savePatientSignUp() {
-      const patientToSignUp = this.$store.patients.getters.getPatientToSignUp();
+      this.isLoading = true;
+      const patientToSignUp = this.$store.getters['patients/getPatientToSignUp'];
       const { data: registeredPatient } = await patientsApi.signUpPatient(patientToSignUp);
-      console.log(registeredPatient);
+      this.$store.commit('patients/clearForm');
+      this.$router.push(`/pacientes/senha/${registeredPatient.ticket}`);
     },
   },
   beforeDestroy() {
-    this.$store.commit('clearCampaign');
+    this.$store.commit('patients/clearForm');
   },
 };
 </script>

@@ -37,7 +37,7 @@ const routes = [
   },
 
   {
-    path: '/paciente/registrar',
+    path: '/pacientes/registrar',
     name: 'PatientSignUp',
     component: () => import(/* webpackChunkName: "patient-signup" */ '../views/PatientSignUp.vue'),
     meta: {
@@ -46,7 +46,7 @@ const routes = [
     },
   },
   {
-    path: '/paciente/senha/:ticket',
+    path: '/pacientes/senha/:ticket',
     name: 'PatientEnqueued',
     component: () => import(/* webpackChunkName: "patient-enqueued" */ '../views/PatientEnqueued.vue'),
     meta: {
