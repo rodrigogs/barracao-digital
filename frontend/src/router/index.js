@@ -27,6 +27,16 @@ const routes = [
   },
 
   {
+    path: '/doctor/worklist',
+    name: 'DoctorWorklist',
+    component: () => import(/* webpackChunkName: "doctor-worklist" */ '../views/DoctorWorklist.vue'),
+    meta: {
+      title: 'Lista de Trabalho do Médico',
+      requiresAuth: false,
+    },
+  },
+
+  {
     path: '/paciente/registrar',
     name: 'PatientSignUp',
     component: () => import(/* webpackChunkName: "patient-signup" */ '../views/PatientSignUp.vue'),
