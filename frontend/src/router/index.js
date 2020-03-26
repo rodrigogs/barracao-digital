@@ -39,6 +39,10 @@ const routes = [
     path: '/paciente/senha/:ticket',
     name: 'PatientEnqueued',
     component: () => import(/* webpackChunkName: "patient-enqueued" */ '../views/PatientEnqueued.vue'),
+    meta: {
+      title: 'Fila de Espera',
+      requiresAuth: false,
+    },
   },
 ];
 
