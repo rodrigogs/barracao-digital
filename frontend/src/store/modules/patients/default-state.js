@@ -5,7 +5,7 @@ export default {
   meds: '',
   allergies: '',
   covenant: '',
-  has_been_assisted: false,
+  hasBeenAssisted: false,
   phone: '',
   email: '',
   whatsapp: '',

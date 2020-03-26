@@ -24,11 +24,11 @@
           <label class="label">Ja foi atendido pelo Barracão Digital antes?</label>
           <div class="field__radio-group">
             <label class="radio" for="has_been_assisted_yes">
-              <input type="radio" name="has_been_assisted_yes" v-model="form.has_been_assisted" :value="true" id="has_been_assisted_yes">
+              <input type="radio" name="has_been_assisted_yes" v-model="form.hasBeenAssisted" :value="true" id="has_been_assisted_yes">
               Sim
             </label>
             <label class="radio" for="has_been_assisted_no">
-              <input type="radio" name="has_been_assisted_no" v-model="form.has_been_assisted" :value="false" id="has_been_assisted_no">
+              <input type="radio" name="has_been_assisted_no" v-model="form.hasBeenAssisted" :value="false" id="has_been_assisted_no">
               Não
             </label>
           </div>
@@ -51,7 +51,7 @@ export default {
         meds: '',
         allergies: '',
         covenant: '',
-        has_been_assisted: false,
+        hasBeenAssisted: false,
       },
       errors: {},
     };
@@ -61,7 +61,7 @@ export default {
       handler(newForm, oldForm) {
         this.$emit('can-continue', { value: false });
         utils.debounce(() => {
-          this.$store.commit('patientSignUp/setStepFields', this.form);
+          this.$store.commit('patients/setStepFields', this.form);
           this.$emit('can-continue', { value: true });
         }, 300);
       },
