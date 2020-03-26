@@ -4,13 +4,13 @@
       <div class="img-container">
         <img src="@/assets/logo-grande.png"/>
       </div>
-      <form class="form" style="margin-top: 2rem" novalidate>
+      <form class="form" style="margin-top: 2rem" @submit.prevent="loadQueuePage()" novalidate>
         <div class="field">
           <label class="label" for="senha">Senha de retorno</label>
           <input :class="{'error': errors.ticket }" v-model="ticket" name="senha" id="senha" class="input" type="password" placeholder="Digite sua senha">
           <span v-if="errors.ticket" class="error">{{errors.ticket}}</span>
         </div>
-        <button @click="loadQueuePage()" class="btn btn--link">Entrar</button>
+        <button class="btn btn--link">Entrar</button>
       </form>
     </div>
   </section>
