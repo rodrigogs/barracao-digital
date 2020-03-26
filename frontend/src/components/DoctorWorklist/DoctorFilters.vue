@@ -39,8 +39,9 @@ export default {
 }
 
 .doctor-filters-fields {
-  display: flex;
-  flex-direction: row;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 8px;
   width: 100%;
 }
 

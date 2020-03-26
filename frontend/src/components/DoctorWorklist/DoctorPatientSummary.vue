@@ -97,7 +97,8 @@ export default {
 .container {
   display: flex;
   flex-direction: column;
-  margin: 16px;
+  margin-top: 16px;
+  margin-bottom: 16px;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
   border-radius: 4px;
 }
