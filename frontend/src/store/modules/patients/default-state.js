@@ -12,4 +12,6 @@ export default {
   telegram: '',
   hangout: '',
   skype: '',
+  status: '',
+  ticket: '',
 };

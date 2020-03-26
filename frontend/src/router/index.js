@@ -15,9 +15,8 @@ const routes = [
       requiresAuth: false,
     },
   },
-
   {
-    path: '/doctor/login',
+    path: '/login',
     name: 'DoctorLogin',
     component: () => import(/* webpackChunkName: "doctor-login" */ '../views/DoctorLogin.vue'),
     meta: {
@@ -25,9 +24,8 @@ const routes = [
       requiresAuth: false,
     },
   },
-
   {
-    path: '/doctor/worklist',
+    path: '/medicos/fila',
     name: 'DoctorWorklist',
     component: () => import(/* webpackChunkName: "doctor-worklist" */ '../views/DoctorWorklist.vue'),
     meta: {
@@ -35,7 +33,6 @@ const routes = [
       requiresAuth: false,
     },
   },
-
   {
     path: '/pacientes/registrar',
     name: 'PatientSignUp',
