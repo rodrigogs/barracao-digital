@@ -1,13 +1,16 @@
 <template>
   <section class="section">
     <div class="container">
-      <form class="pacient-sign-up__form" id="patientSignUpForm " novalidate>
+      <div class="img-container">
+        <img src="@/assets/logo-grande.png"/>
+      </div>
+      <form class="form" style="margin-top: 2rem" novalidate>
         <div class="field">
           <label class="label" for="senha">Senha de retorno</label>
           <input :class="{'error': errors.ticket }" v-model="ticket" name="senha" id="senha" class="input" type="password" placeholder="Digite sua senha">
           <span v-if="errors.ticket" class="error">{{errors.ticket}}</span>
         </div>
-        <button @click="loadQueuePage()" class="btn btn--link"></button>
+        <button @click="loadQueuePage()" class="btn btn--link">Entrar</button>
       </form>
     </div>
   </section>
@@ -20,6 +23,7 @@ export default {
   data() {
     return {
       ticket: '',
+      errors: {},
     };
   },
   methods: {

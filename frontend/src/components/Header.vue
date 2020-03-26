@@ -27,7 +27,7 @@ export default {
   components: {},
   data() {
     return {
-      isHome: this.$router.currentRoute.name === 'Home',
+      isHome: this.$router.currentRoute.name === 'Home' || this.$router.currentRoute.name === 'PatientLogin',
     };
   },
   watch: {
