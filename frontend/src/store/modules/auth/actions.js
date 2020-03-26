@@ -5,4 +5,4 @@ export const login = async ({ commit }, { username, password }) => {
   return commit('updateLoggedUser', loggedUser);
 };
 
-export const logou = async ({ commit }) => commit('loggedOut');
+export const logout = async ({ commit }) => commit('loggedOut');
