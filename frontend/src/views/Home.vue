@@ -14,7 +14,7 @@
         <router-link to="/paciente/registrar" class="btn btn--link" style="padding-top: 3rem;padding-bottom: 3rem;">
           Entrar na sala de espera
         </router-link>
-        <router-link to="/paciente" class="btn-secondary btn--link" block color="#FF4136">
+        <router-link to="/paciente/login" class="btn-secondary btn--link" block color="#FF4136">
           Ja tenho uma senha de retorno
         </router-link>
       </div>
