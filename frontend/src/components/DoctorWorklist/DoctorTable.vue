@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="doctor-table-container">
     <table class="doctor-table">
       <thead class="doctor-table__head">
         <tr>
@@ -18,57 +18,38 @@
         </tr>
       </tbody>
     </table>
+    <div>
+      Paginação
+    </div>
   </div>
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   name: 'DoctorTable',
   data() {
     return {
-      registers: [
-        {
-          id: new Date().getMilliseconds() + '',
-          name: 'Fulano2',
-          age: 32,
-          waitTime: '49min',
-          status: 'Fila',
-        },
-        {
-          id: new Date().getMilliseconds() + '',
-          name: 'Fulano2',
-          age: 32,
-          waitTime: '49min',
-          status: 'Fila',
-        },
-        {
-          id: new Date().getMilliseconds() + '',
-          name: 'Fulano2',
-          age: 32,
-          waitTime: '49min',
-          status: 'Fila',
-        },
-        {
-          id: new Date().getMilliseconds() + '',
-          name: 'Fulano2',
-          age: 32,
-          waitTime: '49min',
-          status: 'Fila',
-        },
-        {
-          id: new Date().getMilliseconds() + '',
-          name: 'Fulano2',
-          age: 32,
-          waitTime: '49min',
-          status: 'Fila',
-        },
-      ],
+      registers: [],
+      pageSize: 5,
+      pageNumber: 1,
     };
+  },
+  async mounted() {
+    const { data } = await axios.get('https://jsonplaceholder.typicode.com/users');
+    let registers = data || [];
+    registers = registers.slice((this.pageNumber - 1) * this.pageSize, this.pageNumber * this.pageSize);
+    this.registers = [...registers];
   },
 };
 </script>
 
 <style scoped>
+.doctor-table-container {
+
+}
+
 .doctor-table {
   border-collapse: collapse;
   width: 100%;
