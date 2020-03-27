@@ -12,15 +12,15 @@
       <tbody class="doctor-table__body">
         <tr
           class="doctor-table__tr"
-          v-for="register in paginatedRegisters"
-          v-bind:key="register.id"
-          :class="{ 'doctor-table__tr--active': activeRowId === register.id }"
-          @click="activateRow(register.id)"
+          v-for="item in listPaginated"
+          v-bind:key="item.id"
+          :class="{ 'doctor-table__tr--active': activeRowId === item.id }"
+          @click="activateRow(item.id)"
         >
-          <td class="doctor-table__td">{{ register.name }}</td>
-          <td class="doctor-table__td">{{ register.age || 60 }}</td>
-          <td class="doctor-table__td">{{ register.waitTime || '30min' }}</td>
-          <td class="doctor-table__td">{{ register.status || 'Fila' }}</td>
+          <td class="doctor-table__td">{{ item.name }}</td>
+          <td class="doctor-table__td">{{ item.age || 60 }}</td>
+          <td class="doctor-table__td">{{ item.waitTime || '30min' }}</td>
+          <td class="doctor-table__td">{{ item.status || 'Fila' }}</td>
         </tr>
       </tbody>
     </table>
@@ -52,39 +52,45 @@
 
 <script>
 import axios from 'axios';
+import { mapState, mapActions } from 'vuex';
 
 export default {
   name: 'DoctorTable',
   data() {
     return {
-      registers: [],
-      paginatedRegisters: [],
       pageSize: 5,
       pageNumber: 1,
       activeRowId: null,
     };
   },
   computed: {
+    ...mapState('worklist', {
+      list: (state) => state.list,
+      listPaginated(state) {
+        const list = state.list || [];
+        return list.slice((this.pageNumber - 1) * this.pageSize, this.pageNumber * this.pageSize);
+      },
+      selectedPatient: (state) => state.selectedPatient,
+    }),
     nextPageAvailable() {
-      return this.pageNumber < (this.registers.length / this.pageSize);
+      return this.pageNumber < (this.list.length / this.pageSize);
     },
     previousPageAvailable() {
       return !(this.pageNumber === 1);
     },
     totalPages() {
-      return this.registers.length / this.pageSize;
+      return this.list.length / this.pageSize;
     },
   },
   methods: {
+    ...mapActions('worklist', ['refreshList', 'selectPatient']),
     previousPage() {
       if (!this.previousPageAvailable) return;
       this.pageNumber -= 1;
-      this.paginate();
     },
     nextPage() {
       if (!this.nextPageAvailable) return;
       this.pageNumber += 1;
-      this.paginate();
     },
     paginate() {
       let registers = this.registers || [];
@@ -92,13 +98,12 @@ export default {
       this.paginatedRegisters = [...registers];
     },
     activateRow(id) {
+      this.selectPatient(id);
       this.activeRowId = id;
     },
   },
-  async mounted() {
-    const { data } = await axios.get('https://jsonplaceholder.typicode.com/users');
-    this.registers = data || [];
-    this.paginate();
+  created() {
+    this.refreshList();
   },
 };
 </script>

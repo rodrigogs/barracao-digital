@@ -4,7 +4,7 @@
     <div class="doctor-worklist-content">
       <DoctorFilters />
       <DoctorTable />
-      <DoctorPatientSummary v-bind:patient="patient" />
+      <DoctorPatientSummary />
     </div>
   </div>
 </template>
@@ -28,27 +28,6 @@ export default {
     return {
       patient: null,
     };
-  },
-  methods: {
-    mock() {
-      this.patient = {
-        name: 'Neri Fontana',
-        age: '26',
-        cep: '984519',
-        meds: 'Sim',
-        allergies: 'Não',
-        covenant: 'UNIMED',
-        hasBeenAssisted: false,
-        phone: '489961235478',
-        email: 'email@email.com',
-        whatsapp: '489961235478',
-        telegram: '489961235478',
-        hangout: 'test',
-        skype: 'test',
-        ticket: '5641',
-        status: 'ongoing',
-      };
-    },
   },
 };
 </script>
