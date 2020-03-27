@@ -9,6 +9,8 @@
         @click="start"
       >
         Iniciar atend.
+        <!-- primeiro filtro: hora de entrada (ultimas 24h, ultimas 6h, todos)
+        segundo filtro: status -->
       </button>
       <button
         class="btn-action btn-action-disabled"
@@ -16,7 +18,7 @@
         :disabled="active === 'signout'"
         @click="stop"
       >
-        Parar atend.
+        Parar atend. <!-- (active=true está atendendo) post /doctors/id passar no body atributo active -->
       </button>
       <button
         class="btn-action btn-action-disabled"
@@ -61,14 +63,17 @@ export default {
   },
   methods: {
     ...mapActions('auth', ['logout']),
+    ...mapActions('doctors', ['updateDoctor']),
     activate(action) {
       this.active = action;
     },
     start() {
       this.activate('start');
+      this.updateDoctor({ username: this.loggedUser.username, active: true });
     },
     stop() {
       this.activate('stop');
+      this.updateDoctor({ username: this.loggedUser.username, active: false });
     },
     signOut() {
       try {
