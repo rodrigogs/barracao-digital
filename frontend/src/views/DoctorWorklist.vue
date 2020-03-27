@@ -1,5 +1,5 @@
 <template>
-  <div class="doctor-worklist-container">
+  <div>
     <DoctorStatus />
     <div class="doctor-worklist-content">
       <DoctorFilters />
@@ -24,25 +24,11 @@ export default {
     DoctorTable,
     DoctorPatientSummary,
   },
-  data() {
-    return {
-      patient: null,
-    };
-  },
 };
 </script>
 
 <style scoped>
-.doctor-worklist-container {
-}
-
 .doctor-worklist-content {
-  padding-left: 16px;
-  padding-right: 16px;
   margin-top: 6px;
-}
-
-.content {
-
 }
 </style>
