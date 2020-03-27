@@ -73,13 +73,13 @@ functions:
           method: get
           path: '/doctors/cep/{cep}'
           cors: true
-          authorizer: adminAuthorizer
+          authorizer: doctorAuthorizer
 
       - http:
           method: get
           path: '/doctors/username/{username}'
           cors: true
-          authorizer: adminAuthorizer
+          authorizer: doctorAuthorizer
 
       - http:
           method: post
