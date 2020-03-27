@@ -2,7 +2,7 @@
   <section class="section">
     <div class="container">
 
-      <div class="img-container">
+      <div class="img-container home__img-logo">
         <img src="@/assets/logo-grande.png"/>
       </div>
 
@@ -10,14 +10,12 @@
         Antes de sair de casa para buscar atendimento, faça sua avaliação digital segura com um profissional.
       </p>
 
-      <div class="home__button-container">
-        <router-link to="/pacientes/registrar" class="btn btn--link" style="padding-top: 3rem;padding-bottom: 3rem;">
-          Entrar na sala de espera
-        </router-link>
-        <router-link to="/pacientes/login" class="btn-secondary btn--link" block color="#FF4136">
-          Ja tenho uma senha de retorno
-        </router-link>
-      </div>
+      <router-link to="/pacientes/registrar" class="btn home__button-link" style="padding-top: 2.5rem;padding-bottom: 2.5rem;">
+        Entrar na sala de espera de triagem
+      </router-link>
+      <router-link to="/pacientes/login" class="btn-secondary home__button-link" block color="#FF4136">
+        Ja tenho uma senha de retorno
+      </router-link>
     </div>
   </section>
 </template>
@@ -30,17 +28,28 @@ export default {
 </script>
 
 <style>
-  .home__button-container {
-    display: flex;
-    flex-direction: column;
+  .home__img-logo {
+    max-width: 600px;
+    margin: auto;
   }
 
   .home__text-container {
     text-align: justify;
+    max-width: 500px;
+    margin: auto;
   }
 
-  .home__button-container > .btn--link {
+  .home__button-link {
     font-size: 1.5rem;
     text-decoration: none;
+    display: block;
+    margin: auto;
+    margin-top: 1.25rem;
+  }
+
+  @media screen and (min-width: 768px){
+    .home__button-link {
+      width: 270px;
+    }
   }
 </style>
