@@ -19,7 +19,7 @@
       </div>
 
       <div class="patient-enqueued__small-text">
-        Tempo na fila: 12:56
+        Tempo na fila: {{timePast}}
       </div>
 
       <div class="patient-enqueued__big-warn patient-enqueued__big-warn--red">
@@ -69,6 +69,11 @@ import { patients as patientsApi } from '@/api';
 export default {
   name: 'PatientEnqueued',
   components: {},
+  computed: {
+    timePast() {
+      return this.patient.createdAt;
+    },
+  },
   data() {
     return {
       isLoading: true,

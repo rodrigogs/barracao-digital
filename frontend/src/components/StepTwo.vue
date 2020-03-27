@@ -1,7 +1,7 @@
 <template>
   <section class="section">
     <div class="container">
-      <h4 style="margin-top: 0">Informações médicas</h4>
+      <h4 style="margin-top: 0;text-align: center;">Informações médicas</h4>
       <p style="text-align: center">Informe sobre sua situação médica</p>
 
       <form class="pacient-sign-up__form" id="patientSignUpForm " novalidate>

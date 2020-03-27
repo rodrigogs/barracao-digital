@@ -81,9 +81,16 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
+
 export default {
   name: 'DoctorPatientSummary',
-  props: ['patient'],
+  computed: {
+    ...mapState('worklist', ['selectedPatient']),
+    patient() {
+      return this.selectedPatient;
+    },
+  },
   watch: {},
   mounted() {},
   methods: {},
