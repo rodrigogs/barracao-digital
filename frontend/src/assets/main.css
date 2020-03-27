@@ -90,6 +90,10 @@ header {
   height: 72px;
 }
 
+footer {
+  height: 36px;
+}
+
 .form {
   display: flex;
   flex-direction: column;

@@ -1,8 +1,8 @@
 <template>
   <header class="header">
     <div class="container" style="height: 100%;">
-      <div class="header__logo-container">
-        <router-link v-if="!isHome" to="/">
+      <div class="header__logo-container" v-if="!isHome">
+        <router-link to="/">
           <img class="header__logo" alt="Barracão Covid 19" src="@/assets/logo.png"/>
         </router-link>
       </div>
