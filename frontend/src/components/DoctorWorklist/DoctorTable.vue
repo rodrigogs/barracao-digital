@@ -106,18 +106,19 @@ export default {
 <style scoped>
 .doctor-table {
   border: 1px solid #CCCCCC;
-  border-collapse: collapse;
+  border-spacing: 0;
+  border-radius: 2px;
   width: 100%;
   margin-top: 16px;
   text-align: left;
 }
 
 .doctor-table__head {
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .doctor-table__head-tr {
-  height: 22px;
+  height: 40px;
   color: #505762;
   font-weight: bold;
   padding-left: 8px;
@@ -132,19 +133,22 @@ export default {
   width: 80%;
 }
 
-.doctor-table__th:first-of-type,
-.doctor-table__th:last-of-type {
+.doctor-table__th:first-of-type {
   text-align: left;
   padding-left: 8px;
 }
 
+.doctor-table__th:last-of-type {
+  padding-right: 8px;
+}
+
 .doctor-table__body {
-  font-size: 12px;
+  font-size: 14px;
   color: #001F3F;
 }
 
 .doctor-table__tr {
-  height: 26px;
+  height: 40px;
 }
 
 .doctor-table__tr:nth-child(odd) {
