@@ -1,9 +1,11 @@
 <template>
   <header class="header">
     <div class="container" style="height: 100%;">
-      <router-link class="header__logo-container" v-if="!isHome" to="/">
-        <img class="header__logo" alt="Barracão Covid 19" src="@/assets/logo.png"/>
-      </router-link>
+      <div class="header__logo-container">
+        <router-link v-if="!isHome" to="/">
+          <img class="header__logo" alt="Barracão Covid 19" src="@/assets/logo.png"/>
+        </router-link>
+      </div>
 
       <div v-if="isHome" class="header__home-menu">
         <router-link class="header__link" to="/foo">
@@ -49,11 +51,20 @@ export default {
   }
 
   .header__logo-container {
-    display: block;
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
   }
 
   .header__logo {
-    width: 100%;
+    height: 30px;
+  }
+
+  @media screen and (min-width: 768px){
+    .header__logo {
+      height: 50px;
+    }
   }
 
   .header__link {
