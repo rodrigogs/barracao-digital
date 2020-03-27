@@ -5,6 +5,7 @@
   "devDependencies": {
     "cross-env": "^7.0.2",
     "serverless": "^1.67.0",
+    "serverless-domain-manager": "^3.3.1",
     "serverless-finch": "^2.5.2",
     "serverless-offline": "^6.1.2",
     "serverless-pseudo-parameters": "^2.5.0",
@@ -31,5 +32,7 @@
     "frontend",
     "functions"
   ],
-  "dependencies": {}
+  "dependencies": {
+    "@rodrigogs/promise-pool": "^1.0.3"
+  }
 }
