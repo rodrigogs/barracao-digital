@@ -47,6 +47,7 @@ export default {
         const { username, password } = this;
 
         await this.$store.dispatch('auth/login', { username, password });
+        this.$router.push('/medicos/fila');
       } catch (err) {
         if (err.response && err.response.status === 401) {
           this.errors.push('Não foi possível fazer o login. Verifique seu usuário e senha.');

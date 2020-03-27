@@ -30,7 +30,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "doctor-worklist" */ '../views/DoctorWorklist.vue'),
     meta: {
       title: 'Lista de Trabalho do Médico',
-      requiresAuth: false,
+      requiresAuth: true,
     },
   },
   {
