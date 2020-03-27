@@ -31,6 +31,8 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex';
+
 export default {
   name: 'DoctorStatus',
   data() {
@@ -40,21 +42,25 @@ export default {
       active: null,
     };
   },
+  computed: {
+    ...mapGetters('auth', ['loggedUser']),
+  },
   watch: {
     active(status) {
       if (status === 'start') {
-        this.message = `Olá, ${this.doctor}, você está atendendo`;
+        this.message = `Olá, ${this.loggedUser.username}, você está atendendo`;
       } else if (status === 'stop') {
-        this.message = `Olá, ${this.doctor}, você não está atendendo`;
+        this.message = `Olá, ${this.loggedUser.username}, você não está atendendo`;
       } else if (status === 'signout') {
-        this.message = `Até mais, ${this.doctor}. Saindo do aplicativo...`;
+        this.message = `Até mais, ${this.loggedUser.username}. Saindo do aplicativo...`;
       }
     },
   },
   mounted() {
-    this.message = `Olá, ${this.doctor}. Selecione uma ação para continuar`;
+    this.message = `Olá, ${this.loggedUser.username}. Selecione uma ação para continuar`;
   },
   methods: {
+    ...mapActions('auth', ['logout']),
     activate(action) {
       this.active = action;
     },
@@ -65,7 +71,13 @@ export default {
       this.activate('stop');
     },
     signOut() {
-      this.activate('signout');
+      try {
+        this.activate('signout');
+        this.logout();
+        this.$router.push('/login');
+      } catch (error) {
+        console.error(error);
+      }
     },
   },
 };
