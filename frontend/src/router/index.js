@@ -43,6 +43,15 @@ const routes = [
     },
   },
   {
+    path: '/pacientes/login',
+    name: 'PatientLogin',
+    component: () => import(/* webpackChunkName: "patient-login" */ '../views/PatientLogin.vue'),
+    meta: {
+      title: 'Verificar posição na fila',
+      requiresAuth: false,
+    },
+  },
+  {
     path: '/pacientes/senha/:ticket',
     name: 'PatientEnqueued',
     component: () => import(/* webpackChunkName: "patient-enqueued" */ '../views/PatientEnqueued.vue'),

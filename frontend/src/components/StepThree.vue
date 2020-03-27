@@ -1,7 +1,7 @@
 <template>
   <section class="section">
     <div class="container">
-      <h4 style="margin-top: 0">Contato</h4>
+      <h4 style="margin-top: 0; text-align: center;">Contato</h4>
       <p style="text-align: center">É como um médico irá falar com você. Coloque somente contatos que você tem acesso imediato!</p>
 
       <form class="pacient-sign-up__form" id="patientSignUpForm " novalidate>

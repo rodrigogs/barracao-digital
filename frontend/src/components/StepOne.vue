@@ -1,7 +1,7 @@
 <template>
   <section class="section">
     <div class="container">
-      <h4 style="margin-top: 0">Seus dados</h4>
+      <h4 style="margin-top: 0; text-align: center;">Seus dados</h4>
       <p style="text-align: center">Preencha seus dados para direcionarmos seu atendimento</p>
       <form class="pacient-sign-up__form" id="patientSignUpForm " novalidate>
         <div class="field">
@@ -23,7 +23,7 @@
         </div>
 
         <p style="margin-bottom: 0">
-          Caso não saiba seu CEP, <a href="http://www.buscacep.correios.com.br/sistemas/buscacep/BuscaCepEndereco.cfm">clique aqui</a>
+          Caso não saiba seu CEP, <a href="http://www.buscacep.correios.com.br/sistemas/buscacep/BuscaCepEndereco.cfm" target="_blank">clique aqui</a>
         </p>
       </form>
     </div>

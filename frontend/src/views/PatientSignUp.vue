@@ -1,6 +1,6 @@
 <template>
   <span>
-    <div v-if="!isLoading" class="container">
+    <div v-if="!isLoading" class="container" style="margin-top: 1rem;">
       <stepper :steps="steps"
                locale="pt"
                @stepper-finished="savePatientSignUp">
@@ -73,8 +73,7 @@ export default {
   }
 
   .pacient-sign-up__form {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    max-width: 400px;
+    margin: auto;
   }
 </style>
