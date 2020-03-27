@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/prefer-default-export
 export const fillList = (state, patients) => {
-  state.list.push(...patients);
+  state.list = [...patients];
 };
 
 export const selectPatient = (state, patient) => {
