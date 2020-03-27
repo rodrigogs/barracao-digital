@@ -1,23 +1,21 @@
 <template>
   <header class="header">
-    <section class="section">
-      <div class="container">
-        <router-link class="header__logo-container" v-if="!isHome" to="/">
-          <img class="header__logo" alt="Barracão Covid 19" src="@/assets/logo.png"/>
-        </router-link>
+    <div class="container" style="height: 100%;">
+      <router-link class="header__logo-container" v-if="!isHome" to="/">
+        <img class="header__logo" alt="Barracão Covid 19" src="@/assets/logo.png"/>
+      </router-link>
 
-        <div v-if="isHome" class="header__home-menu">
-          <router-link class="header__link" to="/foo">
-            Acesso médico
-          </router-link>
-          <router-link class="header__link" to="/foo">
-            <b>
-              Quero ajudar
-            </b>
-          </router-link>
-        </div>
+      <div v-if="isHome" class="header__home-menu">
+        <router-link class="header__link" to="/foo">
+          Acesso médico
+        </router-link>
+        <router-link class="header__link" to="/foo">
+          <b>
+            Quero ajudar
+          </b>
+        </router-link>
       </div>
-    </section>
+    </div>
   </header>
 </template>
 
@@ -32,7 +30,7 @@ export default {
   },
   watch: {
     $route(to) {
-      this.isHome = to.name === 'Home';
+      this.isHome = to.name === 'Home' || to.name === 'PatientLogin';
     },
   },
 };
@@ -46,6 +44,8 @@ export default {
   .header__home-menu {
     display: flex;
     justify-content: space-between;
+    height: 100%;
+    align-items: center;
   }
 
   .header__logo-container {

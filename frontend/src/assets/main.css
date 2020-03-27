@@ -86,6 +86,10 @@ h6 {
   }
 }
 
+header {
+  height: 72px;
+}
+
 .form {
   display: flex;
   flex-direction: column;
@@ -119,6 +123,7 @@ select {
   transition: all .4s;
   border-radius: 4px;
   text-align: center;
+  cursor: pointer;
 }
 
 .btn:hover {
@@ -152,6 +157,7 @@ select {
   transition: all .4s;
   border-radius: 4px;
   text-align: center;
+  cursor: pointer;
 }
 
 .btn-secondary:hover {

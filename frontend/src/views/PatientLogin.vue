@@ -1,10 +1,10 @@
 <template>
   <section class="section">
     <div class="container">
-      <div class="img-container">
+      <router-link to="/" class="img-container patient-login__img-logo">
         <img src="@/assets/logo-grande.png"/>
-      </div>
-      <form class="form" style="margin-top: 2rem" @submit.prevent="loadQueuePage()" novalidate>
+      </router-link>
+      <form class="form patient-login__form" style="margin-top: 2rem" @submit.prevent="loadQueuePage()" novalidate>
         <div class="field">
           <label class="label" for="senha">Senha de retorno</label>
           <input :class="{'error': errors.ticket }" v-model="ticket" name="senha" id="senha" class="input" type="password" placeholder="Digite sua senha">
@@ -41,4 +41,13 @@ export default {
 </script>
 
 <style>
+  .patient-login__img-logo {
+    max-width: 600px;
+    margin: auto;
+  }
+
+  .patient-login__form {
+    max-width: 400px;
+    margin: auto;
+  }
 </style>
