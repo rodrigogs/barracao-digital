@@ -19,7 +19,7 @@
         >
           <td class="doctor-table__td">{{ item.name }}</td>
           <td class="doctor-table__td">{{ item.age }}</td>
-          <td class="doctor-table__td">{{ item.createdAt || 'data atual menos createdAt' }}</td>
+          <td class="doctor-table__td">{{ calcTimeWaiting(item.createdAt) }}</td>
           <td class="doctor-table__td">{{ item.status }}</td>
         </tr>
       </tbody>
@@ -101,6 +101,17 @@ export default {
     activateRow(id) {
       this.selectPatient(id);
       this.activeRowId = id;
+    },
+    calcTimeWaiting(createdAt) {
+      const second = 1000;
+      const minute = second * 60;
+      const hour = minute * 60;
+
+      const timeWaiting = Date.now() - createdAt;
+      const hoursWaiting = String(Math.floor(timeWaiting / hour)).padStart(2, '0');
+      const minutesWaiting = String(Math.floor(timeWaiting / minute)).padStart(2, '0');
+
+      return `${hoursWaiting}:${minutesWaiting}`;
     },
   },
   created() {

@@ -8,10 +8,12 @@
   --secondary-btn-color--hover: #e53a30;
   --secondary-btn-color--disabled: #ff665e;
   --lightweight-color: #9E9E9E;
-}
-
-:root {
+  --header-bg-color: #F3F3F3;
   --main-content-max-width: 980px;
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
 }
 
 html {
@@ -59,10 +61,6 @@ h6 {
   padding: 1.5rem 1rem;
 }
 
-header {
-  height: 72px;
-}
-
 footer {
   height: 36px;
 }
@@ -79,14 +77,6 @@ select {
   background-color: white;
   border-radius: 4px;
   border: 1px solid #001F3F;
-}
-
-.img-container {
-  display: block;
-}
-
-.img-container > img {
-  width: 100%;
 }
 
 .btn {
