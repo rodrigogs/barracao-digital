@@ -1,28 +1,30 @@
 <template>
-  <div class="container" :class="{ 'stopped': !loggedUser.active }">
+  <div>
     <div class="title">{{ message }}</div>
-    <div class="actions">
-      <button
-        class="btn-action"
-        :disabled="loading"
-        @click="alternateDoctor(true)"
-      >
-        Iniciar atend.
-      </button>
-      <button
-        class="btn-action"
-        :disabled="loading"
-        @click="alternateDoctor(false)"
-      >
-        Parar atend.
-      </button>
-      <button
-        class="btn-action"
-        :disabled="loading"
-        @click="signOut"
-      >
-        Sair
-      </button>
+    <div class="container" :class="{ 'stopped': !loggedUser.active }">
+      <div class="actions">
+        <button
+          class="btn-action"
+          :disabled="loading"
+          @click="alternateDoctor(true)"
+        >
+          Iniciar atend.
+        </button>
+        <button
+          class="btn-action"
+          :disabled="loading"
+          @click="alternateDoctor(false)"
+        >
+          Parar atend.
+        </button>
+        <button
+          class="btn-action"
+          :disabled="loading"
+          @click="signOut"
+        >
+          Sair
+        </button>
+      </div>
     </div>
   </div>
 </template>
