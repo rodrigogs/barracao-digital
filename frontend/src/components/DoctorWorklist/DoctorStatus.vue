@@ -9,8 +9,6 @@
         @click="start"
       >
         Iniciar atend.
-        <!-- primeiro filtro: hora de entrada (ultimas 24h, ultimas 6h, todos)
-        segundo filtro: status -->
       </button>
       <button
         class="btn-action btn-action-disabled"

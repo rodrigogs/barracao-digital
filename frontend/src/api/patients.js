@@ -10,8 +10,8 @@ export default (request) => ({
     return data;
   },
   async getList({ cep }) {
-    // const { data } = await request.get(`/patients/cep/${cep}`);
-    const { data } = await axios.get('https://jsonplaceholder.typicode.com/users');
+    const { data } = await request.get(`/patients/cep/${cep}`);
+    // const { data } = await axios.get('https://jsonplaceholder.typicode.com/users');
     return data;
   },
 });

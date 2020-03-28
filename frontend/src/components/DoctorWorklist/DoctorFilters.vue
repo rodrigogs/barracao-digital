@@ -2,13 +2,19 @@
   <div class="doctor-filters-container">
     <div class="doctor-filters-title">Filtros</div>
     <div class="doctor-filters-fields">
+      <!-- primeiro filtro: hora de entrada (ultimas 24h, ultimas 6h, todos)
+        segundo filtro: status -->
       <div class="doctor-filters-field">
-        <label class="doctor-filters-label" for="status">Status</label>
+        <label class="doctor-filters-label" for="status">Hora de entrada</label>
         <select
           name="status"
           id="status"
           class="doctor-filters-select"
-        ></select>
+        >
+          <option>Últimas 24h</option>
+          <option>Últimas 6h</option>
+          <option>Todos</option>
+        </select>
       </div>
 
       <div class="doctor-filters-field">
@@ -17,7 +23,13 @@
           name="status"
           id="status"
           class="doctor-filters-select"
-        ></select>
+        >
+          <option value="waiting">Aguardando</option>
+          <option value="ongoing">Em andamento</option>
+          <option value="finished">Finalizado</option>
+          <option value="waiting_kit">Aguardando kit</option>
+          <option value="cant_be_assisted">Não pode ser atendido</option>
+        </select>
       </div>
     </div>
   </div>
