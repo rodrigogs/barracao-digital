@@ -8,7 +8,6 @@ plugins:
   - serverless-finch
   - serverless-pseudo-parameters
   - serverless-domain-manager
-  - serverless-dotenv-plugin
 
 package:
   individually: true
@@ -25,9 +24,6 @@ custom:
     stage: ${self:provider.stage}
     certificateName: '*.barracaodigital.com'
     createRoute53Record: true
-  dotenv:
-    include:
-      - GOOGLE_DISTANCES_MATRIX_API_KEY
   helpers: ${file(./serverless.helpers.js)}
   configsTableName: ${self:service}-${self:provider.stage}-configs
   doctorsTableName: ${self:service}-${self:provider.stage}-doctors
@@ -36,7 +32,6 @@ custom:
 
 provider:
   name: aws
-  profile: covid-19
   runtime: nodejs12.x
   stage: ${opt:stage, 'development'}
   region: sa-east-1
