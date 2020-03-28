@@ -9,6 +9,8 @@
     "serverless-finch": "^2.5.2",
     "serverless-offline": "^6.1.2",
     "serverless-pseudo-parameters": "^2.5.0",
+    "serverless-dotenv-plugin": "^2.3.2",
+    "serverless-single-page-app-plugin": "^1.0.2",
     "serverless-webpack": "^5.3.1",
     "webpack": "^4.42.1"
   },
@@ -31,11 +33,5 @@
     "lib",
     "frontend",
     "functions"
-  ],
-  "dependencies": {
-    "@googlemaps/google-maps-services-js": "^2.4.2",
-    "@rodrigogs/promise-pool": "^1.0.3",
-    "serverless-dotenv-plugin": "^2.3.2",
-    "serverless-single-page-app-plugin": "^1.0.2"
-  }
+  ]
 }

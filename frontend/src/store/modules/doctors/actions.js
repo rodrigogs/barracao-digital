@@ -5,6 +5,6 @@ export const refreshList = async ({ commit }, { cep }) => {
   return commit('fillList', doctors);
 };
 
-export const updateDoctor = async ({ commit }, doctor) => {
-  await api.doctors.update(doctor);
+export const alternate = async () => {
+  await api.doctors.alternate();
 };

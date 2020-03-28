@@ -1,27 +1,26 @@
 <template>
-  <div class="container" :class="{ 'stopped': active === 'stop' }">
-    <div class="title">{{ message }}</div>
+  <div class="container" :class="{ 'stopped': loggedUser.active }">
+    <div class="title">{{ loggedUser.active }}</div>
     <div class="actions">
       <button
         class="btn-action"
-        :class="{ 'btn-action-active': active === 'start' }"
-        :disabled="active === 'signout'"
-        @click="start"
+        :class="{ 'btn-action-active': loggedUser.active && !loading }"
+        :disabled="loading"
+        @click="alternate()"
       >
         Iniciar atend.
       </button>
       <button
         class="btn-action btn-action-disabled"
-        :class="{ 'btn-action-active': active === 'stop' }"
-        :disabled="active === 'signout'"
-        @click="stop"
+        :class="{ 'btn-action-active': !loggedUser.active && !loading }"
+        :disabled="loading"
+        @click="alternate()"
       >
-        Parar atend. <!-- (active=true está atendendo) post /doctors/id passar no body atributo active -->
+        Parar atend.
       </button>
       <button
         class="btn-action btn-action-disabled"
-        :class="{ 'btn-action-active': active === 'signout' }"
-        :disabled="active === 'signout'"
+        :disabled="loading"
         @click="signOut"
       >
         Sair
@@ -39,43 +38,20 @@ export default {
     return {
       doctor: 'Little',
       message: null,
-      active: null,
+      loading: false,
     };
   },
   computed: {
     ...mapGetters('auth', ['loggedUser']),
-  },
-  watch: {
-    active(status) {
-      if (status === 'start') {
-        this.message = `Olá, ${this.loggedUser.username}, você está atendendo`;
-      } else if (status === 'stop') {
-        this.message = `Olá, ${this.loggedUser.username}, você não está atendendo`;
-      } else if (status === 'signout') {
-        this.message = `Até mais, ${this.loggedUser.username}. Saindo do aplicativo...`;
-      }
-    },
   },
   mounted() {
     this.message = `Olá, ${this.loggedUser.username}. Selecione uma ação para continuar`;
   },
   methods: {
     ...mapActions('auth', ['logout']),
-    ...mapActions('doctors', ['updateDoctor']),
-    activate(action) {
-      this.active = action;
-    },
-    start() {
-      this.activate('start');
-      this.updateDoctor({ username: this.loggedUser.username, active: true });
-    },
-    stop() {
-      this.activate('stop');
-      this.updateDoctor({ username: this.loggedUser.username, active: false });
-    },
+    ...mapActions('doctors', ['alternate']),
     signOut() {
       try {
-        this.activate('signout');
         this.logout();
         this.$router.push('/login');
       } catch (error) {
