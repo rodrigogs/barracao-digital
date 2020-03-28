@@ -68,8 +68,8 @@ const router = new VueRouter({
   routes,
 });
 
-router.beforeEach((to, from, next) => {
-  document.title = to.meta.title ? to.meta.title : 'Untitled page';
+router.beforeEach((to, _from, next) => {
+  document.title = to.meta.title || 'Untitled page';
 
   if (to.meta.requiresAuth && !store.getters['auth/isLoggedIn']) {
     next({ name: 'DoctorLogin' });
