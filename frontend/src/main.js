@@ -1,4 +1,5 @@
 import 'normalize.css';
+import '@/assets/main.css';
 import Vue from 'vue';
 import VueAnnouncer from 'vue-announcer';
 import App from '@/App.vue';

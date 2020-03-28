@@ -22,8 +22,6 @@ export default {
 </script>
 
 <style>
-  @import "assets/main.css";
-
   .app {
     display: flex;
     flex-direction: column;
