@@ -7,6 +7,8 @@ plugins:
   - serverless-offline
   - serverless-finch
   - serverless-pseudo-parameters
+  - serverless-domain-manager
+  - serverless-dotenv-plugin
 
 package:
   individually: true
@@ -17,9 +19,19 @@ custom:
   client:
     bucketName: '${self:service}-${self:provider.stage}-webapp'
     distributionFolder: 'frontend/dist'
-  configsTableName: '${self:service}-${self:provider.stage}-configs'
-  doctorsTableName: '${self:service}-${self:provider.stage}-doctors'
-  patientsTableName: '${self:service}-${self:provider.stage}-patients'
+  customDomain:
+    domainName: 'api.barracaodigital.com'
+    basePath: ${self:provider.stage}
+    stage: ${self:provider.stage}
+    certificateName: '*.barracaodigital.com'
+    createRoute53Record: true
+  dotenv:
+    include:
+      - GOOGLE_DISTANCES_MATRIX_API_KEY
+  configsTableName: ${self:service}-${self:provider.stage}-configs
+  doctorsTableName: ${self:service}-${self:provider.stage}-doctors
+  patientsTableName: ${self:service}-${self:provider.stage}-patients
+  facilitiesTableName: ${self:service}-${self:provider.stage}-facilities
 
 provider:
   name: aws
@@ -41,7 +53,7 @@ provider:
     CONFIGS_TABLE: ${self:custom.configsTableName}
     DOCTORS_TABLE: ${self:custom.doctorsTableName}
     PATIENTS_TABLE: ${self:custom.patientsTableName}
-
+    FACILITIES_TABLE: ${self:custom.facilitiesTableName}
 
 functions:
   doctorAuthorizer:
@@ -49,6 +61,9 @@ functions:
 
   adminAuthorizer:
     handler: functions/api/admin-authorizer.handler
+
+  masterAuthorizer:
+    handler: functions/api/master-authorizer.handler
 
   healthcheck:
     handler: functions/api/healthcheck.handler
@@ -73,13 +88,13 @@ functions:
           method: get
           path: '/doctors/cep/{cep}'
           cors: true
-          authorizer: adminAuthorizer
+          authorizer: doctorAuthorizer
 
       - http:
           method: get
           path: '/doctors/username/{username}'
           cors: true
-          authorizer: adminAuthorizer
+          authorizer: doctorAuthorizer
 
       - http:
           method: post
@@ -89,6 +104,12 @@ functions:
 
       - http:
           method: post
+          path: '/doctors/alternate'
+          cors: true
+          authorizer: adminAuthorizer
+
+      - http:
+          method: put
           path: '/doctors/{username}'
           cors: true
           authorizer: adminAuthorizer
@@ -114,37 +135,37 @@ functions:
           cors: true
 
       - http:
-          method: post
+          method: put
           path: '/patients/{ticket}'
           cors: true
           authorizer: adminAuthorizer
 
-  sheds:
-    handler: functions/api/sheds.handler
+  facilities:
+    handler: functions/api/facilities.handler
     events:
       - http:
           method: get
-          path: '/sheds/cep/{cep}'
+          path: '/facilities/origin/{origin}'
           cors: true
-          authorizer: doctorAuthorizer
+          authorizer: masterAuthorizer
 
       - http:
           method: get
-          path: '/sheds/id/{id}'
+          path: '/facilities/origin/{origin}/destinations'
           cors: true
-          authorizer: doctorAuthorizer
+          authorizer: masterAuthorizer
 
       - http:
           method: post
-          path: '/sheds'
+          path: '/facilities'
           cors: true
-          authorizer: adminAuthorizer
+          authorizer: masterAuthorizer
 
       - http:
-          method: post
-          path: '/sheds/{id}'
+          method: put
+          path: '/facilities/{origin}'
           cors: true
-          authorizer: adminAuthorizer
+          authorizer: masterAuthorizer
 
 resources:
   Resources:
@@ -178,6 +199,61 @@ resources:
         RestApiId:
           Ref: 'ApiGatewayRestApi'
         StatusCode: '401'
+    ## Specifying the CloudFront Distribution to server your Web Application
+    WebAppCloudFrontDistribution:
+      Type: AWS::CloudFront::Distribution
+      Properties:
+        DistributionConfig:
+          Origins:
+            - DomainName: ${self:custom.client.bucketName}.s3.amazonaws.com
+              ## An identifier for the origin which must be unique within the distribution
+              Id: WebApp
+              CustomOriginConfig:
+                HTTPPort: 80
+                HTTPSPort: 443
+                OriginProtocolPolicy: https-only
+              ## In case you want to restrict the bucket access use S3OriginConfig and remove CustomOriginConfig
+              # S3OriginConfig:
+              #   OriginAccessIdentity: origin-access-identity/cloudfront/E127EXAMPLE51Z
+          Enabled: 'true'
+          ## Uncomment the following section in case you are using a custom domain
+          # Aliases:
+          #   - barracaodigital.com
+          DefaultRootObject: index.html
+          ## Since the Single Page App is taking care of the routing we need to make sure ever path is served with index.html
+          ## The only exception are files that actually exist e.h. app.js, reset.css
+          CustomErrorResponses:
+            - ErrorCode: 404
+              ResponseCode: 200
+              ResponsePagePath: /index.html
+          DefaultCacheBehavior:
+            AllowedMethods:
+              - DELETE
+              - GET
+              - HEAD
+              - OPTIONS
+              - PATCH
+              - POST
+              - PUT
+            ## The origin id defined above
+            TargetOriginId: WebApp
+            ## Defining if and how the QueryString and Cookies are forwarded to the origin which in this case is S3
+            ForwardedValues:
+              QueryString: 'false'
+              Cookies:
+                Forward: none
+            ## The protocol that users can use to access the files in the origin. To allow HTTP use `allow-all`
+            ViewerProtocolPolicy: redirect-to-https
+          ## The certificate to use when viewers use HTTPS to request objects.
+          ViewerCertificate:
+            AcmCertificateArn: 'arn:aws:acm:us-east-1:201373306222:certificate/a8852000-db78-4d56-82e5-857a5ba58469'
+            SslSupportMethod: 'sni-only'
+          #  CloudFrontDefaultCertificate: 'true'
+          ## Uncomment the following section in case you want to enable logging for CloudFront requests
+          # Logging:
+          #   IncludeCookies: 'false'
+          #   Bucket: mylogs.s3.amazonaws.com
+          #   Prefix: myprefix
     # DynamoDB Tables
     ConfigsTable:
       Type: AWS::DynamoDB::Table
@@ -248,6 +324,35 @@ resources:
               - AttributeName: cep
                 KeyType: HASH
               - AttributeName: sort
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 10
+              WriteCapacityUnits: 10
+    FacilitiesTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.facilitiesTableName}
+        AttributeDefinitions:
+          - AttributeName: origin
+            AttributeType: S
+          - AttributeName: destination
+            AttributeType: S
+        KeySchema:
+          - AttributeName: origin
+            KeyType: HASH
+          - AttributeName: destination
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 10
+          WriteCapacityUnits: 10
+        GlobalSecondaryIndexes:
+          - IndexName: destinationOrigin
+            KeySchema:
+              - AttributeName: destination
+                KeyType: HASH
+              - AttributeName: origin
                 KeyType: RANGE
             Projection:
               ProjectionType: ALL

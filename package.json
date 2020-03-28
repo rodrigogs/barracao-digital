@@ -33,6 +33,9 @@
     "functions"
   ],
   "dependencies": {
-    "@rodrigogs/promise-pool": "^1.0.3"
+    "@googlemaps/google-maps-services-js": "^2.4.2",
+    "@rodrigogs/promise-pool": "^1.0.3",
+    "serverless-dotenv-plugin": "^2.3.2",
+    "serverless-single-page-app-plugin": "^1.0.2"
   }
 }
