@@ -1,8 +1,13 @@
 # [BARRACÕES-COVID-19](https://github.com/rodrigogs/barracoes-covid-19/blob/master/media/Barraca%CC%83o%20Digital%20COVID-19.pdf)
 Estruturação rápida de “postos de triagem” virtuais descentralizados para redução de visitas desnecessárias às emergências
 
-
 # Informações técnicas
+
+### Status
+| Production | Development |
+|:----------:|:-----------:|
+| [![Production Build Status](https://travis-ci.com/rodrigogs/barracoes-covid-19.svg?branch=production)](https://travis-ci.com/rodrigogs/barracoes-covid-19) | [![Development Build Status](https://travis-ci.com/rodrigogs/barracoes-covid-19.svg?branch=development)](https://travis-ci.com/rodrigogs/barracoes-covid-19) |
+
 ### Setup
 **Make sure `bash` is available from your terminal**
 ```bash

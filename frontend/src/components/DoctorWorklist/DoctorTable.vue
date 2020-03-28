@@ -55,6 +55,7 @@
 
 <script>
 import axios from 'axios';
+import Kairos from 'kairos';
 import { mapState, mapActions, mapGetters } from 'vuex';
 
 export default {
@@ -106,15 +107,9 @@ export default {
       this.activeRowId = id;
     },
     calcTimeWaiting(createdAt) {
-      const second = 1000;
-      const minute = second * 60;
-      const hour = minute * 60;
-
       const timeWaiting = Date.now() - createdAt;
-      const hoursWaiting = String(Math.floor(timeWaiting / hour)).padStart(2, '0');
-      const minutesWaiting = String(Math.floor(timeWaiting / minute)).padStart(2, '0');
-
-      return `${hoursWaiting}:${minutesWaiting}`;
+      const time = Kairos.new(timeWaiting);
+      return `${time.getHours()}:${time.getMinutes()}`;
     },
     getStatusMessage(status = 'waiting') {
       if (status === 'waiting') return 'Aguardando';
