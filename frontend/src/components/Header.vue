@@ -1,5 +1,6 @@
 <template>
   <header class="header">
+
     <div class="header-content">
       <router-link
         class="header__logo"
@@ -24,19 +25,12 @@
 <script>
 import Logo from '@/components/Logo.vue';
 
-const isHomePage = (name) => ['Home', 'PatientLogin'].includes(name);
-
 export default {
   name: 'Header',
   components: { Logo },
-  data() {
-    return {
-      isHome: isHomePage(this.$router.currentRoute.name),
-    };
-  },
-  watch: {
-    $route(to) {
-      this.isHome = isHomePage(to.name);
+  computed: {
+    isHome() {
+      return ['Home', 'PatientLogin'].includes(this.$route.name);
     },
   },
 };
@@ -66,13 +60,11 @@ export default {
 }
 
 .header__logo {
-  height: 70px;
   display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 70px;
   margin: 0 auto;
-}
-
-.header__logo > svg {
-  height: 40px;
 }
 
 .header__link {

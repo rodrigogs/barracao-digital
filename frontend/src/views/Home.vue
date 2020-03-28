@@ -1,5 +1,5 @@
 <template>
-  <section class="section home">
+  <section class="home">
     <Logo />
 
     <p>
@@ -31,6 +31,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-top: 2rem;
 }
 
 .home > p {
