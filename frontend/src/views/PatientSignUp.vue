@@ -1,31 +1,25 @@
 <template>
-  <span>
-    <div v-if="!isLoading" class="container" style="margin-top: 1rem;">
-      <stepper :steps="steps"
+  <Stepper
+    class="patient-signup"
+    v-if="!isLoading"
+    :steps="steps"
                locale="pt"
-               @stepper-finished="savePatientSignUp">
-      </stepper>
-    </div>
-    <div v-if="isLoading" class="container">
-      <div class="patient-enqueued__loader">
-        <div class="loader"><div></div><div></div><div></div><div></div></div>
-      </div>
-    </div>
-  </span>
+    @stepper-finished="savePatientSignUp"
+  />
+  <Loader v-else />
 </template>
 
 <script>
 
 import { patients as patientsApi } from '@/api';
 import Stepper from 'vue-stepper';
-import StepOne from '../components/StepOne.vue';
-import StepTwo from '../components/StepTwo.vue';
-import StepThree from '../components/StepThree.vue';
+import Loader from '@/components/Loader.vue';
 
 export default {
   name: 'PatientSignUp',
   components: {
     Stepper,
+    Loader
   },
   data() {
     return {
@@ -67,13 +61,12 @@ export default {
 };
 </script>
 
-<style>
-  .stepper-box .content {
-    margin-top: 0 !important;
+<style scoped>
+.patient-signup {
+  margin-top: 1rem;
   }
 
-  .pacient-sign-up__form {
-    max-width: 400px;
-    margin: auto;
+.patient-signup > /deep/ .content {
+  margin-top: 0;
   }
 </style>
