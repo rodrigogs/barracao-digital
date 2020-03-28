@@ -1,10 +1,6 @@
 <template>
   <section class="section">
-    <div v-if="isLoading" class="container">
-      <div class="patient-enqueued__loader">
-        <div class="loader"><div></div><div></div><div></div><div></div></div>
-      </div>
-    </div>
+    <Loader class="patient-enqueued__loader" v-if="isLoading" />
     <div v-if="!isLoading && patient.status === 'waiting'" class="container">
       <div class="patient-enqueued__lightweight-warn">
         Essa página é atualizada automaticamente a cada 1 minuto
@@ -64,11 +60,12 @@
 </template>
 
 <script>
+import Loader from '@/components/Loader.vue';
 import { patients as patientsApi } from '@/api';
 
 export default {
   name: 'PatientEnqueued',
-  components: {},
+  components: { Loader },
   computed: {
     timePast() {
       return this.patient.createdAt;
@@ -83,7 +80,7 @@ export default {
   method: {
     async reloadPacientData() {
       this.isLoading = true;
-      this.patient = await patientsApi.getPatientByTicket(this.patient.ticket);
+      this.patient = await patientsApi.getPatientByTicket(this.$route.params.ticket);
       this.isLoading = false;
     },
   },
