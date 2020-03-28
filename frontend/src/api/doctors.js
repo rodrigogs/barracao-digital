@@ -1,7 +1,7 @@
 export default (request) => ({
 
-  async update(doctor) {
-    await request.post(`/doctors/${doctor.username}`, doctor);
+  async alternate() {
+    await request.post('/doctors/alternate');
   },
 
   async getList({ cep }) {
