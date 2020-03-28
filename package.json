@@ -27,7 +27,7 @@
     "deploy:backend": "sls deploy -s ${NODE_ENV}",
     "deploy:development": "cross-env-shell NODE_ENV=development \"npm run deploy:backend && npm run deploy:frontend\"",
     "deploy:production": "cross-env-shell NODE_ENV=production \"npm run deploy:backend && npm run deploy:frontend\"",
-    "clear-frontend-cache": "node scripts/invalidate-cloudfront-cache.js"
+    "clear-frontend-cache": "npx cloudfront-invalidate-cache --cname *.barracaodigital.com"
   },
   "license": "MIT",
   "submodules": [
