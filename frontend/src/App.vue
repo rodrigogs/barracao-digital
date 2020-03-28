@@ -1,9 +1,11 @@
 <template>
-  <div class="content">
-    <div class="content-wrapper">
-      <Header/>
+  <div class="app">
+    <Header/>
+
+    <div class="app-content">
       <router-view></router-view>
     </div>
+
     <Footer/>
   </div>
 </template>
@@ -14,29 +16,36 @@ import Footer from './components/Footer.vue';
 
 export default {
   name: 'App',
-
   components: {
     Header,
     Footer,
   },
-
-  data: () => ({
-    //
-  }),
 };
 </script>
 
 <style>
   @import "assets/main.css";
 
-  .content {
+  .app {
     display: flex;
     flex-direction: column;
     height: 100%;
-    position: relative;
   }
 
-  .content-wrapper {
+  .app-content {
     flex: 1;
+    width: 100%;
+    max-width: var(--main-content-max-width);
+    margin: 0 auto;
+  }
+
+  .app-content > div:first-of-type {
+    padding: 32px 0;
+  }
+
+  @media (max-width: 980px) {
+    .app-content > div:first-of-type {
+      padding: 16px;
+    }
   }
 </style>

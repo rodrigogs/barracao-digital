@@ -1,6 +1,6 @@
 <template>
   <header class="header">
-    <div class="container" style="height: 100%;">
+    <div class="header-content">
       <div class="header__logo-container" v-if="!isHome">
         <router-link to="/">
           <img class="header__logo" alt="Barracão Covid 19" src="@/assets/logo.png"/>
@@ -38,9 +38,15 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
   .header {
     background-color: #F3F3F3;
+  }
+
+  .header-content {
+    width: 100%;
+    max-width: var(--main-content-max-width);
+    margin: 0 auto;
   }
 
   .header__home-menu {
