@@ -33,14 +33,12 @@ export default {
     width: 100%;
     max-width: var(--main-content-max-width);
     margin: 0 auto;
-  }
-
-  .app-content > div:first-of-type {
     padding: 32px 0;
   }
 
   @media (max-width: 980px) {
-    .app-content > div:first-of-type {
+    .app-content {
+      width: 90%;
       padding: 16px;
     }
   }
