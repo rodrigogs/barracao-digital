@@ -94,6 +94,7 @@ export default {
   padding-right: 16px;
   padding-top: 12px;
   padding-bottom: 15px;
+  border-radius: 4px;
 }
 
 .stopped {
