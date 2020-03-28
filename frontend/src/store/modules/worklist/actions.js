@@ -6,7 +6,7 @@ export const refreshList = async ({ commit }, cep) => {
   return commit('fillList', patients);
 };
 
-export const selectPatient = async ({ commit, getters }, patientId) => {
-  const patient = getters.get(patientId);
+export const selectPatient = async ({ commit }, ticket) => {
+  const patient = await api.patients.getPatientByTicket({ ticket });
   return commit('selectPatient', patient);
 };

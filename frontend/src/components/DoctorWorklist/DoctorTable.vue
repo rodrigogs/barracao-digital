@@ -17,8 +17,8 @@
           class="doctor-table__tr"
           v-for="item in listPaginated"
           v-bind:key="item.id"
-          :class="{ 'doctor-table__tr--active': activeRowId === item.id }"
-          @click="activateRow(item.id)"
+          :class="{ 'doctor-table__tr--active': activeRowId === item.ticket }"
+          @click="activateRow(item.ticket)"
         >
           <td class="doctor-table__td">{{ item.name }}</td>
           <td class="doctor-table__td">{{ item.age }}</td>
@@ -102,9 +102,9 @@ export default {
       registers = registers.slice((this.pageNumber - 1) * this.pageSize, this.pageNumber * this.pageSize);
       this.paginatedRegisters = [...registers];
     },
-    activateRow(id) {
-      this.selectPatient(id);
-      this.activeRowId = id;
+    activateRow(ticket) {
+      this.selectPatient(ticket);
+      this.activeRowId = ticket;
     },
     calcTimeWaiting(createdAt) {
       const timeWaiting = Date.now() - createdAt;
