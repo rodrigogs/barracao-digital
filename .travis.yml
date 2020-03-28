@@ -1,8 +1,23 @@
 language: node_js
+
 node_js:
-- node
-cache:
-  directories:
-    - node_modules
+  -"12"
+
+before_install:
+  - pyenv global 3.7.1
+  - pip install -U pip
+  - pip install awscli
+
+install:
+  - npm install
+
 script:
-    - npm run deploy
+  - npm run deploy:$NODE_ENV
+
+after_script:
+  - aws cloudfront create-invalidation --distribution-id $DISTRIBUTION_ID --paths /*
+
+notifications:
+  email:
+    on_success: never
+    on_failure: always
