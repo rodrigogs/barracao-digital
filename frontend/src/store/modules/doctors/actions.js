@@ -5,6 +5,8 @@ export const refreshList = async ({ commit }, { cep }) => {
   return commit('fillList', doctors);
 };
 
-export const alternate = async () => {
-  await api.doctors.alternate();
+export const alternate = async ({ rootGetters, commit }) => {
+  const loggedUser = rootGetters['auth/loggedUser'];
+  const { active } = await api.doctors.alternate();
+  commit('auth/updateLoggedUser', { ...loggedUser, active }, { root: true });
 };

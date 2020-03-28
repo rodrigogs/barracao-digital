@@ -1,25 +1,23 @@
 <template>
-  <div class="container" :class="{ 'stopped': loggedUser.active }">
-    <div class="title">{{ loggedUser.active }}</div>
+  <div class="container" :class="{ 'stopped': !loggedUser.active }">
+    <div class="title">{{ message }}</div>
     <div class="actions">
       <button
         class="btn-action"
-        :class="{ 'btn-action-active': loggedUser.active && !loading }"
         :disabled="loading"
-        @click="alternate()"
+        @click="alternateDoctor(true)"
       >
         Iniciar atend.
       </button>
       <button
-        class="btn-action btn-action-disabled"
-        :class="{ 'btn-action-active': !loggedUser.active && !loading }"
+        class="btn-action"
         :disabled="loading"
-        @click="alternate()"
+        @click="alternateDoctor(false)"
       >
         Parar atend.
       </button>
       <button
-        class="btn-action btn-action-disabled"
+        class="btn-action"
         :disabled="loading"
         @click="signOut"
       >
@@ -36,27 +34,48 @@ export default {
   name: 'DoctorStatus',
   data() {
     return {
-      doctor: 'Little',
-      message: null,
       loading: false,
+      leaving: false,
     };
   },
   computed: {
     ...mapGetters('auth', ['loggedUser']),
-  },
-  mounted() {
-    this.message = `Olá, ${this.loggedUser.username}. Selecione uma ação para continuar`;
+    message() {
+      if (this.loading) {
+        return 'Alternando status de atendimento';
+      }
+      if (this.leaving) {
+        return 'Saindo do aplicativo';
+      }
+      if (this.loggedUser.active) {
+        return `Olá, ${this.loggedUser.username}, você está atendendo`;
+      }
+      return `Olá, ${this.loggedUser.username}, você não está atendendo`;
+    },
   },
   methods: {
     ...mapActions('auth', ['logout']),
     ...mapActions('doctors', ['alternate']),
-    signOut() {
-      try {
-        this.logout();
-        this.$router.push('/login');
-      } catch (error) {
-        console.error(error);
+    async alternateDoctor(active) {
+      if (this.loggedUser.active === active) {
+        return;
       }
+
+      this.loading = true;
+      await this.alternate();
+      this.loading = false;
+    },
+    signOut() {
+      this.loading = true;
+      this.leaving = true;
+      setTimeout(() => {
+        try {
+          this.logout();
+          this.$router.push('/login');
+        } catch (error) {
+          console.error(error);
+        }
+      }, 2000);
     },
   },
 };
@@ -98,8 +117,12 @@ export default {
 }
 
 .btn-action {
-  color: #9a9a9a;
-  background: #cecece;
+  /* color: #9a9a9a;
+  background: #cecece; */
+
+  color: var(--main-btn-color);
+  background: #ffffff;
+
   height: 32px;
   width: 100%;
   font-size: 13px;
@@ -112,8 +135,8 @@ export default {
   cursor: pointer;
 }
 
-.btn-action-active {
-  color: var(--main-btn-color);
-  background: #ffffff;
+.btn-action:disabled {
+  color: #9a9a9a;
+  background: #cecece;
 }
 </style>
