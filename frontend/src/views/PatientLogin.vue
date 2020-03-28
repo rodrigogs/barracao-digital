@@ -1,8 +1,7 @@
 <template>
-  <section class="section">
-    <div class="container">
-      <router-link to="/" class="img-container patient-login__img-logo">
-        <img src="@/assets/logo-grande.png"/>
+  <section class="section patient-login">
+    <router-link to="/" class="patient-login__logo">
+      <Logo />
       </router-link>
       <form class="form patient-login__form" style="margin-top: 2rem" @submit.prevent="loadQueuePage()" novalidate>
         <div class="field">
@@ -12,14 +11,15 @@
         </div>
         <button class="btn btn--link">Entrar</button>
       </form>
-    </div>
   </section>
 </template>
 
 <script>
+import Logo from '@/components/Logo.vue';
+
 export default {
   name: 'PatientLogin',
-  components: {},
+  components: { Logo },
   data() {
     return {
       ticket: '',
@@ -40,14 +40,17 @@ export default {
 };
 </script>
 
-<style>
-  .patient-login__img-logo {
-    max-width: 600px;
-    margin: auto;
+<style scoped>
+.patient-login {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   }
 
   .patient-login__form {
     max-width: 400px;
+  width: 100%;
     margin: auto;
+  margin-top: 2rem;
   }
 </style>
