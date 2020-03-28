@@ -7,7 +7,7 @@ const cloudFront = new AWS.CloudFront();
     const params = {
       DistributionId: process.env.DISTRIBUTION_ID,
       InvalidationBatch: {
-        CallerReference: Date.now(),
+        CallerReference: `${Date.now()}`,
         Paths: {
           Quantity: 1,
           Items: [
