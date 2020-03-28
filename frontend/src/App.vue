@@ -1,31 +1,27 @@
 <template>
   <div class="app">
+    <vue-announcer />
+
     <Header/>
 
     <div class="app-content">
       <router-view></router-view>
     </div>
-
-    <Footer/>
   </div>
 </template>
 
 <script>
-import Header from './components/Header.vue';
-import Footer from './components/Footer.vue';
+import Header from '@/components/Header.vue';
 
 export default {
   name: 'App',
   components: {
     Header,
-    Footer,
   },
 };
 </script>
 
 <style>
-  @import "assets/main.css";
-
   .app {
     display: flex;
     flex-direction: column;
