@@ -24,14 +24,14 @@
 <script>
 import Logo from '@/components/Logo.vue';
 
-const isHomePage = name => ['Home', 'PatientLogin'].includes(name);
+const isHomePage = (name) => ['Home', 'PatientLogin'].includes(name);
 
 export default {
   name: 'Header',
   components: { Logo },
   data() {
     return {
-      isHome: isHomePage(this.$router.currentRoute.name)
+      isHome: isHomePage(this.$router.currentRoute.name),
     };
   },
   watch: {
