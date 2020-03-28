@@ -22,17 +22,19 @@
 </template>
 
 <script>
+const isHomePage = name => ['Home', 'PatientLogin'].includes(name);
+
 export default {
   name: 'Header',
   components: {},
   data() {
     return {
-      isHome: this.$router.currentRoute.name === 'Home' || this.$router.currentRoute.name === 'PatientLogin',
+      isHome: isHomePage(this.$router.currentRoute.name)
     };
   },
   watch: {
     $route(to) {
-      this.isHome = to.name === 'Home' || to.name === 'PatientLogin';
+      this.isHome = isHomePage(to.name);
     },
   },
 };
