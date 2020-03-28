@@ -1,5 +1,7 @@
 <template>
   <div class="app">
+    <vue-announcer />
+
     <Header/>
 
     <div class="app-content">
