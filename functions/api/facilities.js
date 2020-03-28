@@ -18,7 +18,7 @@ const methods = {
       }
 
       const facility = await facilitiesService.getOneByOrigin(origin);
-      if (facility) {
+      if (!facility) {
         return responseBuilder.errors.notFound({ message: 'Facility not found' });
       }
 
