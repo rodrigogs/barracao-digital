@@ -18,9 +18,9 @@
           @click="activateRow(item.id)"
         >
           <td class="doctor-table__td">{{ item.name }}</td>
-          <td class="doctor-table__td">{{ item.age || 60 }}</td>
-          <td class="doctor-table__td">{{ item.waitTime || '30min' }}</td>
-          <td class="doctor-table__td">{{ item.status || 'Fila' }}</td>
+          <td class="doctor-table__td">{{ item.age }}</td>
+          <td class="doctor-table__td">{{ item.createdAt || 'data atual menos createdAt' }}</td>
+          <td class="doctor-table__td">{{ item.status }}</td>
         </tr>
       </tbody>
     </table>
