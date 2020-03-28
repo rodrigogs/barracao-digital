@@ -31,22 +31,22 @@ const genericError = (error) => {
 };
 
 // Success responses
-const ok = (options) => {
+const ok = (options = {}) => {
   if (!options.body) {
     return genericError(new Error('200 status should have a body. Use 204 for responses with no content.'));
   }
   return generic({ ...options, statusCode: 200 });
 };
 
-const created = (options) => {
+const created = (options = {}) => {
   if (!options.body) {
     return genericError(new Error('201 status should have a body describing the created entity.'));
   }
   return generic({ ...options, statusCode: 201 });
 };
 
-const noContent = (options) => {
-  if (!options.body) {
+const noContent = (options = {}) => {
+  if (options.body) {
     return genericError(new Error('204 status should have no body.'));
   }
   return generic({ ...options, statusCode: 204, body: undefined });

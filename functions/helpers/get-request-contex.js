@@ -20,6 +20,8 @@ module.exports = async (event) => {
     queryStringParameters,
     multiValueQueryStringParameters,
     pathParameters,
+    path,
+    resource,
   } = event;
 
   const { authorizer } = (requestContext || {});
@@ -32,6 +34,8 @@ module.exports = async (event) => {
     queryStringParameters,
     multiValueQueryStringParameters,
     pathParameters,
+    path,
+    resource,
     body: (typeof body === 'string') ? JSON.parse(body) : undefined,
     consumer: (typeof consumer === 'string') ? JSON.parse(consumer) : undefined,
   };

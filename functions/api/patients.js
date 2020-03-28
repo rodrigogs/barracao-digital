@@ -9,17 +9,22 @@ const methods = {
         pathParameters,
         queryStringParameters,
       } = ctx;
-
       const { cep, ticket } = pathParameters || {};
-      const { status } = queryStringParameters || {};
+      const { status, timeWaiting } = queryStringParameters || {};
 
       if (cep) {
         if (!user.master && (user.cep !== cep)) {
-          return responseBuilder.errors.forbidden('Você só pode visualizar dados da sua região');
+          return responseBuilder.errors.forbidden({ message: 'Você só pode visualizar dados da sua região' });
         }
-        if (status) {
+        if (status && !timeWaiting) {
           return responseBuilder.success.ok({
             body: await patientsService.getAllByCepAndStatus(cep, status),
+          });
+        }
+        if (status && timeWaiting) {
+          return responseBuilder.success.ok({
+            body: await patientsService
+              .getAllByCepAndStatusAndTimeWaiting(cep, status, timeWaiting),
           });
         }
         return responseBuilder.success.ok({
@@ -30,7 +35,7 @@ const methods = {
       if (ticket) {
         const patient = await patientsService.getOneByTicket(ticket);
         if (!user.master && (user.cep !== patient.cep)) {
-          return responseBuilder.errors.forbidden('Você só pode visualizar dados da sua região');
+          return responseBuilder.errors.forbidden({ message: 'Você só pode visualizar dados da sua região' });
         }
         if (!patient) return responseBuilder.errors.notFound({ message: 'Patient Not Found' });
         return responseBuilder.success.ok({ body: patient });
@@ -45,28 +50,33 @@ const methods = {
   async POST(ctx) {
     try {
       const {
+        body,
+      } = ctx;
+
+      const createdPatient = await patientsService.create(body);
+      return responseBuilder.success.created({ body: createdPatient });
+    } catch (err) {
+      return responseBuilder.genericError(err);
+    }
+  },
+
+  async PUT(ctx) {
+    try {
+      const {
         consumer: user,
         pathParameters,
         body,
       } = ctx;
 
-      const { ticket } = pathParameters || {};
+      const { ticket } = pathParameters;
 
-      if (!pathParameters) {
-        const createdPatient = await patientsService.create(body);
-        return responseBuilder.success.created({ body: createdPatient });
+      const patient = await patientsService.getOneByTicket(ticket);
+      if (!user.master && (user.cep !== patient.cep)) {
+        return responseBuilder.errors.forbidden({ message: 'Você só pode alterar dados da sua região' });
       }
 
-      if (ticket) {
-        const patient = await patientsService.getOneByTicket(ticket);
-        if (!user.master && (user.cep !== patient.cep)) {
-          return responseBuilder.errors.forbidden('Você só pode alterar dados da sua região');
-        }
-        const updatedPatient = await patientsService.update(ticket, { status: body.status });
-        return responseBuilder.success.ok({ body: updatedPatient });
-      }
-
-      return responseBuilder.errors.badRequest();
+      const updatedPatient = await patientsService.update(ticket, { status: body.status });
+      return responseBuilder.success.ok({ body: updatedPatient });
     } catch (err) {
       return responseBuilder.genericError(err);
     }
