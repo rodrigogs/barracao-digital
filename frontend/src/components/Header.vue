@@ -1,32 +1,34 @@
 <template>
   <header class="header">
     <div class="header-content">
-      <div class="header__logo-container" v-if="!isHome">
-        <router-link to="/">
-          <img class="header__logo" alt="Barracão Covid 19" src="@/assets/logo.png"/>
-        </router-link>
-      </div>
+      <router-link
+        class="header__logo"
+        :to="{ name: 'Home' }"
+        v-if="!isHome"
+      >
+        <Logo />
+      </router-link>
 
-      <div v-if="isHome" class="header__home-menu">
+      <template v-else class="header__home-menu">
         <router-link class="header__link" to="/foo">
           Acesso médico
         </router-link>
         <router-link class="header__link" to="/foo">
-          <b>
-            Quero ajudar
-          </b>
+          <b>Quero ajudar</b>
         </router-link>
-      </div>
+      </template>
     </div>
   </header>
 </template>
 
 <script>
+import Logo from '@/components/Logo.vue';
+
 const isHomePage = name => ['Home', 'PatientLogin'].includes(name);
 
 export default {
   name: 'Header',
-  components: {},
+  components: { Logo },
   data() {
     return {
       isHome: isHomePage(this.$router.currentRoute.name)
@@ -41,46 +43,45 @@ export default {
 </script>
 
 <style scoped>
-  .header {
-    background-color: #F3F3F3;
-  }
+.header {
+  background-color: var(--header-bg-color);
+  padding: 0.75rem 1rem;
+}
 
-  .header-content {
-    width: 100%;
-    max-width: var(--main-content-max-width);
-    margin: 0 auto;
-  }
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: var(--breakpoint-sm);
+  margin-left: auto;
+  margin-right: auto;
+}
 
-  .header__home-menu {
-    display: flex;
-    justify-content: space-between;
-    height: 100%;
-    align-items: center;
-  }
+.header__home-menu {
+  display: flex;
+  justify-content: space-between;
+  height: 100%;
+  align-items: center;
+}
 
-  .header__logo-container {
-    display: flex;
-    height: 100%;
-    align-items: center;
-    justify-content: center;
-  }
+.header__logo {
+  height: 70px;
+  display: flex;
+  margin: 0 auto;
+}
 
-  .header__logo {
-    height: 30px;
-  }
+.header__logo > svg {
+  height: 40px;
+}
 
-  @media screen and (min-width: 768px){
-    .header__logo {
-      height: 50px;
-    }
-  }
+.header__link {
+  text-decoration: none;
+  color: var(--primary-color);
+}
 
-  .header__link {
-    text-decoration: none;
-    color: var(--primary-color);
-  }
-
-  .header__link:hover {
-    color: var(--primary-color--hover);
-  }
+.header__link:hover {
+  color: var(--primary-color--hover);
+  text-decoration: underline;
+}
 </style>
