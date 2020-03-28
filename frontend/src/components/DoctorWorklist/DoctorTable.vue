@@ -109,7 +109,7 @@ export default {
     calcTimeWaiting(createdAt) {
       const timeWaiting = Date.now() - createdAt;
       const time = Kairos.new(timeWaiting);
-      return `${time.getHours()}:${time.getMinutes()}`;
+      return time.toString('hh:mm');
     },
     getStatusMessage(status = 'waiting') {
       if (status === 'waiting') return 'Aguardando';
