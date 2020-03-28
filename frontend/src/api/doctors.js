@@ -1,7 +1,8 @@
 export default (request) => ({
 
   async alternate() {
-    await request.post('/doctors/alternate');
+    const { data } = await request.post('/doctors/alternate');
+    return data;
   },
 
   async getList({ cep }) {
