@@ -5,21 +5,21 @@
       <div class="actions">
         <button
           class="btn-action"
-          :disabled="loading"
+          :disabled="loading || loggedUser.active"
           @click="alternateDoctor(true)"
         >
           Iniciar atend.
         </button>
         <button
           class="btn-action"
-          :disabled="loading"
+          :disabled="loading || !loggedUser.active"
           @click="alternateDoctor(false)"
         >
           Parar atend.
         </button>
         <button
           class="btn-action"
-          :disabled="loading"
+          :disabled="loading || loggedUser.active"
           @click="signOut"
         >
           Sair
