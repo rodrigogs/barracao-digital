@@ -68,14 +68,12 @@ export default {
     signOut() {
       this.loading = true;
       this.leaving = true;
-      setTimeout(() => {
-        try {
-          this.logout();
-          this.$router.push('/login');
-        } catch (error) {
-          console.error(error);
-        }
-      }, 2000);
+      try {
+        this.logout();
+        this.$router.push('/login');
+      } catch (error) {
+        console.error(error);
+      }
     },
   },
 };
@@ -103,9 +101,11 @@ export default {
 }
 
 .title {
+  font-size: 16px;
+  font-weight: bold;
   justify-self: center;
   align-self: center;
-  margin-bottom: 4px;
+  margin-bottom: 8px;
 }
 
 .actions {
@@ -117,9 +117,6 @@ export default {
 }
 
 .btn-action {
-  /* color: #9a9a9a;
-  background: #cecece; */
-
   color: var(--main-btn-color);
   background: #ffffff;
 

@@ -29,6 +29,6 @@ export default {
 
 <style scoped>
 .doctor-worklist-content {
-  margin-top: 6px;
+  margin-top: 8px;
 }
 </style>

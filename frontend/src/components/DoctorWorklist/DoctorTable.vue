@@ -1,12 +1,15 @@
 <template>
   <div class="doctor-table-container">
-    <table class="doctor-table">
+    <div class="doctor-table-loading" v-if="!listPaginated || listPaginated.length === 0">.
+      Carregando fila...
+    </div>
+    <table class="doctor-table" v-if="listPaginated && listPaginated.length > 0">
       <thead class="doctor-table__head">
         <tr class="doctor-table__head-tr">
           <th class="doctor-table__th doctor-table__th--name">Nome</th>
-          <th class="doctor-table__th">Idade</th>
-          <th class="doctor-table__th">T.Esp.</th>
-          <th class="doctor-table__th">Status</th>
+          <th class="doctor-table__th doctor-table__th--age">Idade</th>
+          <th class="doctor-table__th doctor-table__th--waitTime">T.Esp.</th>
+          <th class="doctor-table__th doctor-table__th--status">Status</th>
         </tr>
       </thead>
       <tbody class="doctor-table__body">
@@ -20,11 +23,11 @@
           <td class="doctor-table__td">{{ item.name }}</td>
           <td class="doctor-table__td">{{ item.age }}</td>
           <td class="doctor-table__td">{{ calcTimeWaiting(item.createdAt) }}</td>
-          <td class="doctor-table__td">{{ item.status }}</td>
+          <td class="doctor-table__td">{{ getStatusMessage(item.status) }}</td>
         </tr>
       </tbody>
     </table>
-    <div class="doctor-table-pagination">
+    <div class="doctor-table-pagination" v-if="listPaginated && listPaginated.length > 0">
       <button
         class="doctor-table-btn-pagination"
         :disabled="!previousPageAvailable"
@@ -80,7 +83,7 @@ export default {
       return !(this.pageNumber === 1);
     },
     totalPages() {
-      return this.list.length / this.pageSize;
+      return Math.ceil(this.list.length / this.pageSize);
     },
   },
   methods: {
@@ -113,6 +116,13 @@ export default {
 
       return `${hoursWaiting}:${minutesWaiting}`;
     },
+    getStatusMessage(status = 'waiting') {
+      if (status === 'waiting') return 'Aguardando';
+      if (status === 'waiting_kit') return 'Aguardando';
+      if (status === 'ongoing') return 'Aguardando';
+      if (status === 'finished') return 'Aguardando';
+      return 'Sem status';
+    },
   },
   created() {
     this.refreshList(this.loggedUser.cep);
@@ -121,6 +131,12 @@ export default {
 </script>
 
 <style scoped>
+.doctor-table-loading {
+  height: 128px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .doctor-table {
   border: 1px solid #CCCCCC;
   border-spacing: 0;
@@ -142,12 +158,7 @@ export default {
 }
 
 .doctor-table__th {
-  width: 100%;
   text-align: center;
-}
-
-.doctor-table__th--name {
-  width: 80%;
 }
 
 .doctor-table__th:first-of-type {
@@ -221,10 +232,6 @@ export default {
 .btn-action-active {
   color: var(--main-btn-color);
   background: #ffffff;
-}
-
-.doctor-table-page-number {
-
 }
 
 .doctor-table-icon-pagination {
