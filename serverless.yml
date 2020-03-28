@@ -15,12 +15,12 @@ package:
 
 custom:
   webpack:
-    webpackConfig: 'webpack.config.js'
+    webpackConfig: webpack.config.js
   client:
-    bucketName: '${self:service}-${self:provider.stage}-webapp'
-    distributionFolder: 'frontend/dist'
+    bucketName: ${self:service}-${self:provider.stage}-webapp
+    distributionFolder: frontend/dist
   customDomain:
-    domainName: 'api.barracaodigital.com'
+    domainName: api.barracaodigital.com
     basePath: ${self:provider.stage}
     stage: ${self:provider.stage}
     certificateName: '*.barracaodigital.com'
@@ -28,6 +28,7 @@ custom:
   dotenv:
     include:
       - GOOGLE_DISTANCES_MATRIX_API_KEY
+  helpers: ${file(./serverless.helpers.js)}
   configsTableName: ${self:service}-${self:provider.stage}-configs
   doctorsTableName: ${self:service}-${self:provider.stage}-doctors
   patientsTableName: ${self:service}-${self:provider.stage}-patients
@@ -78,7 +79,7 @@ functions:
     events:
       - http:
           method: post
-          path: '/auth/login'
+          path: /auth/login
           cors: true
 
   doctors:
@@ -86,31 +87,31 @@ functions:
     events:
       - http:
           method: get
-          path: '/doctors/cep/{cep}'
+          path: /doctors/cep/{cep}
           cors: true
           authorizer: doctorAuthorizer
 
       - http:
           method: get
-          path: '/doctors/username/{username}'
+          path: /doctors/username/{username}
           cors: true
           authorizer: doctorAuthorizer
 
       - http:
           method: post
-          path: '/doctors'
+          path: /doctors
           cors: true
           authorizer: adminAuthorizer
 
       - http:
           method: post
-          path: '/doctors/alternate'
+          path: /doctors/alternate
           cors: true
           authorizer: adminAuthorizer
 
       - http:
           method: put
-          path: '/doctors/{username}'
+          path: /doctors/{username}
           cors: true
           authorizer: adminAuthorizer
 
@@ -119,24 +120,24 @@ functions:
     events:
       - http:
           method: get
-          path: '/patients/cep/{cep}'
+          path: /patients/cep/{cep}
           cors: true
           authorizer: doctorAuthorizer
 
       - http:
           method: get
-          path: '/patients/ticket/{ticket}'
+          path: /patients/ticket/{ticket}
           cors: true
           authorizer: doctorAuthorizer
 
       - http:
           method: post
-          path: '/patients'
+          path: /patients
           cors: true
 
       - http:
           method: put
-          path: '/patients/{ticket}'
+          path: /patients/{ticket}
           cors: true
           authorizer: adminAuthorizer
 
@@ -145,25 +146,25 @@ functions:
     events:
       - http:
           method: get
-          path: '/facilities/origin/{origin}'
+          path: /facilities/origin/{origin}
           cors: true
           authorizer: masterAuthorizer
 
       - http:
           method: get
-          path: '/facilities/origin/{origin}/destinations'
+          path: /facilities/origin/{origin}/destinations
           cors: true
           authorizer: masterAuthorizer
 
       - http:
           method: post
-          path: '/facilities'
+          path: /facilities
           cors: true
           authorizer: masterAuthorizer
 
       - http:
           method: put
-          path: '/facilities/{origin}'
+          path: /facilities/{origin}
           cors: true
           authorizer: masterAuthorizer
 
@@ -171,33 +172,33 @@ resources:
   Resources:
     # This response is needed for custom authorizer failures cors support ¯\_(ツ)_/¯
     GatewayResponseDefault4XX:
-      Type: 'AWS::ApiGateway::GatewayResponse'
+      Type: AWS::ApiGateway::GatewayResponse
       Properties:
         ResponseParameters:
           gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
           gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
         ResponseType: DEFAULT_4XX
         RestApiId:
-          Ref: 'ApiGatewayRestApi'
+          Ref: ApiGatewayRestApi
     GatewayResponse:
-      Type: 'AWS::ApiGateway::GatewayResponse'
+      Type: AWS::ApiGateway::GatewayResponse
       Properties:
         ResponseParameters:
           gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
           gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
         ResponseType: EXPIRED_TOKEN
         RestApiId:
-          Ref: 'ApiGatewayRestApi'
+          Ref: ApiGatewayRestApi
         StatusCode: '401'
     AuthFailureGatewayResponse:
-      Type: 'AWS::ApiGateway::GatewayResponse'
+      Type: AWS::ApiGateway::GatewayResponse
       Properties:
         ResponseParameters:
           gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
           gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
         ResponseType: UNAUTHORIZED
         RestApiId:
-          Ref: 'ApiGatewayRestApi'
+          Ref: ApiGatewayRestApi
         StatusCode: '401'
     ## Specifying the CloudFront Distribution to server your Web Application
     WebAppCloudFrontDistribution:
@@ -217,8 +218,8 @@ resources:
               #   OriginAccessIdentity: origin-access-identity/cloudfront/E127EXAMPLE51Z
           Enabled: 'true'
           ## Uncomment the following section in case you are using a custom domain
-          # Aliases:
-          #   - barracaodigital.com
+          Aliases:
+            - www.barracaodigital.com
           DefaultRootObject: index.html
           ## Since the Single Page App is taking care of the routing we need to make sure ever path is served with index.html
           ## The only exception are files that actually exist e.h. app.js, reset.css
@@ -228,13 +229,9 @@ resources:
               ResponsePagePath: /index.html
           DefaultCacheBehavior:
             AllowedMethods:
-              - DELETE
               - GET
               - HEAD
               - OPTIONS
-              - PATCH
-              - POST
-              - PUT
             ## The origin id defined above
             TargetOriginId: WebApp
             ## Defining if and how the QueryString and Cookies are forwarded to the origin which in this case is S3
@@ -246,8 +243,8 @@ resources:
             ViewerProtocolPolicy: redirect-to-https
           ## The certificate to use when viewers use HTTPS to request objects.
           ViewerCertificate:
-            AcmCertificateArn: 'arn:aws:acm:us-east-1:201373306222:certificate/a8852000-db78-4d56-82e5-857a5ba58469'
-            SslSupportMethod: 'sni-only'
+            AcmCertificateArn: arn:aws:acm:us-east-1:201373306222:certificate/a8852000-db78-4d56-82e5-857a5ba58469
+            SslSupportMethod: sni-only
           #  CloudFrontDefaultCertificate: 'true'
           ## Uncomment the following section in case you want to enable logging for CloudFront requests
           # Logging:
