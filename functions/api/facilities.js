@@ -56,9 +56,9 @@ const methods = {
       } = ctx;
 
       const { origin } = pathParameters;
-      const { destination } = body;
+      const { destinations } = body;
 
-      await facilitiesService.addOriginDestination(origin, destination);
+      await facilitiesService.addOriginDestinations(origin, destinations);
 
       return responseBuilder.success.noContent();
     } catch (err) {
