@@ -140,6 +140,12 @@ functions:
     events:
       - http:
           method: get
+          path: /facilities
+          cors: true
+          authorizer: masterAuthorizer
+
+      - http:
+          method: get
           path: /facilities/origin/{origin}
           cors: true
           authorizer: masterAuthorizer
@@ -330,6 +336,8 @@ resources:
             AttributeType: S
           - AttributeName: destination
             AttributeType: S
+          - AttributeName: type
+            AttributeType: S
         KeySchema:
           - AttributeName: origin
             KeyType: HASH
@@ -345,6 +353,15 @@ resources:
                 KeyType: HASH
               - AttributeName: origin
                 KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 10
+              WriteCapacityUnits: 10
+          - IndexName: type
+            KeySchema:
+              - AttributeName: type
+                KeyType: HASH
             Projection:
               ProjectionType: ALL
             ProvisionedThroughput:

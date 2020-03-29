@@ -9,6 +9,12 @@ const methods = {
         path,
       } = ctx;
 
+      if (!pathParameters) {
+        return responseBuilder.success.ok({
+          body: await facilitiesService.getAll(),
+        });
+      }
+
       const { origin } = pathParameters;
       const listDestinations = path.endsWith('destinations');
 
@@ -42,7 +48,9 @@ const methods = {
 
       const createdFacility = await facilitiesService.create(body);
 
-      return responseBuilder.success.created({ body: createdFacility });
+      return responseBuilder.success.created({
+        body: { ...createdFacility, destination: undefined },
+      });
     } catch (err) {
       return responseBuilder.genericError(err);
     }
@@ -61,7 +69,7 @@ const methods = {
       const updatedFacility = await facilitiesService.update(origin, attributes);
       await facilitiesService.addOriginDestinations(origin, destinations);
 
-      return responseBuilder.success.ok({ body: updatedFacility });
+      return responseBuilder.success.ok({ body: { ...updatedFacility, destination: undefined } });
     } catch (err) {
       return responseBuilder.genericError(err);
     }

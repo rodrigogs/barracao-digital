@@ -78,6 +78,7 @@ const methods = {
         return responseBuilder.errors.forbidden({ message: 'Somente um usuário master pode criar um administrador' });
       }
 
+      console.log(JSON.stringify(body, null, 2));
       const newDoctor = await doctorsService.create(body);
       return responseBuilder.success.created({ body: { ...newDoctor, password: undefined } });
     } catch (err) {
