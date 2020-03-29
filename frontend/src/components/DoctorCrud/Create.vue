@@ -70,7 +70,7 @@ export default {
     async createDoctor() {
       if (!this.validate()) return;
       try {
-        const newDoctor = await this.createDoctorAction(this.form);
+        const newDoctor = await this.createDoctorAction({ ...this.form, cep: this.cep });
       } catch (err) {
         console.error(err);
         this.errors.push(err.message);
