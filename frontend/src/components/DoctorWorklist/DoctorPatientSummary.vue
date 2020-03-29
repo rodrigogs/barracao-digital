@@ -12,7 +12,7 @@
 
       <div class="content">
         <div class="content-block">
-          <h4>Alterar status {{ patient.status === 'waiting' }}</h4>
+          <h4>Alterar status</h4>
           <select @change="onChangeStatus">
             <option value="waiting" :selected="patient.status === 'waiting'">Aguardando</option>
             <option value="waiting_kit" :selected="patient.status === 'waiting_kit'">Aguardando kit</option>
@@ -32,7 +32,7 @@
         </div>
         <div class="content-block">
           <span>Tempo em espera</span>
-          <span>22 min - ????</span>
+          <span>{{ calcTimeWaiting(patient.createdAt) }}</span>
         </div>
 
         <h4>Dados médicos</h4>
@@ -82,6 +82,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex';
+import Kairos from 'kairos';
 
 export default {
   name: 'DoctorPatientSummary',
@@ -95,6 +96,11 @@ export default {
     ...mapActions('worklist', ['updateSelectedPatientStatus']),
     onChangeStatus(event) {
       this.updateSelectedPatientStatus({ status: event.target.value });
+    },
+    calcTimeWaiting(createdAt) {
+      const timeWaiting = Date.now() - createdAt;
+      const time = Kairos.new(timeWaiting);
+      return time.toString('hh:mm');
     },
   },
 };
