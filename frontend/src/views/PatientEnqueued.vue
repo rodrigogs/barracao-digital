@@ -24,7 +24,7 @@
       <div class="patient-enqueued__big-warn patient-enqueued__big-warn--red">
         Sua senha de retorno é
         <br>
-        <strong style="font-size: 28px;">{{ Number(patient.ticket) }}</strong>
+        <strong style="font-size: 28px;">{{ patient.ticket }}</strong>
       </div>
 
       <div class="patient-enqueued__text" style="width: 220px;">
