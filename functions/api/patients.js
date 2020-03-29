@@ -14,9 +14,9 @@ const methods = {
 
       if (ticket) {
         const patient = await patientsService.getOneByTicket(ticket);
-        if (!user.master && (user.cep !== patient.cep)) {
-          return responseBuilder.errors.forbidden({ message: 'Você só pode visualizar dados da sua região' });
-        }
+        // if (!user !user.master && (user.cep !== patient.cep)) {
+        //   return responseBuilder.errors.forbidden({ message: 'Você só pode visualizar dados da sua região' });
+        // }
         if (!patient) return responseBuilder.errors.notFound({ message: 'Patient Not Found' });
         return responseBuilder.success.ok({ body: patient });
       }
