@@ -8,7 +8,9 @@ const state = {
     status: '',
     entranceTime: null,
   },
-  selectedPatient: 'Little',
+  selectedPatient: {
+    ticket: '',
+  },
 };
 
 export default {

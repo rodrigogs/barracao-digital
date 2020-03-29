@@ -1,6 +1,5 @@
 import * as api from '@/api';
 
-// eslint-disable-next-line import/prefer-default-export
 export const refreshList = async ({
   getters,
   commit,
@@ -17,6 +16,16 @@ export const refreshList = async ({
 export const selectPatient = async ({ commit }, { ticket }) => {
   const patient = await api.patients.getPatientByTicket({ ticket });
   return commit('selectPatient', patient);
+};
+
+export const updateSelectedPatientStatus = async ({ getters }, { status }) => {
+  const { ticket } = getters.selectedPatient;
+  await api.patients.update({
+    ticket,
+    patient: {
+      status,
+    },
+  });
 };
 
 export const updateFilter = async ({ commit, dispatch }, { status, entranceTime }) => {

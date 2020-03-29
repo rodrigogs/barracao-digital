@@ -108,9 +108,9 @@ export default {
     },
     getStatusMessage(status = 'waiting') {
       if (status === 'waiting') return 'Aguardando';
-      if (status === 'waiting_kit') return 'Aguardando';
-      if (status === 'ongoing') return 'Aguardando';
-      if (status === 'finished') return 'Aguardando';
+      if (status === 'waiting_kit') return 'Aguardando kit';
+      if (status === 'ongoing') return 'Em andamento';
+      if (status === 'finished') return 'Finalizado';
       return 'Sem status';
     },
   },

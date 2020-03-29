@@ -12,12 +12,12 @@
 
       <div class="content">
         <div class="content-block">
-          <h4>Alterar status</h4>
-          <select v-model="patient.status">
-            <option value="waiting">Aguardando</option>
-            <option value="waiting_kit">Aguardando kit</option>
-            <option value="ongoing">Em atendimento</option>
-            <option value="finished">Finalizado</option>
+          <h4>Alterar status {{ patient.status === 'waiting' }}</h4>
+          <select @change="onChangeStatus">
+            <option value="waiting" :selected="patient.status === 'waiting'">Aguardando</option>
+            <option value="waiting_kit" :selected="patient.status === 'waiting_kit'">Aguardando kit</option>
+            <option value="ongoing" :selected="patient.status === 'ongoing'">Em atendimento</option>
+            <option value="finished" :selected="patient.status === 'finished'">Finalizado</option>
           </select>
         </div>
 
@@ -81,7 +81,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 
 export default {
   name: 'DoctorPatientSummary',
@@ -91,9 +91,12 @@ export default {
       return this.selectedPatient;
     },
   },
-  watch: {},
-  mounted() {},
-  methods: {},
+  methods: {
+    ...mapActions('worklist', ['updateSelectedPatientStatus']),
+    onChangeStatus(event) {
+      this.updateSelectedPatientStatus({ status: event.target.value });
+    },
+  },
 };
 </script>
 
