@@ -23,7 +23,10 @@
           <td class="doctor-table__td">{{ item.name }}</td>
           <td class="doctor-table__td">{{ item.age }}</td>
           <td class="doctor-table__td">{{ calcTimeWaiting(item.createdAt) }}</td>
-          <td class="doctor-table__td">{{ getStatusMessage(item.status) }}</td>
+          <td class="doctor-table__td" :class="{
+            'status-ongoing': item.status === 'ongoing',
+            'status-waiting-kit': item.status === 'waiting_kit',
+          }">{{ getStatusMessage(item.status) }}</td>
         </tr>
       </tbody>
     </table>
@@ -186,6 +189,14 @@ export default {
 .doctor-table__td:first-of-type {
   text-align: left;
   padding-left: 8px;
+}
+
+.status-ongoing {
+  color: #FBB13C;
+}
+
+.status-waiting-kit {
+  color: #4CB944;
 }
 
 .doctor-table-pagination {
