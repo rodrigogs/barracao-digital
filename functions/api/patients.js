@@ -12,6 +12,15 @@ const methods = {
       const { cep, ticket } = pathParameters || {};
       const { status, timeWaiting } = queryStringParameters || {};
 
+      if (ticket) {
+        const patient = await patientsService.getOneByTicket(ticket);
+        if (!user.master && (user.cep !== patient.cep)) {
+          return responseBuilder.errors.forbidden({ message: 'Você só pode visualizar dados da sua região' });
+        }
+        if (!patient) return responseBuilder.errors.notFound({ message: 'Patient Not Found' });
+        return responseBuilder.success.ok({ body: patient });
+      }
+
       if (cep) {
         if (!user.master && (user.cep !== cep)) {
           return responseBuilder.errors.forbidden({ message: 'Você só pode visualizar dados da sua região' });
@@ -30,15 +39,6 @@ const methods = {
         return responseBuilder.success.ok({
           body: await patientsService.getAllByCep(cep),
         });
-      }
-
-      if (ticket) {
-        const patient = await patientsService.getOneByTicket(ticket);
-        if (!user.master && (user.cep !== patient.cep)) {
-          return responseBuilder.errors.forbidden({ message: 'Você só pode visualizar dados da sua região' });
-        }
-        if (!patient) return responseBuilder.errors.notFound({ message: 'Patient Not Found' });
-        return responseBuilder.success.ok({ body: patient });
       }
 
       return responseBuilder.errors.badRequest();
