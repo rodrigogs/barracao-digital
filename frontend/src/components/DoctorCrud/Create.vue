@@ -10,7 +10,12 @@
         </ul>
       </p>
 
-      <form id="doctor-create-form" @submit="createDoctor" class="grid">
+      <form id="doctor-create-form" v-on:submit.prevent="createDoctor" class="grid">
+        <p>
+          <label for="username">Nome</label>
+          <input id="name" name="name" v-model="form.name" />
+        </p>
+
         <p>
           <label for="username">Nome de Usuário</label>
           <input id="username" name="username" v-model="form.username" />
@@ -23,17 +28,12 @@
 
         <p>
           <label for="cep">CEP</label>
-          <input id="cep" name="cep" v-model="form.cep" maxlength="8" />
+          <input id="cep" name="cep" v-model="cep" maxlength="8" />
         </p>
 
         <p>
           <label for="email">Email</label>
           <input id="email" name="email" type="email" v-model="form.email" />
-        </p>
-
-        <p>
-          <label for="active">Ativo</label>
-          <input id="active" name="active" type="checkbox" v-model="form.active" />
         </p>
 
         <p>
@@ -56,6 +56,7 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
+import isEmailValid from '@/utils/isEmailValid';
 
 export default {
   name: 'DoctorCrudCreate',
@@ -66,12 +67,71 @@ export default {
   }),
 
   methods: {
-    createDoctor() {
-      const form = this;
-      // TODO continue
+    async createDoctor() {
+      if (!this.validate()) return;
+      try {
+        const newDoctor = await this.createDoctorAction(this.form);
+      } catch (err) {
+        console.error(err);
+        this.errors.push(err.message);
+      }
     },
-    ...mapActions('doctors', [
-      'create',
+    validate() {
+      const {
+        name,
+        username,
+        password,
+        email,
+        admin,
+        master,
+      } = this.form;
+
+      const { cep } = this;
+
+      this.errors = [];
+
+      if (!name || name.lenght <= 2) {
+        this.errors.push('O nome é obrigatório e deve ter no mínimo 3 caracteres.');
+      }
+
+      if (!username || username.length <= 2) {
+        this.errors.push('O nome de usuário é obrigatório e deve ter no mínimo 3 caracteres.');
+      }
+
+      if (!password || password.length < 5) {
+        this.errors.push('A senha é obrigatória e deve ter no mínimo 5 caracteres.');
+      }
+
+      if (!cep || cep.length < 8) {
+        this.errors.push('CEP inválido.');
+      }
+
+      if (!email || !isEmailValid(email)) {
+        this.errors.push('Email inválido.');
+      }
+
+      this.master = !!this.master;
+      this.admin = !!this.admin;
+
+      return this.errors.length === 0;
+    },
+    ...mapActions('doctors', {
+      createDoctorAction: 'create',
+    }),
+  },
+
+  computed: {
+    cep: {
+      get() {
+        return this.form.cep || this.loggedUser.cep;
+      },
+      set(newCep) {
+        this.form.cep = newCep;
+      },
+    },
+
+    ...mapGetters('auth', [
+      'loggedUser',
     ]),
   },
 };

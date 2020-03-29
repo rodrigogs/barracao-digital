@@ -56,11 +56,12 @@ const methods = {
       } = ctx;
 
       const { origin } = pathParameters;
-      const { destinations } = body;
+      const { destinations, ...attributes } = body;
 
+      const updatedFacility = await facilitiesService.update(origin, attributes);
       await facilitiesService.addOriginDestinations(origin, destinations);
 
-      return responseBuilder.success.noContent();
+      return responseBuilder.success.ok({ body: updatedFacility });
     } catch (err) {
       return responseBuilder.genericError(err);
     }

@@ -1,4 +1,7 @@
-// eslint-disable-next-line import/prefer-default-export
 export const fillList = (state, doctors) => {
   state.list = [...doctors];
+};
+
+export const addToList = (state, doctor) => {
+  state.list.unshift(doctor);
 };
