@@ -21,7 +21,7 @@ export default {
   name: 'PatientSignUp',
   components: {
     Stepper,
-    Loader
+    Loader,
   },
   data() {
     return {

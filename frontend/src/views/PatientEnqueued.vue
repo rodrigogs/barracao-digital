@@ -7,33 +7,38 @@
       </div>
 
       <div class="patient-enqueued__big-warn patient-enqueued__big-warn--blue">
-        Você esta na fila de atendimento
+        Você está na fila de atendimento
       </div>
 
       <div class="patient-enqueued__text" style="width: 250px;">
-        Estamos trabalhando, fique com o telefone e suas formas de comunicação disponiveis e online!
+        Fique com o telefone e suas formas de comunicação disponiveis e online.
+        <br>
+        <br>
+        <strong>Assim que possível um médico entrará em contato com você.</strong>
       </div>
 
       <div class="patient-enqueued__small-text">
-        Tempo na fila: {{timePast}}
+        Tempo na fila: {{ calcTimeWaiting(timePast) }}
       </div>
 
       <div class="patient-enqueued__big-warn patient-enqueued__big-warn--red">
-        Sua senha para retorno é {{patient.ticket}}
+        Sua senha de retorno é
+        <br>
+        <strong style="font-size: 28px;">{{ Number(patient.ticket) }}</strong>
       </div>
 
       <div class="patient-enqueued__text" style="width: 220px;">
-        Caso perca a conexão, retorne a fila de atendimento usando essa senha
+        Caso você perca a conexão, retorne à fila de atendimento usando a senha acima.
       </div>
     </div>
     <div v-if="!isLoading && patient.status === 'ongoing'" class="container">
       <div class="patient-enqueued__big-warn patient-enqueued__big-warn--blue">
-        Um médico está entrando em contato com você
+        Um médico está entrando em contato com você.
       </div>
     </div>
     <div v-if="!isLoading && patient.status === 'finished'" class="container">
       <div class="patient-enqueued__big-warn patient-enqueued__big-warn--blue">
-        Atendimento finalizado
+        Atendimento finalizado.
       </div>
     </div>
     <div v-if="!isLoading && patient.status === 'cant_be_assisted'" class="container">
@@ -60,6 +65,7 @@
 </template>
 
 <script>
+import Kairos from 'kairos';
 import Loader from '@/components/Loader.vue';
 import { patients as patientsApi } from '@/api';
 
@@ -77,11 +83,16 @@ export default {
       patient: {},
     };
   },
-  method: {
+  methods: {
     async reloadPacientData() {
       this.isLoading = true;
       this.patient = await patientsApi.getPatientByTicket(this.$route.params.ticket);
       this.isLoading = false;
+    },
+    calcTimeWaiting(createdAt) {
+      const timeWaiting = Date.now() - createdAt;
+      const time = Kairos.new(timeWaiting);
+      return time.toString('hh:mm');
     },
   },
   async mounted() {
