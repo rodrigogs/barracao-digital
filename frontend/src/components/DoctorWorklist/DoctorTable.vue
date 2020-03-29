@@ -1,7 +1,7 @@
 <template>
   <div class="doctor-table-container">
     <div class="doctor-table-loading" v-if="!listPaginated || listPaginated.length === 0">.
-      Carregando fila...
+      Nenhum registro filtrado ainda
     </div>
     <table class="doctor-table" v-if="listPaginated && listPaginated.length > 0">
       <thead class="doctor-table__head">
