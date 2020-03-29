@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="title">{{ message }}</div>
+    <div class="title" :class="{ 'title--stopped': !loggedUser.active }">{{ message }}</div>
     <div class="container" :class="{ 'stopped': !loggedUser.active }">
       <div class="actions">
         <button
@@ -109,6 +109,11 @@ export default {
   justify-self: center;
   align-self: center;
   margin-bottom: 8px;
+  color: var(--main-btn-color);
+}
+
+.title--stopped {
+  color: var(--secondary-btn-color);
 }
 
 .actions {
