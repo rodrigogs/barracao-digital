@@ -17,8 +17,8 @@
           class="doctor-table__tr"
           v-for="item in listPaginated"
           v-bind:key="item.id"
-          :class="{ 'doctor-table__tr--active': activeRowId === item.ticket }"
-          @click="activateRow(item.ticket)"
+          :class="{ 'doctor-table__tr--active': selectedPatient.ticket === item.ticket }"
+          @click="selectPatient({ ticket: item.ticket })"
         >
           <td class="doctor-table__td">{{ item.name }}</td>
           <td class="doctor-table__td">{{ item.age }}</td>
@@ -56,7 +56,7 @@
 <script>
 import axios from 'axios';
 import Kairos from 'kairos';
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapActions, mapGetters } from 'vuex';
 
 export default {
   name: 'DoctorTable',
@@ -64,7 +64,6 @@ export default {
     return {
       pageSize: 5,
       pageNumber: 1,
-      activeRowId: null,
     };
   },
   computed: {
@@ -76,6 +75,7 @@ export default {
       },
       selectedPatient: (state) => state.selectedPatient,
     }),
+    ...mapGetters('worklist', ['selectedPatient']),
     nextPageAvailable() {
       return this.pageNumber < (this.list.length / this.pageSize);
     },
@@ -100,10 +100,6 @@ export default {
       let registers = this.registers || [];
       registers = registers.slice((this.pageNumber - 1) * this.pageSize, this.pageNumber * this.pageSize);
       this.paginatedRegisters = [...registers];
-    },
-    activateRow(ticket) {
-      this.selectPatient({ ticket });
-      this.activeRowId = ticket;
     },
     calcTimeWaiting(createdAt) {
       const timeWaiting = Date.now() - createdAt;
