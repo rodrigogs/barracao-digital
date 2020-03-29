@@ -4,6 +4,10 @@ import * as mutations from './mutations';
 
 const state = {
   list: [],
+  filter: {
+    status: '',
+    entranceTime: null,
+  },
   selectedPatient: 'Little',
 };
 

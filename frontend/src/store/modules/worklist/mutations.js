@@ -6,3 +6,7 @@ export const fillList = (state, patients) => {
 export const selectPatient = (state, patient) => {
   state.selectedPatient = patient;
 };
+
+export const updateFilter = (state, filter) => {
+  state.filter = { ...state.filter, ...filter };
+};

@@ -56,7 +56,7 @@
 <script>
 import axios from 'axios';
 import Kairos from 'kairos';
-import { mapState, mapActions, mapGetters } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 
 export default {
   name: 'DoctorTable',
@@ -76,7 +76,6 @@ export default {
       },
       selectedPatient: (state) => state.selectedPatient,
     }),
-    ...mapGetters('auth', ['loggedUser']),
     nextPageAvailable() {
       return this.pageNumber < (this.list.length / this.pageSize);
     },
@@ -120,7 +119,7 @@ export default {
     },
   },
   created() {
-    this.refreshList(this.loggedUser.cep);
+    this.refreshList();
   },
 };
 </script>

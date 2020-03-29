@@ -23,6 +23,8 @@
           name="status"
           id="status"
           class="doctor-filters-select"
+          v-model="status"
+          @change="onChangeStatus"
         >
           <option value="waiting">Aguardando</option>
           <option value="ongoing">Em andamento</option>
@@ -36,8 +38,26 @@
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex';
+
 export default {
   name: 'DoctorFilters',
+  data() {
+    return {
+      status: 'waiting',
+    };
+  },
+  computed: {
+    ...mapGetters('auth', ['loggedUser']),
+  },
+  methods: {
+    ...mapActions('worklist', ['updateFilter']),
+    onChangeStatus() {
+      this.updateFilter({
+        status: this.status,
+      });
+    },
+  },
 };
 </script>
 

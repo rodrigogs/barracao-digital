@@ -9,9 +9,8 @@ export default (request) => ({
     const { data } = await request.get(`/patients/ticket/${ticket}`);
     return data;
   },
-  async getList({ cep }) {
-    const { data } = await request.get(`/patients/cep/${cep}`);
-    // const { data } = await axios.get('https://jsonplaceholder.typicode.com/users');
+  async getList({ cep, params }) {
+    const { data } = await request.get(`/patients/cep/${cep}`, { params });
     return data;
   },
 });
