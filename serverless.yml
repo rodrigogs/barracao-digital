@@ -123,7 +123,6 @@ functions:
           method: get
           path: /patients/ticket/{ticket}
           cors: true
-          authorizer: doctorAuthorizer
 
       - http:
           method: post

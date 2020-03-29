@@ -25,6 +25,15 @@ const routes = [
     },
   },
   {
+    path: '/medicos',
+    name: 'DoctorManagement',
+    component: () => import(/* webpackChunkName: "doctor-management" */ '../views/DoctorManagement.vue'),
+    meta: {
+      title: 'Cadastros de médicos',
+      requiresAuth: true,
+    },
+  },
+  {
     path: '/medicos/fila',
     name: 'DoctorWorklist',
     component: () => import(/* webpackChunkName: "doctor-worklist" */ '../views/DoctorWorklist.vue'),
