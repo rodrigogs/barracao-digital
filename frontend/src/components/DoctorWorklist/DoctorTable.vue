@@ -102,7 +102,7 @@ export default {
       this.paginatedRegisters = [...registers];
     },
     activateRow(ticket) {
-      this.selectPatient(ticket);
+      this.selectPatient({ ticket });
       this.activeRowId = ticket;
     },
     calcTimeWaiting(createdAt) {
