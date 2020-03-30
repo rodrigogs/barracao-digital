@@ -37,6 +37,20 @@
         </p>
 
         <p>
+          <label for="fu">Estado</label>
+          <select id="fu" name="fu" v-model="form.fu">
+            <option v-for="state of brazillianStates" :key="state.fu" :value="state.fu">
+              {{ state.name }}
+            </option>
+          </select>
+        </p>
+
+        <p>
+          <label for="crm">CRM</label>
+          <input id="crm" name="crm" v-model="form.crm" />
+        </p>
+
+        <p>
           <label for="admin">Admin</label>
           <input id="admin" name="admin" type="checkbox" v-model="form.admin" />
         </p>
@@ -57,6 +71,7 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import isEmailValid from '@/utils/isEmailValid';
+import states from '@/utils/states';
 
 export default {
   name: 'DoctorCrudCreate',
@@ -82,6 +97,8 @@ export default {
         username,
         password,
         email,
+        fu,
+        crm,
         admin,
         master,
       } = this.form;
@@ -110,6 +127,14 @@ export default {
         this.errors.push('Email inválido.');
       }
 
+      if (!fu) {
+        this.errors.push('A seleção de estado é obrigatória.');
+      }
+
+      if (!crm || crm.lenght < 5) {
+        this.errors.push('CRM inválido.');
+      }
+
       this.master = !!this.master;
       this.admin = !!this.admin;
 
@@ -121,6 +146,10 @@ export default {
   },
 
   computed: {
+    brazillianStates() {
+      return states.brazil;
+    },
+
     cep: {
       get() {
         return this.form.cep || this.loggedUser.cep;
@@ -140,7 +169,7 @@ export default {
 <style scoped>
 .grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   border: 1px solid black;
   margin-bottom: 5px;
 }
