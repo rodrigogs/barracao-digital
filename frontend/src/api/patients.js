@@ -16,7 +16,7 @@ const encodePatient = ({
 } = {}) => ({
   name,
   age,
-  cep,
+  cep: String(cep).match(/\d+/g).join(''),
   meds: meds || null,
   allergies: allergies || null,
   covenant: covenant || null,
@@ -28,7 +28,7 @@ const encodePatient = ({
   hangout: hangout || null,
   skype: skype || null,
   status: status || null,
-})
+});
 
 export default (request) => ({
   async signUpPatient(patient) {

@@ -27,7 +27,7 @@
         </p>
 
         <p>
-          <label for="cep">CEP</label>
+          <label for="cep">CEP da Instalação</label>
           <input id="cep" name="cep" v-model="cep" maxlength="8" />
         </p>
 

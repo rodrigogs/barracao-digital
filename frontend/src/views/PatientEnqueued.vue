@@ -81,6 +81,7 @@ export default {
     return {
       isLoading: true,
       patient: {},
+      reloaderInterval: null,
     };
   },
   methods: {
@@ -105,7 +106,11 @@ export default {
 
     this.patient = await patientsApi.getPatientByTicket(patientTicket);
     this.isLoading = false;
-    setInterval(this.reloadPacientData, 60000);
+    this.reloaderInterval = setInterval(this.reloadPacientData, 60000);
+  },
+  beforeDestroy() {
+    console.log('Clearing reloader interval');
+    clearInterval(this.reloaderInterval);
   },
 };
 </script>

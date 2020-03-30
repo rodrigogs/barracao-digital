@@ -13,8 +13,8 @@ export const refreshList = async ({
   return commit('fillList', patients);
 };
 
-export const selectPatient = async ({ commit }, { ticket }) => {
-  const patient = await api.patients.getPatientByTicket({ ticket });
+export const selectPatient = async ({ commit, getters }, { ticket }) => {
+  const patient = getters.list.find((p) => p.ticket === ticket);
   return commit('selectPatient', patient);
 };
 
