@@ -1,3 +1,14 @@
+const {
+  BadRequestError,
+  ConflictError,
+  ForbiddenError,
+  InternalServerError,
+  MethodNotAllowedError,
+  NotFoundError,
+  NotImplementedError,
+  UnauthorizedError,
+} = require('barracoes-covid-19/errors/api');
+
 const defaultHeaders = {
   'Content-Type': 'application/json',
   'Access-Control-Allow-Origin': '*',
@@ -53,47 +64,21 @@ const noContent = (options = {}) => {
 };
 
 // Error responses
-const badRequest = (error = {}) => genericError({
-  ...error,
-  statusCode: 400,
-  message: error.message || 'Bad Request',
-});
+const badRequest = (message) => genericError(new BadRequestError(message));
 
-const unauthorized = (error = {}) => genericError({
-  ...error,
-  statusCode: 401,
-  message: error.message || 'Unauthorized',
-});
+const unauthorized = (message) => genericError(new UnauthorizedError(message));
 
-const forbidden = (error = {}) => genericError({
-  ...error,
-  statusCode: 403,
-  message: error.message || 'Forbidden',
-});
+const forbidden = (message) => genericError(new ForbiddenError(message));
 
-const notFound = (error = {}) => genericError({
-  ...error,
-  statusCode: 404,
-  message: error.message || 'Not Found',
-});
+const notFound = (message) => genericError(new NotFoundError(message));
 
-const methodNotAllowed = (error = {}) => genericError({
-  ...error,
-  statusCode: 405,
-  message: error.message || 'Method Not Allowed',
-});
+const methodNotAllowed = (message) => genericError(new MethodNotAllowedError(message));
 
-const internalServerError = (error = {}) => genericError({
-  ...error,
-  statusCode: 500,
-  message: error.message || 'Internal Server Error',
-});
+const conflict = (message) => genericError(new ConflictError(message));
 
-const notImplemented = (error = {}) => genericError({
-  ...error,
-  statusCode: 501,
-  message: error.message || 'Not Implemented',
-});
+const internalServerError = (message) => genericError(new InternalServerError(message));
+
+const notImplemented = (message) => genericError(new NotImplementedError(message));
 
 module.exports = {
   generic,
@@ -109,6 +94,7 @@ module.exports = {
     forbidden,
     notFound,
     methodNotAllowed,
+    conflict,
     internalServerError,
     notImplemented,
   },

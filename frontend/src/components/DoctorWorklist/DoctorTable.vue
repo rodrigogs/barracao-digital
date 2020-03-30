@@ -1,6 +1,6 @@
 <template>
   <div class="doctor-table-container">
-    <div class="doctor-table-loading" v-if="!listPaginated || listPaginated.length === 0">.
+    <div class="doctor-table-loading" v-if="!listPaginated || listPaginated.length === 0">
       Nenhum registro filtrado ainda
     </div>
     <table class="doctor-table" v-if="listPaginated && listPaginated.length > 0">

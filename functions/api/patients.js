@@ -1,4 +1,4 @@
-const { patientsService } = require('barracoes-covid-19');
+const { patientsService } = require('barracoes-covid-19/services');
 const { getRequestContext, responseBuilder } = require('../helpers');
 
 const methods = {
@@ -9,21 +9,23 @@ const methods = {
         pathParameters,
         queryStringParameters,
       } = ctx;
+
       const { cep, ticket } = pathParameters || {};
       const { status, timeWaiting } = queryStringParameters || {};
 
       if (ticket) {
         const patient = await patientsService.getOneByTicket(ticket);
         // if (!user !user.master && (user.cep !== patient.cep)) {
-        //   return responseBuilder.errors.forbidden({ message: 'Você só pode visualizar dados da sua região' });
+        //   return responseBuilder.errors
+        //     .forbidden({ message: 'Você só pode visualizar dados da sua região' });
         // }
-        if (!patient) return responseBuilder.errors.notFound({ message: 'Patient Not Found' });
+        if (!patient) return responseBuilder.errors.notFound('Paciente não encontrado');
         return responseBuilder.success.ok({ body: patient });
       }
 
       if (cep) {
         if (!user.master && (user.cep !== cep)) {
-          return responseBuilder.errors.forbidden({ message: 'Você só pode visualizar dados da sua região' });
+          return responseBuilder.errors.forbidden('Você só pode visualizar dados da sua região');
         }
         if (status && !timeWaiting) {
           return responseBuilder.success.ok({
@@ -72,7 +74,7 @@ const methods = {
 
       const patient = await patientsService.getOneByTicket(ticket);
       if (!user.master && (user.cep !== patient.cep)) {
-        return responseBuilder.errors.forbidden({ message: 'Você só pode alterar dados da sua região' });
+        return responseBuilder.errors.forbidden('Você só pode alterar dados da sua região');
       }
 
       const updatedPatient = await patientsService.update(ticket, { status: body.status });

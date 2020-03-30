@@ -1,4 +1,4 @@
-const { authService } = require('barracoes-covid-19');
+const { authService } = require('barracoes-covid-19/services');
 const { getRequestContext, responseBuilder } = require('../helpers');
 
 const methods = {
@@ -10,7 +10,7 @@ const methods = {
 
       const { username, password } = (body || {});
       if (!username || !password) {
-        return responseBuilder.errors.badRequest({ message: 'Missing username or password' });
+        return responseBuilder.errors.badRequest('Missing username or password');
       }
 
       const loggedUser = await authService.login({ username, password });

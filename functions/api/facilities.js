@@ -1,4 +1,4 @@
-const { facilitiesService } = require('barracoes-covid-19');
+const { facilitiesService } = require('barracoes-covid-19/services');
 const { getRequestContext, responseBuilder } = require('../helpers');
 
 const methods = {
@@ -25,7 +25,7 @@ const methods = {
 
       const facility = await facilitiesService.getOneByOrigin(origin);
       if (!facility) {
-        return responseBuilder.errors.notFound({ message: 'Facility not found' });
+        return responseBuilder.errors.notFound('Facility not found');
       }
 
       return responseBuilder.success.ok({
@@ -43,7 +43,7 @@ const methods = {
       } = ctx;
 
       if (!body || !body.origin) {
-        return responseBuilder.errors.badRequest({ message: 'O CEP da instalação é obrigatório' });
+        return responseBuilder.errors.badRequest('O CEP da instalação é obrigatório');
       }
 
       const createdFacility = await facilitiesService.create(body);

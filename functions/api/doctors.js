@@ -1,4 +1,4 @@
-const { doctorsService } = require('barracoes-covid-19');
+const { doctorsService } = require('barracoes-covid-19/services');
 const { getRequestContext, responseBuilder } = require('../helpers');
 
 const methods = {
@@ -15,7 +15,7 @@ const methods = {
 
       if (cep) {
         if (!user.master && (user.cep !== cep)) {
-          return responseBuilder.errors.forbidden({ message: 'Você só pode visualizar dados da sua região' });
+          return responseBuilder.errors.forbidden('Você só pode visualizar dados da sua região');
         }
         const doctors = active
           ? await doctorsService.getAllByCepAndActive(cep, active === 'true')
@@ -27,7 +27,7 @@ const methods = {
 
       if (username) {
         const doctor = await doctorsService.getOneByUsername(username);
-        if (!doctor) return responseBuilder.errors.notFound({ message: 'Doctor Not Found' });
+        if (!doctor) return responseBuilder.errors.notFound('Doctor Not Found');
         return responseBuilder.success.ok({
           body: { ...doctor, password: undefined },
         });
@@ -67,15 +67,15 @@ const methods = {
       const isFromSameFacility = user.cep === body.cep;
 
       if (!isFromSameFacility && !isMaster) {
-        return responseBuilder.errors.forbidden({ message: 'Administradores só podem criar cadástros de suas regiões' });
+        return responseBuilder.errors.forbidden('Administradores só podem criar cadástros de suas regiões');
       }
 
       if (wantsToBeMaster && !isMaster) {
-        return responseBuilder.errors.forbidden({ message: 'Somente um usário master pode criar outro usuário master' });
+        return responseBuilder.errors.forbidden('Somente um usário master pode criar outro usuário master');
       }
 
       if (wantsTobeAdmin && !isMaster) {
-        return responseBuilder.errors.forbidden({ message: 'Somente um usuário master pode criar um administrador' });
+        return responseBuilder.errors.forbidden('Somente um usuário master pode criar um administrador');
       }
 
       console.log(JSON.stringify(body, null, 2));
@@ -104,23 +104,23 @@ const methods = {
       const isSelfUpdate = user.username === username;
 
       if (wantsToBeMaster && !isMaster) {
-        return responseBuilder.errors.forbidden({ message: 'Somente um usário master pode criar outro usuário master' });
+        return responseBuilder.errors.forbidden('Somente um usário master pode criar outro usuário master');
       }
 
       if (wantsTobeAdmin && !isMaster) {
-        return responseBuilder.errors.forbidden({ message: 'Somente um usuário master pode criar um administrador' });
+        return responseBuilder.errors.forbidden('Somente um usuário master pode criar um administrador');
       }
 
       if (username) {
         const storedDoctor = await doctorsService.getOneByUsername(username);
         if (!storedDoctor) {
-          return responseBuilder.errors.notFound({ message: 'Doutor não encontrado' });
+          return responseBuilder.errors.notFound('Doutor não encontrado');
         }
 
         const isTryingToChangeAnotherAdmin = !isSelfUpdate
           && (storedDoctor.admin || storedDoctor.master);
         if (isTryingToChangeAnotherAdmin && !isMaster) {
-          return responseBuilder.errors.forbidden({ message: 'Você não pode alterar o cadástro de outros administradores' });
+          return responseBuilder.errors.forbidden('Você não pode alterar o cadástro de outros administradores');
         }
 
         const updatedDoctor = await doctorsService.update(username, body);
