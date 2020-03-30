@@ -43,9 +43,9 @@ const routes = [
     },
   },
   {
-    path: '/medicos/instalacoes',
+    path: '/instalacoes',
     name: 'Facilities',
-    component: () => import(/* webpackChunkName: "doctor-worklist" */ '../views/Facilities.vue'),
+    component: () => import(/* webpackChunkName: "facilities" */ '../views/Facilities.vue'),
     meta: {
       title: 'Lista de Instalações',
       requiresAuth: true,
@@ -54,7 +54,7 @@ const routes = [
   {
     path: '/instalacoes/cadastrar',
     name: 'FacilitiesCreate',
-    component: () => import(/* webpackChunkName: "doctor-worklist" */ '../views/FacilitiesCreate.vue'),
+    component: () => import(/* webpackChunkName: "facilities-create" */ '../views/FacilitiesCreate.vue'),
     meta: {
       title: 'Cadastro de Instalação',
       requiresAuth: true,
@@ -63,7 +63,7 @@ const routes = [
   {
     path: '/instalacoes/editar/:origin',
     name: 'FacilitiesEdit',
-    component: () => import(/* webpackChunkName: "doctor-worklist" */ '../views/FacilitiesEdit.vue'),
+    component: () => import(/* webpackChunkName: "facilities-edit" */ '../views/FacilitiesEdit.vue'),
     meta: {
       title: 'Cadastro de Instalação',
       requiresAuth: true,

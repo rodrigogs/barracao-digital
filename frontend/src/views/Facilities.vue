@@ -5,19 +5,22 @@
     </div>
     <br />
     <div class="facilities">
-      <div v-for="item in list" v-bind:key="item.id" class="facilitie">
-        <div>Editar</div>
-        <p><b>Origem:</b> {{ item.origin }}</p>
-        <p><b>Tipo de contato:</b> {{ item.contactType }}</p>
-        <p><b>Contato:</b> {{ item.contact || 'Não cadastrado' }}</p>
-        <div>
-          <button @click="edit(item.origin)" class="btn">Editar instalação</button>
+      <div v-for="item in list" v-bind:key="item.id" class="facility">
+
+        <div class="facility-box">
+          <div>Editar</div>
+          <p><b>Origem:</b> {{ item.origin }}</p>
+          <p><b>Tipo de contato:</b> {{ item.contactType }}</p>
+          <p><b>Contato:</b> {{ item.contact || 'Não cadastrado' }}</p>
+          <div>
+            <button @click="edit(item.origin)" class="btn">Editar instalação</button>
+          </div>
+          <div>
+            <button @click="createNewDestination(item.origin)" class="btn">Criar novo destino</button>
+          </div>
         </div>
-        <div>
-          <button @click="createNewDestination(item.origin)" class="btn">Criar novo destino</button>
-        </div>
-        <br />
-        <div>
+
+        <div class="facility-box destinations">
           <div>
             <b>Destinos:</b>
           </div>
@@ -25,9 +28,7 @@
             v-for="(destination, index) in item.destinations"
             v-bind:key="index"
             class="destination"
-          >
-            <div>{{ destination }}</div>
-          </div>
+          >{{ destination }}</div>
         </div>
       </div>
     </div>
@@ -44,10 +45,10 @@ export default {
   methods: {
     ...mapActions('facilities', ['refreshList', 'createDestination']),
     create() {
-      this.$router.push('/medicos/instalacoes/cadastrar');
+      this.$router.push('/instalacoes/cadastrar');
     },
     edit(origin) {
-      this.$router.push(`/medicos/instalacoes/editar/${origin}`);
+      this.$router.push(`/instalacoes/editar/${origin}`);
     },
     createNewDestination(origin) {
       const destination = window.prompt('Digite o cep do novo destino:');
@@ -61,14 +62,22 @@ export default {
 </script>
 
 <style scoped>
-  .facilities {
-    display: grid;
-    grid-auto-flow: row;
-    grid-row-gap: 8px;
-  }
-  .facilitie {
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
-    border-radius: 4px;
-    padding: 16px;
-  }
+.facilities {
+  display: grid;
+  grid-auto-flow: row;
+  grid-row-gap: 8px;
+}
+.facility {
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 4px;
+  padding: 16px;
+  display: flex;
+}
+.facility-box {
+  flex: 50%;
+}
+.facility-box .destinations {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
 </style>
