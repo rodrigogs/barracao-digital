@@ -3,7 +3,7 @@
     <div class="container">
       <form id="facilitie-form" @submit="doCreate">
         <p>
-          <b>Criando nova instalação</b>
+          <b>Editando instalação</b>
         </p>
         <p>
           <label for="origin">CEP*:</label>
@@ -36,36 +36,42 @@ import { mapActions } from 'vuex';
 
 export default {
   name: 'FalicitiesCreate',
-
   data: () => ({
     origin: '',
     contactType: '',
     contact: '',
+    facilitie: {},
     errors: [],
   }),
-
+  async mounted() {
+    const facilitie = await this.getByOrigin(this.$route.params.origin);
+    this.facilitie = { ...facilitie };
+    this.origin = facilitie.origin;
+    this.contactType = facilitie.contactType;
+    this.contact = facilitie.contact;
+  },
   methods: {
-    ...mapActions('facilities', ['create']),
+    ...mapActions('facilities', ['getByOrigin', 'update']),
     async doCreate(e) {
       e.preventDefault();
 
       try {
         if (!this.validate()) return;
 
-        const facilitieData = {};
+        const facilitieData = { ...this.facilitie, destinations: [] };
         if (this.origin) facilitieData.origin = this.origin;
         if (this.contactType) facilitieData.contactType = this.contactType;
         if (this.contact) facilitieData.contact = this.contact;
 
-        await this.create(facilitieData);
+        await this.update(facilitieData);
 
-        alert('Instalação cadastrada com sucesso');
+        alert('Instalação editada com sucesso');
 
         this.$router.push('/medicos/instalacoes');
       } catch (err) {
-        alert('Não foi possível cadastrar a instalação. Revise os dados inseridos e tente novamente.');
+        alert('Não foi possível editar a instalação. Revise os dados inseridos e tente novamente.');
         if (err.response && err.response.status === 401) {
-          this.errors.push('Não foi possível cadastrar a instalação. Revise os dados inseridos e tente novamente.');
+          this.errors.push('Não foi possível editar a instalação. Revise os dados inseridos e tente novamente.');
         } else {
           this.errors.push(err.message);
         }

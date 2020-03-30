@@ -3,7 +3,7 @@ import * as api from '@/api';
 export const refreshList = async ({ commit, dispatch }) => {
   const facilities = await api.facilities.getList();
   commit('fillList', facilities);
-  setTimeout(() => facilities.forEach(({ origin }) => dispatch('refreshListDestinations', origin)), 2000)
+  facilities.forEach(({ origin }) => dispatch('refreshListDestinations', origin));
 };
 
 export const refreshListDestinations = async ({ commit, getters, state }, origin) => {
@@ -24,3 +24,19 @@ export const create = async ({ commit }, {
     contact,
   });
 };
+
+export const createDestination = async ({ dispatch }, { origin, destination }) => {
+  await api.facilities.createDestination({
+    origin,
+    destination,
+  });
+  dispatch('refreshListDestinations', origin)
+};
+
+export const getByOrigin = async (store, origin) => {
+  return await api.facilities.getByOrigin(origin);
+};
+
+export const update = async (store, facilitie) => {
+  await api.facilities.update(facilitie);
+}

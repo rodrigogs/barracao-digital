@@ -61,6 +61,15 @@ const routes = [
     },
   },
   {
+    path: '/medicos/instalacoes/editar/:origin',
+    name: 'FacilitiesEdit',
+    component: () => import(/* webpackChunkName: "doctor-worklist" */ '../views/FacilitiesEdit.vue'),
+    meta: {
+      title: 'Cadastro de Instalação',
+      requiresAuth: true,
+    },
+  },
+  {
     path: '/pacientes/registrar',
     name: 'PatientSignUp',
     component: () => import(/* webpackChunkName: "patient-signup" */ '../views/PatientSignUp.vue'),
