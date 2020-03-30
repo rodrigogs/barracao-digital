@@ -52,14 +52,8 @@
 <!--      <p>Caso aceite receber atendimento em outro horário, selecione abaixo:</p>-->
 <!--      <p>Aceito aguardar</p>-->
     </div>
-    <div v-if="!isLoading && patient.status === 'shed_not_available'" class="container">
-      <div class="patient-enqueued__big-warn">
-        O serviço online do seu CEP
-        não está ativo nesse momento.
-      </div>
-      <div class="patient-enqueued__big-warn">
-        Você pode tentar novamente tarde.
-      </div>
+    <div v-if="!isLoading && patient.status === 'facility_not_available'" class="container">
+      <FacilityNotAvailable />
     </div>
   </section>
 </template>
@@ -67,11 +61,12 @@
 <script>
 import Kairos from 'kairos';
 import Loader from '@/components/Loader.vue';
+import FacilityNotAvailable from '@/components/FacilityNotAvailable.vue';
 import { patients as patientsApi } from '@/api';
 
 export default {
   name: 'PatientEnqueued',
-  components: { Loader },
+  components: { Loader, FacilityNotAvailable },
   computed: {
     timePast() {
       return this.patient.createdAt;
