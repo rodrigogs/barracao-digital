@@ -22,7 +22,9 @@
         >
           <td class="doctor-table__td">{{ item.name }}</td>
           <td class="doctor-table__td">{{ item.age }}</td>
-          <td class="doctor-table__td">{{ calcTimeWaiting(item.createdAt) }}</td>
+          <td class="doctor-table__td" v-bind:style="{ 'color': `#${calulateColor(item.createdAt)}` }">
+            {{ calcTimeWaiting(item.createdAt) }}
+          </td>
           <td class="doctor-table__td" :class="{
             'status-ongoing': item.status === 'ongoing',
             'status-waiting-kit': item.status === 'waiting_kit',
@@ -60,6 +62,25 @@
 import axios from 'axios';
 import Kairos from 'kairos';
 import { mapState, mapActions, mapGetters } from 'vuex';
+
+const perc2color = (perc) => {
+  let r;
+  const g = 0;
+  let b;
+
+  const normalizedPerc = (perc < 100) ? perc : 100;
+
+  if (normalizedPerc < 50) {
+    r = 255;
+    b = Math.round(5.1 * normalizedPerc);
+  } else {
+    b = 255;
+    r = Math.round(510 - 5.10 * normalizedPerc);
+  }
+
+  const h = r * 0x10000 + g * 0x100 + b * 0x1;
+  return `#000000${h.toString(16)}`.slice(-6);
+};
 
 export default {
   name: 'DoctorTable',
@@ -108,6 +129,13 @@ export default {
       const timeWaiting = Date.now() - createdAt;
       const time = Kairos.new(timeWaiting);
       return time.toString('hh:mm');
+    },
+    calulateColor(createdAt) {
+      const now = Date.now();
+      const timeWaiting = now - createdAt;
+      const h24 = 1000 * 60 * 60 * 24;
+      const percent = (timeWaiting / h24) * 100;
+      return perc2color(100 - percent);
     },
     getStatusMessage(status = 'waiting') {
       if (status === 'waiting') return 'Aguardando';
