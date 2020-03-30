@@ -70,7 +70,7 @@ const routes = [
     },
   },
   {
-    path: '/volunariado',
+    path: '/voluntariado',
     name: 'Volunteers',
     component: () => import(/* webpackChunkName: "volunteers" */ '../views/Volunteering.vue'),
     meta: {
