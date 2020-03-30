@@ -28,7 +28,7 @@ export const updateSelectedPatientStatus = async ({ getters }, { status }) => {
   });
 };
 
-export const updateFilter = async ({ commit, dispatch }, { status, entranceTime }) => {
-  commit('updateFilter', { status, entranceTime });
+export const updateFilter = async ({ commit, dispatch }, { status, timeWaiting }) => {
+  commit('updateFilter', { status, timeWaiting });
   dispatch('refreshList');
 };

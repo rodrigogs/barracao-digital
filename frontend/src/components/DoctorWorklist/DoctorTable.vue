@@ -73,7 +73,7 @@ export default {
     ...mapState('worklist', {
       list: (state) => state.list,
       listPaginated(state) {
-        const list = state.list || [];
+        const list = [...state.list].sort((a, b) => a.createdAt - b.createdAt);
         return list.slice((this.pageNumber - 1) * this.pageSize, this.pageNumber * this.pageSize);
       },
       selectedPatient: (state) => state.selectedPatient,
@@ -116,9 +116,6 @@ export default {
       if (status === 'finished') return 'Finalizado';
       return 'Sem status';
     },
-  },
-  created() {
-    this.refreshList();
   },
 };
 </script>

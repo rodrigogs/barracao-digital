@@ -32,6 +32,12 @@ const methods = {
             body: await patientsService.getAllByCepAndStatus(cep, status),
           });
         }
+        if (timeWaiting && !status) {
+          return responseBuilder.success.ok({
+            body: await patientsService
+              .getAllByCepAndTimeWaiting(cep, timeWaiting),
+          });
+        }
         if (status && timeWaiting) {
           return responseBuilder.success.ok({
             body: await patientsService
