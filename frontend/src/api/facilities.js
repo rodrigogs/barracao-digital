@@ -5,9 +5,13 @@ export default (request) => ({
     return data;
   },
 
-  async getList({ cep }) {
-    const { data } = await request.get(`/facilities/cep/${cep}`);
+  async getList() {
+    const { data } = await request.get('/facilities');
     return data;
   },
 
+  async getDestinationsByOrigin({ origin }) {
+    const { data } = await request.get(`/facilities/origin/${origin}/destinations`);
+    return data;
+  },
 });
