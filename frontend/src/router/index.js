@@ -69,6 +69,15 @@ const routes = [
       requiresAuth: false,
     },
   },
+  {
+    path: '/volunariado',
+    name: 'Volunteers',
+    component: () => import(/* webpackChunkName: "volunteers" */ '../views/Volunteering.vue'),
+    meta: {
+      title: 'Voluntariado',
+      requiresAuth: false,
+    },
+  },
 ];
 
 const router = new VueRouter({

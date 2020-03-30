@@ -14,7 +14,7 @@
         <router-link class="header__link" :to="{ name: 'DoctorLogin' }">
           Acesso médico
         </router-link>
-        <router-link class="header__link" to="/foo">
+        <router-link class="header__link" to="/voluntariado">
           <b>Quero ajudar</b>
         </router-link>
       </template>
