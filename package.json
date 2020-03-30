@@ -29,7 +29,7 @@
     "deploy:production": "cross-env-shell NODE_ENV=production \"npm run deploy:backend && npm run deploy:frontend\"",
     "clear-frontend-cache": "npx cloudfront-invalidate-cache --cname www.barracaodigital.com"
   },
-  "license": "MIT",
+  "license": "BSD-3-Clause",
   "submodules": [
     "lib",
     "frontend",
