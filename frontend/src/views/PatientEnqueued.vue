@@ -101,7 +101,9 @@ export default {
 
     this.patient = await patientsApi.getPatientByTicket(patientTicket);
     this.isLoading = false;
-    this.reloaderInterval = setInterval(this.reloadPacientData, 60000);
+    if (this.patient.status === 'waiting') {
+      this.reloaderInterval = setInterval(this.reloadPacientData, 60000);
+    }
   },
   beforeDestroy() {
     console.log('Clearing reloader interval');
