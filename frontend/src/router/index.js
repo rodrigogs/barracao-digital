@@ -52,7 +52,7 @@ const routes = [
     },
   },
   {
-    path: '/medicos/instalacoes/cadastrar',
+    path: '/instalacoes/cadastrar',
     name: 'FacilitiesCreate',
     component: () => import(/* webpackChunkName: "doctor-worklist" */ '../views/FacilitiesCreate.vue'),
     meta: {
@@ -61,7 +61,7 @@ const routes = [
     },
   },
   {
-    path: '/medicos/instalacoes/editar/:origin',
+    path: '/instalacoes/editar/:origin',
     name: 'FacilitiesEdit',
     component: () => import(/* webpackChunkName: "doctor-worklist" */ '../views/FacilitiesEdit.vue'),
     meta: {
@@ -107,6 +107,7 @@ const routes = [
   },
   {
     path: '*',
+    name: 'NotFound',
     component: () => import(/* webpackChunkName: "PageNotFound" */ '../views/PageNotFound.vue'),
     meta: {
       title: '404',

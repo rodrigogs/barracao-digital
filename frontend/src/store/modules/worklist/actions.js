@@ -18,14 +18,20 @@ export const selectPatient = async ({ commit, getters }, { ticket }) => {
   return commit('selectPatient', patient);
 };
 
-export const updateSelectedPatientStatus = async ({ getters }, { status }) => {
+export const updateSelectedPatientStatus = async ({ getters, dispatch }, { status, message }) => {
   const { ticket } = getters.selectedPatient;
-  await api.patients.update({
-    ticket,
-    patient: {
-      status,
-    },
-  });
+  let updatedPatient;
+  if (status === 'ongoing') {
+    updatedPatient = await api.patients.setOngoing({ ticket, message });
+  } else if (status === 'waiting_kit') {
+    updatedPatient = await api.patients.setWaitingKit({ ticket, message });
+  } else if (status === 'finished') {
+    updatedPatient = await api.patients.setFinished({ ticket, message });
+  } else if (updatedPatient) {
+    await dispatch('refreshList');
+  } else {
+    throw new Error(`Invalid status "${status}"`);
+  }
 };
 
 export const updateFilter = async ({ commit, dispatch }, { status, timeWaiting }) => {

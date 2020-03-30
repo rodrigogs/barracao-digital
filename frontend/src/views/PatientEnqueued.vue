@@ -31,20 +31,32 @@
         Caso você perca a conexão, retorne à fila de atendimento usando a senha acima.
       </div>
     </div>
+
     <div v-if="!isLoading && patient.status === 'ongoing'" class="container">
       <div class="patient-enqueued__big-warn patient-enqueued__big-warn--blue">
-        Um médico está entrando em contato com você.
+        O médico <strong>{{ patient.ongoingDoctorDoctorName }}</strong> está entrando em contato com você.
+        <br>
+        Siga as instruções abaixo:
+        <br>
+        <textarea id="doctor-ongoing-feedback" cols="40" rows="5" v-model="patient.ongoingDoctorFeedback" readonly></textarea>
       </div>
     </div>
+
     <div v-if="!isLoading && patient.status === 'finished'" class="container">
       <div class="patient-enqueued__big-warn patient-enqueued__big-warn--blue">
-        Atendimento finalizado.
+        O atendimento foi finalizado pelo médico <strong>{{ patient.waitingKitDoctorDoctorName }}</strong>.
+        <br v-if="patient.finishedDoctorFeedback">
+        <span v-if="patient.finishedDoctorFeedback">O médico deixou um feedback que pode ser conferido abaixo:</span>
+        <br v-if="patient.finishedDoctorFeedback">
+        <textarea id="doctor-finished-feedback" cols="40" rows="5" v-if="patient.finishedDoctorFeedback" v-model="patient.finishedDoctorFeedback" readonly></textarea>
       </div>
     </div>
+
     <div v-if="!isLoading && patient.status === 'cant_be_assisted'" class="container">
       <div class="patient-enqueued__big-warn patient-enqueued__big-warn--red">
         {{patient.name}}, nossa equipe está sobrecarregada no momento.
       </div>
+
       <div class="patient-enqueued__text">
         Tente novamente mais tarde.
       </div>
@@ -52,6 +64,7 @@
 <!--      <p>Caso aceite receber atendimento em outro horário, selecione abaixo:</p>-->
 <!--      <p>Aceito aguardar</p>-->
     </div>
+
     <div v-if="!isLoading && patient.status === 'facility_not_available'" class="container">
       <FacilityNotAvailable />
     </div>
@@ -99,10 +112,19 @@ export default {
       return;
     }
 
-    this.patient = await patientsApi.getPatientByTicket(patientTicket);
-    this.isLoading = false;
-    if (this.patient.status === 'waiting') {
-      this.reloaderInterval = setInterval(this.reloadPacientData, 60000);
+    try {
+      this.patient = await patientsApi.getPatientByTicket(patientTicket);
+      if (this.patient.status === 'waiting') {
+        this.reloaderInterval = setInterval(this.reloadPacientData, 60000);
+      }
+    } catch (err) {
+      console.log('bla');
+      if (String(err.response.status) === '404') {
+        this.$router.push({ name: 'NotFound' });
+      }
+      // TODO handle the error
+    } finally {
+      this.isLoading = false;
     }
   },
   beforeDestroy() {
@@ -155,5 +177,10 @@ export default {
     text-align: center;
     font-size: .75rem;
     font-weight: bold;
+  }
+
+  #doctor-ongoing-feedback {
+    resize: both;
+    margin-top: 10px;
   }
 </style>

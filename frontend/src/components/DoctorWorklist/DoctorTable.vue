@@ -69,7 +69,6 @@ const perc2color = (perc) => {
   let b;
 
   const normalizedPerc = (perc < 100) ? perc : 100;
-
   if (normalizedPerc < 50) {
     r = 255;
     b = Math.round(5.1 * normalizedPerc);
@@ -133,9 +132,9 @@ export default {
     calulateColor(createdAt) {
       const now = Date.now();
       const timeWaiting = now - createdAt;
-      const h24 = 1000 * 60 * 60 * 24;
-      const percent = (timeWaiting / h24) * 100;
-      return perc2color(100 - percent);
+      const oneHour = 1000 * 60 * 60;
+      const percent = (oneHour / timeWaiting) * 100;
+      return perc2color(percent);
     },
     getStatusMessage(status = 'waiting') {
       if (status === 'waiting') return 'Aguardando';

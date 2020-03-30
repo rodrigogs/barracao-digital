@@ -65,7 +65,7 @@ functions:
     handler: functions/api/healthcheck.handler
     events:
       - http:
-          method: get
+          method: GET
           path: /
           cors: true
 
@@ -73,7 +73,7 @@ functions:
     handler: functions/api/auth.handler
     events:
       - http:
-          method: post
+          method: POST
           path: /auth/login
           cors: true
 
@@ -81,57 +81,81 @@ functions:
     handler: functions/api/doctors.handler
     events:
       - http:
-          method: get
+          method: GET
           path: /doctors/cep/{cep}
           cors: true
           authorizer: doctorAuthorizer
 
       - http:
-          method: get
+          method: GET
           path: /doctors/username/{username}
           cors: true
           authorizer: doctorAuthorizer
 
       - http:
-          method: post
+          method: POST
           path: /doctors
           cors: true
           authorizer: adminAuthorizer
 
       - http:
-          method: post
+          method: POST
           path: /doctors/alternate
           cors: true
           authorizer: adminAuthorizer
 
       - http:
-          method: put
+          method: PUT
           path: /doctors/{username}
           cors: true
           authorizer: adminAuthorizer
 
-  patients:
-    handler: functions/api/patients.handler
+  patients-get:
+    handler: functions/api/patients/get.handler
     events:
       - http:
-          method: get
+          method: GET
           path: /patients/cep/{cep}
           cors: true
           authorizer: doctorAuthorizer
 
       - http:
-          method: get
+          method: GET
           path: /patients/ticket/{ticket}
           cors: true
 
+  patients-post:
+    handler: functions/api/patients/post.handler
+    events:
       - http:
-          method: post
+          method: POST
           path: /patients
           cors: true
 
+  patients-put:
+    handler: functions/api/patients/put.handler
+    events:
       - http:
-          method: put
+          method: PUT
           path: /patients/{ticket}
+          cors: true
+          authorizer: adminAuthorizer
+
+      - http:
+          method: PUT
+          path: /patients/{ticket}/status/ongoing
+          cors: true
+          authorizer: adminAuthorizer
+
+      - http:
+          method: PUT
+          path: /patients/{ticket}/status/waiting_kit
+          cors: true
+          authorizer: adminAuthorizer
+
+      - http:
+          method: PUT
+          path: /patients/{ticket}/status/finished
           cors: true
           authorizer: adminAuthorizer
 
@@ -139,31 +163,31 @@ functions:
     handler: functions/api/facilities.handler
     events:
       - http:
-          method: get
+          method: GET
           path: /facilities
           cors: true
           authorizer: masterAuthorizer
 
       - http:
-          method: get
+          method: GET
           path: /facilities/origin/{origin}
           cors: true
           authorizer: masterAuthorizer
 
       - http:
-          method: get
+          method: GET
           path: /facilities/origin/{origin}/destinations
           cors: true
           authorizer: masterAuthorizer
 
       - http:
-          method: post
+          method: POST
           path: /facilities
           cors: true
           authorizer: masterAuthorizer
 
       - http:
-          method: put
+          method: PUT
           path: /facilities/{origin}
           cors: true
           authorizer: masterAuthorizer
