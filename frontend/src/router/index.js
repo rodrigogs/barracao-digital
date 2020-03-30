@@ -43,6 +43,33 @@ const routes = [
     },
   },
   {
+    path: '/medicos/instalacoes',
+    name: 'Facilities',
+    component: () => import(/* webpackChunkName: "doctor-worklist" */ '../views/Facilities.vue'),
+    meta: {
+      title: 'Lista de Instalações',
+      requiresAuth: true,
+    },
+  },
+  {
+    path: '/medicos/instalacoes/cadastrar',
+    name: 'FacilitiesCreate',
+    component: () => import(/* webpackChunkName: "doctor-worklist" */ '../views/FacilitiesCreate.vue'),
+    meta: {
+      title: 'Cadastro de Instalação',
+      requiresAuth: true,
+    },
+  },
+  {
+    path: '/medicos/instalacoes/editar/:origin',
+    name: 'FacilitiesEdit',
+    component: () => import(/* webpackChunkName: "doctor-worklist" */ '../views/FacilitiesEdit.vue'),
+    meta: {
+      title: 'Cadastro de Instalação',
+      requiresAuth: true,
+    },
+  },
+  {
     path: '/pacientes/registrar',
     name: 'PatientSignUp',
     component: () => import(/* webpackChunkName: "patient-signup" */ '../views/PatientSignUp.vue'),
