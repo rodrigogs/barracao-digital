@@ -78,6 +78,14 @@ const routes = [
       requiresAuth: false,
     },
   },
+  {
+    path: '*',
+    component: () => import(/* webpackChunkName: "PageNotFound" */ '../views/PageNotFound.vue'),
+    meta: {
+      title: '404',
+      requiresAuth: false,
+    },
+  },
 ];
 
 const router = new VueRouter({
