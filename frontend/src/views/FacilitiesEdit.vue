@@ -67,7 +67,7 @@ export default {
 
         alert('Instalação editada com sucesso');
 
-        this.$router.push('/medicos/instalacoes');
+        this.$router.push('/instalacoes');
       } catch (err) {
         alert('Não foi possível editar a instalação. Revise os dados inseridos e tente novamente.');
         if (err.response && err.response.status === 401) {
@@ -88,7 +88,7 @@ export default {
     },
 
     cancel() {
-      this.$router.push('/medicos/instalacoes');
+      this.$router.push('/instalacoes');
     },
   },
 };

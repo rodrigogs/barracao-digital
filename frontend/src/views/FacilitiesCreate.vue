@@ -7,7 +7,7 @@
         </p>
         <p>
           <label for="origin">CEP*:</label>
-          <input id="origin" name="origin" v-model="origin" />
+          <input id="origin" name="origin" v-model="origin" maxlength="8" />
         </p>
 
         <p>
@@ -61,7 +61,7 @@ export default {
 
         alert('Instalação cadastrada com sucesso');
 
-        this.$router.push('/medicos/instalacoes');
+        this.$router.push('/instalacoes');
       } catch (err) {
         alert('Não foi possível cadastrar a instalação. Revise os dados inseridos e tente novamente.');
         if (err.response && err.response.status === 401) {
@@ -82,7 +82,7 @@ export default {
     },
 
     cancel() {
-      this.$router.push('/medicos/instalacoes');
+      this.$router.push('/instalacoes');
     },
   },
 };
