@@ -46,13 +46,13 @@ const setFinished = async (patient, user, { message }) => {
   });
 };
 
-const setPatientFeedback = async (patient, _user, { patientFeedback }) => {
-  if (patientFeedback < 1 || patientFeedback > 10) {
+const setPatientFeedback = async (patient, _user, { value }) => {
+  if (value < 1 || value > 10) {
     return responseBuilder.errors.badRequest('O feedback do paciente deve ser um número de 1 a 10');
   }
   const updatedPatient = {
     ...patient,
-    patientFeedback,
+    patientFeedback: value,
   };
   return responseBuilder.success.ok({
     body: await patientsService.update(patient.ticket, updatedPatient),
