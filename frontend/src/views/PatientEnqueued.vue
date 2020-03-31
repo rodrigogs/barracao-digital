@@ -118,21 +118,6 @@ export default {
       const time = Kairos.new(timeWaiting);
       return time.toString('hh:mm');
     },
-    buildStars(stars = 0, alreadySentFeedback) {
-      let starsHTML = '';
-
-      for (let i = 0; i < stars; i++) {
-        starsHTML += `<button class="star" ${alreadySentFeedback ? 'disabled' : ''}></button>`;
-      }
-
-      if (stars < 10) {
-        for (let i = 0; i < (10 - stars); i++) {
-          starsHTML += `<button class="star star--empty" @click="sendPacientFeedback(${i})" ${alreadySentFeedback ? 'disabled' : ''}></button>`;
-        }
-      }
-
-      return starsHTML;
-    },
     sendPacientFeedback(starQt) {
       console.log(starQt);
     },
@@ -217,46 +202,36 @@ export default {
     margin-top: 10px;
   }
 
+  .stars-box {
+    direction: rtl;
+  }
+
   .star {
     align-items: center;
     display: inline-flex;
-    -webkit-font-feature-settings: "liga";
-    font-feature-settings: "liga";
-    font-size: 24px;
+    font-size: 2rem;
     justify-content: center;
-    letter-spacing: normal;
-    line-height: 1;
-    position: relative;
-    text-indent: 0;
     transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1), visibility 0s;
-    vertical-align: middle;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
     padding: 0.5rem;
-    border-radius: 50%;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    outline: none;
     cursor: pointer;
     outline: none;
     transform: scaleX(1);
+    border: none;
+    background-color: transparent;
+    color: gold;
   }
 
   .star::before {
-    display: inline-block;
-    font: normal normal normal 24px/1 "Material Design Icons";
-    font-size: inherit;
-    text-rendering: auto;
-    line-height: inherit;
-    -webkit-font-smoothing: antialiased;
-    content: "\F4CE";
+    content: "\2605";
   }
 
-  .star--empty {
-    content: "\F4D2";
+  .star--empty::before {
+    content: "\2606";
+  }
+
+  .star:hover:before,
+  .star:hover ~ .star:before {
+    content: "\2605";
+    color: gold;
   }
 </style>
