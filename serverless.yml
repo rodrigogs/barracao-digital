@@ -69,6 +69,7 @@ functions:
           path: /
           cors: true
 
+  # Auth
   auth:
     handler: functions/api/auth.handler
     events:
@@ -77,6 +78,7 @@ functions:
           path: /auth/login
           cors: true
 
+  # Doctors
   doctors:
     handler: functions/api/doctors.handler
     events:
@@ -110,6 +112,7 @@ functions:
           cors: true
           authorizer: adminAuthorizer
 
+  # Patients
   patients-get:
     handler: functions/api/patients/get.handler
     events:
@@ -139,7 +142,7 @@ functions:
           method: PUT
           path: /patients/{ticket}
           cors: true
-          authorizer: adminAuthorizer
+          authorizer: masterAuthorizer
 
       - http:
           method: PUT
@@ -164,6 +167,7 @@ functions:
           cors: true
           authorizer: adminAuthorizer
 
+  # Facilities
   facilities:
     handler: functions/api/facilities.handler
     events:
