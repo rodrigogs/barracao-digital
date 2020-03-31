@@ -46,6 +46,19 @@ const setFinished = async (patient, user, { message }) => {
   });
 };
 
+const setPatientFeedback = async (patient, _user, { value }) => {
+  if (value < 1 || value > 10) {
+    return responseBuilder.errors.badRequest('O feedback do paciente deve ser um número de 1 a 10');
+  }
+  const updatedPatient = {
+    ...patient,
+    patientFeedback: value,
+  };
+  return responseBuilder.success.ok({
+    body: await patientsService.update(patient.ticket, updatedPatient),
+  });
+};
+
 const updatePatient = async (patient, _user, body) => {
   const updatedPatient = {
     ...patient,
@@ -81,6 +94,8 @@ module.exports.handler = async (event) => {
     if (resource.endsWith('status/waiting_kit')) return setWaitingKit(patient, user, body);
     // /patients/{ticket}/status/finished
     if (resource.endsWith('status/finished')) return setFinished(patient, user, body);
+    // /patients/{ticket}/feedback
+    if (resource.endsWith('feedback')) return setPatientFeedback(patient, user, body);
     // /patients/{ticket}
     if (body) return updatePatient(patient, user, body);
 
