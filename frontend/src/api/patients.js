@@ -54,6 +54,10 @@ export default (request) => ({
       .post('/patients', encodePatient(patient))
       .then(({ data }) => data, (error) => Promise.reject(error));
   },
+  async savePatientFeedback(ticket, feedback) {
+    const { data } = await request.put(`/patients/${ticket}/feedback`, { value: feedback });
+    return data;
+  },
   async getPatientByTicket(ticket) {
     const { data } = await request.get(`/patients/ticket/${ticket}`);
     return data;
