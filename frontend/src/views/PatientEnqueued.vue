@@ -57,9 +57,9 @@
         <span v-if="!patient.patientFeedback">Avalie o seu atendimento:</span>
         <span v-if="patient.patientFeedback">Você avaliou seu atendimento como:</span>
         <br>
-        <div class="stars-box">
-          <button v-for="index in patient.patientFeedback || 0" :key="index" class="star" :disabled="!sendingFeedback && !!patient.patientFeedback"></button>
-          <button v-for="index in (10-(patient.patientFeedback || 0))" :key="index" class="star star--empty" @click="sendPacientFeedback(index)" :disabled=" !sendingFeedback &&!!patient.patientFeedback"></button>
+        <div class="stars-box" :class="{'stars-box--ltr' : patient.patientFeedback}">
+          <button v-for="index in createArrayOfStars(patient.patientFeedback || 0)" :key="'s'+index" class="star" :disabled="!sendingFeedback && !!patient.patientFeedback"></button>
+          <button v-for="index in createArrayOfStars(10-(patient.patientFeedback || 0))" :key="'se'+index" class="star star--empty" @click="sendPacientFeedback(index)" :disabled=" !sendingFeedback &&!!patient.patientFeedback"></button>
         </div>
       </div>
     </div>
@@ -88,7 +88,6 @@ import Kairos from 'kairos';
 import Loader from '@/components/Loader.vue';
 import FacilityNotAvailable from '@/components/FacilityNotAvailable.vue';
 import { patients as patientsApi } from '@/api';
-import { mapActions } from 'vuex';
 
 export default {
   name: 'PatientEnqueued',
@@ -127,6 +126,9 @@ export default {
         alert('Aconteceu algum erro, tente avaliar novamente mais tarde.');
         this.sendingFeedback = false;
       }
+    },
+    createArrayOfStars(quantity) {
+      return Array(quantity).fill(0).map((v, i) => i + 1).reverse();
     },
   },
   async mounted() {
@@ -213,6 +215,10 @@ export default {
     direction: rtl;
   }
 
+  .stars-box--ltr {
+    direction: ltr;
+  }
+
   .star {
     align-items: center;
     display: inline-flex;
@@ -226,6 +232,10 @@ export default {
     border: none;
     background-color: transparent;
     color: gold;
+  }
+
+  .star:disabled {
+    cursor: default;
   }
 
   .star::before {
