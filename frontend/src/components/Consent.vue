@@ -7,7 +7,7 @@
         </div>
       </div>
     </header>
-    <div class="content">
+    <div class="content consent-text">
       <p class="content-title">
         Adesão para pacientes:
       </p>
@@ -88,5 +88,9 @@ export default {
     justify-content: space-between;
     height: 70px;
     margin: 0 auto;
+  }
+
+  .consent-text {
+    max-width: 545px;
   }
 </style>
