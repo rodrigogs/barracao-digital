@@ -84,7 +84,7 @@ module.exports.handler = async (event) => {
     if (!patient) {
       return responseBuilder.errors.notFound('Paciente não encontrado');
     }
-    if (!user.master && (user.cep !== patient.cep)) {
+    if (user && (!user.master && (user.cep !== patient.cep))) {
       return responseBuilder.errors.forbidden('Você só pode alterar dados da sua região');
     }
 
