@@ -14,6 +14,7 @@
     "normalize.css": "^8.0.1",
     "vue": "^2.6.11",
     "vue-announcer": "^1.0.6",
+    "vue-cookie": "^1.1.4",
     "vue-router": "^3.1.6",
     "vue-stepper": "^1.4.2",
     "vuex": "^3.1.3"
