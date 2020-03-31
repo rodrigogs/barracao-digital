@@ -50,6 +50,19 @@
         <br v-if="patient.finishedDoctorFeedback">
         <textarea id="doctor-finished-feedback" cols="40" rows="5" v-if="patient.finishedDoctorFeedback" v-model="patient.finishedDoctorFeedback" readonly></textarea>
       </div>
+
+      <div class="patient-enqueued__big-warn patient-enqueued__big-warn--blue">
+        <span v-if="!patient.patientFeedback">Avalie o seu atendimento:</span>
+        <span v-if="patient.patientFeedback">Você avaliou seu atendimento como:</span>
+        <br>
+        <div class="stars-box">
+          <button v-for="index in patient.patientFeedback || 0" :key="index" class="star" :disabled="!!patient.patientFeedback"></button>
+          <button v-for="index in (10-(patient.patientFeedback || 0))" :key="index" class="star star--empty" @click="sendPacientFeedback(index)" :disabled="!!patient.patientFeedback"></button>
+        </div>
+        <button type="button" v-if="!patient.patientFeedback">
+          Avaliar
+        </button>
+      </div>
     </div>
 
     <div v-if="!isLoading && patient.status === 'cant_be_assisted'" class="container">
@@ -102,6 +115,24 @@ export default {
       const timeWaiting = Date.now() - createdAt;
       const time = Kairos.new(timeWaiting);
       return time.toString('hh:mm');
+    },
+    buildStars(stars = 0, alreadySentFeedback) {
+      let starsHTML = '';
+
+      for (let i = 0; i < stars; i++) {
+        starsHTML += `<button class="star" ${alreadySentFeedback ? 'disabled' : ''}></button>`;
+      }
+
+      if (stars < 10) {
+        for (let i = 0; i < (10 - stars); i++) {
+          starsHTML += `<button class="star star--empty" @click="sendPacientFeedback(${i})" ${alreadySentFeedback ? 'disabled' : ''}></button>`;
+        }
+      }
+
+      return starsHTML;
+    },
+    sendPacientFeedback(starQt) {
+      console.log(starQt);
     },
   },
   async mounted() {
@@ -182,5 +213,48 @@ export default {
   #doctor-ongoing-feedback {
     resize: both;
     margin-top: 10px;
+  }
+
+  .star {
+    align-items: center;
+    display: inline-flex;
+    -webkit-font-feature-settings: "liga";
+    font-feature-settings: "liga";
+    font-size: 24px;
+    justify-content: center;
+    letter-spacing: normal;
+    line-height: 1;
+    position: relative;
+    text-indent: 0;
+    transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1), visibility 0s;
+    vertical-align: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    padding: 0.5rem;
+    border-radius: 50%;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    outline: none;
+    cursor: pointer;
+    outline: none;
+    transform: scaleX(1);
+  }
+
+  .star::before {
+    display: inline-block;
+    font: normal normal normal 24px/1 "Material Design Icons";
+    font-size: inherit;
+    text-rendering: auto;
+    line-height: inherit;
+    -webkit-font-smoothing: antialiased;
+    content: "\F4CE";
+  }
+
+  .star--empty {
+    content: "\F4D2";
   }
 </style>
