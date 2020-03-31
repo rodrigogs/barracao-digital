@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@googlemaps/google-maps-services-js": "^2.4.2",
-    "aws-sdk": "^2.648.0",
+    "aws-sdk": "^2.649.0",
     "uuid": "^7.0.2"
   },
   "devDependencies": {
