@@ -143,6 +143,11 @@ functions:
 
       - http:
           method: PUT
+          path: /patients/{ticket}/feedback
+          cors: true
+
+      - http:
+          method: PUT
           path: /patients/{ticket}/status/ongoing
           cors: true
           authorizer: adminAuthorizer

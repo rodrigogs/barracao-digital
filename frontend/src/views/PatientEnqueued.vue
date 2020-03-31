@@ -38,17 +38,19 @@
         <br>
         Siga as instruções abaixo:
         <br>
-        <textarea id="doctor-ongoing-feedback" cols="40" rows="5" v-model="patient.ongoingDoctorFeedback" readonly></textarea>
+        <br>
+        <textarea id="doctor-ongoing-feedback" cols="50" rows="3" v-model="patient.ongoingDoctorFeedback" readonly></textarea>
       </div>
     </div>
 
     <div v-if="!isLoading && patient.status === 'finished'" class="container">
       <div class="patient-enqueued__big-warn patient-enqueued__big-warn--blue">
-        O atendimento foi finalizado pelo médico <strong>{{ patient.waitingKitDoctorDoctorName }}</strong>.
+        O atendimento foi finalizado pelo médico <strong>{{ patient.finishedDoctorDoctorName }}</strong>.
         <br v-if="patient.finishedDoctorFeedback">
-        <span v-if="patient.finishedDoctorFeedback">O médico deixou um feedback que pode ser conferido abaixo:</span>
+        <span v-if="patient.finishedDoctorFeedback">Confira o feedback abaixo:</span>
         <br v-if="patient.finishedDoctorFeedback">
-        <textarea id="doctor-finished-feedback" cols="40" rows="5" v-if="patient.finishedDoctorFeedback" v-model="patient.finishedDoctorFeedback" readonly></textarea>
+        <br>
+        <textarea id="doctor-finished-feedback" cols="50" rows="3" v-if="patient.finishedDoctorFeedback" v-model="patient.finishedDoctorFeedback" readonly></textarea>
       </div>
 
       <div class="patient-enqueued__big-warn patient-enqueued__big-warn--blue">
