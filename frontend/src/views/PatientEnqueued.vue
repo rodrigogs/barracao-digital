@@ -58,12 +58,9 @@
         <span v-if="patient.patientFeedback">Você avaliou seu atendimento como:</span>
         <br>
         <div class="stars-box">
-          <button v-for="index in patient.patientFeedback || 0" :key="index" class="star" :disabled="!!patient.patientFeedback"></button>
-          <button v-for="index in (10-(patient.patientFeedback || 0))" :key="index" class="star star--empty" @click="sendPacientFeedback(index)" :disabled="!!patient.patientFeedback"></button>
+          <button v-for="index in patient.patientFeedback || 0" :key="index" class="star" :disabled="!sendingFeedback && !!patient.patientFeedback"></button>
+          <button v-for="index in (10-(patient.patientFeedback || 0))" :key="index" class="star star--empty" @click="sendPacientFeedback(index)" :disabled=" !sendingFeedback &&!!patient.patientFeedback"></button>
         </div>
-        <button type="button" v-if="!patient.patientFeedback">
-          Avaliar
-        </button>
       </div>
     </div>
 
@@ -91,6 +88,7 @@ import Kairos from 'kairos';
 import Loader from '@/components/Loader.vue';
 import FacilityNotAvailable from '@/components/FacilityNotAvailable.vue';
 import { patients as patientsApi } from '@/api';
+import { mapActions } from 'vuex';
 
 export default {
   name: 'PatientEnqueued',
@@ -105,6 +103,7 @@ export default {
       isLoading: true,
       patient: {},
       reloaderInterval: null,
+      sendingFeedback: false,
     };
   },
   methods: {
@@ -118,8 +117,16 @@ export default {
       const time = Kairos.new(timeWaiting);
       return time.toString('hh:mm');
     },
-    sendPacientFeedback(starQt) {
-      console.log(starQt);
+    async sendPacientFeedback(starQt) {
+      this.sendingFeedback = true;
+
+      try {
+        this.patient = await patientsApi.savePatientFeedback(this.$route.params.ticket, starQt);
+        this.sendingFeedback = false;
+      } catch (e) {
+        alert('Aconteceu algum erro, tente avaliar novamente mais tarde.');
+        this.sendingFeedback = false;
+      }
     },
   },
   async mounted() {
@@ -229,8 +236,8 @@ export default {
     content: "\2606";
   }
 
-  .star:hover:before,
-  .star:hover ~ .star:before {
+  .star:not(:disabled):hover:before,
+  .star:not(:disabled):hover ~ .star:before {
     content: "\2605";
     color: gold;
   }
