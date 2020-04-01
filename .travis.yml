@@ -4,13 +4,11 @@ node_js:
   - "12"
 
 install:
-  - npm install --cache /tmp/empty-cache
   - npm install
   - npm install serverless --g
   - chmod +x ./scripts/deploy_travis.sh
 
 script:
-  - npm install --cache /tmp/empty-cache
   - npm run deploy:travis
 
 after_script:
