@@ -11,7 +11,7 @@
         <small style="">Página não encontrada</small>
         <br>
         <small style="font-size: x-large;">
-          <router-link :to="{ name: 'Home' }">Me tire daqui</router-link>
+          <a href="/">Me tire daqui</a>
         </small>
       </h1>
     </div>
