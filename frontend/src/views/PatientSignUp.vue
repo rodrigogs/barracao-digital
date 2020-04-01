@@ -1,27 +1,32 @@
 <template>
-  <Stepper
-    class="patient-signup"
-    v-if="!isLoading"
-    :steps="steps"
-    locale="pt"
-    @stepper-finished="savePatientSignUp"
-  />
-  <Loader v-else />
+  <div id="patient-signup">
+    <Consent v-if="!isConsentAccepted" />
+    <Stepper
+      v-else-if="!isLoading"
+      class="patient-signup"
+      :steps="steps"
+      locale="pt"
+      @stepper-finished="savePatientSignUp"
+    />
+    <Loader v-else />
+  </div>
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import Stepper from 'vue-stepper';
 import Loader from '@/components/Loader.vue';
 import StepOne from '@/components/StepOne.vue';
 import StepTwo from '@/components/StepTwo.vue';
 import StepThree from '@/components/StepThree.vue';
+import Consent from '@/components/Consent.vue';
 
 export default {
   name: 'PatientSignUp',
   components: {
     Stepper,
     Loader,
+    Consent,
   },
   data() {
     return {
@@ -52,6 +57,9 @@ export default {
     ...mapActions('patients', [
       'signUpPatient',
     ]),
+    ...mapActions('consent', [
+      'acceptConsent',
+    ]),
     savePatientSignUp() {
       this.isLoading = true;
 
@@ -67,6 +75,11 @@ export default {
           this.isLoading = false;
         })
     },
+  },
+  computed: {
+    ...mapGetters('consent', [
+      'isConsentAccepted',
+    ]),
   },
   beforeDestroy() {
     this.$store.commit('patients/clearForm');

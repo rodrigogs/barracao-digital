@@ -1,3 +1,7 @@
+import cookie from 'vue-cookie';
+
 export const isConsentAccepted = (state) => {
-  return state.isConsentAccepted;
+  if (state.isConsentAccepted) return true;
+  const consentCookie = cookie.get('consent-accepted');
+  return !!consentCookie;
 };

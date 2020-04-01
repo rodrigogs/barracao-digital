@@ -19,7 +19,7 @@ const getStore = async () => {
     _store = await import('@/store').then((store) => store.default);
   }
   return _store;
-}
+};
 
 // Dynamic importo to avoid circular dependency
 const retrieveAuthToken = () => getStore().then((store) => {

@@ -1,7 +1,6 @@
 <template>
   <div class="app-container">
-    <Consent v-if="!isConsentAccepted" />
-    <div class="app" v-show="isConsentAccepted">
+    <div class="app">
       <vue-announcer />
 
       <Header />
@@ -18,30 +17,12 @@
 <script>
 import Header from '@/components/Header.vue';
 import Footer from '@/components/Footer.vue';
-import Consent from '@/components/Consent.vue';
-import { mapActions, mapGetters } from 'vuex';
 
 export default {
   name: 'App',
   components: {
     Header,
     Footer,
-    Consent,
-  },
-
-  computed: {
-    ...mapGetters('consent', ['isConsentAccepted']),
-  },
-
-  methods: {
-    ...mapActions('consent', ['acceptConsent']),
-  },
-
-  mounted() {
-    const consentCookie = this.$cookie.get('consent-accepted');
-    if (consentCookie) {
-      this.acceptConsent();
-    }
   },
 };
 </script>
