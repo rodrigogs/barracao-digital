@@ -14,16 +14,16 @@ fi
 
 if [[ $DEPLOY_FRONTEND == "true" ]]; then
     echo -e "${BOLD}${YELLOW}Building frontend...${RESET}"
-    #npm run build:frontend
+    npm run build:frontend
     echo -e "${BOLD}${YELLOW}Deploying frontend...${RESET}"
-    #npm run deploy:frontend
+    npm run deploy:frontend
 fi
 
 if [[ $DEPLOY_BACKEND == "true" ]]; then
     echo -e "${BOLD}${YELLOW}Building backend...${RESET}"
-    #npm run build:backend
+    npm run build:backend
     echo -e "${BOLD}${YELLOW}Deploying backend...${RESET}"
-    #npm run deploy:backend
+    npm run deploy:backend
 fi
 
 echo -e "${BOLD}${GREEN}Done!${RESET}"
