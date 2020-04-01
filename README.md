@@ -24,15 +24,16 @@ $ npm install
 $ NODE_ENV={stage_name} npm run deploy:frontend
 ```
 - [Create a distribution](https://console.aws.amazon.com/cloudfront/home?region=sa-east-1#create-distribution) pointing to the frontend bucket
-  - Don't forget to create a custom error responses for 404 errors
+  - Don't forget to create a custom error responses for 404 and other errors
+- Create a Route53 Hosted Zone with the api host
+- Create the APIGateway domain
+```bash
+$ NODE_ENV={stage_name} sls create_domain
+```
 - Verify if the serverless.yml `provider.deploymentBucket.name` bucket exists. Create if needed.
 - Deploy the service
 ```bash
 $ serverless deploy
-```
-- Create the route53 api domain
-```bash
-$ serverless create_domain
 ```
 
 ### Deploy
