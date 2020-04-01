@@ -11,7 +11,7 @@
       <p class="content-title">
         Adesão para pacientes:
       </p>
-      Estou ciente de que a plataforma “BARRACÃO DIGITAL – COVID-19” decorre de ação de voluntários com vistas a proporcionar atendimento remoto por profissionais da saúde. Trata-se de medida paliativa e alternativa com regramento legal pertinente que objetiva proporcionar auxílio sem ônus, mas com as limitações e circunstâncias pertinentes e decorrentes, às quais me submeto sob conta e risco.
+      Estou ciente de que a plataforma “BARRACÃO DIGITAL” decorre de ação de voluntários com vistas a proporcionar atendimento remoto por profissionais da saúde. Trata-se de medida paliativa e alternativa com regramento legal pertinente que objetiva proporcionar auxílio sem ônus, mas com as limitações e circunstâncias pertinentes e decorrentes, às quais me submeto sob conta e risco.
     </div>
     <button class="btn" @click="accept">Aceitar e continuar</button>
   </div>

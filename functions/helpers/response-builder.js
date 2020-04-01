@@ -7,7 +7,7 @@ const {
   NotFoundError,
   NotImplementedError,
   UnauthorizedError,
-} = require('barracoes-covid-19/errors/api');
+} = require('barracao-digital/errors/api');
 
 const defaultHeaders = {
   'Content-Type': 'application/json',

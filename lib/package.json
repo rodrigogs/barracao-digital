@@ -1,5 +1,5 @@
 {
-  "name": "barracoes-covid-19-lib",
+  "name": "barracao-digital-lib",
   "version": "0.0.0",
   "description": "",
   "main": "index.js",
@@ -16,6 +16,5 @@
     "eslint-config-airbnb-base": "^14.1.0",
     "eslint-plugin-import": "^2.20.2",
     "jest": "^25.2.4"
-  },
-  "license": "MIT"
+  }
 }

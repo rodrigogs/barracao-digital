@@ -11,7 +11,7 @@ const routes = [
     requiresAuth: false,
     component: () => import(/* webpackChunkName: "home" */ '../views/Home.vue'),
     meta: {
-      title: 'Barracão Online COVID-19',
+      title: 'Barracão Digital',
       requiresAuth: false,
     },
   },

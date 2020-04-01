@@ -1,4 +1,4 @@
-const { patientsService } = require('barracoes-covid-19/services');
+const { patientsService } = require('barracao-digital/services');
 const { getRequestContext, responseBuilder } = require('../../helpers');
 
 const setOngoing = async (patient, user, { message }) => {

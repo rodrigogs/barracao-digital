@@ -1,4 +1,4 @@
-const { doctorsService } = require('barracoes-covid-19/services');
+const { doctorsService } = require('barracao-digital/services');
 const { getRequestContext, responseBuilder } = require('../helpers');
 
 const methods = {
