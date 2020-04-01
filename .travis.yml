@@ -7,7 +7,7 @@ cache: npm
 
 install:
   - npm install
-  - npm install cross-env --g
+  - npm install cross-env serverless --g
 
 script:
   - npm run deploy:${NODE_ENV}
