@@ -1,4 +1,5 @@
 const encodePatient = ({
+  ticket = null,
   name = '',
   age = '',
   cep = '',
@@ -23,6 +24,7 @@ const encodePatient = ({
   finishedDoctorUsername,
   finishedDoctorFeedback,
 } = {}) => ({
+  ticket,
   name,
   age,
   cep: String(cep).match(/\d+/g).join(''),
@@ -50,9 +52,8 @@ const encodePatient = ({
 
 export default (request) => ({
   async signUpPatient(patient) {
-    return request
-      .post('/patients', encodePatient(patient))
-      .then(({ data }) => data, (error) => Promise.reject(error));
+    const { data } = await request.post('/patients', encodePatient(patient));
+    return data;
   },
   async savePatientFeedback(ticket, feedback) {
     const { data } = await request.put(`/patients/${ticket}/feedback`, { value: feedback });

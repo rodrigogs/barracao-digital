@@ -40,6 +40,10 @@
           <span>Tempo em espera</span>
           <span>{{ calcTimeWaiting(patient.createdAt) }}</span>
         </div>
+        <div class="content-block">
+          <span>Senha</span>
+          <span>{{ patient.ticket }}</span>
+        </div>
 
         <h4>Dados médicos</h4>
         <div class="content-block">

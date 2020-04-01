@@ -4,11 +4,8 @@ export const setStepFields = async ({ commit }, stepFields) => {
   commit('setStepFields', stepFields);
 };
 
-export const signUpPatient = ({ commit, getters }) => {
-  patientsApi.signUpPatient(getters.getPatientToSignUp)
-    .then((data) => {
-      commit('clearForm');
-      return Promise.resolve(data);
-    },
-    (error) => Promise.reject(error));
+export const signUpPatient = async ({ commit, getters }) => {
+  const patient = await patientsApi.signUpPatient(getters.getPatientToSignUp);
+  commit('clearForm');
+  return patient;
 };

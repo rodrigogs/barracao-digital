@@ -1,5 +1,5 @@
-service: barracoes-covid-19
-app: barracoes-covid-19
+service: barracao-digital
+app: barracao-digital
 org: rodrigogs
 
 plugins:
@@ -19,12 +19,11 @@ custom:
     bucketName: ${self:service}-${self:provider.stage}-webapp
     distributionFolder: frontend/dist
   customDomain:
-    domainName: api.barracaodigital.com
+    domainName: backend.barracaodigital.com
     basePath: ${self:provider.stage}
     stage: ${self:provider.stage}
     certificateName: '*.barracaodigital.com'
     createRoute53Record: true
-  helpers: ${file(./serverless.helpers.js)}
   configsTableName: ${self:service}-${self:provider.stage}-configs
   doctorsTableName: ${self:service}-${self:provider.stage}-doctors
   patientsTableName: ${self:service}-${self:provider.stage}-patients
@@ -45,6 +44,10 @@ provider:
       Action:
         - 'dynamodb:*'
       Resource: '*'
+  deploymentBucket:
+    name: ${self:service}-deploys
+    maxPreviousDeploymentArtifacts: 10 # On every deployment the framework prunes the bucket to remove artifacts older than this limit. The default is 5
+    blockPublicAccess: true # Prevents public access via ACLs or bucket policies. Default is false
   environment:
     CONFIGS_TABLE: ${self:custom.configsTableName}
     DOCTORS_TABLE: ${self:custom.doctorsTableName}
@@ -241,7 +244,7 @@ resources:
     #       Origins:
     #         - DomainName: ${self:custom.client.bucketName}.s3.amazonaws.com
     #           ## An identifier for the origin which must be unique within the distribution
-    #           Id: S3-barracoes-covid-19-development-webapp
+    #           Id: S3-barracao-digital-development-webapp
     #           # CustomOriginConfig:
     #             # HTTPPort: 80
     #             # HTTPSPort: 443
@@ -251,9 +254,10 @@ resources:
     #             OriginAccessIdentity: origin-access-identity/cloudfront/E3EBCGY6G6EE1K
     #       Enabled: 'true'
     #       ## Uncomment the following section in case you are using a custom domain
-    #       # Aliases:
-    #       #   - www.barracaodigital.com
-    #       #   - web.barracaodigital.com
+    #       Aliases:
+    #         - www.barracaodigital.com
+    #         - web.barracaodigital.com
+    #         - dev.barracaodigital.com
     #       DefaultRootObject: index.html
     #       ## Since the Single Page App is taking care of the routing we need to make sure ever path is served with index.html
     #       ## The only exception are files that actually exist e.h. app.js, reset.css
@@ -265,7 +269,6 @@ resources:
     #         AllowedMethods:
     #           - GET
     #           - HEAD
-    #           - OPTIONS
     #         ## The origin id defined above
     #         TargetOriginId: WebApp
     #         ## Defining if and how the QueryString and Cookies are forwarded to the origin which in this case is S3

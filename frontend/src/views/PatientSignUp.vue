@@ -49,9 +49,9 @@ export default {
     };
   },
   methods: {
-    ...mapActions({
-      signUpPatient: 'patients/signUpPatient',
-    }),
+    ...mapActions('patients', [
+      'signUpPatient',
+    ]),
     savePatientSignUp() {
       this.isLoading = true;
 
