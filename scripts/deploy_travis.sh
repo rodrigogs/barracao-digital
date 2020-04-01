@@ -13,6 +13,8 @@ if [ -z $NODE_ENV ]; then
 fi
 
 if [[ $DEPLOY_FRONTEND == "true" ]]; then
+    echo -e "${BOLD}${YELLOW}Installing frontend dependencies...${RESET}"
+    npm run install:frontend
     echo -e "${BOLD}${YELLOW}Building frontend...${RESET}"
     npm run build:frontend
     echo -e "${BOLD}${YELLOW}Deploying frontend...${RESET}"
@@ -20,6 +22,8 @@ if [[ $DEPLOY_FRONTEND == "true" ]]; then
 fi
 
 if [[ $DEPLOY_BACKEND == "true" ]]; then
+    echo -e "${BOLD}${YELLOW}Installing backend dependencies...${RESET}"
+    npm run install:backend
     echo -e "${BOLD}${YELLOW}Building backend...${RESET}"
     npm run build:backend
     echo -e "${BOLD}${YELLOW}Deploying backend...${RESET}"
