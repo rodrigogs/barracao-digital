@@ -3,8 +3,6 @@ language: node_js
 node_js:
   - "12"
 
-cache: npm
-
 install:
   - npm install
   - npm install serverless --g
