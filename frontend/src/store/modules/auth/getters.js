@@ -1,4 +1,4 @@
-export const isLoggedIn = (state, getters) => !!getters.loggedUser;
+export const isLoggedIn = (_state, getters) => !!getters.loggedUser;
 
 export const loggedUser = (state) => {
   if (state.loggedUser) return state.loggedUser;

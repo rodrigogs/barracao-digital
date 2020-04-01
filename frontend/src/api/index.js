@@ -13,12 +13,22 @@ const request = axios.create({
   },
 });
 
+let _store;
+const getStore = async () => {
+  if (!_store) {
+    _store = await import('@/store').then((store) => store.default);
+  }
+  return _store;
+}
+
 // Dynamic importo to avoid circular dependency
-const retrieveAuthToken = () => import('@/store').then(({ default: store }) => {
+const retrieveAuthToken = () => getStore().then((store) => {
   const loggedUser = store.getters['auth/loggedUser'];
   if (!loggedUser) return '';
   return btoa(`${loggedUser.username}:${loggedUser.password}`);
 });
+
+const logoutUser = () => getStore().then((store) => store.actions['auth/logout']);
 
 // Intercept requests and update auth token
 request.interceptors.request.use(async (config) => {
@@ -29,6 +39,18 @@ request.interceptors.request.use(async (config) => {
 
   return newConfig;
 }, Promise.reject);
+
+request.interceptors.response.use(
+  function onResponseSuccess(response) {
+    return response;
+  },
+  async function onResponseError(error) {
+    if (error && error.response && error.response.status === 401) {
+      await logoutUser();
+    }
+    return Promise.reject(error);
+  },
+);
 
 const healthCheckAdapter = async (shadowRequest) => (await shadowRequest.get('/')).data;
 

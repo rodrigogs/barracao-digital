@@ -11,7 +11,7 @@
       </router-link>
 
       <template v-else class="header__home-menu">
-        <router-link class="header__link" :to="{ name: 'DoctorLogin' }">
+        <router-link class="header__link" :to="{ name: 'DoctorWorklist' }">
           Acesso médico
         </router-link>
         <router-link class="header__link" to="/voluntariado">

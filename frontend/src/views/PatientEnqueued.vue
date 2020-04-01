@@ -145,7 +145,6 @@ export default {
         this.reloaderInterval = setInterval(this.reloadPacientData, 60000);
       }
     } catch (err) {
-      console.log('bla');
       if (String(err.response.status) === '404') {
         this.$router.push({ name: 'NotFound' });
       }
