@@ -7,9 +7,10 @@ cache: npm
 
 install:
   - npm install
+  - npm install cross-env --g
 
 script:
-  - npm run deploy
+  - npm run deploy:${NODE_ENV}
 
 after_script:
   - npm run clear-frontend-cache
