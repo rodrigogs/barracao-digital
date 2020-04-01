@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 ## Text Tools
 RESET="\e[0m"
