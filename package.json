@@ -27,7 +27,7 @@
     "deploy:backend": "sls deploy -s ${NODE_ENV}",
     "deploy:development": "NODE_ENV=development (npm run deploy:backend && npm run deploy:frontend)",
     "deploy:production": "NODE_ENV=production (npm run deploy:backend && npm run deploy:frontend)",
-    "deploy:travis": " DEPLOY_FRONTEND=true DEPLOY_BACKEND=true ./scripts/deploy_travis.sh",
+    "deploy:travis": " DEPLOY_FRONTEND=true DEPLOY_BACKEND=true ./scripts/deploy_travis.sh)",
     "clear-frontend-cache": "npx cloudfront-invalidate-cache --cname www.barracaodigital.com && npx cloudfront-invalidate-cache --cname dev.barracaodigital.com"
   },
   "license": "BSD-3-Clause"
