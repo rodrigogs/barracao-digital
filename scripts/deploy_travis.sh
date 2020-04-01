@@ -7,6 +7,14 @@ YELLOW="\e[33m"
 RED="\e[91m"
 GREEN="\e[32m"
 
+echo "Travis ENVS:"
+echo "TARGET=${TARGET}"
+echo "TRAVIS_BRANCH=${TRAVIS_BRANCH}"
+echo "TRAVIS_PULL_REQUEST=${TRAVIS_PULL_REQUEST}"
+echo "TRAVIS_EVENT_TYPE=${TRAVIS_EVENT_TYPE}"
+echo "TRAVIS_COMMIT=${TRAVIS_COMMIT}"
+echo "TRAVIS_COMMIT_RANGE=${TRAVIS_COMMIT_RANGE}"
+
 if [ -z $NODE_ENV ]; then
     echo -e "${BOLD}${RED}Missing environment variable NODE_ENV${RESET}"
     exit 1
