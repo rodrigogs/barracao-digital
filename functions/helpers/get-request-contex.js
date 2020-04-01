@@ -27,6 +27,16 @@ module.exports = async (event) => {
   const { authorizer } = (requestContext || {});
   const { consumer } = (authorizer || {});
 
+  let parsedBody;
+  let parsedConsumer;
+
+  try {
+    parsedBody = (typeof body === 'string') ? JSON.parse(body) : undefined;
+    parsedConsumer = (typeof consumer === 'string') ? JSON.parse(consumer) : undefined;
+  } catch (err) {
+    console.error('Error parsing body or consumer', err);
+  }
+
   return {
     httpMethod: (httpMethod || '').toUpperCase(),
     headers,
@@ -36,7 +46,7 @@ module.exports = async (event) => {
     pathParameters,
     path,
     resource,
-    body: (typeof body === 'string') ? JSON.parse(body) : undefined,
-    consumer: (typeof consumer === 'string') ? JSON.parse(consumer) : undefined,
+    body: parsedBody,
+    consumer: parsedConsumer,
   };
 };

@@ -1,4 +1,4 @@
-const { facilitiesService } = require('barracoes-covid-19');
+const { facilitiesService } = require('barracoes-covid-19/services');
 const { getRequestContext, responseBuilder } = require('../helpers');
 
 const methods = {
@@ -8,6 +8,12 @@ const methods = {
         pathParameters,
         path,
       } = ctx;
+
+      if (!pathParameters) {
+        return responseBuilder.success.ok({
+          body: await facilitiesService.getAll(),
+        });
+      }
 
       const { origin } = pathParameters;
       const listDestinations = path.endsWith('destinations');
@@ -19,7 +25,7 @@ const methods = {
 
       const facility = await facilitiesService.getOneByOrigin(origin);
       if (!facility) {
-        return responseBuilder.errors.notFound({ message: 'Facility not found' });
+        return responseBuilder.errors.notFound('Facility not found');
       }
 
       return responseBuilder.success.ok({
@@ -37,12 +43,14 @@ const methods = {
       } = ctx;
 
       if (!body || !body.origin) {
-        return responseBuilder.errors.badRequest({ message: 'O CEP da instalação é obrigatório' });
+        return responseBuilder.errors.badRequest('O CEP da instalação é obrigatório');
       }
 
       const createdFacility = await facilitiesService.create(body);
 
-      return responseBuilder.success.created({ body: createdFacility });
+      return responseBuilder.success.created({
+        body: { ...createdFacility, destination: undefined },
+      });
     } catch (err) {
       return responseBuilder.genericError(err);
     }
@@ -56,11 +64,12 @@ const methods = {
       } = ctx;
 
       const { origin } = pathParameters;
-      const { destination } = body;
+      const { destinations, ...attributes } = body;
 
-      await facilitiesService.addOriginDestination(origin, destination);
+      const updatedFacility = await facilitiesService.update(origin, attributes);
+      await facilitiesService.addOriginDestinations(origin, destinations);
 
-      return responseBuilder.success.noContent();
+      return responseBuilder.success.ok({ body: { ...updatedFacility, destination: undefined } });
     } catch (err) {
       return responseBuilder.genericError(err);
     }

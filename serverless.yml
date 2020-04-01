@@ -65,100 +65,138 @@ functions:
     handler: functions/api/healthcheck.handler
     events:
       - http:
-          method: get
+          method: GET
           path: /
           cors: true
 
+  # Auth
   auth:
     handler: functions/api/auth.handler
     events:
       - http:
-          method: post
+          method: POST
           path: /auth/login
           cors: true
 
+  # Doctors
   doctors:
     handler: functions/api/doctors.handler
     events:
       - http:
-          method: get
+          method: GET
           path: /doctors/cep/{cep}
           cors: true
           authorizer: doctorAuthorizer
 
       - http:
-          method: get
+          method: GET
           path: /doctors/username/{username}
           cors: true
           authorizer: doctorAuthorizer
 
       - http:
-          method: post
+          method: POST
           path: /doctors
           cors: true
           authorizer: adminAuthorizer
 
       - http:
-          method: post
+          method: POST
           path: /doctors/alternate
           cors: true
           authorizer: adminAuthorizer
 
       - http:
-          method: put
+          method: PUT
           path: /doctors/{username}
           cors: true
           authorizer: adminAuthorizer
 
-  patients:
-    handler: functions/api/patients.handler
+  # Patients
+  patients-get:
+    handler: functions/api/patients/get.handler
     events:
       - http:
-          method: get
+          method: GET
           path: /patients/cep/{cep}
           cors: true
           authorizer: doctorAuthorizer
 
       - http:
-          method: get
+          method: GET
           path: /patients/ticket/{ticket}
           cors: true
-          authorizer: doctorAuthorizer
 
+  patients-post:
+    handler: functions/api/patients/post.handler
+    events:
       - http:
-          method: post
+          method: POST
           path: /patients
           cors: true
 
+  patients-put:
+    handler: functions/api/patients/put.handler
+    events:
       - http:
-          method: put
+          method: PUT
           path: /patients/{ticket}
+          cors: true
+          authorizer: masterAuthorizer
+
+      - http:
+          method: PUT
+          path: /patients/{ticket}/feedback
+          cors: true
+
+      - http:
+          method: PUT
+          path: /patients/{ticket}/status/ongoing
           cors: true
           authorizer: adminAuthorizer
 
+      - http:
+          method: PUT
+          path: /patients/{ticket}/status/waiting_kit
+          cors: true
+          authorizer: adminAuthorizer
+
+      - http:
+          method: PUT
+          path: /patients/{ticket}/status/finished
+          cors: true
+          authorizer: adminAuthorizer
+
+  # Facilities
   facilities:
     handler: functions/api/facilities.handler
     events:
       - http:
-          method: get
-          path: /facilities/origin/{origin}
-          cors: true
-          authorizer: masterAuthorizer
-
-      - http:
-          method: get
-          path: /facilities/origin/{origin}/destinations
-          cors: true
-          authorizer: masterAuthorizer
-
-      - http:
-          method: post
+          method: GET
           path: /facilities
           cors: true
           authorizer: masterAuthorizer
 
       - http:
-          method: put
+          method: GET
+          path: /facilities/origin/{origin}
+          cors: true
+          authorizer: masterAuthorizer
+
+      - http:
+          method: GET
+          path: /facilities/origin/{origin}/destinations
+          cors: true
+          authorizer: masterAuthorizer
+
+      - http:
+          method: POST
+          path: /facilities
+          cors: true
+          authorizer: masterAuthorizer
+
+      - http:
+          method: PUT
           path: /facilities/{origin}
           cors: true
           authorizer: masterAuthorizer
@@ -196,56 +234,57 @@ resources:
           Ref: ApiGatewayRestApi
         StatusCode: '401'
     ## Specifying the CloudFront Distribution to server your Web Application
-    WebAppCloudFrontDistribution:
-      Type: AWS::CloudFront::Distribution
-      Properties:
-        DistributionConfig:
-          Origins:
-            - DomainName: ${self:custom.client.bucketName}.s3.amazonaws.com
-              ## An identifier for the origin which must be unique within the distribution
-              Id: WebApp
-              CustomOriginConfig:
-                HTTPPort: 80
-                HTTPSPort: 443
-                OriginProtocolPolicy: https-only
-              ## In case you want to restrict the bucket access use S3OriginConfig and remove CustomOriginConfig
-              # S3OriginConfig:
-              #   OriginAccessIdentity: origin-access-identity/cloudfront/E127EXAMPLE51Z
-          Enabled: 'true'
-          ## Uncomment the following section in case you are using a custom domain
-          Aliases:
-            - www.barracaodigital.com
-          DefaultRootObject: index.html
-          ## Since the Single Page App is taking care of the routing we need to make sure ever path is served with index.html
-          ## The only exception are files that actually exist e.h. app.js, reset.css
-          CustomErrorResponses:
-            - ErrorCode: 404
-              ResponseCode: 200
-              ResponsePagePath: /index.html
-          DefaultCacheBehavior:
-            AllowedMethods:
-              - GET
-              - HEAD
-              - OPTIONS
-            ## The origin id defined above
-            TargetOriginId: WebApp
-            ## Defining if and how the QueryString and Cookies are forwarded to the origin which in this case is S3
-            ForwardedValues:
-              QueryString: 'false'
-              Cookies:
-                Forward: none
-            ## The protocol that users can use to access the files in the origin. To allow HTTP use `allow-all`
-            ViewerProtocolPolicy: redirect-to-https
-          ## The certificate to use when viewers use HTTPS to request objects.
-          ViewerCertificate:
-            AcmCertificateArn: arn:aws:acm:us-east-1:201373306222:certificate/a8852000-db78-4d56-82e5-857a5ba58469
-            SslSupportMethod: sni-only
-          #  CloudFrontDefaultCertificate: 'true'
-          ## Uncomment the following section in case you want to enable logging for CloudFront requests
-          # Logging:
-          #   IncludeCookies: 'false'
-          #   Bucket: mylogs.s3.amazonaws.com
-          #   Prefix: myprefix
+    # WebAppCloudFrontDistribution:
+    #   Type: AWS::CloudFront::Distribution
+    #   Properties:
+    #     DistributionConfig:
+    #       Origins:
+    #         - DomainName: ${self:custom.client.bucketName}.s3.amazonaws.com
+    #           ## An identifier for the origin which must be unique within the distribution
+    #           Id: S3-barracoes-covid-19-development-webapp
+    #           # CustomOriginConfig:
+    #             # HTTPPort: 80
+    #             # HTTPSPort: 443
+    #             # OriginProtocolPolicy: https-only
+    #           ## In case you want to restrict the bucket access use S3OriginConfig and remove CustomOriginConfig
+    #           S3OriginConfig:
+    #             OriginAccessIdentity: origin-access-identity/cloudfront/E3EBCGY6G6EE1K
+    #       Enabled: 'true'
+    #       ## Uncomment the following section in case you are using a custom domain
+    #       # Aliases:
+    #       #   - www.barracaodigital.com
+    #       #   - web.barracaodigital.com
+    #       DefaultRootObject: index.html
+    #       ## Since the Single Page App is taking care of the routing we need to make sure ever path is served with index.html
+    #       ## The only exception are files that actually exist e.h. app.js, reset.css
+    #       CustomErrorResponses:
+    #         - ErrorCode: 404
+    #           ResponseCode: 200
+    #           ResponsePagePath: /index.html
+    #       DefaultCacheBehavior:
+    #         AllowedMethods:
+    #           - GET
+    #           - HEAD
+    #           - OPTIONS
+    #         ## The origin id defined above
+    #         TargetOriginId: WebApp
+    #         ## Defining if and how the QueryString and Cookies are forwarded to the origin which in this case is S3
+    #         ForwardedValues:
+    #           QueryString: 'false'
+    #           Cookies:
+    #             Forward: none
+    #         ## The protocol that users can use to access the files in the origin. To allow HTTP use `allow-all`
+    #         ViewerProtocolPolicy: redirect-to-https
+    #       ## The certificate to use when viewers use HTTPS to request objects.
+    #       ViewerCertificate:
+    #         AcmCertificateArn: arn:aws:acm:us-east-1:201373306222:certificate/a8852000-db78-4d56-82e5-857a5ba58469
+    #         SslSupportMethod: sni-only
+    #       #  CloudFrontDefaultCertificate: 'true'
+    #       ## Uncomment the following section in case you want to enable logging for CloudFront requests
+    #       # Logging:
+    #       #   IncludeCookies: 'false'
+    #       #   Bucket: mylogs.s3.amazonaws.com
+    #       #   Prefix: myprefix
     # DynamoDB Tables
     ConfigsTable:
       Type: AWS::DynamoDB::Table
@@ -331,6 +370,8 @@ resources:
             AttributeType: S
           - AttributeName: destination
             AttributeType: S
+          - AttributeName: type
+            AttributeType: S
         KeySchema:
           - AttributeName: origin
             KeyType: HASH
@@ -346,6 +387,15 @@ resources:
                 KeyType: HASH
               - AttributeName: origin
                 KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 10
+              WriteCapacityUnits: 10
+          - IndexName: type
+            KeySchema:
+              - AttributeName: type
+                KeyType: HASH
             Projection:
               ProjectionType: ALL
             ProvisionedThroughput:

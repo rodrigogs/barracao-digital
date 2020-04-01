@@ -1,4 +1,4 @@
-const { authService } = require('barracoes-covid-19');
+const { authService } = require('barracoes-covid-19/services');
 const { responseBuilder } = require('../helpers');
 
 const createAccessPoliciy = (user, key, methodArn) => ({
@@ -45,6 +45,6 @@ module.exports.handler = async (event) => {
     return createAccessPoliciy(user, key, methodArn);
   } catch (err) {
     console.error('Authorization error:', err);
-    return responseBuilder.errors.unauthorized();
+    return responseBuilder.errors.unauthorized(err.message);
   }
 };

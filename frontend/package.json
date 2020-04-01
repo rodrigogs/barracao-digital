@@ -14,6 +14,7 @@
     "normalize.css": "^8.0.1",
     "vue": "^2.6.11",
     "vue-announcer": "^1.0.6",
+    "vue-cookie": "^1.1.4",
     "vue-router": "^3.1.6",
     "vue-stepper": "^1.4.2",
     "vuex": "^3.1.3"
@@ -27,7 +28,7 @@
     "@vue/eslint-config-airbnb": "^5.0.2",
     "babel-eslint": "^10.1.0",
     "eslint": "^6.8.0",
-    "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-vue": "^6.2.2",
     "sass": "^1.26.3",
     "sass-loader": "^8.0.2",

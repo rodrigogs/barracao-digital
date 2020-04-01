@@ -13,12 +13,18 @@
       <div class="content">
         <div class="content-block">
           <h4>Alterar status</h4>
-          <select @change="onChangeStatus">
-            <option value="waiting" :selected="patient.status === 'waiting'">Aguardando</option>
-            <option value="waiting_kit" :selected="patient.status === 'waiting_kit'">Aguardando kit</option>
-            <option value="ongoing" :selected="patient.status === 'ongoing'">Em atendimento</option>
-            <option value="finished" :selected="patient.status === 'finished'">Finalizado</option>
+          <select @change="onChangeStatus" v-model="selectedStatus">
+            <option value="waiting">Aguardando</option>
+            <option value="waiting_kit">Aguardando kit</option>
+            <option value="ongoing">Em atendimento</option>
+            <option value="finished">Finalizado</option>
           </select>
+        </div>
+
+        <h6 v-if="showChangeStatusForm">Feedback do médico:</h6>
+        <div v-if="showChangeStatusForm" class="content-block">
+          <textarea name="doctorFeedback" id="doctor-feedback" rows="3" v-model="doctorFeedback"></textarea>
+          <button class="textarea-send-btn" @click="updateStatus">Enviar</button>
         </div>
 
         <h4>Dados do paciente</h4>
@@ -92,15 +98,61 @@ export default {
       return this.selectedPatient;
     },
   },
+  data: () => ({
+    showChangeStatusForm: false,
+    doctorFeedbackRequired: false,
+    doctorFeedback: '',
+    selectedStatus: null,
+    errors: {},
+  }),
   methods: {
     ...mapActions('worklist', ['updateSelectedPatientStatus']),
-    onChangeStatus(event) {
-      this.updateSelectedPatientStatus({ status: event.target.value });
+    onChangeStatus() {
+      const status = this.selectedStatus;
+      if (status === 'ongoing' || status === 'waiting_kit') {
+        this.showChangeStatusForm = true;
+        this.doctorFeedbackRequired = true;
+      } else if (status === 'finished') {
+        this.showChangeStatusForm = true;
+        this.doctorFeedbackRequired = false;
+      } else {
+        this.showChangeStatusForm = false;
+        this.doctorFeedbackRequired = false;
+      }
+    },
+    // eslint-disable-next-line consistent-return
+    async updateStatus() {
+      const {
+        selectedStatus: status,
+        doctorFeedback: message = '',
+      } = this;
+
+      this.$delete(this.errors, 'message');
+      if (this.doctorFeedbackRequired && (!message || message.length < 10)) {
+        this.$set(this.errors, 'message', 'O feedback deve ter no mínimo 10 caracteres.');
+      }
+      // FIXME pelo amor de deus né...
+      if (Object.keys(this.errors).length > 0) {
+        return window.alert(this.errors.message);
+      }
+
+      await this.updateSelectedPatientStatus({ status, message });
+
+      this.showChangeStatusForm = false;
+      this.doctorFeedbackRequired = false;
+      this.selectedStatus = status;
+      this.doctorFeedback = null;
     },
     calcTimeWaiting(createdAt) {
       const timeWaiting = Date.now() - createdAt;
       const time = Kairos.new(timeWaiting);
       return time.toString('hh:mm');
+    },
+  },
+  watch: {
+    selectedPatient() {
+      const { status } = this.selectedPatient;
+      this.selectedStatus = status;
     },
   },
 };

@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "description": "",
   "devDependencies": {
-    "aws-sdk": "^2.648.0",
+    "aws-sdk": "^2.649.0",
     "cross-env": "^7.0.2",
     "serverless": "^1.67.0",
     "serverless-domain-manager": "^3.3.1",
@@ -29,7 +29,7 @@
     "deploy:production": "cross-env-shell NODE_ENV=production \"npm run deploy:backend && npm run deploy:frontend\"",
     "clear-frontend-cache": "npx cloudfront-invalidate-cache --cname www.barracaodigital.com"
   },
-  "license": "MIT",
+  "license": "BSD-3-Clause",
   "submodules": [
     "lib",
     "frontend",

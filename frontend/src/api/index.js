@@ -3,6 +3,8 @@ import { API_URL } from '@/config';
 import authAdapter from './auth';
 import patientsAdapter from './patients';
 import doctorsAdapter from './doctors';
+import volunteersAdapter from './volunteers';
+import facilitiesAdapter from './facilities';
 
 const request = axios.create({
   baseURL: API_URL,
@@ -34,3 +36,5 @@ export const healthCheck = healthCheckAdapter(request);
 export const auth = authAdapter(request);
 export const doctors = doctorsAdapter(request);
 export const patients = patientsAdapter(request);
+export const volunteers = volunteersAdapter(request);
+export const facilities = facilitiesAdapter(request);

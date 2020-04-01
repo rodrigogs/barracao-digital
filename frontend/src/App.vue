@@ -1,32 +1,54 @@
 <template>
-  <div class="app">
-    <vue-announcer />
+  <div class="app-container">
+    <Consent v-if="!isConsentAccepted" />
+    <div class="app" v-show="isConsentAccepted">
+      <vue-announcer />
 
-    <Header />
+      <Header />
 
-    <div class="app-content">
-      <router-view></router-view>
+      <div class="app-content">
+        <router-view></router-view>
+      </div>
+
+      <Footer />
     </div>
-
-    <Footer />
   </div>
 </template>
 
 <script>
 import Header from '@/components/Header.vue';
 import Footer from '@/components/Footer.vue';
+import Consent from '@/components/Consent.vue';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
   name: 'App',
   components: {
     Header,
     Footer,
+    Consent,
+  },
+
+  computed: {
+    ...mapGetters('consent', ['isConsentAccepted']),
+  },
+
+  methods: {
+    ...mapActions('consent', ['acceptConsent']),
+  },
+
+  mounted() {
+    const consentCookie = this.$cookie.get('consent-accepted');
+    if (consentCookie) {
+      this.acceptConsent();
+    }
   },
 };
 </script>
 
 <style>
-  .app {
+  .app,
+  .app-container {
     display: flex;
     flex-direction: column;
     height: 100%;

@@ -1,31 +1,27 @@
 <template>
-  <span>
-    <div v-if="!isLoading" class="container" style="margin-top: 1rem;">
-      <stepper :steps="steps"
-               locale="pt"
-               @stepper-finished="savePatientSignUp">
-      </stepper>
-    </div>
-    <div v-if="isLoading" class="container">
-      <div class="patient-enqueued__loader">
-        <div class="loader"><div></div><div></div><div></div><div></div></div>
-      </div>
-    </div>
-  </span>
+  <Stepper
+    class="patient-signup"
+    v-if="!isLoading"
+    :steps="steps"
+    locale="pt"
+    @stepper-finished="savePatientSignUp"
+  />
+  <Loader v-else />
 </template>
 
 <script>
-
-import { patients as patientsApi } from '@/api';
+import { mapActions } from 'vuex';
 import Stepper from 'vue-stepper';
-import StepOne from '../components/StepOne.vue';
-import StepTwo from '../components/StepTwo.vue';
-import StepThree from '../components/StepThree.vue';
+import Loader from '@/components/Loader.vue';
+import StepOne from '@/components/StepOne.vue';
+import StepTwo from '@/components/StepTwo.vue';
+import StepThree from '@/components/StepThree.vue';
 
 export default {
   name: 'PatientSignUp',
   components: {
     Stepper,
+    Loader,
   },
   data() {
     return {
@@ -53,12 +49,23 @@ export default {
     };
   },
   methods: {
-    async savePatientSignUp() {
+    ...mapActions({
+      signUpPatient: 'patients/signUpPatient',
+    }),
+    savePatientSignUp() {
       this.isLoading = true;
-      const patientToSignUp = this.$store.getters['patients/getPatientToSignUp'];
-      const { data: registeredPatient } = await patientsApi.signUpPatient(patientToSignUp);
-      this.$store.commit('patients/clearForm');
-      this.$router.push(`/pacientes/senha/${registeredPatient.ticket}`);
+
+      this
+        .signUpPatient()
+        .then(
+          ({ ticket }) => this.$router.push({ name: 'PatientEnqueued', params: { ticket }}),
+          () => {
+            // TODO: handle API rejected promise
+          }
+        )
+        .finally(() => {
+          this.isLoading = false;
+        })
     },
   },
   beforeDestroy() {
@@ -67,13 +74,12 @@ export default {
 };
 </script>
 
-<style>
-  .stepper-box .content {
-    margin-top: 0 !important;
-  }
+<style scoped>
+.patient-signup {
+  margin-top: 1rem;
+}
 
-  .pacient-sign-up__form {
-    max-width: 400px;
-    margin: auto;
-  }
+.patient-signup > /deep/ .content {
+  margin-top: 0;
+}
 </style>

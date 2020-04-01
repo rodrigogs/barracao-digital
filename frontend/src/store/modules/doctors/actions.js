@@ -1,5 +1,10 @@
 import * as api from '@/api';
 
+export const create = async ({ commit }, doctor) => {
+  const createdDoctor = await api.doctors.create(doctor);
+  commit('addToList', createdDoctor);
+};
+
 export const refreshList = async ({ commit }, { cep }) => {
   const doctors = await api.doctors.getList({ cep });
   return commit('fillList', doctors);

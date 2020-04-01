@@ -1,6 +1,6 @@
 <template>
   <div class="doctor-table-container">
-    <div class="doctor-table-loading" v-if="!listPaginated || listPaginated.length === 0">.
+    <div class="doctor-table-loading" v-if="!listPaginated || listPaginated.length === 0">
       Nenhum registro filtrado ainda
     </div>
     <table class="doctor-table" v-if="listPaginated && listPaginated.length > 0">
@@ -22,7 +22,9 @@
         >
           <td class="doctor-table__td">{{ item.name }}</td>
           <td class="doctor-table__td">{{ item.age }}</td>
-          <td class="doctor-table__td">{{ calcTimeWaiting(item.createdAt) }}</td>
+          <td class="doctor-table__td" v-bind:style="{ 'color': `#${calulateColor(item.createdAt)}` }">
+            {{ calcTimeWaiting(item.createdAt) }}
+          </td>
           <td class="doctor-table__td" :class="{
             'status-ongoing': item.status === 'ongoing',
             'status-waiting-kit': item.status === 'waiting_kit',
@@ -61,6 +63,24 @@ import axios from 'axios';
 import Kairos from 'kairos';
 import { mapState, mapActions, mapGetters } from 'vuex';
 
+const perc2color = (perc) => {
+  let r;
+  const g = 0;
+  let b;
+
+  const normalizedPerc = (perc < 100) ? perc : 100;
+  if (normalizedPerc < 50) {
+    r = 255;
+    b = Math.round(5.1 * normalizedPerc);
+  } else {
+    b = 255;
+    r = Math.round(510 - 5.10 * normalizedPerc);
+  }
+
+  const h = r * 0x10000 + g * 0x100 + b * 0x1;
+  return `#000000${h.toString(16)}`.slice(-6);
+};
+
 export default {
   name: 'DoctorTable',
   data() {
@@ -73,7 +93,7 @@ export default {
     ...mapState('worklist', {
       list: (state) => state.list,
       listPaginated(state) {
-        const list = state.list || [];
+        const list = [...state.list].sort((a, b) => a.createdAt - b.createdAt);
         return list.slice((this.pageNumber - 1) * this.pageSize, this.pageNumber * this.pageSize);
       },
       selectedPatient: (state) => state.selectedPatient,
@@ -109,6 +129,13 @@ export default {
       const time = Kairos.new(timeWaiting);
       return time.toString('hh:mm');
     },
+    calulateColor(createdAt) {
+      const now = Date.now();
+      const timeWaiting = now - createdAt;
+      const oneHour = 1000 * 60 * 60;
+      const percent = (oneHour / timeWaiting) * 100;
+      return perc2color(percent);
+    },
     getStatusMessage(status = 'waiting') {
       if (status === 'waiting') return 'Aguardando';
       if (status === 'waiting_kit') return 'Aguardando kit';
@@ -116,9 +143,6 @@ export default {
       if (status === 'finished') return 'Finalizado';
       return 'Sem status';
     },
-  },
-  created() {
-    this.refreshList();
   },
 };
 </script>

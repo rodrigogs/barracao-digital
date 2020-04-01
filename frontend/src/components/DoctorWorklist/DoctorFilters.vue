@@ -10,10 +10,12 @@
           name="status"
           id="status"
           class="doctor-filters-select"
+          v-model="timeWaiting"
+          @change="onFilterUpdated"
         >
-          <option>Últimas 24h</option>
-          <option>Últimas 6h</option>
-          <option>Todos</option>
+          <option value="86400000">Últimas 24h</option>
+          <option value="21600000">Últimas 6h</option>
+          <option value="">Todos</option>
         </select>
       </div>
 
@@ -24,7 +26,7 @@
           id="status"
           class="doctor-filters-select"
           v-model="status"
-          @change="onChangeStatus"
+          @change="onFilterUpdated"
         >
           <option value="waiting">Aguardando</option>
           <option value="ongoing">Em andamento</option>
@@ -42,9 +44,13 @@ import { mapActions, mapGetters } from 'vuex';
 
 export default {
   name: 'DoctorFilters',
+  mounted() {
+    this.onFilterUpdated();
+  },
   data() {
     return {
       status: 'waiting',
+      timeWaiting: '',
     };
   },
   computed: {
@@ -52,9 +58,10 @@ export default {
   },
   methods: {
     ...mapActions('worklist', ['updateFilter']),
-    onChangeStatus() {
+    onFilterUpdated() {
       this.updateFilter({
         status: this.status,
+        timeWaiting: this.timeWaiting,
       });
     },
   },

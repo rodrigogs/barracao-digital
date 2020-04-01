@@ -3,8 +3,10 @@
     <Logo />
 
     <p>
-      Antes de sair de casa para buscar atendimento, faça sua avaliação digital segura com um
-      profissional.
+      Durante epidemias uma das maneiras de diminuir a lotação dos hospitais é criar barracões de atendimento.
+      <br>
+      <br>
+      No <strong>Barracão Digital</strong> o paciente com sintomas de coronavírus pode ser avaliado por um médico voluntário via chamada de video ou de telefone.
     </p>
 
     <router-link :to="{ name: 'PatientSignUp' }" class="btn home__button-link">
@@ -12,7 +14,7 @@
     </router-link>
 
     <router-link :to="{ name: 'PatientLogin' }" class="btn-secondary home__button-link">
-      Ja tenho uma senha de retorno
+      Já tenho uma senha de retorno
     </router-link>
   </section>
 </template>

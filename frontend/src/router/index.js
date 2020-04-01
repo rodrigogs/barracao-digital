@@ -25,11 +25,47 @@ const routes = [
     },
   },
   {
+    path: '/medicos',
+    name: 'DoctorManagement',
+    component: () => import(/* webpackChunkName: "doctor-management" */ '../views/DoctorManagement.vue'),
+    meta: {
+      title: 'Cadastros de médicos',
+      requiresAuth: true,
+    },
+  },
+  {
     path: '/medicos/fila',
     name: 'DoctorWorklist',
     component: () => import(/* webpackChunkName: "doctor-worklist" */ '../views/DoctorWorklist.vue'),
     meta: {
       title: 'Lista de Trabalho do Médico',
+      requiresAuth: true,
+    },
+  },
+  {
+    path: '/instalacoes',
+    name: 'Facilities',
+    component: () => import(/* webpackChunkName: "facilities" */ '../views/Facilities.vue'),
+    meta: {
+      title: 'Lista de Instalações',
+      requiresAuth: true,
+    },
+  },
+  {
+    path: '/instalacoes/cadastrar',
+    name: 'FacilitiesCreate',
+    component: () => import(/* webpackChunkName: "facilities-create" */ '../views/FacilitiesCreate.vue'),
+    meta: {
+      title: 'Cadastro de Instalação',
+      requiresAuth: true,
+    },
+  },
+  {
+    path: '/instalacoes/editar/:origin',
+    name: 'FacilitiesEdit',
+    component: () => import(/* webpackChunkName: "facilities-edit" */ '../views/FacilitiesEdit.vue'),
+    meta: {
+      title: 'Cadastro de Instalação',
       requiresAuth: true,
     },
   },
@@ -57,6 +93,24 @@ const routes = [
     component: () => import(/* webpackChunkName: "patient-enqueued" */ '../views/PatientEnqueued.vue'),
     meta: {
       title: 'Fila de Espera',
+      requiresAuth: false,
+    },
+  },
+  {
+    path: '/voluntariado',
+    name: 'Volunteers',
+    component: () => import(/* webpackChunkName: "volunteers" */ '../views/Volunteering.vue'),
+    meta: {
+      title: 'Voluntariado',
+      requiresAuth: false,
+    },
+  },
+  {
+    path: '*',
+    name: 'NotFound',
+    component: () => import(/* webpackChunkName: "PageNotFound" */ '../views/PageNotFound.vue'),
+    meta: {
+      title: '404',
       requiresAuth: false,
     },
   },
