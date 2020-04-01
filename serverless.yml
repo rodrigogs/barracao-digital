@@ -19,7 +19,7 @@ custom:
     bucketName: ${self:service}-${self:provider.stage}-webapp
     distributionFolder: frontend/dist
   customDomain:
-    domainName: backend.barracaodigital.com
+    domainName: api.barracaodigital.com
     basePath: ${self:provider.stage}
     stage: ${self:provider.stage}
     certificateName: '*.barracaodigital.com'
