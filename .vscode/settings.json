@@ -1,0 +1,18 @@
+{
+    "serverlessConsole.services": [
+        {
+            "type": "serverlessFramework",
+            "title": null,
+            "awsProfile": "covid-19",
+            "cwd": "./",
+            "command": "serverless print",
+            "timeOffsetInMs": 0,
+            "envVars": [],
+            "stages": [
+                "development",
+                "production"
+            ]
+        }
+    ],
+    "serverlessConsole.autoRefreshInterval": 0
+}
