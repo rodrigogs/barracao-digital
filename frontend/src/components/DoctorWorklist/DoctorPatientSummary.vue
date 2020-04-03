@@ -21,7 +21,7 @@
           </select>
         </div>
 
-        <h6 v-if="showChangeStatusForm">Feedback do médico:</h6>
+        <h6 v-if="showChangeStatusForm">Feedback para o paciente:</h6>
         <div v-if="showChangeStatusForm" class="content-block">
           <textarea name="doctorFeedback" id="doctor-feedback" rows="3" v-model="doctorFeedback"></textarea>
           <button class="textarea-send-btn" @click="updateStatus">Enviar</button>
@@ -51,11 +51,11 @@
           <span>{{ patient.meds }}</span>
         </div>
         <div class="content-block">
-          <span>Possuí alergias? Quais?</span>
+          <span>Possui alergias? Quais?</span>
           <span>{{ patient.allergies }}</span>
         </div>
         <div class="content-block">
-          <span>Possuí convênio? Qual?</span>
+          <span>Possui convênio? Qual?</span>
           <span>{{ patient.covenant }}</span>
         </div>
         <div class="content-block">
@@ -135,9 +135,8 @@ export default {
       if (this.doctorFeedbackRequired && (!message || message.length < 10)) {
         this.$set(this.errors, 'message', 'O feedback deve ter no mínimo 10 caracteres.');
       }
-      // FIXME pelo amor de deus né...
       if (Object.keys(this.errors).length > 0) {
-        return window.alert(this.errors.message);
+        return this.$noty.error(`Erro ao atualizar paciente: ${this.errors.message}`);
       }
 
       await this.updateSelectedPatientStatus({ status, message });

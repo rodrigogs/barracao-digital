@@ -82,4 +82,8 @@ export default (request) => ({
     const { data } = await request.put(`/patients/${ticket}/status/finished`, { message });
     return data;
   },
+  async setMessagingToken({ ticket, token }) {
+    const { data } = await request.put(`/patients/${ticket}/messaging/token`, { ticket, token });
+    return data;
+  },
 });

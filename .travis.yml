@@ -7,6 +7,7 @@ install:
   - npm install
   - npm install serverless --g
   - chmod +x ./scripts/deploy_travis.sh
+  - chmod +x ./scripts/inject_service_worker_variables.sh
 
 script:
   - npm run deploy:travis

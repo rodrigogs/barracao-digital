@@ -6,15 +6,7 @@ importScripts('https://www.gstatic.com/firebasejs/7.13.1/firebase-messaging.js')
 
 // Initialize the Firebase app in the service worker by passing in the
 // messagingSenderId.
-firebase.initializeApp({
-  apiKey: 'AIzaSyBRyHMWKmQEA3li1d3nX2deKU8ZeVo5pDE',
-  authDomain: 'barracao-digital-01.firebaseapp.com',
-  databaseURL: 'https://barracao-digital-01.firebaseio.com',
-  projectId: 'barracao-digital-01',
-  storageBucket: 'barracao-digital-01.appspot.com',
-  messagingSenderId: '300542793702',
-  appId: '1:300542793702:web:4968a14f5603d68a89e827',
-});
+firebase.initializeApp(atob('_FIREBASE_CONFIG_'));
 
 // Retrieve an instance of Firebase Messaging so that it can handle background
 // messages.

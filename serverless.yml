@@ -53,6 +53,7 @@ provider:
     DOCTORS_TABLE: ${self:custom.doctorsTableName}
     PATIENTS_TABLE: ${self:custom.patientsTableName}
     FACILITIES_TABLE: ${self:custom.facilitiesTableName}
+    GOOGLE_APPLICATION_CREDENTIALS: ${env:GOOGLE_APPLICATION_CREDENTIALS}
 
 functions:
   doctorAuthorizer:
@@ -169,6 +170,11 @@ functions:
           path: /patients/{ticket}/status/finished
           cors: true
           authorizer: adminAuthorizer
+
+      - http:
+          method: PUT
+          path: /patients/{ticket}/messaging/token
+          cors: true
 
   # Facilities
   facilities:

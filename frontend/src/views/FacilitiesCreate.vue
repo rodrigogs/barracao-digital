@@ -59,11 +59,12 @@ export default {
 
         await this.create(facilitieData);
 
-        alert('Instalação cadastrada com sucesso');
+        this.$noty.success('Instalação cadastrada com sucesso');
 
         this.$router.push('/instalacoes');
       } catch (err) {
-        alert('Não foi possível cadastrar a instalação. Revise os dados inseridos e tente novamente.');
+        this.$noty.success('Não foi possível cadastrar a instalação. Revise os dados inseridos e tente novamente.');
+
         if (err.response && err.response.status === 401) {
           this.errors.push('Não foi possível cadastrar a instalação. Revise os dados inseridos e tente novamente.');
         } else {

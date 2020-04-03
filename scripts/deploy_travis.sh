@@ -25,6 +25,7 @@ if [[ $DEPLOY_FRONTEND == "true" ]]; then
     npm run install:frontend
     echo -e "${BOLD}${YELLOW}Building frontend...${RESET}"
     npm run build:frontend
+    source ./scripts/inject_service_worker_variables.sh
     echo -e "${BOLD}${YELLOW}Deploying frontend...${RESET}"
     npm run deploy:frontend
 fi

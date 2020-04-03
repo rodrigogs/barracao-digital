@@ -41,10 +41,8 @@ request.interceptors.request.use(async (config) => {
 }, Promise.reject);
 
 request.interceptors.response.use(
-  function onResponseSuccess(response) {
-    return response;
-  },
-  async function onResponseError(error) {
+  (response) => response,
+  async (error) => {
     if (error && error.response && error.response.status === 401) {
       await logoutUser();
     }

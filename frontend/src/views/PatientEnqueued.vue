@@ -84,6 +84,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
 import Kairos from 'kairos';
 import Loader from '@/components/Loader.vue';
 import FacilityNotAvailable from '@/components/FacilityNotAvailable.vue';
@@ -106,6 +107,10 @@ export default {
     };
   },
   methods: {
+    ...mapActions('patients', [
+      'loginPatient',
+      'logoutPatient',
+    ]),
     async reloadPacientData() {
       this.isLoading = true;
       this.patient = await patientsApi.getPatientByTicket(this.$route.params.ticket);
@@ -118,12 +123,11 @@ export default {
     },
     async sendPacientFeedback(starQt) {
       this.sendingFeedback = true;
-
       try {
         this.patient = await patientsApi.savePatientFeedback(this.$route.params.ticket, starQt);
         this.sendingFeedback = false;
       } catch (e) {
-        alert('Aconteceu algum erro, tente avaliar novamente mais tarde.');
+        this.$noty.error('Aconteceu algum erro, tente avaliar novamente mais tarde.');
         this.sendingFeedback = false;
       }
     },
@@ -141,14 +145,19 @@ export default {
 
     try {
       this.patient = await patientsApi.getPatientByTicket(patientTicket);
+      await this.loginPatient(this.patient);
+      this.$noty.success('Bem vindo de volta!');
       if (this.patient.status === 'waiting') {
         this.reloaderInterval = setInterval(this.reloadPacientData, 60000);
       }
     } catch (err) {
-      if (String(err.response.status) === '404') {
-        this.$router.push({ name: 'NotFound' });
+      if (err.response && err.response.status === 404) {
+        this.$noty.error('Senha inválida');
+        this.$router.push({ name: 'PatientLogin' });
+      } else {
+        this.$noty.error('Ocorreu um erro ao tentar acessar a fila');
+        console.error(err);
       }
-      // TODO handle the error
     } finally {
       this.isLoading = false;
     }
@@ -156,6 +165,7 @@ export default {
   beforeDestroy() {
     console.log('Clearing reloader interval');
     clearInterval(this.reloaderInterval);
+    this
   },
 };
 </script>

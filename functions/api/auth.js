@@ -3,31 +3,32 @@ const { getRequestContext, responseBuilder } = require('../helpers');
 
 const methods = {
   async POST(ctx) {
-    try {
-      const {
-        body,
-      } = ctx;
+    const {
+      body,
+    } = ctx;
 
-      const { username, password } = (body || {});
-      if (!username || !password) {
-        return responseBuilder.errors.badRequest('Missing username or password');
-      }
-
-      const loggedUser = await authService.login({ username, password });
-      if (!loggedUser) return responseBuilder.errors.unauthorized();
-
-      return responseBuilder.success.ok({ body: loggedUser });
-    } catch (err) {
-      return responseBuilder.genericError(err);
+    const { username, password } = (body || {});
+    if (!username || !password) {
+      return responseBuilder.errors.badRequest('Missing username or password');
     }
+
+    const loggedUser = await authService.login({ username, password });
+    if (!loggedUser) return responseBuilder.errors.unauthorized();
+
+    return responseBuilder.success.ok({ body: loggedUser });
   },
 };
 
 module.exports.handler = async (event) => {
-  const requestContext = await getRequestContext(event);
-  const method = methods[requestContext.httpMethod];
+  try {
+    const requestContext = await getRequestContext(event);
+    const method = methods[requestContext.httpMethod];
 
-  if (!method) return responseBuilder.errors.methodNotAllowed();
+    if (!method) return responseBuilder.errors.methodNotAllowed();
 
-  return method(requestContext);
+    return method(requestContext);
+  } catch (err) {
+    console.error('Responding error:', err);
+    return responseBuilder.genericError(err);
+  }
 };

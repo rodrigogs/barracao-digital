@@ -9,3 +9,11 @@ export const signUpPatient = async ({ commit, getters }) => {
   commit('clearForm');
   return patient;
 };
+
+export const loginPatient = async ({ commit }, patient) => {
+  commit('setLoggedInPatient', patient);
+};
+
+export const logoutPatient = async ({ commit }) => {
+  commit('setLoggedOutPatient');
+};

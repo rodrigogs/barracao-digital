@@ -6,7 +6,7 @@ const output = join(__dirname, 'dist');
 
 module.exports = {
   context,
-  mode: 'production',
+  mode: process.env.NODE_ENV,
   optimization: {
     minimize: false,
     occurrenceOrder: true,

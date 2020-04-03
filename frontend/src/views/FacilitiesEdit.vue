@@ -65,11 +65,11 @@ export default {
 
         await this.update(facilitieData);
 
-        alert('Instalação editada com sucesso');
+        this.$noty.success('Instalação editada com sucesso');
 
         this.$router.push('/instalacoes');
       } catch (err) {
-        alert('Não foi possível editar a instalação. Revise os dados inseridos e tente novamente.');
+        this.$noty.error('Não foi possível editar a instalação. Revise os dados inseridos e tente novamente.');
         if (err.response && err.response.status === 401) {
           this.errors.push('Não foi possível editar a instalação. Revise os dados inseridos e tente novamente.');
         } else {

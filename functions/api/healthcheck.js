@@ -17,6 +17,7 @@ module.exports.handler = async () => {
       },
     });
   } catch (err) {
+    console.error('Responding error:', err);
     return responseBuilder.genericError(err);
   }
 };

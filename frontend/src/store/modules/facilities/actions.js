@@ -8,8 +8,8 @@ export const refreshList = async ({ commit, dispatch }) => {
 
 export const refreshListDestinations = async ({ commit, getters, state }, origin) => {
   const destinations = await api.facilities.getDestinationsByOrigin({ origin });
-  const facilitie = getters.getByOrigin(origin)
-  facilitie.destinations = destinations || []
+  const facilitie = getters.getByOrigin(origin);
+  facilitie.destinations = destinations || [];
   commit('fillList', state.list);
 };
 
@@ -30,13 +30,11 @@ export const createDestination = async ({ dispatch }, { origin, destination }) =
     origin,
     destination,
   });
-  dispatch('refreshListDestinations', origin)
+  dispatch('refreshListDestinations', origin);
 };
 
-export const getByOrigin = async (store, origin) => {
-  return await api.facilities.getByOrigin(origin);
-};
+export const getByOrigin = async (store, origin) => await api.facilities.getByOrigin(origin);
 
 export const update = async (store, facilitie) => {
   await api.facilities.update(facilitie);
-}
+};

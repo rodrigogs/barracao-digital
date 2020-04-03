@@ -38,14 +38,14 @@ const getByCep = async (cep, user, { status, timeWaiting }) => {
 };
 
 module.exports.handler = async (event) => {
-  const requestContext = await getRequestContext(event);
-  const {
-    consumer: user,
-    pathParameters,
-    queryStringParameters,
-  } = requestContext;
-
   try {
+    const requestContext = await getRequestContext(event);
+    const {
+      consumer: user,
+      pathParameters,
+      queryStringParameters,
+    } = requestContext;
+
     const { cep, ticket } = pathParameters || {};
     const { status, timeWaiting } = queryStringParameters || {};
 
@@ -55,6 +55,7 @@ module.exports.handler = async (event) => {
 
     return responseBuilder.errors.badRequest();
   } catch (err) {
+    console.error('Responding error:', err);
     return responseBuilder.genericError(err);
   }
 };

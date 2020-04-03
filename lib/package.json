@@ -8,13 +8,15 @@
   },
   "dependencies": {
     "@googlemaps/google-maps-services-js": "^2.4.2",
-    "aws-sdk": "^2.649.0",
-    "uuid": "^7.0.2"
+    "aws-sdk": "^2.652.0",
+    "firebase": "^7.13.2",
+    "firebase-admin": "^8.10.0",
+    "uuid": "^7.0.3"
   },
   "devDependencies": {
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.1.0",
     "eslint-plugin-import": "^2.20.2",
-    "jest": "^25.2.4"
+    "jest": "^25.2.6"
   }
 }

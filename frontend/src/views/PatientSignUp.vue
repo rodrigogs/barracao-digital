@@ -60,20 +60,17 @@ export default {
     ...mapActions('consent', [
       'acceptConsent',
     ]),
-    savePatientSignUp() {
-      this.isLoading = true;
-
-      this
-        .signUpPatient()
-        .then(
-          ({ ticket }) => this.$router.push({ name: 'PatientEnqueued', params: { ticket }}),
-          () => {
-            // TODO: handle API rejected promise
-          }
-        )
-        .finally(() => {
-          this.isLoading = false;
-        })
+    async savePatientSignUp() {
+      try {
+        this.isLoading = true;
+        const { ticket } = await this.signUpPatient()
+        this.$router.push({ name: 'PatientEnqueued', params: { ticket } });
+      } catch (err) {
+        this.$noty.error('Houve uma falha ao criar o seu cadástro.');
+        throw err;
+      } finally {
+        this.isLoading = false;
+      }
     },
   },
   computed: {
