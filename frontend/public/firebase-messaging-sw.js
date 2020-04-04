@@ -1,12 +1,16 @@
 // Give the service worker access to Firebase Messaging.
 // Note that you can only use Firebase Messaging here, other Firebase libraries
 // are not available in the service worker.
-importScripts('https://www.gstatic.com/firebasejs/7.13.1/firebase-app.js');
-importScripts('https://www.gstatic.com/firebasejs/7.13.1/firebase-messaging.js');
+importScripts('https://www.gstatic.com/firebasejs/6.3.4/firebase-app.js');
+importScripts('https://www.gstatic.com/firebasejs/6.3.4/firebase-messaging.js');
 
 // Initialize the Firebase app in the service worker by passing in the
 // messagingSenderId.
-firebase.initializeApp(atob('_FIREBASE_CONFIG_'));
+firebase.initializeApp({
+  databaseURL: "https://barracao-digital-01.firebaseio.com",
+  projectId: "barracao-digital-01",
+  messagingSenderId: "300542793702",
+});
 
 // Retrieve an instance of Firebase Messaging so that it can handle background
 // messages.

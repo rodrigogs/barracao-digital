@@ -40,16 +40,38 @@ const handleMessagingToken = async (messaging) => {
     await messaging.requestPermission();
     console.log('Permission granted for the messaging service!');
     await persistPatientMessagingToken(messaging);
+    initialized = true;
   } catch (err) {
     console.error('Unable to get messaging token', err);
-  } finally {
-    initialized = true;
   }
 };
 
+const onMessage = (messaging) => (callback) => new Promise((resolve, reject) => {
+  let timesVerified = 0;
+  const interval = setInterval(() => {
+    console.log('ai');
+    if (!initialized) {
+      timesVerified += 1;
+      if (timesVerified > 60) {
+        clearInterval(interval);
+        reject(new Error('Timed out waiting for messaging lib to initialize'));
+      }
+      return;
+    }
+    clearInterval(interval);
+    resolve(messaging.onMessage(callback));
+  }, 1000);
+});
+
 export default (app) => {
   const messaging = app.messaging();
-  handleMessagingToken(messaging);
-  messaging.onTokenRefresh(() => handleMessagingToken(messaging));
+
+  handleMessagingToken(messaging).then(() => {
+    messaging.onTokenRefresh(() => handleMessagingToken(messaging));
+  });
+
+  // Avoid not receiving messages because the lib is not yet initialized
+  messaging.safeOnMessage = onMessage(messaging);
+
   return messaging;
 };

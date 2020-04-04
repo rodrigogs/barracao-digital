@@ -140,6 +140,7 @@ export default {
       }
 
       await this.updateSelectedPatientStatus({ status, message });
+      this.$noty.success('Status atualizado');
 
       this.showChangeStatusForm = false;
       this.doctorFeedbackRequired = false;

@@ -89,6 +89,7 @@ import Kairos from 'kairos';
 import Loader from '@/components/Loader.vue';
 import FacilityNotAvailable from '@/components/FacilityNotAvailable.vue';
 import { patients as patientsApi } from '@/api';
+import '@/providers/firebase';
 
 export default {
   name: 'PatientEnqueued',
@@ -146,7 +147,6 @@ export default {
     try {
       this.patient = await patientsApi.getPatientByTicket(patientTicket);
       await this.loginPatient(this.patient);
-      this.$noty.success('Bem vindo de volta!');
       if (this.patient.status === 'waiting') {
         this.reloaderInterval = setInterval(this.reloadPacientData, 60000);
       }
@@ -165,7 +165,6 @@ export default {
   beforeDestroy() {
     console.log('Clearing reloader interval');
     clearInterval(this.reloaderInterval);
-    this
   },
 };
 </script>

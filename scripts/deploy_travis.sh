@@ -25,16 +25,15 @@ if [[ $DEPLOY_FRONTEND == "true" ]]; then
     npm run install:frontend
     echo -e "${BOLD}${YELLOW}Building frontend...${RESET}"
     npm run build:frontend
-    source ./scripts/inject_service_worker_variables.sh
     echo -e "${BOLD}${YELLOW}Deploying frontend...${RESET}"
     npm run deploy:frontend
+    echo -e "${BOLD}${YELLOW}Crlearing frontend cache...${RESET}"
+    npm run invalidate-cloudfront-cache
 fi
 
 if [[ $DEPLOY_BACKEND == "true" ]]; then
     echo -e "${BOLD}${YELLOW}Installing backend dependencies...${RESET}"
     npm run install:backend
-    echo -e "${BOLD}${YELLOW}Building backend...${RESET}"
-    npm run build:backend
     echo -e "${BOLD}${YELLOW}Deploying backend...${RESET}"
     npm run deploy:backend
 fi

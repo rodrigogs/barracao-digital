@@ -7,9 +7,9 @@
     "test": "jest"
   },
   "dependencies": {
+    "@firebase/app": "^0.6.1",
     "@googlemaps/google-maps-services-js": "^2.4.2",
     "aws-sdk": "^2.652.0",
-    "firebase": "^7.13.2",
     "firebase-admin": "^8.10.0",
     "uuid": "^7.0.3"
   },
@@ -17,6 +17,6 @@
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.1.0",
     "eslint-plugin-import": "^2.20.2",
-    "jest": "^25.2.6"
+    "jest": "^25.2.7"
   }
 }

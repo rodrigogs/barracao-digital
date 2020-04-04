@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import store from '@/store';
+import { BASE_URL } from '@/config';
 
 Vue.use(VueRouter);
 
@@ -118,7 +119,7 @@ const routes = [
 
 const router = new VueRouter({
   mode: 'history',
-  base: process.env.BASE_URL,
+  base: BASE_URL,
   routes,
 });
 

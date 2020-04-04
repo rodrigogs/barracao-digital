@@ -18,23 +18,11 @@
 import Header from '@/components/Header.vue';
 import Footer from '@/components/Footer.vue';
 
-import { firebase } from '@/providers';
-
 export default {
   name: 'App',
   components: {
     Header,
     Footer,
-  },
-
-  async created() {
-    try {
-      await firebase.messaging.onMessage((payload) => {
-        console.log({ payload });
-      });
-    } catch (err) {
-      console.error(err);
-    }
   },
 };
 </script>

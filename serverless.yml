@@ -15,6 +15,9 @@ package:
 custom:
   webpack:
     webpackConfig: webpack.config.js
+    includeModules:
+      forceExclude:
+        - aws-sdk
   client:
     bucketName: ${self:service}-${self:provider.stage}-webapp
     distributionFolder: frontend/dist
@@ -175,6 +178,13 @@ functions:
           method: PUT
           path: /patients/{ticket}/messaging/token
           cors: true
+
+      # FIXME remove
+      - http:
+          method: PUT
+          path: /patients/{ticket}/messaging/test
+          cors: true
+          authorizer: adminAuthorizer
 
   # Facilities
   facilities:
