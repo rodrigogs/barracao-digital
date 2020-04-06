@@ -5,7 +5,7 @@ export const setStepFields = async ({ commit }, stepFields) => {
 };
 
 export const signUpPatient = async ({ commit, getters }) => {
-  const patient = await patientsApi.signUpPatient(getters.getPatientToSignUp);
+  const patient = await patientsApi.signUpPatient(getters.patientToSignUp);
   commit('clearForm');
   return patient;
 };

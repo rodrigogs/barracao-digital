@@ -89,7 +89,7 @@ import Kairos from 'kairos';
 import Loader from '@/components/Loader.vue';
 import FacilityNotAvailable from '@/components/FacilityNotAvailable.vue';
 import { patients as patientsApi } from '@/api';
-import '@/providers/firebase';
+import { messaging } from '@/providers/firebase';
 
 export default {
   name: 'PatientEnqueued',
@@ -132,6 +132,23 @@ export default {
         this.sendingFeedback = false;
       }
     },
+    async handleMessaging() {
+      try {
+        const { patient } = this;
+        await messaging.requestPermission();
+        const currentToken = await messaging.getToken();
+        await this.updatePatientMessagingToken(currentToken);
+        messaging.onTokenRefresh(async () => {
+          const updatedToken = await messaging.getToken();
+          await this.updatePatientMessagingToken(updatedToken);
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    },
+    async updatePatientMessagingToken(newToken) {
+      await patientsApi.setMessagingToken({ ticket: this.patient.ticket, token: newToken });
+    },
     createArrayOfStars(quantity) {
       return Array(quantity).fill(0).map((v, i) => i + 1).reverse();
     },
@@ -147,7 +164,8 @@ export default {
     try {
       this.patient = await patientsApi.getPatientByTicket(patientTicket);
       await this.loginPatient(this.patient);
-      if (this.patient.status === 'waiting') {
+      await this.handleMessaging();
+      if (this.patient.status === 'waiting') { // FIXME should be removed when using firestore
         this.reloaderInterval = setInterval(this.reloadPacientData, 60000);
       }
     } catch (err) {
