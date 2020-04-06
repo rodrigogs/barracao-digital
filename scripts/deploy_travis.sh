@@ -28,7 +28,7 @@ if [[ $DEPLOY_FRONTEND == "true" ]]; then
     echo -e "${BOLD}${YELLOW}Deploying frontend...${RESET}"
     npm run deploy:frontend
     echo -e "${BOLD}${YELLOW}Crlearing frontend cache...${RESET}"
-    npm run invalidate-cloudfront-cache
+    ./scripts/invalidate-cloudfront-cache.js
 fi
 
 if [[ $DEPLOY_BACKEND == "true" ]]; then

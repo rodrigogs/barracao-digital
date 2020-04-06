@@ -12,9 +12,6 @@ install:
 script:
   - npm run deploy:travis
 
-after_script:
-  - npm run invalidate-cloudfront-cache
-
 branches:
   only:
   - master
