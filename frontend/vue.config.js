@@ -3,8 +3,8 @@ const fs = require('fs');
 let key;
 let cert;
 try {
-  key = fs.readFileSync('../certs/_wildcard.barracaodigital.com+5-key.pem').toString();
-  cert = fs.readFileSync('../certs/_wildcard.barracaodigital.com+5.pem').toString();
+  key = fs.readFileSync('../certs/localhost.key.pem').toString();
+  cert = fs.readFileSync('../certs/localhost.cert.pem').toString();
 } catch (err) {
   console.error('Error loading HTTPS certificates', err);
 }
