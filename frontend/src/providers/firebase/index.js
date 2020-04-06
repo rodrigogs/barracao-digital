@@ -1,6 +1,6 @@
 import firebase from 'firebase/app';
 import messagingAdapter from './messaging';
-import firestoreAdapter from './firestore'
+import firestoreAdapter from './firestore';
 import { FIREBASE_CONFIG } from '@/config';
 
 if (!FIREBASE_CONFIG) throw new Error('FIREBASE_CONFIG env variable is required');

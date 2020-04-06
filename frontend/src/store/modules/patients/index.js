@@ -6,7 +6,7 @@ import defaultState from './default-state';
 const state = {
   ...defaultState,
   loggedInPatient: null,
-}
+};
 
 export default {
   namespaced: true,

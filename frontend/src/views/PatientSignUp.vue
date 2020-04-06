@@ -63,7 +63,7 @@ export default {
     async savePatientSignUp() {
       try {
         this.isLoading = true;
-        const { ticket } = await this.signUpPatient()
+        const { ticket } = await this.signUpPatient();
         this.$router.push({ name: 'PatientEnqueued', params: { ticket } });
       } catch (err) {
         this.$noty.error('Houve uma falha ao criar o seu cadástro.');
