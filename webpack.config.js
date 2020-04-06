@@ -24,6 +24,6 @@ module.exports = {
     library: 'index',
     libraryTarget: 'commonjs2',
   },
-  externals: [ 'aws-sdk', 'commonjs2 firebase-admin' ],
+  externals: ['aws-sdk', 'commonjs2 firebase-admin'],
   target: 'node',
 };
