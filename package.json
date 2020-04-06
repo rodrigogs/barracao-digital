@@ -28,7 +28,7 @@
     "deploy:development": "NODE_ENV=development (npm run deploy:backend && npm run deploy:frontend)",
     "deploy:production": "NODE_ENV=production (npm run deploy:backend && npm run deploy:frontend)",
     "deploy:travis": " DEPLOY_FRONTEND=true DEPLOY_BACKEND=true ./scripts/deploy_travis.sh",
-    "invalidate-cloudfront-cache": "./scripts/invalidate-cloudfront-cache.js www.barracaodigital.com dev.barracaodigital.com"
+    "invalidate-cloudfront-cache": "node ./scripts/invalidate-cloudfront-cache.js www.barracaodigital.com dev.barracaodigital.com"
   },
   "license": "BSD-3-Clause"
 }
