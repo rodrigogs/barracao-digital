@@ -1,86 +1,88 @@
 <template>
-  <section class="section">
-    <Loader class="patient-enqueued__loader" v-if="isLoading" />
-    <div v-if="!isLoading && patient.status === 'waiting'" class="container">
-      <div class="patient-enqueued__lightweight-warn">
-        Essa página é atualizada automaticamente a cada 1 minuto
-      </div>
+  <v-app id="patient-enqueued-app">
+    <section class="section">
+      <Loader class="patient-enqueued__loader" v-if="isLoading" />
+      <div v-if="!isLoading && patient.status === 'waiting'" class="container">
+        <div class="patient-enqueued__lightweight-warn">
+          Essa página é atualizada automaticamente a cada 1 minuto
+        </div>
 
-      <div class="patient-enqueued__big-warn patient-enqueued__big-warn--blue">
-        Você está na fila de atendimento
-      </div>
+        <div class="patient-enqueued__big-warn patient-enqueued__big-warn--blue">
+          Você está na fila de atendimento
+        </div>
 
-      <div class="patient-enqueued__text" style="width: 250px;">
-        Fique com o telefone e suas formas de comunicação disponiveis e online.
-        <br>
-        <br>
-        <strong>Assim que possível um médico entrará em contato com você.</strong>
-      </div>
+        <div class="patient-enqueued__text" style="width: 250px;">
+          Fique com o telefone e suas formas de comunicação disponiveis e online.
+          <br>
+          <br>
+          <strong>Assim que possível um médico entrará em contato com você.</strong>
+        </div>
 
-      <div class="patient-enqueued__small-text">
-        Tempo na fila: {{ calcTimeWaiting(timePast) }}
-      </div>
+        <div class="patient-enqueued__small-text">
+          Tempo na fila: {{ calcTimeWaiting(timePast) }}
+        </div>
 
-      <div class="patient-enqueued__big-warn patient-enqueued__big-warn--red">
-        Sua senha de retorno é
-        <br>
-        <strong style="font-size: 28px;">{{ patient.ticket }}</strong>
-      </div>
+        <div class="patient-enqueued__big-warn patient-enqueued__big-warn--red">
+          Sua senha de retorno é
+          <br>
+          <strong style="font-size: 28px;">{{ patient.ticket }}</strong>
+        </div>
 
-      <div class="patient-enqueued__text" style="width: 220px;">
-        Caso você perca a conexão, retorne à fila de atendimento usando a senha acima.
-      </div>
-    </div>
-
-    <div v-if="!isLoading && patient.status === 'ongoing'" class="container">
-      <div class="patient-enqueued__big-warn patient-enqueued__big-warn--blue">
-        O médico <strong>{{ patient.ongoingDoctorDoctorName }}</strong> está entrando em contato com você.
-        <br>
-        Siga as instruções abaixo:
-        <br>
-        <br>
-        <textarea id="doctor-ongoing-feedback" cols="50" rows="3" v-model="patient.ongoingDoctorFeedback" readonly></textarea>
-      </div>
-    </div>
-
-    <div v-if="!isLoading && patient.status === 'finished'" class="container">
-      <div class="patient-enqueued__big-warn patient-enqueued__big-warn--blue">
-        O atendimento foi finalizado pelo médico <strong>{{ patient.finishedDoctorDoctorName }}</strong>.
-        <br v-if="patient.finishedDoctorFeedback">
-        <span v-if="patient.finishedDoctorFeedback">Confira o feedback abaixo:</span>
-        <br v-if="patient.finishedDoctorFeedback">
-        <br>
-        <textarea id="doctor-finished-feedback" cols="50" rows="3" v-if="patient.finishedDoctorFeedback" v-model="patient.finishedDoctorFeedback" readonly></textarea>
-      </div>
-
-      <div class="patient-enqueued__big-warn patient-enqueued__big-warn--blue">
-        <span v-if="!patient.patientFeedback">Avalie o seu atendimento:</span>
-        <span v-if="patient.patientFeedback">Você avaliou seu atendimento como:</span>
-        <br>
-        <div class="stars-box" :class="{'stars-box--ltr' : patient.patientFeedback}">
-          <button v-for="index in createArrayOfStars(patient.patientFeedback || 0)" :key="'s'+index" class="star" :disabled="!sendingFeedback && !!patient.patientFeedback"></button>
-          <button v-for="index in createArrayOfStars(10-(patient.patientFeedback || 0))" :key="'se'+index" class="star star--empty" @click="sendPacientFeedback(index)" :disabled=" !sendingFeedback &&!!patient.patientFeedback"></button>
+        <div class="patient-enqueued__text" style="width: 220px;">
+          Caso você perca a conexão, retorne à fila de atendimento usando a senha acima.
         </div>
       </div>
-    </div>
 
-    <div v-if="!isLoading && patient.status === 'cant_be_assisted'" class="container">
-      <div class="patient-enqueued__big-warn patient-enqueued__big-warn--red">
-        {{patient.name}}, nossa equipe está sobrecarregada no momento.
+      <div v-if="!isLoading && patient.status === 'ongoing'" class="container">
+        <div class="patient-enqueued__big-warn patient-enqueued__big-warn--blue">
+          O médico <strong>{{ patient.ongoingDoctorDoctorName }}</strong> está entrando em contato com você.
+          <br>
+          Siga as instruções abaixo:
+          <br>
+          <br>
+          <textarea id="doctor-ongoing-feedback" cols="50" rows="3" v-model="patient.ongoingDoctorFeedback" readonly></textarea>
+        </div>
       </div>
 
-      <div class="patient-enqueued__text">
-        Tente novamente mais tarde.
+      <div v-if="!isLoading && patient.status === 'finished'" class="container">
+        <div class="patient-enqueued__big-warn patient-enqueued__big-warn--blue">
+          O atendimento foi finalizado pelo médico <strong>{{ patient.finishedDoctorDoctorName }}</strong>.
+          <br v-if="patient.finishedDoctorFeedback">
+          <span v-if="patient.finishedDoctorFeedback">Confira o feedback abaixo:</span>
+          <br v-if="patient.finishedDoctorFeedback">
+          <br>
+          <textarea id="doctor-finished-feedback" cols="50" rows="3" v-if="patient.finishedDoctorFeedback" v-model="patient.finishedDoctorFeedback" readonly></textarea>
+        </div>
+
+        <div class="patient-enqueued__big-warn patient-enqueued__big-warn--blue">
+          <span v-if="!patient.patientFeedback">Avalie o seu atendimento:</span>
+          <span v-if="patient.patientFeedback">Você avaliou seu atendimento como:</span>
+          <br>
+          <div class="stars-box" :class="{'stars-box--ltr' : patient.patientFeedback}">
+            <button v-for="index in createArrayOfStars(patient.patientFeedback || 0)" :key="'s'+index" class="star" :disabled="!sendingFeedback && !!patient.patientFeedback"></button>
+            <button v-for="index in createArrayOfStars(10-(patient.patientFeedback || 0))" :key="'se'+index" class="star star--empty" @click="sendPacientFeedback(index)" :disabled=" !sendingFeedback &&!!patient.patientFeedback"></button>
+          </div>
+        </div>
       </div>
 
-<!--      <p>Caso aceite receber atendimento em outro horário, selecione abaixo:</p>-->
-<!--      <p>Aceito aguardar</p>-->
-    </div>
+      <div v-if="!isLoading && patient.status === 'cant_be_assisted'" class="container">
+        <div class="patient-enqueued__big-warn patient-enqueued__big-warn--red">
+          {{patient.name}}, nossa equipe está sobrecarregada no momento.
+        </div>
 
-    <div v-if="!isLoading && patient.status === 'facility_not_available'" class="container">
-      <FacilityNotAvailable />
-    </div>
-  </section>
+        <div class="patient-enqueued__text">
+          Tente novamente mais tarde.
+        </div>
+
+  <!--      <p>Caso aceite receber atendimento em outro horário, selecione abaixo:</p>-->
+  <!--      <p>Aceito aguardar</p>-->
+      </div>
+
+      <div v-if="!isLoading && patient.status === 'facility_not_available'" class="container">
+        <FacilityNotAvailable />
+      </div>
+    </section>
+  </v-app>
 </template>
 
 <script>

@@ -12,14 +12,10 @@
 
 <script>
 import { mapActions } from 'vuex';
-import Logo from '@/components/Logo.vue';
 import Header from '@/components/Header.vue';
 
 export default {
   name: 'Consent',
-  components: {
-    Logo,
-  },
   methods: {
     ...mapActions('consent', ['acceptConsent']),
   },

@@ -1,29 +1,46 @@
 <template>
-  <section class="section patient-login">
-    <router-link to="/" class="patient-login__logo">
-      <Logo />
+  <v-app id="patient-login-app">
+    <section class="section patient-login">
+      <router-link to="/" class="patient-login__logo">
+        <Logo />
       </router-link>
-      <form class="form patient-login__form" style="margin-top: 2rem" @submit.prevent="loadQueuePage()" novalidate>
-        <div class="field">
-          <label class="label" for="senha">Senha de retorno</label>
-          <input :class="{'error': errors.ticket }" v-model="ticket" name="senha" id="senha" class="input" type="password" placeholder="Digite sua senha">
-          <span v-if="errors.ticket" class="error">{{errors.ticket}}</span>
-        </div>
-        <button class="btn btn--link">Entrar</button>
-      </form>
-  </section>
+
+      <v-form
+        class="form patient-login__form"
+        style="margin-top: 2rem"
+        @submit.prevent="loadQueuePage()"
+        novalidate
+      >
+        <v-text-field
+          v-model="ticket"
+          :rules="ticketRules"
+          maxlength="9"
+          label="Senha de retorno"
+          required
+          v-mask="'########'"
+        ></v-text-field>
+
+        <button class="btn btn--link" type="submit">Entrar</button>
+      </v-form>
+    </section>
+  </v-app>
 </template>
 
 <script>
+import { mask } from 'vue-the-mask';
 import Logo from '@/components/Logo.vue';
 
 export default {
   name: 'PatientLogin',
   components: { Logo },
+  directives: { mask },
   data() {
     return {
       ticket: '',
-      errors: {},
+      ticketRules: [
+        (v) => !!v || 'A senha deve ser preenchida',
+        (v) => (v && v.length < 9) || 'A senha deve ter 9 caracteres',
+      ],
     };
   },
   methods: {
@@ -45,12 +62,12 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  }
+}
 
-  .patient-login__form {
-    max-width: 400px;
+.patient-login__form {
+  max-width: 400px;
   width: 100%;
-    margin: auto;
+  margin: auto;
   margin-top: 2rem;
-  }
+}
 </style>

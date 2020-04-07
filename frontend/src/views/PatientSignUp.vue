@@ -1,15 +1,17 @@
 <template>
-  <div id="patient-signup">
-    <Consent v-if="!isConsentAccepted" />
-    <Stepper
-      v-else-if="!isLoading"
-      class="patient-signup"
-      :steps="steps"
-      locale="pt"
-      @stepper-finished="savePatientSignUp"
-    />
-    <Loader v-else />
-  </div>
+  <v-app id="patient-signup-app">
+    <div id="patient-signup">
+      <Consent v-if="!isConsentAccepted" />
+      <Stepper
+        v-else-if="!isLoading"
+        class="patient-signup"
+        :steps="steps"
+        locale="pt"
+        @stepper-finished="savePatientSignUp"
+      />
+      <Loader v-else />
+    </div>
+  </v-app>
 </template>
 
 <script>
@@ -90,6 +92,6 @@ export default {
 }
 
 .patient-signup > /deep/ .content {
-  margin-top: 0;
+  margin-top: -45px;
 }
 </style>

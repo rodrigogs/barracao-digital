@@ -3,40 +3,59 @@
     <div class="container">
       <h4 style="margin-top: 0; text-align: center;">Seus dados</h4>
       <p style="text-align: center">Preencha seus dados para direcionarmos seu atendimento</p>
-      <form class="pacient-sign-up__form" id="patientSignUpForm " novalidate>
-        <div class="field">
-          <label class="label" for="name">Nome - Obrigatório</label>
-          <input :class="{'error': errors.name }" v-model="form.name" name="name" id="name" class="input" type="text" placeholder="Exemplo: José da Silva">
-          <span v-if="errors.name" class="error">{{errors.name}}</span>
-        </div>
 
-        <div class="field">
-          <label class="label" for="age">Idade - Obrigatório</label>
-          <input @input="onAgeInputChange" :class="{'error': errors.age }" v-model="form.age" name="age" id="age" class="input" type="text" placeholder="Exemplo: 60" maxlength="3">
-          <span v-if="errors.age" class="error">{{errors.age}}</span>
-        </div>
+      <v-form ref="form" class="pacient-sign-up__form" id="patientSignUpForm" novalidate>
 
-        <div class="field">
-          <label class="label" for="cep">CEP - Obrigatório</label>
-          <input @input="onCEPInputChange" :class="{'error': errors.cep }" v-model="form.cep" name="cep" id="cep" class="input" type="text" placeholder="Digite somente números" maxlength="9">
-          <span v-if="errors.cep" class="error">{{errors.cep}}</span>
-        </div>
+        <v-text-field
+          id="name"
+          name="name"
+          v-model="form.name"
+          :rules="rules.name"
+          maxlength="255"
+          label="Nome"
+          required
+          hint="Exemplo: José da Silva"
+        ></v-text-field>
+
+        <v-text-field
+          id="age"
+          name="age"
+          v-model="form.age"
+          :rules="rules.age"
+          label="Idade"
+          required
+          v-mask="'###'"
+          hint="Exemplo: 60"
+        ></v-text-field>
+
+        <v-text-field
+          id="cep"
+          name="cep"
+          v-model="form.cep"
+          :rules="rules.cep"
+          label="CEP"
+          required
+          v-mask="'#####-###'"
+          :masked="true"
+          hint="Digite somente números"
+        ></v-text-field>
 
         <p style="margin-bottom: 0">
           Caso não saiba seu CEP, <a href="http://www.buscacep.correios.com.br/sistemas/buscacep/BuscaCepEndereco.cfm" target="_blank">clique aqui</a>
         </p>
-      </form>
+      </v-form>
     </div>
   </section>
 </template>
 
 <script>
+import { mask } from 'vue-the-mask';
 import utils from '../utils';
 
 export default {
   name: 'StepOne',
-  components: {},
   props: ['clickedNext', 'currentStep'],
+  directives: { mask },
   data() {
     return {
       form: {
@@ -44,59 +63,25 @@ export default {
         age: '',
         cep: '',
       },
-      errors: {},
+      rules: {
+        name: [
+          (v) => !!v || 'O nome é obrigatório',
+          (v) => v.length > 2 || 'O nome deve ter no mínimo 2 caracteres',
+        ],
+        age: [
+          (v) => !!v || 'A idade é obrigatória',
+          (v) => (v > 0 && v <= 125) || 'A idade não pode ser maior do que 125 anos',
+        ],
+        cep: [
+          (v) => !!v || 'O CEP é obrigatório',
+          (v) => v.length === 9 || 'O CEP deve ter 8 caracteres',
+        ],
+      },
     };
   },
   methods: {
     allRequiredFieldsFilled() {
       return this.form.name && this.form.age && this.form.cep;
-    },
-    isStepOneValid() {
-      let isValid = true;
-
-      this.$delete(this.errors, 'name');
-      if (!this.form.name) {
-        this.$set(this.errors, 'name', 'Nome é obrigatório');
-        isValid = false;
-      }
-
-      this.$delete(this.errors, 'age');
-      if (!this.form.age) {
-        this.$set(this.errors, 'age', 'Idade é obrigatório');
-        isValid = false;
-      } else if (this.form.age < 0 || this.form.age > 120) {
-        this.$set(this.errors, 'age', 'Idade deve estar entre 0 e 120 anos');
-        isValid = false;
-      }
-
-      this.$delete(this.errors, 'cep');
-      if (!this.form.cep) {
-        this.$set(this.errors, 'cep', 'CEP é obrigatório');
-        isValid = false;
-      } else if (!this.isCEPValid(this.form.cep)) {
-        this.$set(this.errors, 'email', 'CEP inválido');
-        isValid = false;
-      }
-
-      return isValid;
-    },
-    isCEPValid(cep) {
-      const cepER = /^[0-9]{5}-[0-9]{3}$/;
-      return cepER.test(cep);
-    },
-    onCEPInputChange(e) {
-      let x = e.target.value;
-      x = x.replace(/\D/g, '');
-      x = x.replace(/(\d)(\d{3})$/, '$1-$2');
-
-      this.form.cep = x;
-    },
-    onAgeInputChange(e) {
-      let x = e.target.value;
-      x = x.replace(/\D/g, '');
-      x = x.replace(/(\d)$/, '$1');
-
-      this.form.age = x;
     },
   },
   watch: {
@@ -105,7 +90,7 @@ export default {
         this.$emit('can-continue', { value: false });
         utils.debounce(() => {
           if (this.allRequiredFieldsFilled()) {
-            if (!this.isStepOneValid()) {
+            if (!this.$refs.form.validate()) {
               this.$emit('can-continue', { value: false });
               return;
             }
@@ -119,7 +104,7 @@ export default {
     },
   },
   mounted() {
-    if (this.allRequiredFieldsFilled() && this.isStepOneValid()) {
+    if (this.allRequiredFieldsFilled() && this.$refs.form.validate()) {
       this.$emit('can-continue', { value: true });
     }
   },

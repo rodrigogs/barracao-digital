@@ -13,12 +13,12 @@ const request = axios.create({
   },
 });
 
-let _store;
+let STORE;
 const getStore = async () => {
-  if (!_store) {
-    _store = await import('@/store').then((store) => store.default);
+  if (!STORE) {
+    STORE = await import('@/store').then((store) => store.default);
   }
-  return _store;
+  return STORE;
 };
 
 // Dynamic importo to avoid circular dependency

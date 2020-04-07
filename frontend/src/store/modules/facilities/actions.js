@@ -33,8 +33,8 @@ export const createDestination = async ({ dispatch }, { origin, destination }) =
   dispatch('refreshListDestinations', origin);
 };
 
-export const getByOrigin = async (store, origin) => await api.facilities.getByOrigin(origin);
+export const getByOrigin = (_store, origin) => api.facilities.getByOrigin(origin);
 
-export const update = async (store, facilitie) => {
+export const update = async (_store, facilitie) => {
   await api.facilities.update(facilitie);
 };
