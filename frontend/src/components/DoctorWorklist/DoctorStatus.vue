@@ -1,32 +1,21 @@
 <template>
-  <div>
-    <div class="title" :class="{ 'title--stopped': !loggedUser.active }">{{ message }}</div>
-    <div class="container" :class="{ 'stopped': !loggedUser.active }">
-      <div class="actions">
-        <button
-          class="btn-action"
-          :disabled="loading || loggedUser.active"
-          @click="alternateDoctor(true)"
-        >
-          Iniciar atend.
-        </button>
-        <button
-          class="btn-action"
-          :disabled="loading || !loggedUser.active"
-          @click="alternateDoctor(false)"
-        >
-          Parar atend.
-        </button>
-        <button
-          class="btn-action"
-          :disabled="loading || loggedUser.active"
-          @click="signOut"
-        >
-          Sair
-        </button>
-      </div>
-    </div>
-  </div>
+  <v-toolbar dense :color="statusBarColor" dark>
+    <v-toolbar-title>{{ message }}</v-toolbar-title>
+
+    <v-spacer></v-spacer>
+
+    <v-btn
+      text
+      :loading="alternating"
+      @click="alternateDoctor(!loggedUser.active)"
+    >{{ alternateButtonText }}</v-btn>
+
+    <v-btn
+      text
+      @click="signOut"
+    >Sair</v-btn>
+
+  </v-toolbar>
 </template>
 
 <script>
@@ -38,6 +27,7 @@ export default {
     return {
       loading: false,
       leaving: false,
+      alternating: false,
     };
   },
   computed: {
@@ -54,6 +44,18 @@ export default {
       }
       return `Olá, ${this.loggedUser.username}, você não está atendendo`;
     },
+    alternateButtonText() {
+      if (this.loggedUser.active) {
+        return 'Encerrar atendimento';
+      }
+      return 'Iniciar atendimento';
+    },
+    statusBarColor() {
+      if (this.loggedUser.active) {
+        return 'primary';
+      }
+      return 'error';
+    },
   },
   methods: {
     ...mapActions('auth', ['logout']),
@@ -63,9 +65,9 @@ export default {
         return;
       }
 
-      this.loading = true;
+      this.alternating = true;
       await this.alternate();
-      this.loading = false;
+      this.alternating = false;
     },
     signOut() {
       this.loading = true;

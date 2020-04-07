@@ -3,6 +3,6 @@ import VueNoty from 'vuejs-noty';
 import 'vuejs-noty/dist/vuejs-noty.css';
 
 Vue.use(VueNoty, {
-  layout: 'bottomCenter',
+  layout: 'topRight',
   theme: 'metroui',
 });

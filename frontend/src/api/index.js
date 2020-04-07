@@ -28,7 +28,7 @@ const retrieveAuthToken = () => getStore().then((store) => {
   return btoa(`${loggedUser.username}:${loggedUser.password}`);
 });
 
-const logoutUser = () => getStore().then((store) => store.actions['auth/logout']);
+const logoutUser = () => getStore().then((store) => store.dispatch['auth/logout']);
 
 // Intercept requests and update auth token
 request.interceptors.request.use(async (config) => {

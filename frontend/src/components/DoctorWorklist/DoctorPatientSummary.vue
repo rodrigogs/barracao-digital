@@ -1,93 +1,120 @@
 <template>
-  <div>
-    <div class="container" style="padding: 16px" v-if="!patient || !patient.name">
-      Nenhum paciente selecionado
-    </div>
+  <v-row>
+    <v-col>
+      <v-select
+        @change="onChangeStatus"
+        v-model="selectedStatus"
+        :items="statusFilterItems"
+        label="Alterar status"
+      ></v-select>
 
-    <div class="container" v-if="patient && patient.name">
-      <div class="header">
-        <span class="header-title">Paciente selecionado</span>
-        <span class="header-subtitle">{{ patient.name }}</span>
+      <div v-if="showChangeStatusForm">
+        <v-textarea
+          v-model="doctorFeedback"
+          name="doctorFeedback"
+          id="doctor-feedback"
+          maxlength="255"
+          label="Feedback para o paciente"
+          outlined
+          rows="2"
+          counter
+          append-icon="mdi-send"
+          @click:append="updateStatus"
+          :loading="updatingStatus"
+        ></v-textarea>
       </div>
 
-      <div class="content">
-        <div class="content-block">
-          <h4>Alterar status</h4>
-          <select @change="onChangeStatus" v-model="selectedStatus">
-            <option value="waiting">Aguardando</option>
-            <option value="waiting_kit">Aguardando kit</option>
-            <option value="ongoing">Em atendimento</option>
-            <option value="finished">Finalizado</option>
-          </select>
-        </div>
+      <h4>Dados do paciente</h4>
+      <v-row>
+        <v-col>
+          <div class="content-block">
+            <span>Nome do paciente</span>
+            <span>{{ patient.name }}</span>
+          </div>
+        </v-col>
+        <v-col>
+          <div class="content-block">
+            <span>Idade</span>
+            <span>{{ patient.age }}</span>
+          </div>
+        </v-col>
+        <v-col>
+          <div class="content-block">
+            <span>Tempo em espera</span>
+            <span>{{ calcTimeWaiting(patient.createdAt) }}</span>
+          </div>
+        </v-col>
+        <v-col>
+          <div class="content-block">
+            <span>Senha</span>
+            <span>{{ patient.ticket }}</span>
+          </div>
+        </v-col>
+      </v-row>
 
-        <h6 v-if="showChangeStatusForm">Feedback para o paciente:</h6>
-        <div v-if="showChangeStatusForm" class="content-block">
-          <textarea name="doctorFeedback" id="doctor-feedback" rows="3" v-model="doctorFeedback"></textarea>
-          <button class="textarea-send-btn" @click="updateStatus">Enviar</button>
-        </div>
+      <h4>Dados médicos</h4>
+      <v-row>
+        <v-col v-if="patient.meds">
+          <div class="content-block">
+            <span>Medicamentos</span>
+            <span>{{ patient.meds }}</span>
+          </div>
+        </v-col>
+        <v-col v-if="patient.allergies">
+          <div class="content-block">
+            <span>Alergias</span>
+            <span>{{ patient.allergies }}</span>
+          </div>
+        </v-col>
+        <v-col v-if="patient.covenant">
+          <div class="content-block">
+            <span>Convênio</span>
+            <span>{{ patient.covenant }}</span>
+          </div>
+        </v-col>
+        <v-col>
+          <div class="content-block">
+            <span>Já foi atendido anteriormente?</span>
+            <span>{{ patient.hasBeenAssisted ? 'Sim' : 'Não' }}</span>
+          </div>
+        </v-col>
+      </v-row>
 
-        <h4>Dados do paciente</h4>
-        <div class="content-block">
-          <span>Nome do paciente</span>
-          <span>{{ patient.name }}</span>
-        </div>
-        <div class="content-block">
-          <span>Idade</span>
-          <span>{{ patient.age }}</span>
-        </div>
-        <div class="content-block">
-          <span>Tempo em espera</span>
-          <span>{{ calcTimeWaiting(patient.createdAt) }}</span>
-        </div>
-        <div class="content-block">
-          <span>Senha</span>
-          <span>{{ patient.ticket }}</span>
-        </div>
-
-        <h4>Dados médicos</h4>
-        <div class="content-block">
-          <span>Usa algum medicamento? Quais?</span>
-          <span>{{ patient.meds }}</span>
-        </div>
-        <div class="content-block">
-          <span>Possui alergias? Quais?</span>
-          <span>{{ patient.allergies }}</span>
-        </div>
-        <div class="content-block">
-          <span>Possui convênio? Qual?</span>
-          <span>{{ patient.covenant }}</span>
-        </div>
-        <div class="content-block">
-          <span>Já foi atendido pelo barração online antes?</span>
-          <span>{{ patient.hasBeenAssisted ? 'Sim' : 'Não' }}</span>
-        </div>
-
-        <h4>Contatos</h4>
-        <div class="content-block">
-          <span>Telefone</span>
-          <span>{{ patient.phone }}</span>
-        </div>
-        <div class="content-block">
-          <span>Whatsapp</span>
-          <span>{{ patient.whatsapp }}</span>
-        </div>
-        <div class="content-block">
-          <span>Telegram</span>
-          <span>{{ patient.telegram }}</span>
-        </div>
-        <div class="content-block">
-          <span>Hangout</span>
-          <span>{{ patient.hangout }}</span>
-        </div>
-        <div class="content-block">
-          <span>Skype</span>
-          <span>{{ patient.skype }}</span>
-        </div>
-      </div>
-
-    </div>
-  </div>
+      <h4>Contatos</h4>
+      <v-row>
+        <v-col v-if="patient.phone">
+          <div class="content-block">
+            <span>Telefone</span>
+            <span>{{ patient.phone }}</span>
+          </div>
+        </v-col>
+        <v-col v-if="patient.whatsapp">
+          <div class="content-block">
+            <span>Whatsapp</span>
+            <span>{{ patient.whatsapp }}</span>
+          </div>
+        </v-col>
+        <v-col v-if="patient.telegram">
+          <div class="content-block">
+            <span>Telegram</span>
+            <span>{{ patient.telegram }}</span>
+          </div>
+        </v-col>
+        <v-col v-if="patient.hangout">
+          <div class="content-block">
+            <span>Hangout</span>
+            <span>{{ patient.hangout }}</span>
+          </div>
+        </v-col>
+        <v-col v-if="patient.skype">
+          <div class="content-block">
+            <span>Skype</span>
+            <span>{{ patient.skype }}</span>
+          </div>
+        </v-col>
+      </v-row>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
@@ -108,6 +135,29 @@ export default {
     doctorFeedback: '',
     selectedStatus: null,
     errors: {},
+    statusFilterItems: [
+      {
+        text: 'Aguardando',
+        value: 'waiting',
+      },
+      {
+        text: 'Em andamento',
+        value: 'ongoing',
+      },
+      {
+        text: 'Finalizado',
+        value: 'finished',
+      },
+      {
+        text: 'Aguardando kit',
+        value: 'waiting_kit',
+      },
+      {
+        text: 'Não pode ser atendido',
+        value: 'cant_be_assisted',
+      },
+    ],
+    updatingStatus: false,
   }),
   methods: {
     ...mapActions('worklist', ['updateSelectedPatientStatus']),
@@ -131,21 +181,28 @@ export default {
         doctorFeedback: message = '',
       } = this;
 
-      this.$delete(this.errors, 'message');
-      if (this.doctorFeedbackRequired && (!message || message.length < 10)) {
-        this.$set(this.errors, 'message', 'O feedback deve ter no mínimo 10 caracteres.');
-      }
-      if (Object.keys(this.errors).length > 0) {
-        return this.$noty.error(`Erro ao atualizar paciente: ${this.errors.message}`);
-      }
+      try {
+        this.updatingStatus = true;
+        this.$delete(this.errors, 'message');
+        if (this.doctorFeedbackRequired && (!message || message.length < 10)) {
+          this.$set(this.errors, 'message', 'O feedback deve ter no mínimo 10 caracteres.');
+        }
+        if (Object.keys(this.errors).length > 0) {
+          return this.$noty.error(`Erro ao atualizar paciente: ${this.errors.message}`);
+        }
 
-      await this.updateSelectedPatientStatus({ status, message });
-      this.$noty.success('Status atualizado');
+        await this.updateSelectedPatientStatus({ status, message });
+        this.$noty.success('Status atualizado');
 
-      this.showChangeStatusForm = false;
-      this.doctorFeedbackRequired = false;
-      this.selectedStatus = status;
-      this.doctorFeedback = null;
+        this.showChangeStatusForm = false;
+        this.doctorFeedbackRequired = false;
+        this.selectedStatus = status;
+        this.doctorFeedback = null;
+      } catch (err) {
+        console.error(err);
+      } finally {
+        this.updatingStatus = false;
+      }
     },
     calcTimeWaiting(createdAt) {
       const timeWaiting = Date.now() - createdAt;
@@ -153,11 +210,9 @@ export default {
       return time.toString('hh:mm');
     },
   },
-  watch: {
-    selectedPatient() {
-      const { status } = this.selectedPatient;
-      this.selectedStatus = status;
-    },
+  mounted() {
+    const { status } = this.selectedPatient;
+    this.selectedStatus = status;
   },
 };
 </script>

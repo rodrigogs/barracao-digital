@@ -1,37 +1,35 @@
 <template>
   <div class="doctor-table-container">
-    <div class="doctor-table-loading" v-if="!listPaginated || listPaginated.length === 0">
-      Nenhum registro filtrado ainda
-    </div>
-    <table class="doctor-table" v-if="listPaginated && listPaginated.length > 0">
-      <thead class="doctor-table__head">
-        <tr class="doctor-table__head-tr">
-          <th class="doctor-table__th doctor-table__th--name">Nome</th>
-          <th class="doctor-table__th doctor-table__th--age">Idade</th>
-          <th class="doctor-table__th doctor-table__th--waitTime">T.Esp.</th>
-          <th class="doctor-table__th doctor-table__th--status">Status</th>
-        </tr>
-      </thead>
-      <tbody class="doctor-table__body">
-        <tr
-          class="doctor-table__tr"
-          v-for="item in listPaginated"
-          v-bind:key="item.id"
-          :class="{ 'doctor-table__tr--active': selectedPatient.ticket === item.ticket }"
-          @click="selectPatient({ ticket: item.ticket })"
-        >
-          <td class="doctor-table__td">{{ item.name }}</td>
-          <td class="doctor-table__td">{{ item.age }}</td>
-          <td class="doctor-table__td" v-bind:style="{ 'color': `#${calulateColor(item.createdAt)}` }">
-            {{ calcTimeWaiting(item.createdAt) }}
-          </td>
-          <td class="doctor-table__td" :class="{
-            'status-ongoing': item.status === 'ongoing',
-            'status-waiting-kit': item.status === 'waiting_kit',
-          }">{{ getStatusMessage(item.status) }}</td>
-        </tr>
-      </tbody>
-    </table>
+
+    <v-data-table
+      v-if="listPaginated && listPaginated.length > 0"
+      :headers="headers"
+      :items="listPaginated"
+      :single-expand="true"
+      :expanded.sync="tableExpanded"
+      item-key="id"
+      show-expand
+      class="elevation-2"
+      hide-default-footer
+    >
+
+      <template v-slot:item.createdAt="{ item }">
+        <v-chip dark :style="{ 'background-color': `#${calulateColor(item.createdAt)}` }">
+          {{ calcTimeWaiting(item.createdAt) }}
+        </v-chip>
+      </template>
+
+      <template v-slot:item.status="{ item }">
+        {{ getStatusMessage(item.status) }}
+      </template>
+
+      <template v-slot:expanded-item="{ headers }">
+        <td :colspan="headers.length">
+          <DoctorPatientSummary/>
+        </td>
+      </template>
+    </v-data-table>
+
     <div class="doctor-table-pagination" v-if="listPaginated && listPaginated.length > 0">
       <button
         class="doctor-table-btn-pagination"
@@ -62,6 +60,7 @@
 import axios from 'axios';
 import Kairos from 'kairos';
 import { mapState, mapActions, mapGetters } from 'vuex';
+import DoctorPatientSummary from './DoctorPatientSummary.vue';
 
 const perc2color = (perc) => {
   let r;
@@ -83,10 +82,20 @@ const perc2color = (perc) => {
 
 export default {
   name: 'DoctorTable',
+  components: {
+    DoctorPatientSummary,
+  },
   data() {
     return {
       pageSize: 5,
       pageNumber: 1,
+      headers: [
+        { text: 'Nome', value: 'name' },
+        { text: 'Idade', value: 'age' },
+        { text: 'T.Esp.', value: 'createdAt' },
+        { text: 'Status', value: 'status' },
+      ],
+      tableExpanded: [],
     };
   },
   computed: {
@@ -96,9 +105,18 @@ export default {
         const list = [...state.list].sort((a, b) => a.createdAt - b.createdAt);
         return list.slice((this.pageNumber - 1) * this.pageSize, this.pageNumber * this.pageSize);
       },
-      selectedPatient: (state) => state.selectedPatient,
     }),
-    ...mapGetters('worklist', ['selectedPatient']),
+    ...mapGetters('worklist', {
+      currentPatient: 'selectedPatient',
+    }),
+    selectedPatient: {
+      get() {
+        return this.currentPatient;
+      },
+      set(value = {}) {
+        this.selectPatient({ ticket: value.ticket });
+      },
+    },
     nextPageAvailable() {
       return this.pageNumber < (this.list.length / this.pageSize);
     },
@@ -142,6 +160,11 @@ export default {
       if (status === 'ongoing') return 'Em andamento';
       if (status === 'finished') return 'Finalizado';
       return 'Sem status';
+    },
+  },
+  watch: {
+    tableExpanded([newPatient]) {
+      this.selectedPatient = newPatient;
     },
   },
 };

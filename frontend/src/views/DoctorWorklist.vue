@@ -1,12 +1,15 @@
 <template>
-  <div>
-    <DoctorStatus />
-    <div class="doctor-worklist-content">
-      <DoctorFilters />
-      <DoctorTable />
-      <DoctorPatientSummary />
-    </div>
-  </div>
+  <v-app id="doctor-worklist-app">
+    <v-card>
+      <DoctorStatus />
+      <v-card-text>
+        <div class="doctor-worklist-content">
+          <DoctorFilters />
+          <DoctorTable />
+        </div>
+      </v-card-text>
+    </v-card>
+  </v-app>
 </template>
 
 <script>
@@ -14,7 +17,6 @@ import {
   DoctorStatus,
   DoctorFilters,
   DoctorTable,
-  DoctorPatientSummary,
 } from '@/components/DoctorWorklist';
 
 export default {
@@ -22,7 +24,6 @@ export default {
     DoctorStatus,
     DoctorFilters,
     DoctorTable,
-    DoctorPatientSummary,
   },
 };
 </script>

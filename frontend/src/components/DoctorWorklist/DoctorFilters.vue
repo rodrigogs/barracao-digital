@@ -1,41 +1,38 @@
 <template>
   <div class="doctor-filters-container">
     <div class="doctor-filters-title">Filtros</div>
-    <div class="doctor-filters-fields">
-      <!-- primeiro filtro: hora de entrada (ultimas 24h, ultimas 6h, todos)
-        segundo filtro: status -->
-      <div class="doctor-filters-field">
-        <label class="doctor-filters-label" for="status">Hora de entrada</label>
-        <select
-          name="status"
-          id="status"
-          class="doctor-filters-select"
+    <v-row>
+      <v-col cols="5">
+        <v-select
+          name="timeWaiting"
+          id="timeWaiting"
           v-model="timeWaiting"
           @change="onFilterUpdated"
-        >
-          <option value="86400000">Últimas 24h</option>
-          <option value="21600000">Últimas 6h</option>
-          <option value="">Todos</option>
-        </select>
-      </div>
-
-      <div class="doctor-filters-field">
-        <label class="doctor-filters-label" for="status">Status</label>
-        <select
+          :items="timeFilterItems"
+          label="Hora de entrada"
+        ></v-select>
+      </v-col>
+      <v-col md="6" sm="5">
+        <v-select
           name="status"
           id="status"
-          class="doctor-filters-select"
           v-model="status"
           @change="onFilterUpdated"
+          :items="statusFilterItems"
+          label="Status"
+        ></v-select>
+      </v-col>
+      <v-col>
+        <v-btn
+          icon
+          color="primary"
+          @click="onClickedRefreshButton"
+          :loading="loadingPatients"
         >
-          <option value="waiting">Aguardando</option>
-          <option value="ongoing">Em andamento</option>
-          <option value="finished">Finalizado</option>
-          <option value="waiting_kit">Aguardando kit</option>
-          <option value="cant_be_assisted">Não pode ser atendido</option>
-        </select>
-      </div>
-    </div>
+          <v-icon>mdi-refresh</v-icon>
+        </v-btn>
+      </v-col>
+    </v-row>
   </div>
 </template>
 
@@ -51,6 +48,44 @@ export default {
     return {
       status: 'waiting',
       timeWaiting: '',
+      timeFilterItems: [
+        {
+          text: 'Últimas 24',
+          value: '86400000',
+        },
+        {
+          text: 'Últimas 6h',
+          value: '21600000',
+        },
+        {
+          text: 'Todos',
+          value: '',
+        },
+      ],
+      statusFilterItems: [
+        {
+          text: 'Aguardando',
+          value: 'waiting',
+        },
+        {
+          text: 'Em andamento',
+          value: 'ongoing',
+        },
+        {
+          text: 'Finalizado',
+          value: 'finished',
+        },
+        {
+          text: 'Aguardando kit',
+          value: 'waiting_kit',
+        },
+        {
+          text: 'Não pode ser atendido',
+          value: 'cant_be_assisted',
+        },
+      ],
+      loadingPatients: false,
+      lastTimeUpdated: 0,
     };
   },
   computed: {
@@ -58,11 +93,28 @@ export default {
   },
   methods: {
     ...mapActions('worklist', ['updateFilter']),
-    onFilterUpdated() {
-      this.updateFilter({
-        status: this.status,
-        timeWaiting: this.timeWaiting,
-      });
+    onClickedRefreshButton() {
+      const oneMinute = 1000 * 60;
+      const timeElapsedSinceLastRefresh = Date.now() - this.lastTimeUpdated;
+      const timeLeftToTheNextRefresh = oneMinute - timeElapsedSinceLastRefresh;
+      if (timeElapsedSinceLastRefresh < oneMinute) {
+        return this.$noty.info(`Aguarde ${Math.ceil(timeLeftToTheNextRefresh / 1000)} segundos`);
+      }
+      return this.onFilterUpdated();
+    },
+    async onFilterUpdated() {
+      try {
+        this.loadingPatients = true;
+        await this.updateFilter({
+          status: this.status,
+          timeWaiting: this.timeWaiting,
+        });
+        this.lastTimeUpdated = Date.now();
+      } catch (err) {
+        console.error('Error updating filter:', err);
+      } finally {
+        this.loadingPatients = false;
+      }
     },
   },
 };
