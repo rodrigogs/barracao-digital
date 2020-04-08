@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 import { patients as patientsApi } from '@/api';
 import Loader from '@/components/Loader.vue';
 import linkify from 'vue-linkify';
@@ -48,10 +48,14 @@ export default {
     };
   },
   methods: {
+    ...mapActions('patients', {
+      upadteLoggedInPatient: 'loginPatient',
+    }),
     async sendPatientFeedback(starQt) {
       this.sendingFeedback = true;
       try {
-        this.patient = await patientsApi.savePatientFeedback(this.patient.ticket, starQt);
+        const patient = await patientsApi.savePatientFeedback(this.patient.ticket, starQt);
+        await this.upadteLoggedInPatient(patient);
         this.sendingFeedback = false;
       } catch (e) {
         this.$noty.error('Aconteceu algum erro, tente avaliar novamente mais tarde.');
