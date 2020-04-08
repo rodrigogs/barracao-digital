@@ -1,13 +1,19 @@
 <template>
-  <section class="section">
-    <div class="patient-enqueued__big-warn patient-enqueued__big-warn--red">
-      {{ patient.name }}, nossa equipe está sobrecarregada no momento.
-    </div>
+  <v-card>
 
-    <div class="patient-enqueued__text">
+    <v-card-title>
+      {{ patient.name }}, nossa equipe está sobrecarregada no momento.
+    </v-card-title>
+
+    <v-card-subtitle>
+      <h5>Siga as instruções abaixo:</h5>
+    </v-card-subtitle>
+
+    <v-card-text>
       Tente novamente mais tarde.
-    </div>
-  </section>
+    </v-card-text>
+
+  </v-card>
 </template>
 
 <script>

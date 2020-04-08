@@ -1,21 +1,30 @@
 <template>
-  <section class="section">
-    <div class="patient-enqueued__big-warn patient-enqueued__big-warn--blue">
-      O médico <strong>{{ patient.ongoingDoctorDoctorName }}</strong> está entrando em contato com você.
-      <br>
-      Siga as instruções abaixo:
-      <br>
-      <br>
-      <v-textarea id="doctor-ongoing-feedback" cols="50" rows="3" v-model="patient.ongoingDoctorFeedback" readonly></v-textarea>
-    </div>
-  </section>
+  <v-card>
+
+    <v-card-title>
+      O médico&nbsp;{{ patient.ongoingDoctorDoctorName }}&nbsp;está entrando em contato com você.
+    </v-card-title>
+
+    <v-card-subtitle>
+      <h5>Siga as instruções abaixo:</h5>
+    </v-card-subtitle>
+
+    <v-card-text>
+      <div v-html="patient.ongoingDoctorFeedback" v-linkified />
+    </v-card-text>
+
+  </v-card>
 </template>
 
 <script>
 import { mapGetters } from 'vuex';
+import linkify from 'vue-linkify';
 
 export default {
   name: 'PatientStatusOngoing',
+  directives: {
+    linkified: linkify,
+  },
   computed: {
     ...mapGetters('patients', {
       patient: 'loggedInPatient',

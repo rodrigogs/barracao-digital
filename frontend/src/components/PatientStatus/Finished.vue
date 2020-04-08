@@ -1,14 +1,18 @@
 <template>
   <v-card>
+
     <v-card-title>
       O atendimento foi finalizado pelo médico&nbsp;{{ patient.finishedDoctorDoctorName }}.
     </v-card-title>
+
     <v-card-subtitle v-if="patient.finishedDoctorFeedback">
       <h5>Confira o feedback abaixo:</h5>
     </v-card-subtitle>
+
     <v-card-text>
       <div v-html="patient.finishedDoctorFeedback" v-linkified />
     </v-card-text>
+
     <v-card-actions>
       <v-container>
         <v-row justify="center">
@@ -23,6 +27,7 @@
         </v-row>
       </v-container>
     </v-card-actions>
+
   </v-card>
 </template>
 
