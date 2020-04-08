@@ -179,13 +179,6 @@ functions:
           path: /patients/{ticket}/messaging/token
           cors: true
 
-      # FIXME remove
-      - http:
-          method: PUT
-          path: /patients/{ticket}/messaging/test
-          cors: true
-          authorizer: adminAuthorizer
-
   # Facilities
   facilities:
     handler: functions/api/facilities.handler
