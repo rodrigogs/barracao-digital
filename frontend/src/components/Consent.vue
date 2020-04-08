@@ -1,13 +1,13 @@
 <template>
-  <div class="consent">
-    <div class="content consent-text">
-      <p class="content-title">
-        Adesão para pacientes:
-      </p>
-      Estou ciente de que a plataforma “BARRACÃO DIGITAL” decorre de ação de voluntários com vistas a proporcionar atendimento remoto por profissionais da saúde. Trata-se de medida paliativa e alternativa com regramento legal pertinente que objetiva proporcionar auxílio sem ônus, mas com as limitações e circunstâncias pertinentes e decorrentes, às quais me submeto sob conta e risco.
-    </div>
-    <button class="btn" @click="acceptConsent">Aceitar e continuar</button>
-  </div>
+  <v-container>
+    <v-row justify="center">
+      <p>Adesão para pacientes:</p>
+      <p class="disclaimer-text">Estou ciente de que a plataforma “BARRACÃO DIGITAL” decorre de ação de voluntários com vistas a proporcionar atendimento remoto por profissionais da saúde. Trata-se de medida paliativa e alternativa com regramento legal pertinente que objetiva proporcionar auxílio sem ônus, mas com as limitações e circunstâncias pertinentes e decorrentes, às quais me submeto sob conta e risco.</p>
+    </v-row>
+    <v-row justify="center">
+      <button class="btn" @click="acceptConsent">Aceitar e continuar</button>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
@@ -23,59 +23,8 @@ export default {
 </script>
 
 <style scoped>
-  .consent {
-    height: 100vh;
-    width: 100vw;
-    position: fixed;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-  }
-
-  .content {
-    font-size: 18px;
-    font-size: 18px;
-    color:rgb(26, 65, 100);
-    padding: 24px;
-    text-align: center;
-  }
-
-  .content-title {
-    font-weight: bold;
-  }
-
-  .header {
-    background-color: var(--header-bg-color);
-    padding: 0.75rem 1rem;
-    width: 100%;
-  }
-
-  .header-content {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    max-width: var(--breakpoint-sm);
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .header__home-menu {
-    display: flex;
-    justify-content: space-between;
-    height: 100%;
-    align-items: center;
-  }
-
-  .header__logo {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 70px;
-    margin: 0 auto;
-  }
-
-  .consent-text {
-    max-width: 545px;
-  }
+.disclaimer-text {
+  max-width: 730px;
+  text-align: center;
+}
 </style>

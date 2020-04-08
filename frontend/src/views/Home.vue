@@ -55,6 +55,7 @@ export default {
   padding-top: 1.5rem;
   padding-bottom: 1.5rem;
   box-sizing: border-box;
+  color: white;
 }
 
 .home__button-link:last-child {

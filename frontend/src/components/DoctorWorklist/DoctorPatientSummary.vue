@@ -1,28 +1,15 @@
 <template>
   <v-row>
     <v-col>
-      <v-select
-        @change="onChangeStatus"
-        v-model="selectedStatus"
-        :items="statusFilterItems"
-        label="Alterar status"
-      ></v-select>
-
-      <div v-if="showChangeStatusForm">
-        <v-textarea
-          v-model="doctorFeedback"
-          name="doctorFeedback"
-          id="doctor-feedback"
-          maxlength="255"
-          label="Feedback para o paciente"
-          outlined
-          rows="2"
-          counter
-          append-icon="mdi-send"
-          @click:append="updateStatus"
-          :loading="updatingStatus"
-        ></v-textarea>
-      </div>
+      <v-row>
+        <v-col >
+          <div class="content-block">
+            <h4>Status</h4>
+            <ChangeStatusDialog :currentStatus="patient.status" />
+          </div>
+        </v-col>
+        <v-spacer></v-spacer>
+      </v-row>
 
       <h4>Dados do paciente</h4>
       <v-row>
@@ -118,101 +105,32 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex';
+import { mapGetters } from 'vuex';
 import Kairos from 'kairos';
+import ChangeStatusDialog from './ChangeStatusDialog.vue';
 
 export default {
   name: 'DoctorPatientSummary',
+  components: {
+    ChangeStatusDialog,
+  },
   computed: {
-    ...mapState('worklist', ['selectedPatient']),
+    ...mapGetters('worklist', [
+      'selectedPatient',
+    ]),
     patient() {
       return this.selectedPatient;
     },
   },
   data: () => ({
-    showChangeStatusForm: false,
-    doctorFeedbackRequired: false,
-    doctorFeedback: '',
-    selectedStatus: null,
     errors: {},
-    statusFilterItems: [
-      {
-        text: 'Aguardando',
-        value: 'waiting',
-      },
-      {
-        text: 'Em andamento',
-        value: 'ongoing',
-      },
-      {
-        text: 'Finalizado',
-        value: 'finished',
-      },
-      {
-        text: 'Aguardando kit',
-        value: 'waiting_kit',
-      },
-      {
-        text: 'Não pode ser atendido',
-        value: 'cant_be_assisted',
-      },
-    ],
-    updatingStatus: false,
   }),
   methods: {
-    ...mapActions('worklist', ['updateSelectedPatientStatus']),
-    onChangeStatus() {
-      const status = this.selectedStatus;
-      if (status === 'ongoing' || status === 'waiting_kit') {
-        this.showChangeStatusForm = true;
-        this.doctorFeedbackRequired = true;
-      } else if (status === 'finished') {
-        this.showChangeStatusForm = true;
-        this.doctorFeedbackRequired = false;
-      } else {
-        this.showChangeStatusForm = false;
-        this.doctorFeedbackRequired = false;
-      }
-    },
-    // eslint-disable-next-line consistent-return
-    async updateStatus() {
-      const {
-        selectedStatus: status,
-        doctorFeedback: message = '',
-      } = this;
-
-      try {
-        this.updatingStatus = true;
-        this.$delete(this.errors, 'message');
-        if (this.doctorFeedbackRequired && (!message || message.length < 10)) {
-          this.$set(this.errors, 'message', 'O feedback deve ter no mínimo 10 caracteres.');
-        }
-        if (Object.keys(this.errors).length > 0) {
-          return this.$noty.error(`Erro ao atualizar paciente: ${this.errors.message}`);
-        }
-
-        await this.updateSelectedPatientStatus({ status, message });
-        this.$noty.success('Status atualizado');
-
-        this.showChangeStatusForm = false;
-        this.doctorFeedbackRequired = false;
-        this.selectedStatus = status;
-        this.doctorFeedback = null;
-      } catch (err) {
-        console.error(err);
-      } finally {
-        this.updatingStatus = false;
-      }
-    },
     calcTimeWaiting(createdAt) {
       const timeWaiting = Date.now() - createdAt;
       const time = Kairos.new(timeWaiting);
       return time.toString('hh:mm');
     },
-  },
-  mounted() {
-    const { status } = this.selectedPatient;
-    this.selectedStatus = status;
   },
 };
 </script>

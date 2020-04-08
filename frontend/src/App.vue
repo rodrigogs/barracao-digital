@@ -1,17 +1,19 @@
 <template>
-  <div class="app-container">
-    <div class="app">
-      <vue-announcer />
+  <v-app>
+    <div class="app-container">
+      <div class="app">
+        <vue-announcer />
 
-      <Header />
+        <Header />
 
-      <div class="app-content">
-        <router-view></router-view>
+        <div class="app-content">
+          <router-view></router-view>
+        </div>
+
+        <Footer />
       </div>
-
-      <Footer />
     </div>
-  </div>
+  </v-app>
 </template>
 
 <script>
@@ -49,4 +51,6 @@ export default {
       padding: 16px;
     }
   }
+
+  html { overflow-y: hidden }
 </style>

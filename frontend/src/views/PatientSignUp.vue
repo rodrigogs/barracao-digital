@@ -1,17 +1,15 @@
 <template>
-  <v-app id="patient-signup-app">
-    <div id="patient-signup">
-      <Consent v-if="!isConsentAccepted" />
-      <Stepper
-        v-else-if="!isLoading"
-        class="patient-signup"
-        :steps="steps"
-        locale="pt"
-        @stepper-finished="savePatientSignUp"
-      />
-      <Loader v-else />
-    </div>
-  </v-app>
+  <div id="patient-signup">
+    <Consent v-if="!isConsentAccepted" />
+    <Stepper
+      v-else-if="!isLoading"
+      class="patient-signup"
+      :steps="steps"
+      locale="pt"
+      @stepper-finished="savePatientSignUp"
+    />
+    <Loader v-else />
+  </div>
 </template>
 
 <script>

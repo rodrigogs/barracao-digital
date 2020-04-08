@@ -23,6 +23,7 @@ const encodePatient = ({
   finishedDoctorDoctorName,
   finishedDoctorUsername,
   finishedDoctorFeedback,
+  patientOutcome,
 } = {}) => ({
   ticket,
   name,
@@ -48,6 +49,7 @@ const encodePatient = ({
   finishedDoctorDoctorName,
   finishedDoctorUsername,
   finishedDoctorFeedback,
+  patientOutcome,
 });
 
 export default (request) => ({
@@ -78,8 +80,8 @@ export default (request) => ({
     const { data } = await request.put(`/patients/${ticket}/status/waiting_kit`, { message });
     return data;
   },
-  async setFinished({ ticket, message }) {
-    const { data } = await request.put(`/patients/${ticket}/status/finished`, { message });
+  async setFinished({ ticket, message, outcome }) {
+    const { data } = await request.put(`/patients/${ticket}/status/finished`, { message, outcome });
     return data;
   },
   async setMessagingToken({ ticket, token }) {

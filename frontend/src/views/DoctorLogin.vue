@@ -1,39 +1,37 @@
 <template>
-  <v-app id="doctor-login-app">
-    <section class="section doctor-login">
-      <v-form ref="form" class="form doctor-login__form" style="margin-top: 2rem" v-on:submit.prevent="doLogin">
-        <v-text-field
-          id="username"
-          name="username"
-          v-model="username"
-          :rules="rules.username"
-          maxlength="50"
-          label="Nome de usuário"
-          hint="Exemplo: drrodrigo"
-          required
-        ></v-text-field>
+  <section class="section doctor-login">
+    <v-form ref="form" class="form doctor-login__form" style="margin-top: 2rem" v-on:submit.prevent="doLogin">
+      <v-text-field
+        id="username"
+        name="username"
+        v-model="username"
+        :rules="rules.username"
+        maxlength="50"
+        label="Nome de usuário"
+        hint="Exemplo: drrodrigo"
+        required
+      ></v-text-field>
 
-        <v-text-field
-          id="password"
-          name="password"
-          v-model="password"
-          :rules="rules.password"
-          maxlength="50"
-          label="Senha"
-          type="password"
-          required
-        ></v-text-field>
+      <v-text-field
+        id="password"
+        name="password"
+        v-model="password"
+        :rules="rules.password"
+        maxlength="50"
+        label="Senha"
+        type="password"
+        required
+      ></v-text-field>
 
-        <v-btn
-          color="primary"
-          type="submit"
-          x-large
-          :loading="loading"
-        >Entrar</v-btn>
+      <v-btn
+        color="primary"
+        type="submit"
+        x-large
+        :loading="loading"
+      >Entrar</v-btn>
 
-      </v-form>
-    </section>
-  </v-app>
+    </v-form>
+  </section>
 </template>
 
 <script>
