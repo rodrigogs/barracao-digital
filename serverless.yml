@@ -119,6 +119,12 @@ functions:
           cors: true
           authorizer: adminAuthorizer
 
+      - http:
+          method: DELETE
+          path: /doctors/{username}
+          cors: true
+          authorizer: masterAuthorizer
+
   # Patients
   patients-get:
     handler: functions/api/patients/get.handler
@@ -209,6 +215,12 @@ functions:
 
       - http:
           method: PUT
+          path: /facilities/{origin}
+          cors: true
+          authorizer: masterAuthorizer
+
+      - http:
+          method: DELETE
           path: /facilities/{origin}
           cors: true
           authorizer: masterAuthorizer

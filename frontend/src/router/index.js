@@ -27,10 +27,28 @@ const routes = [
   },
   {
     path: '/medicos',
-    name: 'DoctorManagement',
-    component: () => import(/* webpackChunkName: "doctor-management" */ '../views/DoctorManagement.vue'),
+    name: 'DoctorsList',
+    component: () => import(/* webpackChunkName: "doctors-list" */ '../views/DoctorsList.vue'),
     meta: {
-      title: 'Cadastros de médicos',
+      title: 'Médicos',
+      requiresAuth: true,
+    },
+  },
+  {
+    path: '/medicos/criar',
+    name: 'DoctorsCreate',
+    component: () => import(/* webpackChunkName: "doctors-create" */ '../views/DoctorsCreate.vue'),
+    meta: {
+      title: 'Criar médico',
+      requiresAuth: true,
+    },
+  },
+  {
+    path: '/medicos/editar/:username',
+    name: 'DoctorsEdit',
+    component: () => import(/* webpackChunkName: "doctors-edit" */ '../views/DoctorsEdit.vue'),
+    meta: {
+      title: 'Editar médico',
       requiresAuth: true,
     },
   },

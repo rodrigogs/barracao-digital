@@ -55,7 +55,6 @@ module.exports.handler = async (event) => {
 
     return responseBuilder.errors.badRequest();
   } catch (err) {
-    console.error('Responding error:', err);
     return responseBuilder.genericError(err);
   }
 };

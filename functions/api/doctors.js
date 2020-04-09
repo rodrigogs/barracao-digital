@@ -73,7 +73,6 @@ const methods = {
       return responseBuilder.errors.forbidden('Somente um usuário master pode criar um administrador');
     }
 
-    console.log(JSON.stringify(body, null, 2));
     const newDoctor = await doctorsService.create(body);
     return responseBuilder.success.created({ body: { ...newDoctor, password: undefined } });
   },
@@ -120,6 +119,31 @@ const methods = {
 
     return responseBuilder.errors.badRequest();
   },
+
+  async DELETE(ctx) {
+    const {
+      consumer: user,
+      pathParameters,
+    } = ctx;
+
+    const {
+      master: isMaster,
+    } = user;
+
+    const {
+      username,
+    } = pathParameters;
+
+    const storedDoctor = await doctorsService.getOneByUsername(username);
+    const isFromSameFacility = user.cep === storedDoctor.cep;
+
+    if (!isFromSameFacility && !isMaster) {
+      return responseBuilder.errors.forbidden('Administradores só podem deletar cadástros de suas regiões');
+    }
+
+    await doctorsService.delete(username);
+    return responseBuilder.success.noContent();
+  },
 };
 
 module.exports.handler = async (event) => {
@@ -129,9 +153,8 @@ module.exports.handler = async (event) => {
 
     if (!method) return responseBuilder.errors.methodNotAllowed();
 
-    return method(requestContext);
+    return await method(requestContext);
   } catch (err) {
-    console.error('Responding error:', err);
     return responseBuilder.genericError(err);
   }
 };

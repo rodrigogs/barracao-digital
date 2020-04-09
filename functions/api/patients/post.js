@@ -11,7 +11,6 @@ module.exports.handler = async (event) => {
     const createdPatient = await patientsService.create(body);
     return responseBuilder.success.created({ body: createdPatient });
   } catch (err) {
-    console.error('Responding error:', err);
     return responseBuilder.genericError(err);
   }
 };

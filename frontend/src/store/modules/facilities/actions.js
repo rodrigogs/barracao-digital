@@ -13,7 +13,7 @@ export const refreshListDestinations = async ({ commit, getters, state }, origin
   commit('fillList', state.list);
 };
 
-export const create = async ({ commit }, {
+export const create = async (_, {
   origin,
   contactType,
   contact,
@@ -25,16 +25,20 @@ export const create = async ({ commit }, {
   });
 };
 
-export const createDestination = async ({ dispatch }, { origin, destination }) => {
-  await api.facilities.createDestination({
+export const update = async (_store, facility) => {
+  await api.facilities.update(facility.origin, facility);
+};
+
+export const remove = async (_store, origin) => {
+  await api.facilities.remove(origin);
+};
+
+export const addDestinations = async ({ dispatch }, { origin, destinations }) => {
+  await api.facilities.addDestinations({
     origin,
-    destination,
+    destinations,
   });
   dispatch('refreshListDestinations', origin);
 };
 
 export const getByOrigin = (_store, origin) => api.facilities.getByOrigin(origin);
-
-export const update = async (_store, facilitie) => {
-  await api.facilities.update(facilitie);
-};

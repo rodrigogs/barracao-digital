@@ -51,13 +51,6 @@ module.exports.handler = async (event) => {
       await patientsService.setPatientMessagingToken(patient, user, body);
       return responseBuilder.success.noContent();
     }
-    // FIXME remove
-    // /patients/{ticket}/messaging/test
-    if (resource.endsWith('messaging/test')) {
-      return responseBuilder.success.ok({
-        body: (await patientsService._sendTestPushNotification(patient.ticket, body)) || {},
-      });
-    }
     // /patients/{ticket}
     if (body) {
       return responseBuilder.success.ok({ body: await updatePatient(patient, user, body) });
@@ -65,7 +58,6 @@ module.exports.handler = async (event) => {
 
     return responseBuilder.errors.badRequest();
   } catch (err) {
-    console.error('Responding error:', err);
     return responseBuilder.genericError(err);
   }
 };

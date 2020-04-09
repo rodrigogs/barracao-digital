@@ -10,6 +10,7 @@
       style="margin-top: 2rem"
       @submit.prevent="loadQueuePage()"
       novalidate
+      autocomplete="off"
     >
       <v-text-field
         v-model="ticket"

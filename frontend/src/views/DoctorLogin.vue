@@ -1,6 +1,6 @@
 <template>
   <section class="section doctor-login">
-    <v-form ref="form" class="form doctor-login__form" style="margin-top: 2rem" v-on:submit.prevent="doLogin">
+    <v-form ref="form" class="form doctor-login__form" style="margin-top: 2rem" v-on:submit.prevent="doLogin" autocomplete="off">
       <v-text-field
         id="username"
         name="username"

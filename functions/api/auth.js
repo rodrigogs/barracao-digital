@@ -26,9 +26,8 @@ module.exports.handler = async (event) => {
 
     if (!method) return responseBuilder.errors.methodNotAllowed();
 
-    return method(requestContext);
+    return await method(requestContext);
   } catch (err) {
-    console.error('Responding error:', err);
     return responseBuilder.genericError(err);
   }
 };
