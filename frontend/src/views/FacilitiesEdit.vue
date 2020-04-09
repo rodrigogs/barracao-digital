@@ -1,90 +1,73 @@
 <template>
-  <section class="section">
-    <div class="container">
-      <form id="facilitie-form" @submit="doCreate">
-        <p>
-          <b>Editando instalação</b>
-        </p>
-        <p>
-          <label for="origin">CEP*:</label>
-          <input id="origin" name="origin" v-model="origin" />
-        </p>
+  <v-card id="facility-edit">
 
-        <p>
-          <label for="contactType">Tipo de contato:</label>
-          <input id="contactType" name="contactType" v-model="contactType" />
-        </p>
+    <v-card-title>
+      Editar instalação
 
-        <p>
-          <label for="contact">Contato:</label>
-          <input id="contact" name="contact" v-model="contact" />
-        </p>
+      <v-spacer></v-spacer>
 
-        <p>
-          <button type="submit">Salvar</button>
-        </p>
-        <p>
-          <button @click="cancel">Cancelar</button>
-        </p>
-      </form>
-    </div>
-  </section>
+      <v-btn color="success" class="mr-2" title="Listar instalações" @click="cancel">
+        <v-icon>mdi-format-list-bulleted-square</v-icon>
+      </v-btn>
+    </v-card-title>
+
+    <v-card-text>
+      <FacilityForm
+        :facility="facility"
+        :isLoading="isUpdating"
+        v-on:submit="update"
+        v-on:cancel="cancel"
+      />
+    </v-card-text>
+
+  </v-card>
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
+import FacilityForm from '@/components/FacilitiesManagement/Form.vue';
 
 export default {
-  name: 'FalicitiesCreate',
-  data: () => ({
-    origin: '',
-    contactType: '',
-    contact: '',
-    facilitie: {},
-    errors: [],
-  }),
-  async mounted() {
-    const facilitie = await this.getByOrigin(this.$route.params.origin);
-    this.facilitie = { ...facilitie };
-    this.origin = facilitie.origin;
-    this.contactType = facilitie.contactType;
-    this.contact = facilitie.contact;
+  name: 'FacilitiesEdit',
+
+  components: { FacilityForm },
+
+  async created() {
+    try {
+      const { origin } = this.$route.params;
+      const facility = await this.getFacility(origin);
+      const facilityDestinations = await this.getDestinations(origin);
+      this.facility = { ...facility, destinations: facilityDestinations };
+    } catch (err) {
+      console.error(err);
+      this.$noty.error('Ocorreu um erro ao tentar acessar o cadastro da instalação');
+      this.$router.push('/instalacoes');
+    }
   },
+
+  data: () => ({
+    facility: null,
+    isUpdating: false,
+  }),
+
   methods: {
-    ...mapActions('facilities', ['getByOrigin', 'update']),
-    async doCreate(e) {
-      e.preventDefault();
+    ...mapActions('facilities', {
+      getFacility: 'get',
+      getDestinations: 'getDestinations',
+      updateFacility: 'update',
+    }),
 
+    async update(facility) {
       try {
-        if (!this.validate()) return;
-
-        const facilitieData = { ...this.facilitie, destinations: [] };
-        if (this.origin) facilitieData.origin = this.origin;
-        if (this.contactType) facilitieData.contactType = this.contactType;
-        if (this.contact) facilitieData.contact = this.contact;
-
-        await this.update(facilitieData);
-
+        this.isUpdating = true;
+        await this.updateFacility(facility);
         this.$noty.success('Instalação editada com sucesso');
-
-        this.$router.push('/instalacoes');
       } catch (err) {
-        this.$noty.error('Não foi possível editar a instalação. Revise os dados inseridos e tente novamente.');
-        if (err.response && err.response.status === 401) {
-          this.errors.push('Não foi possível editar a instalação. Revise os dados inseridos e tente novamente.');
-        } else {
-          this.errors.push(err.message);
-        }
+        console.error(err);
+        this.$noty.error('Ocorreu um erro ao tentar editar a instalação');
+      } finally {
+        this.isUpdating = false;
       }
-    },
-
-    validate() {
-      const { origin } = this;
-
-      this.errors = [];
-
-      if (!origin) this.errors.push('Campo CEP é obrigatório.');
-      return this.errors.length === 0;
     },
 
     cancel() {

@@ -63,19 +63,19 @@ const routes = [
   },
   {
     path: '/instalacoes',
-    name: 'Facilities',
-    component: () => import(/* webpackChunkName: "facilities" */ '../views/Facilities.vue'),
+    name: 'FacilitiesList',
+    component: () => import(/* webpackChunkName: "facilities-list" */ '../views/FacilitiesList.vue'),
     meta: {
-      title: 'Lista de Instalações',
+      title: 'Lista de instalações',
       requiresAuth: true,
     },
   },
   {
-    path: '/instalacoes/cadastrar',
+    path: '/instalacoes/criar',
     name: 'FacilitiesCreate',
     component: () => import(/* webpackChunkName: "facilities-create" */ '../views/FacilitiesCreate.vue'),
     meta: {
-      title: 'Cadastro de Instalação',
+      title: 'Cadastro de instalação',
       requiresAuth: true,
     },
   },
@@ -84,7 +84,7 @@ const routes = [
     name: 'FacilitiesEdit',
     component: () => import(/* webpackChunkName: "facilities-edit" */ '../views/FacilitiesEdit.vue'),
     meta: {
-      title: 'Cadastro de Instalação',
+      title: 'Cadastro de instalação',
       requiresAuth: true,
     },
   },

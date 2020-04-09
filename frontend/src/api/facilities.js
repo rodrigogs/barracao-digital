@@ -4,22 +4,27 @@ const handleError = (err) => {
   throw new Error(err.response.data.message);
 };
 
+const normalize = ({ origin, destinations, ...rest }) => ({
+  ...rest,
+  origin: origin.replace('-', ''),
+  destinations: destinations || [],
+});
+
 export default (request) => ({
 
   async create(facilitie) {
     try {
-      const { data } = await request.post('/facilities', facilitie);
+      const { data } = await request.post('/facilities', normalize(facilitie));
       return data;
     } catch (err) {
       return handleError(err);
     }
   },
 
-  async update({ origin, facilitie }) {
+  async update(origin, facility) {
     try {
-      const { data } = await request.put(`/facilities/${origin}`, {
-        ...facilitie,
-        destinations: [],
+      const { data } = await request.put(`/facilities/${origin.replace('-', '')}`, {
+        ...normalize(facility),
       });
       return data;
     } catch (err) {
@@ -32,15 +37,6 @@ export default (request) => ({
       await request.delete(`/facilities/${origin}`);
     } catch (err) {
       handleError(err);
-    }
-  },
-
-  async addDestinations({ origin, destinations }) {
-    try {
-      const { data } = await request.put(`/facilities/${origin}`, { destinations });
-      return data;
-    } catch (err) {
-      return handleError(err);
     }
   },
 
@@ -62,7 +58,7 @@ export default (request) => ({
     }
   },
 
-  async getDestinationsByOrigin({ origin }) {
+  async getDestinationsByOrigin(origin) {
     try {
       const { data } = await request.get(`/facilities/origin/${origin}/destinations`);
       return data;

@@ -1,85 +1,57 @@
 <template>
-  <section class="section">
-    <div class="container">
-      <form id="facilitie-form" @submit="doCreate">
-        <p>
-          <b>Criando nova instalação</b>
-        </p>
-        <p>
-          <label for="origin">CEP*:</label>
-          <input id="origin" name="origin" v-model="origin" maxlength="8" />
-        </p>
+  <v-card id="facility-create">
 
-        <p>
-          <label for="contactType">Tipo de contato:</label>
-          <input id="contactType" name="contactType" v-model="contactType" />
-        </p>
+    <v-card-title>
+      Criar instalação
 
-        <p>
-          <label for="contact">Contato:</label>
-          <input id="contact" name="contact" v-model="contact" />
-        </p>
+      <v-spacer></v-spacer>
 
-        <p>
-          <button type="submit">Salvar</button>
-        </p>
-        <p>
-          <button @click="cancel">Cancelar</button>
-        </p>
-      </form>
-    </div>
-  </section>
+      <v-btn color="success" class="mr-2" title="Listar instalações" @click="cancel">
+        <v-icon>mdi-format-list-bulleted-square</v-icon>
+      </v-btn>
+    </v-card-title>
+
+    <v-card-text>
+      <FacilityForm
+        :isLoading="isCreating"
+        v-on:submit="create"
+        v-on:cancel="cancel"
+      />
+    </v-card-text>
+
+  </v-card>
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
+import FacilityForm from '@/components/FacilitiesManagement/Form.vue';
 
 export default {
-  name: 'FalicitiesCreate',
+  name: 'FacilitiesCreate',
+
+  components: { FacilityForm },
 
   data: () => ({
-    origin: '',
-    contactType: '',
-    contact: '',
-    errors: [],
+    isCreating: false,
   }),
 
   methods: {
-    ...mapActions('facilities', ['create']),
-    async doCreate(e) {
-      e.preventDefault();
+    ...mapActions('facilities', {
+      createFacility: 'create',
+    }),
 
+    async create(facility) {
       try {
-        if (!this.validate()) return;
-
-        const facilitieData = {};
-        if (this.origin) facilitieData.origin = this.origin;
-        if (this.contactType) facilitieData.contactType = this.contactType;
-        if (this.contact) facilitieData.contact = this.contact;
-
-        await this.create(facilitieData);
-
-        this.$noty.success('Instalação cadastrada com sucesso');
-
-        this.$router.push('/instalacoes');
+        this.isCreating = true;
+        const newFacility = await this.createFacility(facility);
+        this.$noty.success('Instalação cadastrado com sucesso');
+        this.$router.push(`/instalacoes/editar/${newFacility.origin}`);
       } catch (err) {
-        this.$noty.success('Não foi possível cadastrar a instalação. Revise os dados inseridos e tente novamente.');
-
-        if (err.response && err.response.status === 401) {
-          this.errors.push('Não foi possível cadastrar a instalação. Revise os dados inseridos e tente novamente.');
-        } else {
-          this.errors.push(err.message);
-        }
+        console.error(err);
+        this.$noty.error('Ocorreu um erro ao tentar cadastrar a instalação');
+      } finally {
+        this.isCreating = false;
       }
-    },
-
-    validate() {
-      const { origin } = this;
-
-      this.errors = [];
-
-      if (!origin) this.errors.push('Campo CEP é obrigatório.');
-      return this.errors.length === 0;
     },
 
     cancel() {

@@ -1,17 +1,17 @@
 import * as api from '@/api';
 
-export const refreshList = async ({ commit, dispatch }) => {
+export const refreshList = async ({ commit }) => {
   const facilities = await api.facilities.getList();
   commit('fillList', facilities);
-  facilities.forEach(({ origin }) => dispatch('refreshListDestinations', origin));
 };
 
-export const refreshListDestinations = async ({ commit, getters, state }, origin) => {
-  const destinations = await api.facilities.getDestinationsByOrigin({ origin });
-  const facilitie = getters.getByOrigin(origin);
-  facilitie.destinations = destinations || [];
-  commit('fillList', state.list);
+export const getOriginDestinations = async (_, origin) => {
+  return api.facilities.getDestinationsByOrigin(origin);
 };
+
+export const get = async (_, origin) => api.facilities.getByOrigin(origin);
+
+export const getDestinations = async (_, origin) => api.facilities.getDestinationsByOrigin(origin);
 
 export const create = async (_, {
   origin,
@@ -26,7 +26,7 @@ export const create = async (_, {
 };
 
 export const update = async (_store, facility) => {
-  await api.facilities.update(facility.origin, facility);
+  return api.facilities.update(facility.origin, facility);
 };
 
 export const remove = async (_store, origin) => {

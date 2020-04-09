@@ -146,10 +146,12 @@
     </v-row>
 
     <v-row>
-
+      <v-col>
+        <v-btn color="primary" class="mr-2" type="submit" :disabled="!isValidCrm" :loading="isLoading">Salvar</v-btn>
+        <v-btn color="error" class="mr-2" @click.prevent="cancel">Cancelar</v-btn>
+      </v-col>
     </v-row>
-      <v-btn color="primary" class="mr-2" type="submit" :disabled="!isValidCrm" :loading="isLoading">Salvar</v-btn>
-      <v-btn color="error" class="mr-2" @click.prevent="cancel">Cancelar</v-btn>
+
     </v-form>
 </template>
 
@@ -205,10 +207,7 @@ export default {
         ],
         fu: [(v) => !!v || 'O estado é obrigatório'],
         crm: [(v) => !!v || 'O CRM é obrigatório'],
-        cep: [
-          (v) => !!v || 'O CEP da instalação é obrigátório',
-          (v) => !!v || 'O CEP da instalação é obrigátório',
-        ],
+        cep: [(v) => !!v || 'O CEP da instalação é obrigátório'],
         specialty: [(v) => !!v || 'A especialidade é obrigatória'],
         admin: [],
         master: [],

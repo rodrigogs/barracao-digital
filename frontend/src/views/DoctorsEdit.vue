@@ -1,5 +1,5 @@
 <template>
-  <v-card id="doctor-create">
+  <v-card id="doctor-edit">
 
     <v-card-title>
       Editar médico
@@ -26,7 +26,6 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import DoctorForm from '@/components/DoctorsManagement/Form.vue';
-import * as api from '@/api';
 
 export default {
   name: 'DoctorsEdit',
@@ -59,7 +58,7 @@ export default {
     async update(doctor) {
       try {
         this.isUpdating = true;
-        const updatedDoctor = await this.updateDoctor(doctor);
+        await this.updateDoctor(doctor);
         this.$noty.success('Médico editado com sucesso');
       } catch (err) {
         console.error(err);
