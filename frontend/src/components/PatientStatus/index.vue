@@ -30,7 +30,7 @@
 
 <script>
 import { mapActions } from 'vuex';
-import { messaging } from '@/providers/firebase';
+import { messaging, firestore } from '@/providers/firebase';
 import { patients as patientsApi } from '@/api';
 import Loader from '@/components/Loader.vue';
 import CantBeAssisted from './CantBeAssisted.vue';
@@ -42,6 +42,7 @@ import WaitingKit from './WaitingKit.vue';
 
 export default {
   name: 'PatientStatus',
+
   components: {
     Loader,
     CantBeAssisted,
@@ -51,6 +52,33 @@ export default {
     Waiting,
     WaitingKit,
   },
+
+  async mounted() {
+    const patientTicket = this.$route.params.ticket;
+    this.isLoading = true;
+    if (!patientTicket) {
+      this.$router.push('/');
+      return;
+    }
+
+    try {
+      this.patient = await patientsApi.getPatientByTicket(patientTicket);
+      await this.loginPatient(this.patient);
+      await this.handleMessaging();
+      await this.handleStatusUpdate();
+    } catch (err) {
+      if (err.response && err.response.status === 404) {
+        this.$noty.error('Senha inválida');
+        this.$router.push({ name: 'PatientLogin' });
+      } else {
+        this.$noty.error('Ocorreu um erro ao tentar acessar a fila');
+        console.error(err);
+      }
+    } finally {
+      this.isLoading = false;
+    }
+  },
+
   data() {
     return {
       isLoading: true,
@@ -58,6 +86,7 @@ export default {
       reloaderInterval: null,
     };
   },
+
   methods: {
     ...mapActions('patients', [
       'loginPatient',
@@ -81,40 +110,20 @@ export default {
         console.error(err);
       }
     },
+    async handleStatusUpdate() {
+      const { patient } = this;
+      firestore.collection('patients').doc(patient.ticket).onSnapshot((doc) => {
+        if (!doc.data()) return;
+        this.onStatusUpdated(doc.data().status);
+      });
+    },
     async updatePatientMessagingToken(newToken) {
       await patientsApi.setMessagingToken({ ticket: this.patient.ticket, token: newToken });
     },
-  },
-  async mounted() {
-    const patientTicket = this.$route.params.ticket;
-    this.isLoading = true;
-    if (!patientTicket) {
-      this.$router.push('/');
-      return;
-    }
-
-    try {
-      this.patient = await patientsApi.getPatientByTicket(patientTicket);
-      await this.loginPatient(this.patient);
-      await this.handleMessaging();
-      if (this.patient.status === 'waiting') { // FIXME should be removed when using firestore
-        this.reloaderInterval = setInterval(this.reloadPacientData, 60000);
-      }
-    } catch (err) {
-      if (err.response && err.response.status === 404) {
-        this.$noty.error('Senha inválida');
-        this.$router.push({ name: 'PatientLogin' });
-      } else {
-        this.$noty.error('Ocorreu um erro ao tentar acessar a fila');
-        console.error(err);
-      }
-    } finally {
-      this.isLoading = false;
-    }
-  },
-  beforeDestroy() {
-    console.log('Clearing reloader interval');
-    clearInterval(this.reloaderInterval);
+    onStatusUpdated(newStatus) {
+      console.log(`Patient status updated to ${newStatus}, refreshing info...`);
+      this.reloadPacientData();
+    },
   },
 };
 </script>
