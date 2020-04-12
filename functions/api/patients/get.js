@@ -1,39 +1,51 @@
 const { patientsService } = require('barracao-digital/services');
 const { getRequestContext, responseBuilder } = require('../../helpers');
 
-const getPatientByTicket = async (ticket) => {
+const getPatientByTicket = async (user, ticket) => {
   const patient = await patientsService.getOneByTicket(ticket);
-  // if (!user !user.master && (user.cep !== patient.cep)) {
-  //   return responseBuilder.errors
-  //     .forbidden({ message: 'Você só pode visualizar dados da sua região' });
-  // }
   if (!patient) return responseBuilder.errors.notFound('Paciente não encontrado');
   return responseBuilder.success.ok({ body: patient });
 };
 
-const getByCep = async (cep, user, { status, timeWaiting }) => {
+const getByOriginCep = async (cep, user, {
+  status,
+  timeWaiting,
+  lastEvaluatedKey,
+  pageSize,
+}) => {
   if (!user.master && (user.cep !== cep)) {
     return responseBuilder.errors.forbidden('Você só pode visualizar dados da sua região');
   }
   if (status && !timeWaiting) {
     return responseBuilder.success.ok({
-      body: await patientsService.getAllByCepAndStatus(cep, status),
+      body: await patientsService.getAllByOriginCepAndStatus(
+        cep,
+        status,
+        { lastEvaluatedKey, pageSize },
+      ),
     });
   }
   if (timeWaiting && !status) {
     return responseBuilder.success.ok({
-      body: await patientsService
-        .getAllByCepAndTimeWaiting(cep, timeWaiting),
+      body: await patientsService.getAllByOriginCepAndTimeWaiting(
+        cep,
+        timeWaiting,
+        { lastEvaluatedKey, pageSize },
+      ),
     });
   }
   if (status && timeWaiting) {
     return responseBuilder.success.ok({
-      body: await patientsService
-        .getAllByCepAndStatusAndTimeWaiting(cep, status, timeWaiting),
+      body: await patientsService.getAllByOriginCepAndStatusAndTimeWaiting(
+        cep,
+        status,
+        timeWaiting,
+        { lastEvaluatedKey, pageSize },
+      ),
     });
   }
   return responseBuilder.success.ok({
-    body: await patientsService.getAllByCep(cep),
+    body: await patientsService.getAllByOriginCep(cep, { lastEvaluatedKey, pageSize }),
   });
 };
 
@@ -47,11 +59,22 @@ module.exports.handler = async (event) => {
     } = requestContext;
 
     const { cep, ticket } = pathParameters || {};
-    const { status, timeWaiting } = queryStringParameters || {};
+    const {
+      status, timeWaiting, lastEvaluatedKey, pageSize,
+    } = queryStringParameters || {};
 
-    if (ticket) return getPatientByTicket(ticket);
+    const parsedLastKey = lastEvaluatedKey ? JSON.parse(lastEvaluatedKey) : undefined;
 
-    if (cep) return getByCep(cep, user, { status, timeWaiting });
+    if (ticket) return getPatientByTicket(user, ticket);
+
+    if (cep) {
+      return getByOriginCep(cep, user, {
+        status,
+        timeWaiting,
+        lastEvaluatedKey: parsedLastKey,
+        pageSize,
+      });
+    }
 
     return responseBuilder.errors.badRequest();
   } catch (err) {

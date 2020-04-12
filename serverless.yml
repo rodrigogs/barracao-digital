@@ -325,8 +325,8 @@ resources:
           - AttributeName: sort
             KeyType: RANGE
         ProvisionedThroughput:
-          ReadCapacityUnits: 10
-          WriteCapacityUnits: 10
+          ReadCapacityUnits: 2
+          WriteCapacityUnits: 2
     DoctorsTable:
       Type: AWS::DynamoDB::Table
       Properties:
@@ -342,8 +342,8 @@ resources:
           - AttributeName: username
             KeyType: HASH
         ProvisionedThroughput:
-          ReadCapacityUnits: 10
-          WriteCapacityUnits: 10
+          ReadCapacityUnits: 2
+          WriteCapacityUnits: 2
         GlobalSecondaryIndexes:
           - IndexName: cep
             KeySchema:
@@ -354,8 +354,8 @@ resources:
             Projection:
               ProjectionType: ALL
             ProvisionedThroughput:
-              ReadCapacityUnits: 10
-              WriteCapacityUnits: 10
+              ReadCapacityUnits: 2
+              WriteCapacityUnits: 2
     PatientsTable:
       Type: AWS::DynamoDB::Table
       Properties:
@@ -363,7 +363,7 @@ resources:
         AttributeDefinitions:
           - AttributeName: ticket
             AttributeType: S
-          - AttributeName: cep
+          - AttributeName: originCep
             AttributeType: S
           - AttributeName: sort
             AttributeType: S
@@ -371,20 +371,20 @@ resources:
           - AttributeName: ticket
             KeyType: HASH
         ProvisionedThroughput:
-          ReadCapacityUnits: 10
-          WriteCapacityUnits: 10
+          ReadCapacityUnits: 2
+          WriteCapacityUnits: 2
         GlobalSecondaryIndexes:
-          - IndexName: cep
+          - IndexName: originCep
             KeySchema:
-              - AttributeName: cep
+              - AttributeName: originCep
                 KeyType: HASH
               - AttributeName: sort
                 KeyType: RANGE
             Projection:
               ProjectionType: ALL
             ProvisionedThroughput:
-              ReadCapacityUnits: 10
-              WriteCapacityUnits: 10
+              ReadCapacityUnits: 2
+              WriteCapacityUnits: 2
     FacilitiesTable:
       Type: AWS::DynamoDB::Table
       Properties:
@@ -402,8 +402,8 @@ resources:
           - AttributeName: destination
             KeyType: RANGE
         ProvisionedThroughput:
-          ReadCapacityUnits: 10
-          WriteCapacityUnits: 10
+          ReadCapacityUnits: 2
+          WriteCapacityUnits: 2
         GlobalSecondaryIndexes:
           - IndexName: destinationOrigin
             KeySchema:
@@ -414,8 +414,8 @@ resources:
             Projection:
               ProjectionType: ALL
             ProvisionedThroughput:
-              ReadCapacityUnits: 10
-              WriteCapacityUnits: 10
+              ReadCapacityUnits: 2
+              WriteCapacityUnits: 2
           - IndexName: type
             KeySchema:
               - AttributeName: type
@@ -423,5 +423,5 @@ resources:
             Projection:
               ProjectionType: ALL
             ProvisionedThroughput:
-              ReadCapacityUnits: 10
-              WriteCapacityUnits: 10
+              ReadCapacityUnits: 2
+              WriteCapacityUnits: 2
