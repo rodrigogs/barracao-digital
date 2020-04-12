@@ -3,7 +3,15 @@
     <v-app-bar app elevation="1" height="80">
       <v-row align="center" justify="center" no-gutters>
         <v-col class="text-center">
-          <v-btn text nuxt :to="restrictAreaRoute">
+          <v-btn
+            v-if="isLoggedIn && currentRoute === 'doctor'"
+            text
+            nuxt
+            :to="manageRoute"
+          >
+            Gerenciar
+          </v-btn>
+          <v-btn v-else text nuxt :to="doctorRoute">
             Acesso médico
           </v-btn>
         </v-col>
@@ -13,7 +21,7 @@
           align-self="center"
         >
           <nuxt-link class="d-flex align-center" :to="{ name: 'index' }">
-            <logo />
+            <Logo />
           </nuxt-link>
         </v-col>
         <v-col class="text-center">
@@ -30,8 +38,8 @@
     </v-content>
     <v-footer>
       <v-row justify="center" no-gutters>
-        <v-btn text small href="mailto:emailparacontato@barracao.com.br">
-          emailparacontato@barracao.com.br
+        <v-btn text small href="mailto:faleconosco@barracaodigital.com">
+          faleconosco@barracaodigital.com
         </v-btn>
       </v-row>
     </v-footer>
@@ -46,8 +54,17 @@ export default {
     Logo
   },
   computed: {
-    restrictAreaRoute() {
-      return { name: this.$auth.loggedIn ? 'doctor' : 'login' }
+    isLoggedIn() {
+      return this.$auth.loggedIn
+    },
+    currentRoute() {
+      return this.$nuxt.$route.name
+    },
+    doctorRoute() {
+      return { name: this.isLoggedIn ? 'doctor' : 'login' }
+    },
+    manageRoute() {
+      return { name: this.isLoggedIn ? 'manage' : 'login' }
     }
   }
 }

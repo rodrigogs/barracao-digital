@@ -1,6 +1,6 @@
-require('dotenv').config()
 import qs from 'qs'
-import colors from 'vuetify/es5/util/colors'
+
+require('dotenv').config()
 
 // The firebase configuration is originally in BASE64
 const firebaseConfig = JSON.parse(
@@ -13,8 +13,8 @@ export default {
    ** Headers of the page
    */
   head: {
-    titleTemplate: '%s - ' + process.env.npm_package_name,
-    title: process.env.npm_package_name || '',
+    titleTemplate: 'Barracao Digital',
+    title: 'Barracao Digital',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -73,7 +73,7 @@ export default {
    */
   axios: {
     baseURL: process.env.API_URL || '',
-    paramsSerializer: function(params) {
+    paramsSerializer: function paramsSerializer(params) {
       return qs.stringify(params, { arrayFormat: 'brackets' })
     }
   },
