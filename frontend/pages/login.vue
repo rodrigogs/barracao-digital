@@ -38,6 +38,7 @@
 </template>
 
 <script>
+import * as R from 'ramda'
 import { required } from 'vuelidate/lib/validators'
 
 export default {
@@ -95,10 +96,15 @@ export default {
               name: 'doctor'
             })
           },
-          () => {
-            this.$toast.error(
-              'Ocorreu um erro durante a autenticação, tente novamente mais tarde'
-            )
+          (error) => {
+            const status = R.path(['response', 'status'], error)
+
+            if (status && status === 401)
+              this.$toast.error('Usuário ou senha incorretos.')
+            else
+              this.$toast.error(
+                'Ocorreu um erro durante a autenticação, tente novamente mais tarde'
+              )
           }
         )
         .finally(() => {
