@@ -55,7 +55,7 @@ export default {
     calcTimeWaiting(createdAt) {
       const timeWaiting = Date.now() - createdAt;
       const time = Kairos.new(timeWaiting);
-      return time.toString('hh:mm');
+      return time.toString('hh:mm', true);
     },
   },
 };

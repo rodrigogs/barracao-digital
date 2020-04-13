@@ -6,6 +6,7 @@
           <form @keydown.enter.prevent="validateForm">
             <v-text-field
               v-model="$v.ticket.$model"
+              v-mask="'XXXXXXXXX'"
               :error-messages="ticketErrors"
               label="Senha de retorno*"
               required
@@ -30,9 +31,11 @@
 </template>
 
 <script>
+import { mask } from 'vue-the-mask'
 import { required } from 'vuelidate/lib/validators'
 
 export default {
+  directives: { mask },
   data: () => ({
     ticket: '',
     isLoading: false
@@ -52,7 +55,19 @@ export default {
     }
   },
   methods: {
-    validateForm() {
+    async checkPatient() {
+      try {
+        await this.$api.searchPatientByTicket(this.ticket)
+        return true
+      } catch (err) {
+        if (err.response && err.response.status === 404) {
+          this.$toast.error('Não existe um paciente cadastrado para esta senha')
+        }
+        return false
+      }
+    },
+
+    async validateForm() {
       this.$v.$touch()
       if (this.$v.$invalid) {
         return this.$toast.error(
@@ -61,6 +76,12 @@ export default {
       }
 
       this.isLoading = true
+
+      if (!(await this.checkPatient())) {
+        this.isLoading = false
+        return
+      }
+
       this.$router.push(
         {
           name: 'patient-ticket',

@@ -60,7 +60,7 @@ export default {
   methods: {
     setUpTimer() {
       const timeWaiting = Date.now() - this.createdAt
-      this.timeInQueue = Kairos.new(timeWaiting).toString('hh:mm:ss')
+      this.timeInQueue = Kairos.new(timeWaiting).toString('hh:mm:ss', true)
     }
   }
 }
