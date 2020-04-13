@@ -14,30 +14,39 @@
       @click:row="$emit('click', $event)"
     >
       <template v-slot:top>
-        <v-container>
-          <v-row>
-            <v-col>
-              <v-select
-                v-model="timeWaiting"
-                :items="timeWaitingFilters"
-                label="Hora de entrada"
-                dense
-                clearable
-                @change="$emit('timeWaiting', $event)"
-              />
-            </v-col>
-            <v-col>
-              <v-select
-                v-model="status"
-                :items="statusFilters"
-                label="Status"
-                dense
-                clearable
-                @change="$emit('status', $event)"
-              />
-            </v-col>
-          </v-row>
-        </v-container>
+        <v-toolbar elevation="1">
+          <v-toolbar-items>
+            <v-row>
+              <v-col>
+                <v-select
+                  v-model="timeWaiting"
+                  :items="timeWaitingFilters"
+                  label="Hora de entrada"
+                  dense
+                  clearable
+                  @change="$emit('timeWaiting', $event)"
+                />
+              </v-col>
+
+              <v-col>
+                <v-select
+                  v-model="status"
+                  :items="statusFilters"
+                  label="Status"
+                  dense
+                  clearable
+                  @change="$emit('status', $event)"
+                />
+              </v-col>
+            </v-row>
+          </v-toolbar-items>
+
+          <v-spacer />
+
+          <v-btn icon @click="refreshPatients">
+            <v-icon>mdi-table-refresh</v-icon>
+          </v-btn>
+        </v-toolbar>
       </template>
 
       <template v-slot:item.name="{ item }">
@@ -176,6 +185,10 @@ export default {
     },
     getStatusMessage(status = PATIENT_STATUS.WAITING) {
       return patientStatusToText(status).text
+    },
+    refreshPatients() {
+      this.isPaginationFinished = false
+      this.$emit('refresh')
     }
   }
 }

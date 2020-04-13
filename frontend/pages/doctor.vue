@@ -14,6 +14,7 @@
         :fetch-next-page="fetchNextPatientPage"
         @status="statusChanged"
         @timeWaiting="timeWaitingChanged"
+        @refresh="$fetch()"
         @click="patientSelected"
       />
       <nuxt-child />
