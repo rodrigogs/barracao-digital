@@ -2,7 +2,10 @@ import qs from 'qs'
 
 require('dotenv').config()
 
-// The firebase configuration is originally in BASE64
+if (!process.env.FIREBASE_CONFIG)
+  throw new Error(
+    'You must provide a base64 firebase config in order to run the project'
+  )
 const firebaseConfig = JSON.parse(
   Buffer.from(process.env.FIREBASE_CONFIG, 'base64').toString('utf8')
 )
