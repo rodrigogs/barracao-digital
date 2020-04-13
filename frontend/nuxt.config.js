@@ -28,7 +28,64 @@ export default {
       {
         hid: 'description',
         name: 'description',
-        content: process.env.npm_package_description || ''
+        content:
+          'Estruturação rápida de “postos de triagem” virtuais descentralizados para redução de visitas desnecessárias às emergências'
+      },
+      // OpenGraph
+      {
+        name: 'og:title',
+        content: 'Barracão Digital'
+      },
+      {
+        name: 'og:site_name',
+        content: 'Barracão Digital'
+      },
+      {
+        name: 'og:url',
+        content: '//www.barracaodigital.com'
+      },
+      {
+        name: 'og:description',
+        content:
+          'Estruturação rápida de “postos de triagem” virtuais descentralizados para redução de visitas desnecessárias às emergências'
+      },
+      {
+        name: 'og:image',
+        content:
+          '//raw.githubusercontent.com/rodrigogs/barracao-digital/master/media/barracaodigital-logo.png'
+      },
+      {
+        name: 'og:image:type',
+        content: 'image/png'
+      },
+      {
+        name: 'og:image:width',
+        content: '514'
+      },
+      {
+        name: 'og:image:height',
+        content: '514'
+      },
+      {
+        name: 'og:type',
+        content: 'website'
+      },
+      {
+        name: 'og:locale',
+        content: 'pt_BR'
+      },
+      // Twitter
+      {
+        name: 'twitter:card',
+        content: 'summary'
+      },
+      {
+        name: 'twitter:site',
+        content: '@barracaodigital'
+      },
+      {
+        name: 'twitter:creator',
+        content: '@barracaodigital'
       }
     ],
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
