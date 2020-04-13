@@ -17,6 +17,7 @@ export const getters = {
 
 export const actions = {
   fetchPatients({ commit, dispatch }, { filters = null }) {
+    commit('setPatients', state().patients)
     commit('setFilters', filters)
     commit('setLastEvaluatedKey', '')
     return dispatch('fetchNextPatientsPage')
