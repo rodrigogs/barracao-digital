@@ -1,9 +1,5 @@
 <template>
   <v-card-text class="text-center">
-    <p class="body-2">
-      Essa página é atualizada automaticamente a cada 1 minuto
-    </p>
-
     <p class="title font-weight-medium blue--text">
       Você está na fila de atendimento
     </p>
