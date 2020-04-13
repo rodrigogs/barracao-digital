@@ -23,3 +23,25 @@
 //
 // -- This is will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+
+Cypress.Commands.add(
+  'login',
+  (username = Cypress.env('username'), password = Cypress.env('password')) => {
+    const token = btoa(`${username}:${password}`)
+
+    cy.window()
+      .its('localStorage')
+      .invoke('setItem', 'auth._refresh_token.local', 'false')
+      .invoke('setItem', 'auth.strategy', 'local')
+      .invoke('setItem', 'auth._token.local', `Basic ${token}`)
+
+    return Promise.resolve(token)
+  }
+)
+
+Cypress.Commands.add('logout', () => {
+  cy.clearCookies()
+  cy.clearLocalStorage()
+
+  cy.visit('/login')
+})
