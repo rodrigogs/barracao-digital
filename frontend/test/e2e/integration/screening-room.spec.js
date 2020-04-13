@@ -8,7 +8,7 @@ describe('Screening rooom screen', () => {
     cy.get('input[id="name"]').type('John Doe')
     cy.get('input[id="age"]').type('30')
     cy.get('input[id="cpf"]').type('652.192.799-04')
-    cy.get('input[id="cep"]').type('88330-000')
+    cy.get('input[id="cep"]').type('55555-550')
 
     cy.get('button#myDataBtn').click()
 
@@ -27,6 +27,16 @@ describe('Screening rooom screen', () => {
 
     cy.get('button#contactBtn').click()
 
-    cy.location('pathname', { timeout: 10000 }).should('include', '/patient/')
+    // cy.location('pathname', { timeout: 10000 }).should('include', '/patient/')
+    cy.location('pathname', { timeout: 10000 })
+      .should((pathname) => {
+        const ticket = pathname.split('/')[2]
+        expect(pathname).to.eq(`/patient/${ticket}`)
+      })
+      .then((pathname) => {
+        const ticket = pathname.split('/')[2]
+        cy.contains('p', 'Sua senha de retorno é')
+        cy.contains('p', ticket)
+      })
   })
 })
