@@ -1,5 +1,5 @@
 describe('Screening rooom screen', () => {
-  it('Register a patient', () => {
+  it('Register a patient with existing CEP', () => {
     cy.visit('/screening-room')
 
     cy.contains('p', 'Adesão para pacientes')
@@ -27,7 +27,6 @@ describe('Screening rooom screen', () => {
 
     cy.get('button#contactBtn').click()
 
-    // cy.location('pathname', { timeout: 10000 }).should('include', '/patient/')
     cy.location('pathname', { timeout: 10000 })
       .should((pathname) => {
         const ticket = pathname.split('/')[2]
