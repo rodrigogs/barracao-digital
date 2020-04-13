@@ -52,7 +52,7 @@ export default {
   },
   computed: {
     displayManageRoute() {
-      return this.$auth.loggedIn && this.$nuxt.$route.name === 'doctor'
+      return this.$auth.loggedIn && this.$route.name.includes('doctor')
     }
   }
 }
