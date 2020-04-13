@@ -1,6 +1,26 @@
-.page-enter-active, .page-leave-active {
-  transition: opacity .3s;
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 0.3s;
 }
-.page-enter, .page-leave-to {
+.page-enter,
+.page-leave-to {
   opacity: 0;
+}
+
+.home-button.v-btn:not(.v-btn--round).v-size--x-large {
+  height: auto;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.home-button > span {
+  white-space: normal;
+  flex-basis: 0;
+}
+
+@media (min-width: 600px) {
+  .home-button > span {
+    white-space: inherit;
+    flex-basis: inherit;
+  }
 }

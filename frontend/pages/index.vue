@@ -24,7 +24,7 @@
           nuxt
           :to="{ name: 'screening-room' }"
           color="primary"
-          class="mb-4 py-10 title"
+          class="mb-4 py-10 title home-button"
         >
           Entrar na sala de espera de triagem
         </v-btn>
@@ -36,7 +36,7 @@
           nuxt
           :to="{ name: 'patient' }"
           color="error"
-          class="title"
+          class="title home-button"
         >
           Já tenho uma senha de retorno
         </v-btn>
