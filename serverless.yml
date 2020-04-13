@@ -13,6 +13,8 @@ package:
   individually: true
 
 custom:
+  stage: ${opt:stage, 'development'}
+  region: ${opt:region, 'sa-east-1'}
   webpack:
     webpackConfig: webpack.config.js
     includeModules:
@@ -35,9 +37,15 @@ custom:
 provider:
   name: aws
   runtime: nodejs12.x
-  stage: ${opt:stage, 'development'}
-  region: sa-east-1
+  memorySize: 256
+  stage: ${self:custom.stage}
+  region: ${self:custom.region}
   versionFunctions: false
+  logRetentionInDays: 5
+  stackTags:
+    STACK: ${self:service}
+    STAGE: ${self:custom.stage}
+    REGION: ${self:custom.region}
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -327,6 +335,19 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 2
           WriteCapacityUnits: 2
+        Tags:
+          -
+            Key: NAME
+            Value: ${self:custom.configsTableName}
+          -
+            Key: STACK
+            Value: ${self:service}
+          -
+            Key: STAGE
+            Value: ${self:custom.stage}
+          -
+            Key: REGION
+            Value: ${self:custom.region}
     DoctorsTable:
       Type: AWS::DynamoDB::Table
       Properties:
@@ -356,6 +377,19 @@ resources:
             ProvisionedThroughput:
               ReadCapacityUnits: 2
               WriteCapacityUnits: 2
+        Tags:
+          -
+            Key: NAME
+            Value: ${self:custom.doctorsTableName}
+          -
+            Key: STACK
+            Value: ${self:service}
+          -
+            Key: STAGE
+            Value: ${self:custom.stage}
+          -
+            Key: REGION
+            Value: ${self:custom.region}
     PatientsTable:
       Type: AWS::DynamoDB::Table
       Properties:
@@ -385,6 +419,19 @@ resources:
             ProvisionedThroughput:
               ReadCapacityUnits: 2
               WriteCapacityUnits: 2
+        Tags:
+          -
+            Key: NAME
+            Value: ${self:custom.patientsTableName}
+          -
+            Key: STACK
+            Value: ${self:service}
+          -
+            Key: STAGE
+            Value: ${self:custom.stage}
+          -
+            Key: REGION
+            Value: ${self:custom.region}
     FacilitiesTable:
       Type: AWS::DynamoDB::Table
       Properties:
@@ -425,3 +472,16 @@ resources:
             ProvisionedThroughput:
               ReadCapacityUnits: 2
               WriteCapacityUnits: 2
+        Tags:
+          -
+            Key: NAME
+            Value: ${self:custom.facilitiesTableName}
+          -
+            Key: STACK
+            Value: ${self:service}
+          -
+            Key: STAGE
+            Value: ${self:custom.stage}
+          -
+            Key: REGION
+            Value: ${self:custom.region}
