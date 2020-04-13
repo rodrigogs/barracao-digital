@@ -1,30 +1,45 @@
 <template>
   <v-app>
     <v-app-bar app elevation="1" height="80">
-      <v-row align="center" justify="center" no-gutters>
-        <v-col class="text-center">
-          <v-btn v-if="displayManageRoute" text nuxt :to="{ name: 'manage' }">
-            Gerenciar
-          </v-btn>
-          <v-btn v-else text nuxt :to="{ name: 'doctor' }">
+      <v-container>
+        <v-row align="center" justify="center">
+          <v-btn text nuxt :to="{ name: 'doctor' }">
             Acesso médico
           </v-btn>
-        </v-col>
-        <v-col
-          v-show="!$vuetify.breakpoint.xsOnly"
-          class="text-center"
-          align-self="center"
-        >
-          <nuxt-link class="d-flex align-center" :to="{ name: 'index' }">
-            <Logo />
-          </nuxt-link>
-        </v-col>
-        <v-col class="text-center">
-          <v-badge color="warning" icon="mdi-wrench" overlap>
-            <v-btn text href="#">Quero ajudar</v-btn>
-          </v-badge>
-        </v-col>
-      </v-row>
+
+          <v-spacer />
+
+          <v-col
+            v-show="!$vuetify.breakpoint.xsOnly"
+            class="text-center"
+            align-self="center"
+          >
+            <nuxt-link class="d-flex align-center" :to="{ name: 'index' }">
+              <Logo />
+            </nuxt-link>
+          </v-col>
+
+          <v-spacer />
+
+          <v-tooltip v-if="displayManageRoute" bottom>
+            <template v-slot:activator="{ on }">
+              <v-btn icon nuxt :to="{ name: 'manage' }" v-on="on">
+                <v-icon>mdi-hospital-building</v-icon>
+              </v-btn>
+            </template>
+            <span>Instalações</span>
+          </v-tooltip>
+
+          <v-tooltip v-if="displayManageRoute" bottom>
+            <template v-slot:activator="{ on }">
+              <v-btn icon nuxt :to="{ name: 'manage' }" v-on="on">
+                <v-icon>mdi-doctor</v-icon>
+              </v-btn>
+            </template>
+            <span>Médicos</span>
+          </v-tooltip>
+        </v-row>
+      </v-container>
     </v-app-bar>
     <v-content>
       <v-container>
@@ -52,7 +67,9 @@ export default {
   },
   computed: {
     displayManageRoute() {
-      return this.$auth.loggedIn && this.$route.name.includes('doctor')
+      return (
+        this.$auth.loggedIn && (this.$auth.user.admin || this.$auth.user.master)
+      )
     }
   }
 }
