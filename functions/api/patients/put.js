@@ -32,19 +32,23 @@ module.exports.handler = async (event) => {
 
     // /patients/{ticket}/status/ongoing
     if (resource.endsWith('status/ongoing')) {
-      return responseBuilder.success.ok({ body: await patientsService.setOngoing(patient, user, body) });
+      return responseBuilder.success
+        .ok({ body: await patientsService.setOngoing(patient, user, body) });
     }
     // /patients/{ticket}/status/waiting_kit
     if (resource.endsWith('status/waiting_kit')) {
-      return responseBuilder.success.ok({ body: await patientsService.setWaitingKit(patient, user, body) });
+      return responseBuilder.success
+        .ok({ body: await patientsService.setWaitingKit(patient, user, body) });
     }
     // /patients/{ticket}/status/finished
     if (resource.endsWith('status/finished')) {
-      return responseBuilder.success.ok({ body: await patientsService.setFinished(patient, user, body) });
+      return responseBuilder.success
+        .ok({ body: await patientsService.setFinished(patient, user, body) });
     }
     // /patients/{ticket}/feedback
     if (resource.endsWith('feedback')) {
-      return responseBuilder.success.ok({ body: await patientsService.setPatientFeedback(patient, user, body) });
+      return responseBuilder.success
+        .ok({ body: await patientsService.setPatientFeedback(patient, user, body) });
     }
     // /patients/{ticket}/messaging/token
     if (resource.endsWith('messaging/token')) {

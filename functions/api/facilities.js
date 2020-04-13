@@ -6,11 +6,15 @@ const methods = {
     const {
       pathParameters,
       path,
+      queryStringParameters,
     } = ctx;
 
     if (!pathParameters) {
+      const { type, lastEvaluatedKey, pageSize } = queryStringParameters || {};
+      const parsedLastKey = lastEvaluatedKey ? JSON.parse(lastEvaluatedKey) : undefined;
+
       return responseBuilder.success.ok({
-        body: await facilitiesService.getAll(),
+        body: await facilitiesService.getAll(type, { lastEvaluatedKey: parsedLastKey, pageSize }),
       });
     }
 

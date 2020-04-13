@@ -10,17 +10,21 @@ const methods = {
     } = ctx;
 
     const { cep, username } = pathParameters || {};
-    const { active } = queryStringParameters || {};
+    const { active, lastEvaluatedKey, pageSize } = queryStringParameters || {};
+    const parsedLastKey = lastEvaluatedKey ? JSON.parse(lastEvaluatedKey) : undefined;
 
     if (cep) {
       if (!user.master && (user.cep !== cep)) {
         return responseBuilder.errors.forbidden('Você só pode visualizar dados da sua região');
       }
-      const doctors = active
-        ? await doctorsService.getAllByCepAndActive(cep, active === 'true')
-        : await doctorsService.getAllByCep(cep);
+      const results = active
+        ? await doctorsService.getAllByCepAndActive(cep, active === 'true', { lastEvaluatedKey: parsedLastKey, pageSize })
+        : await doctorsService.getAllByCep(cep, { lastEvaluatedKey: parsedLastKey, pageSize });
       return responseBuilder.success.ok({
-        body: doctors.map((doctor) => ({ ...doctor, password: undefined })),
+        body: {
+          lastEvaluatedKey: results.lastEvaluatedKey,
+          items: results.items.map((doctor) => ({ ...doctor, password: undefined })),
+        },
       });
     }
 
