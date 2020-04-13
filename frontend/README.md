@@ -1,12 +1,12 @@
-# frontend-nuxt
+# Frontend module
 
-> My splendid Nuxt.js project
+Frontend module of the project.
 
 ## Build Setup
 
 ```bash
 # install dependencies
-$ yarn install
+$ yarn
 
 # add the dotenv file
 $ cp .env.sample .env
@@ -23,6 +23,16 @@ $ yarn start
 
 # generate static project
 $ yarn generate
+```
+
+## Testing
+
+``` bash
+# runnin e2e tests
+$ yarn test:e2e
+
+# opening cypress environment
+$ yarn test:e2e:open
 ```
 
 For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).
