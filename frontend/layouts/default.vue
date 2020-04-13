@@ -29,7 +29,7 @@
     <v-content>
       <v-container>
         <v-layout column justify-center align-center>
-          <nuxt keep-alive include="doctor" />
+          <nuxt keep-alive :keep-alive-props="{ include: 'PagesDoctor' }" />
         </v-layout>
       </v-container>
     </v-content>

@@ -30,6 +30,7 @@ import DoctorWorklistTable from '@/components/doctor/DoctorWorklistTable'
 const ONE_MINUTE = 60000
 
 export default {
+  name: 'PagesDoctor',
   middleware: 'auth',
   components: {
     DoctorStatus,
