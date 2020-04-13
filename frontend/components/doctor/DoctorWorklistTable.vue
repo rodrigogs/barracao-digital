@@ -6,7 +6,7 @@
       :loading="isLoading"
       sort-by="createdAt"
       item-key="id"
-      class="elevation-1"
+      class="elevation-1 worklist"
       disable-filtering
       disable-pagination
       disable-sort
@@ -193,3 +193,9 @@ export default {
   }
 }
 </script>
+
+<style>
+.worklist table > tbody > tr {
+  cursor: pointer;
+}
+</style>
