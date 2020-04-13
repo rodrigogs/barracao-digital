@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row justify="center">
-      <v-col cols="6">
+      <v-col sm="8" lg="6">
         <v-card class="pa-4">
           <form @keydown.enter.prevent="validateForm">
             <v-text-field
