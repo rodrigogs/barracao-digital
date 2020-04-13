@@ -12,7 +12,16 @@ const apiFactory = (axios) => ({
   setPatientMessagingToken: (ticket, { token }) =>
     axios.$put(`patients/${ticket}/messaging/token`, { ticket, token }),
 
-  alternateDoctorStatus: () => axios.$post('doctors/alternate')
+  alternateDoctorStatus: () => axios.$post('doctors/alternate'),
+
+  getAllFacilities: (lastEvaluatedKey = '') =>
+    axios.$get('facilities', {
+      params: {
+        lastEvaluatedKey,
+        pageSize: 20
+      }
+    }),
+  deleteFacility: (origin) => axios.$delete(`facilities/${origin}`)
 })
 
 /*
