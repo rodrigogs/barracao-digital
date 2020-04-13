@@ -3,15 +3,10 @@
     <v-app-bar app elevation="1" height="80">
       <v-row align="center" justify="center" no-gutters>
         <v-col class="text-center">
-          <v-btn
-            v-if="isLoggedIn && currentRoute === 'doctor'"
-            text
-            nuxt
-            :to="manageRoute"
-          >
+          <v-btn v-if="displayManageRoute" text nuxt :to="{ name: 'manage' }">
             Gerenciar
           </v-btn>
-          <v-btn v-else text nuxt :to="doctorRoute">
+          <v-btn v-else text nuxt :to="{ name: 'doctor' }">
             Acesso médico
           </v-btn>
         </v-col>
@@ -25,7 +20,9 @@
           </nuxt-link>
         </v-col>
         <v-col class="text-center">
-          <v-btn text href="#">Quero ajudar</v-btn>
+          <v-badge color="warning" icon="mdi-wrench" overlap>
+            <v-btn text href="#">Quero ajudar</v-btn>
+          </v-badge>
         </v-col>
       </v-row>
     </v-app-bar>
@@ -54,17 +51,8 @@ export default {
     Logo
   },
   computed: {
-    isLoggedIn() {
-      return this.$auth.loggedIn
-    },
-    currentRoute() {
-      return this.$nuxt.$route.name
-    },
-    doctorRoute() {
-      return { name: this.isLoggedIn ? 'doctor' : 'login' }
-    },
-    manageRoute() {
-      return { name: this.isLoggedIn ? 'manage' : 'login' }
+    displayManageRoute() {
+      return this.$auth.loggedIn && this.$nuxt.$route.name === 'doctor'
     }
   }
 }
