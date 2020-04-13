@@ -14,5 +14,5 @@ module.exports = {
     '<rootDir>/components/**/*.vue',
     '<rootDir>/pages/**/*.vue'
   ],
-  modulePathIgnorePatterns: ["<rootDir>/test/e2e"]
+  modulePathIgnorePatterns: ['<rootDir>/test/e2e']
 }

@@ -62,7 +62,7 @@ export default class BasicAuthScheme {
     return response
   }
 
-  async setUserToken(tokenValue) {
+  setUserToken(tokenValue) {
     const token = this.options.tokenType
       ? this.options.tokenType + ' ' + tokenValue
       : tokenValue
@@ -72,7 +72,7 @@ export default class BasicAuthScheme {
     return this.fetchUser()
   }
 
-  async fetchUser(endpoint) {
+  async fetchUser(_endpoint) {
     // Token is required but not available
     if (this.options.tokenRequired && !this.$auth.getToken(this.name)) {
       return
@@ -111,7 +111,7 @@ export default class BasicAuthScheme {
     return this.$auth.reset()
   }
 
-  async reset() {
+  reset() {
     if (this.options.tokenRequired) {
       this._clearToken()
     }
