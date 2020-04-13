@@ -3,19 +3,20 @@
     <v-app-bar app elevation="1" height="80">
       <v-container>
         <v-row align="center" justify="center">
-          <v-btn text nuxt :to="{ name: 'doctor' }">
-            Acesso médico
-          </v-btn>
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on }">
+              <v-btn icon nuxt :to="{ name: 'doctor' }" v-on="on">
+                <v-icon>mdi-view-dashboard</v-icon>
+              </v-btn>
+            </template>
+            <span>Acesso médico</span>
+          </v-tooltip>
 
           <v-spacer />
 
-          <v-col
-            v-show="!$vuetify.breakpoint.xsOnly"
-            class="text-center"
-            align-self="center"
-          >
+          <v-col class="text-center" align-self="center">
             <nuxt-link class="d-flex align-center" :to="{ name: 'index' }">
-              <Logo />
+              <Logo :width="$vuetify.breakpoint.xsOnly ? '150' : '200'" />
             </nuxt-link>
           </v-col>
 

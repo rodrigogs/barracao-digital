@@ -1,7 +1,7 @@
 <template functional>
   <svg
     class="logo"
-    width="200"
+    :width="props.width || 200"
     height="60"
     viewBox="0 0 100 30"
     fill="none"
