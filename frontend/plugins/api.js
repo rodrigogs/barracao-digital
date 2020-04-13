@@ -21,6 +21,9 @@ const apiFactory = (axios) => ({
         pageSize: 20
       }
     }),
+  createFacility: (facility) => axios.$post('facilities', facility),
+  updateFacility: (origin, facility) =>
+    axios.$put(`facilities/${origin}`, facility),
   deleteFacility: (origin) => axios.$delete(`facilities/${origin}`)
 })
 

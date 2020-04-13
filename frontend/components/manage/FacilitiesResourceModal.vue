@@ -1,13 +1,17 @@
 <template>
   <v-dialog :value="facility" max-width="800" @click:outside="$emit('close')">
     <v-card>
-      <v-card-title class="headline align-start">
+      <v-card-title v-if="isCreating" class="headline align-start">
+        Criar nova instalação
+      </v-card-title>
+      <v-card-title v-else class="headline align-start">
         #{{ facility.origin }}
       </v-card-title>
 
       <v-card-text>
-        <form @keydown.enter.prevent="validateAndSubmit">
+        <form>
           <v-text-field
+            v-if="isCreating"
             id="origin"
             v-model="$v.form.origin.$model"
             v-mask="'#####-###'"
@@ -39,7 +43,8 @@
             multiple
             small-chips
             deletable-chips
-          ></v-combobox>
+            clearable
+          />
         </form>
       </v-card-text>
 
@@ -77,6 +82,7 @@ export default {
     }
   },
   data: () => ({
+    isCreating: false,
     isLoading: false,
     form: {
       origin: null,
@@ -111,6 +117,7 @@ export default {
     }
   },
   mounted() {
+    if (!this.facility.origin) this.isCreating = true
     this.form.origin = this.facility.origin
     this.form.contact = this.facility.contact
     this.form.contactType = this.facility.contactType
@@ -139,12 +146,21 @@ export default {
         )
       }
 
+      this.isLoading = true
+
       const facility = {
         ...this.form,
         origin: unmaskText(this.form.origin)
       }
 
-      this.submit(facility)
+      return this.submit(this.isCreating, facility)
+        .then(
+          () => this.$emit('close'),
+          (error) => error
+        )
+        .finally(() => {
+          this.isLoading = false
+        })
     }
   }
 }

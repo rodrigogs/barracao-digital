@@ -54,6 +54,7 @@
       v-if="selectedFacility"
       :facility="selectedFacility"
       :submit="facilitySaved"
+      @close="selectedFacility = null"
     />
   </v-container>
 </template>
@@ -126,19 +127,47 @@ export default {
           this.isLoading = false
         })
     },
-    facilitySaved(result) {
-      console.log(result)
+    async facilitySaved(isCreating, facility) {
+      try {
+        if (isCreating) {
+          const newFacility = await this.$api.createFacility(facility)
+          this.lastEvaluatedKey = ''
+          await this.handleNextPageRequest()
+          this.$toast.success('Instalação salva com sucesso')
+          return Promise.resolve(newFacility)
+        } else {
+          await this.$api.updateFacility(this.selectedFacility.origin, facility)
+          const index = this._findFacilityIndex(this.selectedFacility.origin)
+          this.$set(this.facilities, index, facility)
+          this.$toast.success('Instalação atualizada com sucesso')
+          return Promise.resolve(facility)
+        }
+      } catch (error) {
+        const message = R.path(['response', 'data', 'message'], error) || error
+        this.$toast.error(message)
+        return Promise.reject(error)
+      }
     },
-    create() {},
+    create() {
+      this.selectedFacility = {
+        origin: '',
+        contact: '',
+        contactType: '',
+        destination: []
+      }
+    },
     edit(item) {
       this.selectedFacility = item
     },
     remove({ origin }) {
       if (!confirm(`Deletar a instalação ${origin}?`)) return
       this.isLoading = true
-      const index = this.facilities.findIndex(
-        (facility) => facility.origin === origin
-      )
+      const index = this._findFacilityIndex(origin)
+
+      if (index === -1) {
+        this.$toast.error('Você não pode deletar esta instalação')
+        return
+      }
 
       return this.$api
         .deleteFacility(origin)
@@ -155,6 +184,9 @@ export default {
         .finally(() => {
           this.isLoading = false
         })
+    },
+    _findFacilityIndex(origin) {
+      return this.facilities.findIndex((facility) => facility.origin === origin)
     }
   }
 }
