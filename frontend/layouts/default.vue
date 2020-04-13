@@ -23,7 +23,7 @@
 
           <v-tooltip v-if="displayManageRoute" bottom>
             <template v-slot:activator="{ on }">
-              <v-btn icon nuxt :to="{ name: 'manage' }" v-on="on">
+              <v-btn icon nuxt :to="{ name: 'manage-facilities' }" v-on="on">
                 <v-icon>mdi-hospital-building</v-icon>
               </v-btn>
             </template>
@@ -32,7 +32,7 @@
 
           <v-tooltip v-if="displayManageRoute" bottom>
             <template v-slot:activator="{ on }">
-              <v-btn icon nuxt :to="{ name: 'manage' }" v-on="on">
+              <v-btn icon nuxt :to="{ name: 'manage-doctors' }" v-on="on">
                 <v-icon>mdi-doctor</v-icon>
               </v-btn>
             </template>
