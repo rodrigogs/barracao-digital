@@ -5,7 +5,12 @@
         <v-row align="center" justify="center">
           <v-tooltip bottom>
             <template v-slot:activator="{ on }">
-              <v-btn icon nuxt :to="{ name: 'doctor' }" v-on="on">
+              <v-btn
+                icon
+                nuxt
+                :to="{ name: 'doctor', query: filters }"
+                v-on="on"
+              >
                 <v-icon>mdi-view-dashboard</v-icon>
               </v-btn>
             </template>
@@ -60,6 +65,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import Logo from '~/components/Logo.vue'
 
 export default {
@@ -67,6 +73,9 @@ export default {
     Logo
   },
   computed: {
+    ...mapState('worklist', {
+      filters: 'filters'
+    }),
     displayManageRoute() {
       return (
         this.$auth.loggedIn && (this.$auth.user.admin || this.$auth.user.master)

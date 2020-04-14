@@ -4,7 +4,7 @@ import * as R from 'ramda'
 export const state = () => ({
   patients: [],
   filters: {
-    status: '',
+    status: 'waiting',
     timeWaiting: null
   },
   lastEvaluatedKey: ''
