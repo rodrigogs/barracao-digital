@@ -22,7 +22,7 @@ const searchPatientByTicket = async (api, ticket) => {
     name,
     createdAt,
     status,
-    ongoingDoctorDoctorName,
+    ongoingDoctorName,
     ongoingDoctorFeedback,
     finishedDoctorDoctorName,
     finishedDoctorFeedback,
@@ -33,7 +33,7 @@ const searchPatientByTicket = async (api, ticket) => {
       name,
       createdAt,
       status,
-      ongoingDoctorDoctorName,
+      ongoingDoctorName,
       ongoingDoctorFeedback,
       finishedDoctorDoctorName,
       finishedDoctorFeedback,
@@ -58,7 +58,7 @@ export default {
       name: null,
       createdAt: null,
       status: null,
-      ongoingDoctorDoctorName: null,
+      ongoingDoctorName: null,
       ongoingDoctorFeedback: null,
       finishedDoctorDoctorName: null,
       finishedDoctorFeedback: null,
@@ -78,7 +78,7 @@ export default {
         [PATIENT_STATUS.ONGOING]: () => ({
           component: PatientOngoing,
           props: {
-            doctorName: this.patient.ongoingDoctorDoctorName,
+            doctorName: this.patient.ongoingDoctorName,
             doctorFeedback: this.patient.ongoingDoctorFeedback
           }
         }),
