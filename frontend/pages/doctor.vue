@@ -82,8 +82,6 @@ export default {
       })
     },
     fetchNextPatientPage() {
-      if (!this.$store.state.worklist.lastEvaluatedKey)
-        return Promise.resolve({ lastEvaluatedKey: null })
       return this.$store.dispatch('worklist/fetchNextPatientsPage')
     },
     signOut() {
