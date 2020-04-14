@@ -1,31 +1,38 @@
 <template>
-  <v-card>
-    <v-card-title>Um médico está entrando em contato com você.</v-card-title>
-    <v-card-text class="text-center">
-      <v-container fluid>
-        <v-row>
-          <v-col cols="12">
-            <v-card>
-              <v-card-title>Médico:</v-card-title>
-              <v-card-text>
-                {{ doctorName }}
-                <p><strong>CRM:</strong> {{ doctorCrm }}</p>
-                <p><strong>Estado:</strong> {{ doctorState }}</p>
-                <p><strong>Instalação:</strong> {{ facilityName }}</p>
-              </v-card-text>
-            </v-card>
-          </v-col>
+  <v-card elevation="0">
+    <v-card-title>
+      Um médico está entrando em contato com você
+    </v-card-title>
 
-          <v-col v-if="doctorMessage" cols="12">
-            <v-card>
-              <v-card-title>Siga as instruções abaixo:</v-card-title>
-              <v-card-text class="text-left subtitle-1">
-                <div v-linkified v-html="doctorMessage" />
-              </v-card-text>
-            </v-card>
-          </v-col>
-        </v-row>
-      </v-container>
+    <v-card-text>
+      <v-list elevation="1">
+        <v-list-item>
+          <v-list-item-content>
+            <v-list-item-title class="headline">
+              {{ doctorName }}
+            </v-list-item-title>
+            <v-list-item-subtitle class="subtitle-1 mb-4">
+              <v-icon>mdi-map</v-icon>
+              <span>{{ facilityName }}</span>
+            </v-list-item-subtitle>
+            <v-list-item-subtitle>
+              <b>CRM:</b>
+              <span>{{ doctorCrm || '-' }}</span>
+            </v-list-item-subtitle>
+            <v-list-item-subtitle>
+              <b>Estado:</b>
+              <span>{{ doctorState || '-' }}</span>
+            </v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+
+      <v-card class="mt-4">
+        <v-card-title>Siga as instruções abaixo:</v-card-title>
+        <v-card-text class="text-left subtitle-1">
+          <div v-linkified v-text="doctorMessage" />
+        </v-card-text>
+      </v-card>
     </v-card-text>
   </v-card>
 </template>
