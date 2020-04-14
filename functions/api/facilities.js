@@ -62,9 +62,33 @@ const methods = {
     const { destinations, ...attributes } = body;
 
     const updatedFacility = await facilitiesService.update(origin, attributes);
-    await facilitiesService.addOriginDestinations(origin, destinations);
+    const currentDestinations = await facilitiesService.getAllDestinationsByOrigin(origin);
+
+    const removedDestinations = currentDestinations
+      .filter((destination) => destinations.indexOf(destination) === -1);
+
+    const newDestinations = destinations
+      .filter((destination) => currentDestinations.indexOf(destination) === -1);
+
+    await Promise.all([
+      await facilitiesService.addOriginDestinations(origin, newDestinations),
+      await facilitiesService.removeOriginDestinations(origin, removedDestinations),
+    ]);
 
     return responseBuilder.success.ok({ body: { ...updatedFacility, destination: undefined } });
+  },
+
+  async DELETE(ctx) {
+    const {
+      pathParameters,
+    } = ctx;
+
+    const {
+      origin,
+    } = pathParameters;
+
+    await facilitiesService.delete(origin);
+    return responseBuilder.success.noContent();
   },
 };
 

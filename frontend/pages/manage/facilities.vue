@@ -98,8 +98,9 @@ export default {
     isLoading: false,
     headers: [
       { text: 'CEP de origem', value: 'origin' },
+      { text: 'Nome', value: 'name' },
+      { text: 'Diretor técnico', value: 'techDirector' },
       { text: 'Contato', value: 'contact' },
-      { text: 'Tipo do contato', value: 'contactType' },
       { text: '', value: 'actions', sortable: false }
     ]
   }),

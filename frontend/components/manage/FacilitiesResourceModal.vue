@@ -22,6 +22,22 @@
           />
 
           <v-text-field
+            id="name"
+            v-model="$v.form.name.$model"
+            :error-messages="nameErrors"
+            label="Nome da instalação*"
+            required
+          />
+
+          <v-text-field
+            id="techDirector"
+            v-model="$v.form.techDirector.$model"
+            :error-messages="techDirectorErrors"
+            label="Diretor técnico*"
+            required
+          />
+
+          <v-text-field
             id="contact"
             v-model="$v.form.contact.$model"
             :error-messages="contactErrors"
@@ -29,22 +45,47 @@
             required
           />
 
-          <v-text-field
-            id="contactType"
-            v-model="$v.form.contactType.$model"
-            :error-messages="contactTypeErrors"
-            label="Tipo do contato*"
-            required
-          />
-
           <v-combobox
-            v-model="form.destinations"
+            v-model="$v.form.destinations.$model"
+            :error-messages="destinationsErrors"
             label="CEP's de destino"
             multiple
             small-chips
             deletable-chips
             clearable
-          />
+            :hide-no-data="!currentDestination"
+            :search-input.sync="currentDestination"
+          >
+            <template v-slot:no-data>
+              <v-list-item>
+                <v-chip
+                  :color="
+                    isValidZipCode(currentDestination) ? 'primary' : 'error'
+                  "
+                  label
+                  small
+                >
+                  {{ currentDestination }}
+                </v-chip>
+              </v-list-item>
+            </template>
+            <template v-slot:selection="{ attrs, item, parent, selected }">
+              <v-chip
+                v-bind="attrs"
+                :input-value="selected"
+                label
+                small
+                :color="isValidZipCode(item) ? 'primary' : 'error'"
+              >
+                <span class="pr-2">
+                  {{ item }}
+                </span>
+                <v-icon small @click="parent.selectItem(item)">
+                  mdi-close
+                </v-icon>
+              </v-chip>
+            </template>
+          </v-combobox>
         </form>
       </v-card-text>
 
@@ -84,10 +125,13 @@ export default {
   data: () => ({
     isCreating: false,
     isLoading: false,
+    doctors: [],
+    currentDestination: null,
     form: {
       origin: null,
+      name: null,
+      techDirector: null,
       contact: null,
-      contactType: null,
       destinations: null
     }
   }),
@@ -101,27 +145,48 @@ export default {
         errors.push('O formato do cep está incorreto.')
       return errors
     },
+    nameErrors() {
+      const errors = []
+      if (!this.$v.form.name.$dirty) return errors
+      !this.$v.form.name.required &&
+        errors.push('Por favor, digite o nome da instalação.')
+      return errors
+    },
+    techDirectorErrors() {
+      const errors = []
+      if (!this.$v.form.techDirector.$dirty) return errors
+      !this.$v.form.techDirector.required &&
+        errors.push(
+          'Por favor, digite o nome do diretor técnico da instalação.'
+        )
+      return errors
+    },
     contactErrors() {
       const errors = []
       if (!this.$v.form.contact.$dirty) return errors
       !this.$v.form.contact.required &&
-        errors.push('Por favor, digite o seu contato.')
+        errors.push('Por favor, digite o contato da instalação.')
       return errors
     },
-    contactTypeErrors() {
+    destinationsErrors() {
       const errors = []
-      if (!this.$v.form.contactType.$dirty) return errors
-      !this.$v.form.contactType.required &&
-        errors.push('Por favor, digite o tipo do seu contato.')
+      if (!this.$v.form.destinations.$dirty) return errors
+      !this.$v.form.destinations.onlyNumbers &&
+        errors.push('Por favor, digite apenas números.')
+      !this.$v.form.destinations.validZips &&
+        errors.push('Um ou mais CPFs digitados são inválidos.')
       return errors
     }
   },
-  mounted() {
+  async mounted() {
     if (!this.facility.origin) this.isCreating = true
     this.form.origin = this.facility.origin
+    this.form.name = this.facility.name
+    this.form.techDirector = this.facility.techDirector
     this.form.contact = this.facility.contact
-    this.form.contactType = this.facility.contactType
-    this.form.destinations = [...this.facility.destination]
+    this.form.destinations = this.facility.origin
+      ? await this.$api.getAllDestinationsByOrigin(this.facility.origin)
+      : []
   },
   validations: {
     form: {
@@ -129,15 +194,34 @@ export default {
         required,
         zip
       },
+      name: {
+        required
+      },
+      techDirector: {
+        required
+      },
       contact: {
         required
       },
-      contactType: {
-        required
+      destinations: {
+        onlyNumbers: (values) => {
+          return !values.some((v) => isNaN(v))
+        },
+        validZips: (values) => {
+          return values.every(zip)
+        }
       }
     }
   },
   methods: {
+    edit() {
+      return true
+    },
+
+    isValidZipCode(code) {
+      return zip(code)
+    },
+
     validateAndSubmit() {
       this.$v.form.$touch()
       if (this.$v.form.$invalid) {

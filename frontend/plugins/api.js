@@ -12,6 +12,7 @@ const apiFactory = (axios) => ({
   setPatientMessagingToken: (ticket, { token }) =>
     axios.$put(`patients/${ticket}/messaging/token`, { ticket, token }),
 
+  getDoctorsByCep: (cep) => axios.$get(`doctors/cep/${cep}`),
   alternateDoctorStatus: () => axios.$post('doctors/alternate'),
 
   getAllFacilities: (lastEvaluatedKey = '') =>
@@ -24,7 +25,9 @@ const apiFactory = (axios) => ({
   createFacility: (facility) => axios.$post('facilities', facility),
   updateFacility: (origin, facility) =>
     axios.$put(`facilities/${origin}`, facility),
-  deleteFacility: (origin) => axios.$delete(`facilities/${origin}`)
+  deleteFacility: (origin) => axios.$delete(`facilities/${origin}`),
+  getAllDestinationsByOrigin: (origin) =>
+    axios.$get(`facilities/origin/${origin}/destinations`)
 })
 
 /*
