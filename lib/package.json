@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@firebase/app": "^0.6.1",
-    "@googlemaps/google-maps-services-js": "^2.5.2",
+    "@googlemaps/google-maps-services-js": "^2.5.5",
     "aws-sdk": "^2.656.0",
     "axios": "^0.19.2",
     "firebase-admin": "^8.10.0",
