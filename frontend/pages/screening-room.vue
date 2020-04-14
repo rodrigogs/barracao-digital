@@ -212,6 +212,7 @@ import * as R from 'ramda'
 import { required, integer, maxValue } from 'vuelidate/lib/validators'
 import { zip, phone, cpf } from '~/utils/validations'
 import unmaskText from '~/utils/unmaskText'
+import debounce from '~/utils/debounce'
 
 export default {
   data: () => ({
@@ -324,7 +325,7 @@ export default {
   },
 
   methods: {
-    async checkFacility() {
+    checkFacility: debounce(async function check() {
       const cep = unmaskText(this.myData.cep)
 
       await Promise.resolve(
@@ -341,7 +342,11 @@ export default {
         this.$toast.error(
           'Não existe uma instalação ativa para o CEP informado.'
         )
-    },
+      else
+        this.$toast.success(
+          'O CEP informado dispõe de uma unidade de atendimento.'
+        )
+    }, 500),
     acceptConsent() {
       this.$cookie.set('consent-accepted', true, 360)
       this.isConsent = true
