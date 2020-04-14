@@ -216,6 +216,11 @@ functions:
           authorizer: masterAuthorizer
 
       - http:
+          method: GET
+          path: /facilities/origin/{origin}/check
+          cors: true
+
+      - http:
           method: POST
           path: /facilities
           cors: true

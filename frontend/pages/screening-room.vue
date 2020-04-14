@@ -32,6 +32,16 @@
       <v-stepper-content step="1">
         <form @keydown.enter.prevent="validateMyDataSection">
           <v-text-field
+            id="cep"
+            v-model="$v.myData.cep.$model"
+            v-mask="'#####-###'"
+            :error-messages="cepErrors"
+            :loading="isCheckingFacility"
+            label="CEP*"
+            required
+          ></v-text-field>
+
+          <v-text-field
             id="name"
             v-model="$v.myData.name.$model"
             :error-messages="nameErrors"
@@ -55,15 +65,6 @@
             v-mask="'###.###.###-##'"
             :error-messages="cpfErrors"
             label="CPF*"
-            required
-          ></v-text-field>
-
-          <v-text-field
-            id="cep"
-            v-model="$v.myData.cep.$model"
-            v-mask="'#####-###'"
-            :error-messages="cepErrors"
-            label="CEP*"
             required
           ></v-text-field>
 
@@ -217,6 +218,8 @@ export default {
     step: 1,
     isSaving: false,
     isConsent: false,
+    isCheckingFacility: false,
+    checkedFacilities: {},
     myData: {
       name: null,
       age: null,
@@ -264,6 +267,7 @@ export default {
       }
     }
   },
+
   computed: {
     isConsentAccepted() {
       return this.$cookie.get('consent-accepted') || this.isConsent
@@ -313,7 +317,31 @@ export default {
     }
   },
 
+  watch: {
+    'myData.cep'(newCep) {
+      zip(newCep) && this.checkFacility()
+    }
+  },
+
   methods: {
+    async checkFacility() {
+      const cep = unmaskText(this.myData.cep)
+
+      await Promise.resolve(
+        typeof this.checkedFacilities[cep] !== 'boolean' &&
+          !this.isCheckingFacility &&
+          (this.isCheckingFacility = true) &&
+          (await this.$api.checkFacilityAvailability(cep).then(
+            () => (this.checkedFacilities[cep] = true),
+            () => (this.checkedFacilities[cep] = false)
+          ))
+      ).finally(() => (this.isCheckingFacility = false))
+
+      if (!this.checkedFacilities[cep])
+        this.$toast.error(
+          'Não existe uma instalação ativa para o CEP informado.'
+        )
+    },
     acceptConsent() {
       this.$cookie.set('consent-accepted', true, 360)
       this.isConsent = true

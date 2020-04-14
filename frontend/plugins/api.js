@@ -1,4 +1,5 @@
 const apiFactory = (axios) => ({
+  // Patients
   searchPatientByTicket: (ticket) => axios.$get(`patients/ticket/${ticket}`),
   signUpPatient: (patient) => axios.$post('patients', patient),
   setPatientStatus: (ticket, { status, form = {} }) =>
@@ -11,10 +12,11 @@ const apiFactory = (axios) => ({
     }),
   setPatientMessagingToken: (ticket, { token }) =>
     axios.$put(`patients/${ticket}/messaging/token`, { ticket, token }),
-
+  // Doctors
+  getDoctorByUsername: (username) => axios.$get(`doctors/username/${username}`),
   getDoctorsByCep: (cep) => axios.$get(`doctors/cep/${cep}`),
   alternateDoctorStatus: () => axios.$post('doctors/alternate'),
-
+  // Facilities
   getAllFacilities: (lastEvaluatedKey = '') =>
     axios.$get('facilities', {
       params: {
@@ -27,7 +29,9 @@ const apiFactory = (axios) => ({
     axios.$put(`facilities/${origin}`, facility),
   deleteFacility: (origin) => axios.$delete(`facilities/${origin}`),
   getAllDestinationsByOrigin: (origin) =>
-    axios.$get(`facilities/origin/${origin}/destinations`)
+    axios.$get(`facilities/origin/${origin}/destinations`),
+  checkFacilityAvailability: (origin) =>
+    axios.$get(`facilities/origin/${origin}/check`)
 })
 
 /*

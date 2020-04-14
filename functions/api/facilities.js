@@ -20,10 +20,17 @@ const methods = {
 
     const { origin } = pathParameters;
     const listDestinations = path.endsWith('destinations');
+    const checkAvailability = path.endsWith('check');
 
     if (listDestinations) {
       const destinations = await facilitiesService.getAllDestinationsByOrigin(origin);
       return responseBuilder.success.ok({ body: destinations });
+    }
+
+    if (checkAvailability) {
+      const facility = await facilitiesService.getOneByDestination(origin);
+      if (!facility) return responseBuilder.errors.notFound();
+      return responseBuilder.success.noContent();
     }
 
     const facility = await facilitiesService.getOneByOrigin(origin);
