@@ -112,7 +112,7 @@ export default {
   },
   data: () => ({
     isLoadingNextPage: false,
-    isPaginationFinished: false,
+    isPaginationFinished: true,
     status: null,
     timeWaiting: null,
     headers: [
@@ -163,15 +163,16 @@ export default {
       this.timeWaiting = Number(timeWaiting)
   },
   methods: {
-    handleNextPageRequest() {
-      this.isLoadingNextPage = true
-      this.fetchNextPage()
-        .then(({ lastEvaluatedKey }) => {
-          if (!lastEvaluatedKey) this.isPaginationFinished = true
-        })
-        .finally(() => {
-          this.isLoadingNextPage = false
-        })
+    async handleNextPageRequest() {
+      let lastEvaluatedKey
+      try {
+        this.isPaginationFinished = false
+        this.isLoadingNextPage = true
+        ;({ lastEvaluatedKey } = await this.fetchNextPage())
+      } finally {
+        this.isLoadingNextPage = false
+        if (!lastEvaluatedKey) this.isPaginationFinished = true
+      }
     },
     calculateTimeWaiting(createdAt) {
       return calculateTimeWaiting(createdAt)
@@ -187,7 +188,6 @@ export default {
       return patientStatusToText(status).text
     },
     refreshPatients() {
-      this.isPaginationFinished = false
       this.$emit('refresh')
     }
   }
