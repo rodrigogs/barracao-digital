@@ -22,22 +22,16 @@ const searchPatientByTicket = async (api, ticket) => {
     name,
     createdAt,
     status,
-    ongoingDoctorName,
-    ongoingDoctorFeedback,
-    finishedDoctorDoctorName,
-    finishedDoctorFeedback,
-    patientFeedback
+    ongoingFeedback,
+    finishedFeedback
   } = await api.searchPatientByTicket(ticket)
   return {
     patient: {
       name,
       createdAt,
       status,
-      ongoingDoctorName,
-      ongoingDoctorFeedback,
-      finishedDoctorDoctorName,
-      finishedDoctorFeedback,
-      patientFeedback
+      ongoingFeedback,
+      finishedFeedback
     }
   }
 }
@@ -58,11 +52,29 @@ export default {
       name: null,
       createdAt: null,
       status: null,
-      ongoingDoctorName: null,
-      ongoingDoctorFeedback: null,
-      finishedDoctorDoctorName: null,
-      finishedDoctorFeedback: null,
-      patientFeedback: null
+      ongoingFeedback: {
+        doctorName: null,
+        doctorCrm: null,
+        doctorState: null,
+        doctorMessage: null,
+        facilityName: null
+      },
+      waitingKitFeedback: {
+        doctorName: null,
+        doctorCrm: null,
+        doctorState: null,
+        doctorMessage: null,
+        facilityName: null
+      },
+      finishedFeedback: {
+        doctorName: null,
+        doctorCrm: null,
+        doctorState: null,
+        doctorMessage: null,
+        facilityName: null,
+        patientOutcome: null,
+        patientFeedback: null
+      }
     }
   }),
   computed: {
@@ -78,16 +90,13 @@ export default {
         [PATIENT_STATUS.ONGOING]: () => ({
           component: PatientOngoing,
           props: {
-            doctorName: this.patient.ongoingDoctorName,
-            doctorFeedback: this.patient.ongoingDoctorFeedback
+            ...this.patient.ongoingFeedback
           }
         }),
         [PATIENT_STATUS.FINISHED]: () => ({
           component: PatientFinished,
           props: {
-            doctorName: this.patient.finishedDoctorDoctorName,
-            doctorFeedback: this.patient.finishedDoctorFeedback,
-            patientFeedback: this.patient.patientFeedback,
+            ...this.patient.finishedFeedback,
             clicked: this.ratingClicked
           }
         }),

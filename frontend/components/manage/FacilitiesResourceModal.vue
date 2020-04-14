@@ -3,9 +3,17 @@
     <v-card>
       <v-card-title v-if="isCreating" class="headline align-start">
         Criar nova instalação
+        <v-spacer></v-spacer>
+        <v-btn icon flat @click="$emit('close')">
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
       </v-card-title>
       <v-card-title v-else class="headline align-start">
         #{{ facility.origin }}
+        <v-spacer></v-spacer>
+        <v-btn icon flat @click="$emit('close')">
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
       </v-card-title>
 
       <v-card-text>

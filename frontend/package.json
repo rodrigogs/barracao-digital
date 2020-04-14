@@ -37,6 +37,7 @@
     "qs": "^6.9.3",
     "ramda": "^0.27.0",
     "vue-cookie": "^1.1.4",
+    "vue-linkify": "^1.0.1",
     "vue-mugen-scroll": "^0.2.6",
     "vue-the-mask": "^0.11.1",
     "vuelidate": "^0.7.5",
