@@ -39,6 +39,7 @@
             :loading="isCheckingFacility"
             label="CEP*"
             required
+            autofocus
           ></v-text-field>
 
           <v-text-field
@@ -47,7 +48,6 @@
             :error-messages="nameErrors"
             label="Nome*"
             required
-            autofocus
           ></v-text-field>
 
           <v-text-field
