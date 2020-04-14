@@ -107,6 +107,7 @@ export default {
     '~/plugins/vuelidate',
     '~/plugins/vue-the-mask',
     '~/plugins/vue-cookie',
+    '~/plugins/vue-infinite-loading',
     '~/plugins/api'
   ],
   /*

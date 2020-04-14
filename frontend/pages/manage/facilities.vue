@@ -35,19 +35,7 @@
         </template>
       </v-data-table>
 
-      <mugen-scroll
-        v-if="!isPaginationFinished"
-        :handler="handleNextPageRequest"
-        :should-handle="!isLoading"
-      >
-        <div class="block text-center mt-4">
-          <v-progress-circular
-            :size="30"
-            color="primary"
-            indeterminate
-          ></v-progress-circular>
-        </div>
-      </mugen-scroll>
+      <infinite-loading @infinite="handleNextPageRequest"></infinite-loading>
     </v-card>
 
     <FacilitiesResourceModal
@@ -60,7 +48,6 @@
 </template>
 
 <script>
-import MugenScroll from 'vue-mugen-scroll'
 import * as R from 'ramda'
 import FacilitiesResourceModal from '~/components/manage/FacilitiesResourceModal'
 
@@ -77,7 +64,6 @@ const getAllFacilities = ($api, lastEvaluatedKey = '') =>
 export default {
   middleware: ['auth', 'isAdminOrMaster'],
   components: {
-    MugenScroll,
     FacilitiesResourceModal
   },
   asyncData({ app, error }) {
@@ -94,7 +80,6 @@ export default {
     facilities: [],
     selectedFacility: null,
     lastEvaluatedKey: '',
-    isPaginationFinished: false,
     isLoading: false,
     headers: [
       { text: 'CEP de origem', value: 'origin' },
@@ -105,7 +90,9 @@ export default {
     ]
   }),
   methods: {
-    handleNextPageRequest() {
+    handleNextPageRequest($loadingState) {
+      if (this.isPaginationFinished) return $loadingState.complete()
+
       this.isLoading = true
       return getAllFacilities(this.$api, this.lastEvaluatedKey)
         .then(
@@ -126,6 +113,9 @@ export default {
         )
         .finally(() => {
           this.isLoading = false
+          this.isPaginationFinished
+            ? $loadingState.complete()
+            : $loadingState.loaded()
         })
     },
     async facilitySaved(isCreating, facility) {

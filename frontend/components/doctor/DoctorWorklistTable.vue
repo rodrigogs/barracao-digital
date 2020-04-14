@@ -68,24 +68,14 @@
       </template>
     </v-data-table>
 
-    <mugen-scroll
-      v-if="!isPaginationFinished"
-      :handler="handleNextPageRequest"
-      :should-handle="!isLoadingNextPage && !isLoading"
-    >
-      <div class="block text-center mt-4">
-        <v-progress-circular
-          :size="30"
-          color="primary"
-          indeterminate
-        ></v-progress-circular>
-      </div>
-    </mugen-scroll>
+    <infinite-loading
+      v-if="!isLoading"
+      @infinite="handleNextPageRequest"
+    ></infinite-loading>
   </div>
 </template>
 
 <script>
-import MugenScroll from 'vue-mugen-scroll'
 import percentageToColor from '~/utils/percentageToColor'
 import calculateTimeWaiting from '~/utils/calculateTimeWaiting'
 import patientStatusToText from '~/utils/patientStatusToText'
@@ -93,7 +83,6 @@ import { PATIENT_STATUS } from '~/constants'
 
 export default {
   name: 'DoctorWorklistTable',
-  components: { MugenScroll },
   props: {
     patients: {
       type: Array,
@@ -111,8 +100,6 @@ export default {
     }
   },
   data: () => ({
-    isLoadingNextPage: false,
-    isPaginationFinished: true,
     status: null,
     timeWaiting: null,
     headers: [
@@ -163,16 +150,14 @@ export default {
       this.timeWaiting = Number(timeWaiting)
   },
   methods: {
-    async handleNextPageRequest() {
-      let lastEvaluatedKey
-      try {
-        this.isPaginationFinished = false
-        this.isLoadingNextPage = true
-        ;({ lastEvaluatedKey } = await this.fetchNextPage())
-      } finally {
-        this.isLoadingNextPage = false
-        if (!lastEvaluatedKey) this.isPaginationFinished = true
-      }
+    handleNextPageRequest($loadingState) {
+      return this.fetchNextPage().then(
+        ({ lastEvaluatedKey }) => {
+          if (lastEvaluatedKey) $loadingState.loaded()
+          else $loadingState.complete()
+        },
+        () => $loadingState.complete()
+      )
     },
     calculateTimeWaiting(createdAt) {
       return calculateTimeWaiting(createdAt)
