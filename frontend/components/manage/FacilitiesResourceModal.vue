@@ -4,14 +4,14 @@
       <v-card-title v-if="isCreating" class="headline align-start">
         Criar nova instalação
         <v-spacer></v-spacer>
-        <v-btn icon flat @click="$emit('close')">
+        <v-btn icon @click="$emit('close')">
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-card-title>
       <v-card-title v-else class="headline align-start">
         #{{ facility.origin }}
         <v-spacer></v-spacer>
-        <v-btn icon flat @click="$emit('close')">
+        <v-btn icon @click="$emit('close')">
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-card-title>
@@ -54,6 +54,7 @@
           />
 
           <v-combobox
+            v-if="!insertZipsInBulk"
             v-model="$v.form.destinations.$model"
             :error-messages="destinationsErrors"
             label="CEP's de destino"
@@ -94,6 +95,17 @@
               </v-chip>
             </template>
           </v-combobox>
+
+          <v-textarea
+            v-else
+            v-model="zipsBulk"
+            label="Insira apenas os números dos CEPs separados por vírgula"
+          ></v-textarea>
+
+          <v-checkbox
+            v-model="insertZipsInBulk"
+            label="Inserir em massa"
+          ></v-checkbox>
         </form>
       </v-card-text>
 
@@ -135,6 +147,8 @@ export default {
     isLoading: false,
     doctors: [],
     currentDestination: null,
+    insertZipsInBulk: false,
+    zipsBulk: '',
     form: {
       origin: null,
       name: null,
@@ -184,6 +198,11 @@ export default {
       !this.$v.form.destinations.validZips &&
         errors.push('Um ou mais CPFs digitados são inválidos.')
       return errors
+    }
+  },
+  watch: {
+    insertZipsInBulk(trueOrFalse) {
+      if (trueOrFalse) this.zipsBulk = this.form.destinations.join(',')
     }
   },
   async mounted() {
@@ -240,9 +259,14 @@ export default {
 
       this.isLoading = true
 
+      const destinations = this.insertZipsInBulk
+        ? this.zipsBulk.split(',').map((zip) => unmaskText(zip.trim()))
+        : this.form.destinations
+
       const facility = {
         ...this.form,
-        origin: unmaskText(this.form.origin)
+        origin: unmaskText(this.form.origin),
+        destinations
       }
 
       return this.submit(this.isCreating, facility)
