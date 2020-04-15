@@ -6,6 +6,7 @@ const CEP_COLUMN = 'body > div.back > div.tabs > div:nth-child(2) > div > div > 
 const NEXT_BUTTON = 'body > div.back > div.tabs > div:nth-child(2) > div > div > div.column2 > div.content > div.ctrlcontent > div:nth-child(11) > a';
 
 const getCeps = async (page, ceps = []) => {
+  console.log('Searching page...');
   await page.waitForSelector(CEP_COLUMN);
 
   const pageCeps = await page.evaluate((CEP_COLUMN) => {
@@ -30,8 +31,11 @@ module.exports = async (address) => {
 
   try {
     browser = await puppeteer.launch({ headless: true });
+    console.log('Browser started');
     page = await browser.newPage();
+    console.log('Page opened');
 
+    console.log(`Searching CEPs for ${address}`);
     await page.goto('http://www.buscacep.correios.com.br/sistemas/buscacep/buscaCepEndereco.cfm', { waitUntil: 'networkidle2' });
     await page.focus(SEARCH_INPUT);
     await page.keyboard.type(address);
@@ -40,6 +44,9 @@ module.exports = async (address) => {
     const ceps = await getCeps(page);
   
     return ceps;
+  } catch (err) {
+    console.error('Error searchin CEPs:', err);
+    throw err;
   } finally {
     if (page) await page.close();
     if (browser) await browser.close();
