@@ -48,7 +48,13 @@ module.exports = async (address) => {
     console.error('Error searchin CEPs:', err);
     throw err;
   } finally {
-    if (page) await page.close();
-    if (browser) await browser.close();
+    if (page) {
+      console.log('Closing page');
+      await page.close();
+    }
+    if (browser) {
+      console.log('Closing browser');
+      await browser.close();
+    }
   }
 };

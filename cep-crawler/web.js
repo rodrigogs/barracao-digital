@@ -1,3 +1,4 @@
+const querystring = require('querystring');
 const Koa = require('koa');
 const app = new Koa();
 
@@ -11,7 +12,7 @@ app.use(async ctx => {
   }
   const address = ctx.path.replace('/address/', '');
   if (address.length < 1) return (ctx.body = 'Invalid parameter');
-  const ceps = await cepCrawler(address);
+  const ceps = await cepCrawler(querystring.unescape(address));
   ctx.body = ceps.join(', ');
 });
 
