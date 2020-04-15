@@ -172,6 +172,14 @@ export default {
       firestore: true
     }
   },
+  pwa: {
+    meta: {
+      name: 'Barracão Digital',
+      description:
+        'Estruturação rápida de “postos de triagem” virtuais descentralizados para redução de visitas desnecessárias às emergências',
+      lang: 'pt-BR'
+    }
+  },
   /*
    ** vuetify module configuration
    ** https://github.com/nuxt-community/vuetify-module
