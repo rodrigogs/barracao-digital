@@ -7,7 +7,11 @@ const NEXT_BUTTON = 'body > div.back > div.tabs > div:nth-child(2) > div > div >
 
 const getCeps = async (page, ceps = []) => {
   console.log('Searching page...');
-  await page.waitForSelector(CEP_COLUMN);
+  try {
+    await page.waitForSelector(CEP_COLUMN);
+  } catch (_err) {
+    return ceps;
+  }
 
   const pageCeps = await page.evaluate((CEP_COLUMN) => {
     const ceps = document.querySelectorAll(CEP_COLUMN);
