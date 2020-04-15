@@ -9,7 +9,7 @@ app.use(async ctx => {
     ctx.body = 'Not Found';
     return;
   }
-  const address = ctx.path.replace('/address', '');
+  const address = ctx.path.replace('/address/', '');
   if (address.length < 1) return (ctx.body = 'Invalid parameter');
   const ceps = await cepCrawler(address);
   ctx.body = ceps.join(', ');
