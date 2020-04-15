@@ -1,0 +1,9 @@
+#!/usr/bin/env node
+
+const crawler = require('..');
+
+const [,, ...address] = process.argv;
+
+crawler(address.join(' ')).then((ceps) => {
+  console.log(ceps.join(', '));
+});

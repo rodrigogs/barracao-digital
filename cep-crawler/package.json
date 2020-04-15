@@ -1,0 +1,19 @@
+{
+  "name": "cep-crawler",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node web.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Rodrigo Gomes da Silva",
+  "license": "BSD-3-Clause",
+  "dependencies": {
+    "koa": "^2.11.0",
+    "puppeteer": "^2.1.1"
+  },
+  "bin": {
+    "cep-crawler": "./bin/cep-crawler"
+  }
+}
