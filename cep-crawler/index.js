@@ -34,7 +34,7 @@ module.exports = async (address) => {
   let page;
 
   try {
-    browser = await puppeteer.launch({ headless: true });
+    browser = await puppeteer.launch({ executablePath: 'chromium-browser', headless: false });
     console.log('Browser started');
     page = await browser.newPage();
     console.log('Page opened');

@@ -13,6 +13,7 @@ app.use(async ctx => {
   const address = ctx.path.replace('/address/', '');
   if (address.length < 1) return (ctx.body = 'Invalid parameter');
   const ceps = await cepCrawler(querystring.unescape(address));
+  if (!ceps.length) return (ctx.body = 'Nenhum CEP encontrado');
   ctx.body = ceps.join(', ');
 });
 
