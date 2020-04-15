@@ -18,7 +18,7 @@
           </v-list-item>
         </v-list>
 
-        <v-btn icon flat @click="$emit('close')">
+        <v-btn icon @click="$emit('close')">
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-card-title>

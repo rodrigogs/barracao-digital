@@ -91,7 +91,8 @@ export default {
   }),
   methods: {
     handleNextPageRequest($loadingState) {
-      if (this.isPaginationFinished) return $loadingState.complete()
+      if (this.isPaginationFinished)
+        return $loadingState && $loadingState.complete()
 
       this.isLoading = true
       return getAllFacilities(this.$api, this.lastEvaluatedKey)
@@ -113,7 +114,7 @@ export default {
         )
         .finally(() => {
           this.isLoading = false
-          this.isPaginationFinished
+          this.isPaginationFinished && $loadingState
             ? $loadingState.complete()
             : $loadingState.loaded()
         })

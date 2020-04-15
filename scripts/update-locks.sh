@@ -1,11 +1,15 @@
 #!/bin/bash
 
+# Global
+npm install yarn -g
+npm install serverless -g
+
 (
     # Root
     npm install --save
 ) & (
     # Lib
-    cd frontend
+    cd lib
     npm install --save
 ) & (
     # Functions
@@ -14,5 +18,5 @@
 ) & (
     # Frontend
     cd frontend
-    npm install
+    yarn install --update-checksums
 )
