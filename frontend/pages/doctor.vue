@@ -41,9 +41,6 @@ export default {
       filters: this.$route.query
     })
   },
-  data: () => ({
-    selectedPatient: null
-  }),
   computed: {
     ...mapState('worklist', {
       patients: 'patients',
