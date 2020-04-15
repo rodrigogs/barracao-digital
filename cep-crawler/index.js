@@ -25,17 +25,23 @@ const getCeps = async (page, ceps = []) => {
 };
 
 module.exports = async (address) => {
-  const browser = await puppeteer.launch({ headless: true });
-  const page = await browser.newPage();
-  await page.goto('http://www.buscacep.correios.com.br/sistemas/buscacep/buscaCepEndereco.cfm', { waitUntil: 'networkidle2' });
-  await page.focus(SEARCH_INPUT);
-  await page.keyboard.type(address);
-  await page.click(SEARCH_BUTTON);
+  let browser;
+  let page;
 
-  const ceps = await getCeps(page);
+  try {
+    browser = await puppeteer.launch({ headless: true });
+    page = await browser.newPage();
 
-  await page.close();
-  await browser.close();
-
-  return ceps;
+    await page.goto('http://www.buscacep.correios.com.br/sistemas/buscacep/buscaCepEndereco.cfm', { waitUntil: 'networkidle2' });
+    await page.focus(SEARCH_INPUT);
+    await page.keyboard.type(address);
+    await page.click(SEARCH_BUTTON);
+  
+    const ceps = await getCeps(page);
+  
+    return ceps;
+  } finally {
+    if (page) await page.close();
+    if (browser) await browser.close();
+  }
 };
