@@ -4,7 +4,7 @@ node_js:
   - "12"
 
 install:
-  - npm install
+  - npm install --production=false
   - npm install serverless --g
   - chmod +x ./scripts/deploy_travis.sh
   - chmod +x ./scripts/invalidate-cloudfront-cache.js

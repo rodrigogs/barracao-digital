@@ -6,17 +6,17 @@ npm install serverless -g
 
 (
     # Root
-    npm install --save
+    npm install --production=false --save
 ) & (
     # Lib
     cd lib
-    npm install --save
+    npm install --production=false --save
 ) & (
     # Functions
     cd functions
-    npm install --save
+    npm install --production=false --save
 ) & (
     # Frontend
     cd frontend
-    yarn install --update-checksums
+    yarn install --production=false --update-checksums
 )
