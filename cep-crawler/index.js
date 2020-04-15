@@ -8,7 +8,7 @@ const NEXT_BUTTON = 'body > div.back > div.tabs > div:nth-child(2) > div > div >
 const getCeps = async (page, ceps = []) => {
   console.log('Searching page...');
   try {
-    await page.waitForSelector(CEP_COLUMN);
+    await page.waitForSelector(CEP_COLUMN, { timeout: 3500 });
   } catch (_err) {
     return ceps;
   }
