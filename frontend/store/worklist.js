@@ -16,10 +16,10 @@ export const getters = {
 }
 
 export const actions = {
-  fetchPatients({ commit, dispatch }, { filters = null }) {
+  fetchPatients({ commit, dispatch }, { filters = state().filters }) {
     commit('setPatients', state().patients)
+    commit('setLastEvaluatedKey', state().lastEvaluatedKey)
     commit('setFilters', filters)
-    commit('setLastEvaluatedKey', '')
     return dispatch('fetchNextPatientsPage')
   },
   fetchNextPatientsPage({ commit, state }) {
