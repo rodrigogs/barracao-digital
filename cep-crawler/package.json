@@ -11,6 +11,10 @@
   "license": "BSD-3-Clause",
   "dependencies": {
     "koa": "^2.11.0",
+    "koa-bodyparser": "^4.3.0",
+    "koa-pug": "^4.0.3",
+    "koa-router": "^8.0.8",
+    "lowdb": "^1.0.0",
     "puppeteer": "^2.1.1"
   },
   "bin": {
