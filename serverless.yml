@@ -196,6 +196,8 @@ functions:
   # Facilities
   facilities:
     handler: functions/api/facilities.handler
+    memorySize: 1024
+    timeout: 60
     events:
       - http:
           method: GET
@@ -235,6 +237,12 @@ functions:
       - http:
           method: DELETE
           path: /facilities/{origin}
+          cors: true
+          authorizer: masterAuthorizer
+
+      - http:
+          method: DELETE
+          path: /facilities/{origin}/destinations
           cors: true
           authorizer: masterAuthorizer
 
@@ -441,6 +449,7 @@ resources:
       Type: AWS::DynamoDB::Table
       Properties:
         TableName: ${self:custom.facilitiesTableName}
+        BillingMode: PAY_PER_REQUEST
         AttributeDefinitions:
           - AttributeName: origin
             AttributeType: S
@@ -453,9 +462,6 @@ resources:
             KeyType: HASH
           - AttributeName: destination
             KeyType: RANGE
-        ProvisionedThroughput:
-          ReadCapacityUnits: 2
-          WriteCapacityUnits: 2
         GlobalSecondaryIndexes:
           - IndexName: destinationOrigin
             KeySchema:
@@ -465,18 +471,12 @@ resources:
                 KeyType: RANGE
             Projection:
               ProjectionType: ALL
-            ProvisionedThroughput:
-              ReadCapacityUnits: 2
-              WriteCapacityUnits: 2
           - IndexName: type
             KeySchema:
               - AttributeName: type
                 KeyType: HASH
             Projection:
               ProjectionType: ALL
-            ProvisionedThroughput:
-              ReadCapacityUnits: 2
-              WriteCapacityUnits: 2
         Tags:
           -
             Key: NAME

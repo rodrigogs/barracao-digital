@@ -41,7 +41,7 @@
     <FacilitiesResourceModal
       v-if="selectedFacility"
       :facility="selectedFacility"
-      :submit="facilitySaved"
+      :submit="facilitySave"
       @close="selectedFacility = null"
     />
   </v-container>
@@ -49,7 +49,24 @@
 
 <script>
 import * as R from 'ramda'
+import promisePool from '@rodrigogs/promise-pool'
 import FacilitiesResourceModal from '~/components/manage/FacilitiesResourceModal'
+import chunkArray from '~/utils/chunkArray'
+import promiseRetry from '~/utils/promiseRetry'
+
+function* chunksGenerator(chunks) {
+  for (const chunk of chunks) yield chunk
+}
+
+const addDestinationsProcessor = ($api, origin) => (destinations) =>
+  promiseRetry(() => $api.updateFacility(origin, { destinations }), 3, 1000)
+
+const removeDestinationsProcessor = ($api, origin) => (destinations) =>
+  promiseRetry(
+    () => $api.deleteFacilityDestinations(origin, { destinations }),
+    3,
+    1000
+  )
 
 const getAllFacilities = ($api, lastEvaluatedKey = '') =>
   $api.getAllFacilities(lastEvaluatedKey).then(
@@ -119,20 +136,53 @@ export default {
             : $loadingState.loaded()
         })
     },
-    async facilitySaved(isCreating, facility) {
+    async facilitySave(
+      isCreating,
+      facility,
+      addingDestinations,
+      removingDestinations
+    ) {
       try {
+        let updatedFacility = facility
         if (isCreating) {
-          const newFacility = await this.$api.createFacility(facility)
+          updatedFacility = await this.$api.createFacility(facility)
           this.lastEvaluatedKey = ''
           await this.handleNextPageRequest()
           this.$toast.success('Instalação salva com sucesso')
-          return Promise.resolve(newFacility)
         } else {
-          await this.$api.updateFacility(this.selectedFacility.origin, facility)
+          updatedFacility = await this.$api.updateFacility(
+            this.selectedFacility.origin,
+            facility
+          )
           const index = this._findFacilityIndex(this.selectedFacility.origin)
           this.$set(this.facilities, index, facility)
           this.$toast.success('Instalação atualizada com sucesso')
-          return Promise.resolve(facility)
+        }
+
+        const addingDestinationsChunks = chunkArray(addingDestinations, 20)
+        const removingDestinationChunks = chunkArray(removingDestinations, 20)
+
+        this.$toast.info('Atualizando CEPs de destino...')
+
+        await promisePool({
+          generator: chunksGenerator(addingDestinationsChunks),
+          processor: addDestinationsProcessor(this.$api, facility.origin),
+          concurrency: 3
+        })
+
+        await promisePool({
+          generator: chunksGenerator(removingDestinationChunks),
+          processor: removeDestinationsProcessor(this.$api, facility.origin),
+          concurrency: 3
+        })
+
+        this.$toast.success('CEPs de destino atualizados com sucesso')
+
+        const index = this._findFacilityIndex(updatedFacility.origin)
+        if (index !== -1) {
+          this.facilities.splice(index, 1, updatedFacility)
+        } else {
+          this.facilities.push(updatedFacility)
         }
       } catch (error) {
         const message = R.path(['response', 'data', 'message'], error) || error

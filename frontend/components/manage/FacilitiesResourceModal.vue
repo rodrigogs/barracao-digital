@@ -145,7 +145,7 @@ export default {
   data: () => ({
     isCreating: false,
     isLoading: false,
-    doctors: [],
+    destinations: [],
     currentDestination: null,
     insertZipsInBulk: false,
     zipsBulk: '',
@@ -206,14 +206,15 @@ export default {
     }
   },
   async mounted() {
+    this.destinations = this.facility.origin
+      ? await this.$api.getAllDestinationsByOrigin(this.facility.origin)
+      : []
     if (!this.facility.origin) this.isCreating = true
     this.form.origin = this.facility.origin
     this.form.name = this.facility.name
     this.form.techDirector = this.facility.techDirector
     this.form.contact = this.facility.contact
-    this.form.destinations = this.facility.origin
-      ? await this.$api.getAllDestinationsByOrigin(this.facility.origin)
-      : []
+    this.form.destinations = this.destinations
   },
   validations: {
     form: {
@@ -263,13 +264,26 @@ export default {
         ? this.zipsBulk.split(',').map((zip) => unmaskText(zip.trim()))
         : this.form.destinations
 
+      const addingDestinations = destinations.filter(
+        (destination) => !this.destinations.includes(destination)
+      )
+
+      const removingDestinations = this.destinations.filter(
+        (destination) => !destinations.includes(destination)
+      )
+
       const facility = {
         ...this.form,
         origin: unmaskText(this.form.origin),
-        destinations
+        destinations: []
       }
 
-      return this.submit(this.isCreating, facility)
+      return this.submit(
+        this.isCreating,
+        facility,
+        addingDestinations,
+        removingDestinations
+      )
         .then(
           () => this.$emit('close'),
           (error) => error

@@ -122,18 +122,27 @@ export default {
     },
     async doctorSave(isCreating, doctor) {
       try {
+        let updatedDoctor
         if (isCreating) {
-          const newDoctor = await this.$api.createDoctor(doctor)
+          updatedDoctor = await this.$api.createDoctor(doctor)
           this.lastEvaluatedKey = ''
           await this.handleNextPageRequest()
           this.$toast.success('Médico salvo com sucesso')
-          return Promise.resolve(newDoctor)
         } else {
-          await this.$api.updateDoctor(this.selectedDoctor.username, doctor)
+          updatedDoctor = await this.$api.updateDoctor(
+            this.selectedDoctor.username,
+            doctor
+          )
           const index = this._findDoctorIndex(this.selectedDoctor.username)
           this.$set(this.doctors, index, doctor)
           this.$toast.success('Médico atualizado com sucesso')
-          return Promise.resolve(doctor)
+        }
+
+        const index = this._findDoctorIndex(updatedDoctor.username)
+        if (index !== -1) {
+          this.doctors.splice(index, 1, updatedDoctor)
+        } else {
+          this.doctors.push(updatedDoctor)
         }
       } catch (error) {
         const message = R.path(['response', 'data', 'message'], error) || error

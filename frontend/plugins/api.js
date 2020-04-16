@@ -37,6 +37,10 @@ const apiFactory = (axios) => ({
   updateFacility: (origin, facility) =>
     axios.$put(`facilities/${origin}`, facility),
   deleteFacility: (origin) => axios.$delete(`facilities/${origin}`),
+  deleteFacilityDestinations: (origin, { destinations }) =>
+    axios.$delete(`facilities/${origin}/destinations`, {
+      data: { destinations }
+    }),
   getAllDestinationsByOrigin: (origin) =>
     axios.$get(`facilities/origin/${origin}/destinations`),
   checkFacilityAvailability: (origin) =>
