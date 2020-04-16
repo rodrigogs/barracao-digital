@@ -54,20 +54,6 @@ import FacilitiesResourceModal from '~/components/manage/FacilitiesResourceModal
 import chunkArray from '~/utils/chunkArray'
 import promiseRetry from '~/utils/promiseRetry'
 
-function* chunksGenerator(chunks) {
-  for (const chunk of chunks) yield chunk
-}
-
-const addDestinationsProcessor = ($api, origin) => (destinations) =>
-  promiseRetry(() => $api.updateFacility(origin, { destinations }), 3, 1000)
-
-const removeDestinationsProcessor = ($api, origin) => (destinations) =>
-  promiseRetry(
-    () => $api.deleteFacilityDestinations(origin, { destinations }),
-    3,
-    1000
-  )
-
 const getAllFacilities = ($api, lastEvaluatedKey = '') =>
   $api.getAllFacilities(lastEvaluatedKey).then(
     ({ items = [], lastEvaluatedKey = '' }) => ({
@@ -136,6 +122,30 @@ export default {
             : $loadingState.loaded()
         })
     },
+    async updateDestinations(origin, destinations, operation) {
+      if (!['add', 'remove'].includes(operation))
+        throw new Error('operation must be "add" or "remove"')
+
+      const chunks = chunkArray(destinations, 20)
+
+      function* generator() {
+        for (const chunk of chunks) yield chunk
+      }
+
+      const opFunction = {
+        add: this.$api.updateFacility,
+        remove: this.$api.deleteFacilityDestinations
+      }[operation]
+
+      const processor = (destinations) =>
+        promiseRetry(() => opFunction(origin, { destinations }), 3, 1000)
+
+      await promisePool({
+        generator: generator(),
+        processor,
+        concurrency: 3
+      })
+    },
     async facilitySave(
       isCreating,
       facility,
@@ -159,22 +169,18 @@ export default {
           this.$toast.success('Instalação atualizada com sucesso')
         }
 
-        const addingDestinationsChunks = chunkArray(addingDestinations, 20)
-        const removingDestinationChunks = chunkArray(removingDestinations, 20)
-
         this.$toast.info('Atualizando CEPs de destino...')
 
-        await promisePool({
-          generator: chunksGenerator(addingDestinationsChunks),
-          processor: addDestinationsProcessor(this.$api, facility.origin),
-          concurrency: 3
-        })
-
-        await promisePool({
-          generator: chunksGenerator(removingDestinationChunks),
-          processor: removeDestinationsProcessor(this.$api, facility.origin),
-          concurrency: 3
-        })
+        await this.updateDestinations(
+          updatedFacility.origin,
+          addingDestinations,
+          'add'
+        )
+        await this.updateDestinations(
+          updatedFacility.origin,
+          removingDestinations,
+          'remove'
+        )
 
         this.$toast.success('CEPs de destino atualizados com sucesso')
 
