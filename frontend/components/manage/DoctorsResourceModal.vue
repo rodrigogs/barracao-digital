@@ -192,8 +192,8 @@ export default {
       email: '',
       fu: '',
       crm: null,
-      master: null,
-      admin: null
+      master: false,
+      admin: false
     }
   }),
   computed: {
