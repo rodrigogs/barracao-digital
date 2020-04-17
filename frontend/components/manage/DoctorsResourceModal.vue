@@ -19,7 +19,7 @@
       <v-card-text>
         <form>
           <v-row>
-            <v-col cols="6">
+            <v-col cols="12" sm="6">
               <StatesAutocomplete
                 id="fu"
                 v-model="$v.form.fu.$model"
@@ -30,7 +30,7 @@
               />
             </v-col>
 
-            <v-col cols="6">
+            <v-col cols="12" sm="6">
               <v-text-field
                 id="crm"
                 v-model="$v.form.crm.$model"
@@ -43,7 +43,7 @@
               />
             </v-col>
 
-            <v-col cols="6">
+            <v-col cols="12" sm="6">
               <v-text-field
                 id="name"
                 v-model="$v.form.name.$model"
@@ -54,7 +54,7 @@
               />
             </v-col>
 
-            <v-col cols="6">
+            <v-col cols="12" sm="6">
               <v-text-field
                 id="specialty"
                 v-model="$v.form.specialty.$model"
@@ -64,7 +64,7 @@
               />
             </v-col>
 
-            <v-col cols="6">
+            <v-col cols="12" sm="6">
               <v-text-field
                 id="username"
                 ref="usernameInput"
@@ -75,7 +75,7 @@
               />
             </v-col>
 
-            <v-col cols="6">
+            <v-col cols="12" sm="6">
               <v-text-field
                 id="password"
                 v-model="$v.form.password.$model"
@@ -88,7 +88,7 @@
               ></v-text-field>
             </v-col>
 
-            <v-col cols="6">
+            <v-col cols="12" sm="6">
               <v-text-field
                 id="email"
                 v-model="$v.form.email.$model"
@@ -101,7 +101,7 @@
               ></v-text-field>
             </v-col>
 
-            <v-col cols="6">
+            <v-col cols="12" sm="6">
               <v-text-field
                 id="cep"
                 v-model="$v.form.cep.$model"
@@ -114,7 +114,7 @@
               ></v-text-field>
             </v-col>
 
-            <v-col cols="3">
+            <v-col cols="6" sm="3">
               <v-switch
                 id="admin"
                 v-model="$v.form.admin.$model"
@@ -124,7 +124,7 @@
               ></v-switch>
             </v-col>
 
-            <v-col cols="3">
+            <v-col cols="6" sm="3">
               <v-switch
                 id="master"
                 v-model="$v.form.master.$model"
