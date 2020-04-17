@@ -15,7 +15,7 @@
   },
   "scripts": {
     "install:all": "npm run install:frontend & npm run install:backend",
-    "install:frontend": "(cd frontend && npm install --production=false)",
+    "install:frontend": "(cd frontend && yarn install --production=false)",
     "install:backend": "(cd lib && npm install --production=false) & (cd functions && npm install --production=false)",
     "start": "sls offline & (cd frontend && npm run dev)",
     "start:frontend": "cd frontend && npm run dev",
