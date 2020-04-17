@@ -14,3 +14,4 @@ jspm_packages
 
 .vscode
 dist
+frontend/static/firebase-messaging-sw.js
