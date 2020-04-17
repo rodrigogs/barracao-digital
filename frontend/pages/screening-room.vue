@@ -1,6 +1,19 @@
 <template>
   <v-card v-if="!isConsentAccepted" elevation="0" max-width="600">
-    <v-card-text class="grey--text text--darken-4 title font-weight-regular">
+    <v-btn
+      v-if="shouldDisplayGoToEndButton"
+      id="go-to-end-btn"
+      color="primary"
+      fab
+      large
+      dark
+      title="Ir para o final"
+      @click="$vuetify.goTo($refs.acceptConcentBtn)"
+    >
+      <v-icon>mdi-arrow-down</v-icon>
+    </v-btn>
+
+    <v-card-text class="grey--text text--darken-4">
       <p class="content-title">
         <b>Termos de uso para utilizadores</b>
       </p>
@@ -435,7 +448,12 @@
     </v-card-text>
 
     <v-card-actions class="justify-center">
-      <v-btn color="primary" x-large @click.native="acceptConsent">
+      <v-btn
+        ref="acceptConcentBtn"
+        color="primary"
+        x-large
+        @click.native="acceptConsent"
+      >
         Aceitar e continuar
       </v-btn>
     </v-card-actions>
@@ -633,10 +651,12 @@ import debounce from '~/utils/debounce'
 
 export default {
   data: () => ({
+    scrollPosition: window.scrollY,
     step: 1,
     isSaving: false,
     isConsent: false,
     isCheckingFacility: false,
+    showReadModesSheet: true,
     checkedFacilities: {},
     myData: {
       name: null,
@@ -690,6 +710,9 @@ export default {
     isConsentAccepted() {
       return this.$cookie.get('consent-accepted') || this.isConsent
     },
+    shouldDisplayGoToEndButton() {
+      return this.scrollPosition < 300
+    },
     nameErrors() {
       const errors = []
       if (!this.$v.myData.name.$dirty) return errors
@@ -741,7 +764,20 @@ export default {
     }
   },
 
+  created() {
+    // eslint-disable-next-line nuxt/no-globals-in-created
+    window.addEventListener('scroll', this.handleScroll)
+  },
+
+  destroyed() {
+    window.removeEventListener('scroll', this.handleScroll)
+  },
+
   methods: {
+    handleScroll() {
+      this.scrollPosition = window.scrollY
+    },
+
     checkFacility: debounce(async function check() {
       const cep = unmaskText(this.myData.cep)
 
@@ -813,3 +849,18 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+#go-to-end-btn {
+  position: fixed;
+  left: 50%;
+  transform: translate(-50%, 0);
+  bottom: 0;
+  margin-bottom: 1em;
+  opacity: 0.5;
+}
+
+#go-to-end-btn:hover {
+  opacity: 1;
+}
+</style>
