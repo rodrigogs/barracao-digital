@@ -16,26 +16,26 @@ echo "TRAVIS_COMMIT=${TRAVIS_COMMIT}"
 echo "TRAVIS_COMMIT_RANGE=${TRAVIS_COMMIT_RANGE}"
 
 if [ -z $NODE_ENV ]; then
-    echo -e "${BOLD}${RED}Missing environment variable NODE_ENV${RESET}"
-    exit 1
+  echo -e "${BOLD}${RED}Missing environment variable NODE_ENV${RESET}"
+  exit 1
 fi
 
 if [[ $DEPLOY_FRONTEND == "true" ]]; then
-    echo -e "${BOLD}${YELLOW}Installing frontend dependencies...${RESET}"
-    npm run install:frontend
-    echo -e "${BOLD}${YELLOW}Building frontend...${RESET}"
-    npm run build:frontend
-    echo -e "${BOLD}${YELLOW}Deploying frontend...${RESET}"
-    npm run deploy:frontend
-    echo -e "${BOLD}${YELLOW}Crlearing frontend cache...${RESET}"
-    nodejs || node ./scripts/invalidate-cloudfront-cache.js web.barracaodigital.com dev.barracaodigital.com
+  echo -e "${BOLD}${YELLOW}Installing frontend dependencies...${RESET}"
+  npm run install:frontend
+  echo -e "${BOLD}${YELLOW}Building frontend...${RESET}"
+  npm run build:frontend
+  echo -e "${BOLD}${YELLOW}Deploying frontend...${RESET}"
+  npm run deploy:frontend
+  echo -e "${BOLD}${YELLOW}Crlearing frontend cache...${RESET}"
+  nodejs || node ./scripts/invalidate-cloudfront-cache.js web.barracaodigital.com dev.barracaodigital.com
 fi
 
 if [[ $DEPLOY_BACKEND == "true" ]]; then
-    echo -e "${BOLD}${YELLOW}Installing backend dependencies...${RESET}"
-    npm run install:backend
-    echo -e "${BOLD}${YELLOW}Deploying backend...${RESET}"
-    npm run deploy:backend
+  echo -e "${BOLD}${YELLOW}Installing backend dependencies...${RESET}"
+  npm run install:backend
+  echo -e "${BOLD}${YELLOW}Deploying backend...${RESET}"
+  npm run deploy:backend
 fi
 
 echo -e "${BOLD}${GREEN}Done!${RESET}"

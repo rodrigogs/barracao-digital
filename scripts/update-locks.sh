@@ -5,18 +5,26 @@ npm install yarn -g
 npm install serverless -g
 
 (
-    # Root
-    npm install --production=false --save
-) & (
-    # Lib
-    cd lib
-    npm install --production=false --save
-) & (
-    # Functions
-    cd functions
-    npm install --production=false --save
-) & (
-    # Frontend
-    cd frontend
-    yarn install --production=false --update-checksums
+  # Root
+  npm install --production=false --save
+) &
+(
+  # cep-crawler
+  cd cep-crawler || exit
+  npm install --production=false --save
+) &
+(
+  # Lib
+  cd lib || exit
+  npm install --production=false --save
+) &
+(
+  # Functions
+  cd functions || exit
+  npm install --production=false --save
+) &
+(
+  # Frontend
+  cd frontend || exit
+  yarn install --production=false --update-checksums
 )

@@ -197,7 +197,7 @@ functions:
   facilities:
     handler: functions/api/facilities.handler
     memorySize: 1024
-    timeout: 60
+    timeout: 30
     events:
       - http:
           method: GET

@@ -8,8 +8,8 @@ RED="\e[91m"
 GREEN="\e[32m"
 
 if [ -z $NODE_ENV ]; then
-    echo -e "${BOLD}${RED}Missing environment variable NODE_ENV${RESET}"
-    exit 1
+  echo -e "${BOLD}${RED}Missing environment variable NODE_ENV${RESET}"
+  exit 1
 fi
 
 echo -e "${BOLD}${YELLOW}Installing backend dependencies...${RESET}"
