@@ -18,6 +18,21 @@
   cd lib || exit
   rm -rf node_modules
   rm -rf package-lock.json
+  (
+    cd providers/aws || exit
+    rm -rf node_modules
+    rm -rf package-lock.json
+  ) &
+  (
+    cd providers/firebase || exit
+    rm -rf node_modules
+    rm -rf package-lock.json
+  ) &
+  (
+    cd providers/gmaps || exit
+    rm -rf node_modules
+    rm -rf package-lock.json
+  )
 ) &
 (
   # Functions
