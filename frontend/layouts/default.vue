@@ -27,23 +27,44 @@
 
           <v-spacer />
 
-          <v-tooltip v-if="isMaster" bottom>
+          <v-menu v-if="isLoggedIn">
             <template v-slot:activator="{ on }">
-              <v-btn icon nuxt :to="{ name: 'manage-facilities' }" v-on="on">
-                <v-icon>mdi-hospital-building</v-icon>
+              <v-btn icon v-on="on">
+                <v-icon>mdi-dots-vertical</v-icon>
               </v-btn>
             </template>
-            <span>Instalações</span>
-          </v-tooltip>
 
-          <v-tooltip v-if="isAdmin || isMaster" bottom>
-            <template v-slot:activator="{ on }">
-              <v-btn icon nuxt :to="{ name: 'manage-doctors' }" v-on="on">
-                <v-icon>mdi-doctor</v-icon>
-              </v-btn>
-            </template>
-            <span>Médicos</span>
-          </v-tooltip>
+            <v-list>
+              <v-list-item nuxt :to="{ name: 'profile' }">
+                <v-list-item-icon>
+                  <v-icon> mdi-account-settings</v-icon>
+                </v-list-item-icon>
+                <v-list-item-title>Perfil</v-list-item-title>
+              </v-list-item>
+
+              <v-list-item
+                v-if="isMaster"
+                nuxt
+                :to="{ name: 'manage-facilities' }"
+              >
+                <v-list-item-icon>
+                  <v-icon> mdi-hospital-building</v-icon>
+                </v-list-item-icon>
+                <v-list-item-title>Instalações</v-list-item-title>
+              </v-list-item>
+
+              <v-list-item
+                v-if="isAdmin || isMaster"
+                nuxt
+                :to="{ name: 'manage-doctors' }"
+              >
+                <v-list-item-icon>
+                  <v-icon> mdi-doctor</v-icon>
+                </v-list-item-icon>
+                <v-list-item-title>Médicos</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
         </v-row>
       </v-container>
     </v-app-bar>
@@ -76,6 +97,9 @@ export default {
     ...mapState('worklist', {
       filters: 'filters'
     }),
+    isLoggedIn() {
+      return this.$auth.loggedIn
+    },
     isAdmin() {
       return this.$auth.loggedIn && this.$auth.user.admin
     },
