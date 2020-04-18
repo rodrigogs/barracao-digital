@@ -139,15 +139,6 @@ export default {
         initials: getInitials(this.$auth.user.name)
       }
     },
-    requiredFormFields() {
-      const { fu, crm, email, cep } = this.$auth.user
-      return {
-        fu,
-        crm,
-        email,
-        cep
-      }
-    },
     usernameErrors() {
       const errors = []
       if (!this.$v.profile.username.$dirty) return errors
@@ -222,10 +213,7 @@ export default {
       this.isLoadingProfile = true
 
       this.$api
-        .updateDoctor(this.user.username, {
-          ...this.requiredFormFields,
-          ...this.profile
-        })
+        .updateDoctor(this.user.username, this.profile)
         .then(
           () => this.$toast.success('Perfil atualizado com sucesso!'),
           () =>
@@ -249,7 +237,6 @@ export default {
 
       this.$api
         .updateDoctor(this.user.username, {
-          ...this.requiredFormFields,
           password: this.password.password
         })
         .then(
