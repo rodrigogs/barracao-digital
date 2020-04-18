@@ -9,12 +9,15 @@ const methods = {
       queryStringParameters,
     } = ctx;
 
+    const { master: isMaster, admin: isAdmin } = user;
     const { cep, username } = pathParameters || {};
     const { active, lastEvaluatedKey, pageSize } = queryStringParameters || {};
-    const parsedLastKey = lastEvaluatedKey ? JSON.parse(lastEvaluatedKey) : undefined;
+    const parsedLastKey = (typeof lastEvaluatedKey === 'string' && lastEvaluatedKey.length > 0)
+      ? JSON.parse(lastEvaluatedKey)
+      : undefined;
 
     if (cep) {
-      if (!user.master && (user.cep !== cep)) {
+      if ((!isMaster && !isAdmin) && user.cep !== cep) {
         return responseBuilder.errors.forbidden('Você só pode visualizar dados da sua região');
       }
       const results = active
@@ -31,12 +34,21 @@ const methods = {
     if (username) {
       const doctor = await doctorsService.getOneByUsername(username);
       if (!doctor) return responseBuilder.errors.notFound('Doctor Not Found');
-      return responseBuilder.success.ok({
-        body: { ...doctor, password: undefined },
-      });
+      if (isMaster || (isAdmin && doctor.cep === user.cep) || (doctor.username === user.username)) {
+        return responseBuilder.success.ok({
+          body: { ...doctor, password: undefined },
+        });
+      }
+      return responseBuilder.errors.forbidden('Você só pode visualizar dados da sua região');
     }
 
-    return responseBuilder.errors.badRequest();
+    const results = await doctorsService.getAll({ lastEvaluatedKey: parsedLastKey, pageSize });
+    return responseBuilder.success.ok({
+      body: {
+        lastEvaluatedKey: results.lastEvaluatedKey,
+        items: results.items.map((doctor) => ({ ...doctor, password: undefined })),
+      },
+    });
   },
 
   async POST(ctx) {

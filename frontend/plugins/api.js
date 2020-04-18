@@ -17,6 +17,13 @@ const apiFactory = (axios) => ({
   updateDoctor: (username, doctor) => axios.$put(`doctors/${username}`, doctor),
   deleteDoctor: (username) => axios.$delete(`doctors/${username}`),
   getDoctorByUsername: (username) => axios.$get(`doctors/username/${username}`),
+  getDoctors: ({ lastEvaluatedKey = '' } = {}) =>
+    axios.$get('doctors', {
+      params: {
+        lastEvaluatedKey,
+        pageSize: 20
+      }
+    }),
   getDoctorsByCep: (cep, { lastEvaluatedKey = '' } = {}) =>
     axios.$get(`doctors/cep/${cep}`, {
       params: {

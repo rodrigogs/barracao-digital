@@ -99,6 +99,12 @@ functions:
     events:
       - http:
           method: GET
+          path: /doctors
+          cors: true
+          authorizer: adminAuthorizer
+
+      - http:
+          method: GET
           path: /doctors/cep/{cep}
           cors: true
           authorizer: doctorAuthorizer

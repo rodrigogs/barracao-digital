@@ -1,0 +1,8 @@
+{
+  "name": "firebase-provider",
+  "main": "index.js",
+  "dependencies": {
+    "@firebase/app": "^0.6.2",
+    "firebase-admin": "^8.10.0"
+  }
+}

@@ -27,7 +27,7 @@
 
           <v-spacer />
 
-          <v-tooltip v-if="displayManageRoute" bottom>
+          <v-tooltip v-if="isMaster" bottom>
             <template v-slot:activator="{ on }">
               <v-btn icon nuxt :to="{ name: 'manage-facilities' }" v-on="on">
                 <v-icon>mdi-hospital-building</v-icon>
@@ -36,7 +36,7 @@
             <span>Instalações</span>
           </v-tooltip>
 
-          <v-tooltip v-if="displayManageRoute" bottom>
+          <v-tooltip v-if="isAdmin || isMaster" bottom>
             <template v-slot:activator="{ on }">
               <v-btn icon nuxt :to="{ name: 'manage-doctors' }" v-on="on">
                 <v-icon>mdi-doctor</v-icon>
@@ -76,10 +76,11 @@ export default {
     ...mapState('worklist', {
       filters: 'filters'
     }),
-    displayManageRoute() {
-      return (
-        this.$auth.loggedIn && (this.$auth.user.admin || this.$auth.user.master)
-      )
+    isAdmin() {
+      return this.$auth.loggedIn && this.$auth.user.admin
+    },
+    isMaster() {
+      return this.$auth.loggedIn && this.$auth.user.master
     }
   }
 }

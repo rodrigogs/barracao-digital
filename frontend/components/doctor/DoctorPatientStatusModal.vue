@@ -73,7 +73,7 @@
                 :disabled="isLoading"
                 @click="validateOnGoingSection"
               >
-                Salvar
+                Enviar
               </v-btn>
 
               <v-btn
@@ -83,7 +83,7 @@
                 :disabled="isLoading"
                 @click="validateAndContinueOnGoingSection"
               >
-                Salvar e continuar
+                Enviar e continuar
               </v-btn>
             </form>
           </v-stepper-content>

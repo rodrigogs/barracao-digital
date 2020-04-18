@@ -4,22 +4,20 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "postinstall": "npm-recursive-install --skip-root",
     "test": "jest",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
-    "@firebase/app": "^0.6.1",
-    "@googlemaps/google-maps-services-js": "^2.5.5",
-    "aws-sdk": "^2.656.0",
     "axios": "^0.19.2",
-    "firebase-admin": "^8.10.0",
     "uuid": "^7.0.3"
   },
   "devDependencies": {
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.1.0",
     "eslint-plugin-import": "^2.20.2",
-    "jest": "^25.3.0"
+    "jest": "^25.3.0",
+    "recursive-install": "^1.4.0"
   }
 }

@@ -1,0 +1,7 @@
+{
+  "name": "gmaps-provider",
+  "main": "index.js",
+  "dependencies": {
+    "@googlemaps/google-maps-services-js": "^2.5.5"
+  }
+}

@@ -51,7 +51,19 @@
 import * as R from 'ramda'
 import DoctorsResourceModal from '~/components/manage/DoctorsResourceModal'
 
-const getDoctorsLoggedUserCep = ($api, cep, lastEvaluatedKey = '') =>
+const getAllDoctors = ($api) => ({ lastEvaluatedKey = '' } = {}) =>
+  $api.getDoctors({ lastEvaluatedKey }).then(
+    ({ items = [], lastEvaluatedKey = '' }) => ({
+      doctors: items,
+      lastEvaluatedKey: lastEvaluatedKey || '',
+      isPaginationFinished: !lastEvaluatedKey
+    }),
+    (error) => Promise.reject(error)
+  )
+
+const getDoctorsLoggedUserCep = ($api, cep) => ({
+  lastEvaluatedKey = ''
+} = {}) =>
   $api.getDoctorsByCep(cep, { lastEvaluatedKey }).then(
     ({ items = [], lastEvaluatedKey = '' }) => ({
       doctors: items,
@@ -67,7 +79,11 @@ export default {
     DoctorsResourceModal
   },
   asyncData({ app, error }) {
-    return getDoctorsLoggedUserCep(app.$api, app.$auth.user.cep).then(
+    const listFunction = app.$auth.user.master
+      ? getAllDoctors
+      : getDoctorsLoggedUserCep
+
+    return listFunction(app.$api, app.$auth.user.cep)().then(
       (response) => response,
       (err) => {
         const message = R.path(['response', 'data', 'message'], err) || err
@@ -94,7 +110,15 @@ export default {
         return $loadingState && $loadingState.complete()
 
       this.isLoading = true
-      return getDoctorsLoggedUserCep(this.$api, this.$auth.user.cep, {
+
+      const listFunction = this.$auth.user.master
+        ? getAllDoctors
+        : getDoctorsLoggedUserCep
+
+      return listFunction(
+        this.$api,
+        this.$auth.user.cep
+      )({
         lastEvaluatedKey: this.lastEvaluatedKey
       })
         .then(
