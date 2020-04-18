@@ -1,5 +1,6 @@
 /test/e2e/screenshots
 /test/e2e/videos
+/static/firebase-messaging-sw.js
 
 # Created by .ignore support plugin (hsz.mobi)
 ### Node template
