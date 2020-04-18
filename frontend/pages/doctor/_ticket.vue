@@ -47,7 +47,7 @@ export default {
         )
     },
     modalClosed() {
-      this.$router.back()
+      this.$router.push({ name: 'doctor' })
     }
   }
 }
