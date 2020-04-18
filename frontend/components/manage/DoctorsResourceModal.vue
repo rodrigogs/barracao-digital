@@ -117,8 +117,7 @@
             <v-col cols="6" sm="3">
               <v-switch
                 id="admin"
-                v-model="$v.form.admin.$model"
-                :error-messages="adminErrors"
+                v-model="form.admin"
                 name="admin"
                 label="Admin?"
               ></v-switch>
@@ -127,8 +126,7 @@
             <v-col cols="6" sm="3">
               <v-switch
                 id="master"
-                v-model="$v.form.master.$model"
-                :error-messages="masterErrors"
+                v-model="form.master"
                 name="master"
                 label="Master?"
               ></v-switch>
@@ -251,20 +249,6 @@ export default {
         errors.push('Por favor, digite o CEP da instalação.')
       !this.$v.form.cep.zip && errors.push('O CEP informado é inválido.')
       return errors
-    },
-    masterErrors() {
-      const errors = []
-      if (!this.$v.form.master.$dirty) return errors
-      !this.$v.form.master.required &&
-        errors.push('Por favor, informe se o usuário é master.')
-      return errors
-    },
-    adminErrors() {
-      const errors = []
-      if (!this.$v.form.admin.$dirty) return errors
-      !this.$v.form.admin.required &&
-        errors.push('Por favor, informe se o usuário é administrador.')
-      return errors
     }
   },
   watch: {
@@ -309,12 +293,6 @@ export default {
       cep: {
         required,
         zip
-      },
-      master: {
-        required
-      },
-      admin: {
-        required
       }
     }
   },
