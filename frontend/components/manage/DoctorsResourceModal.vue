@@ -153,8 +153,8 @@
 
 <script>
 import { required, minLength, email } from 'vuelidate/lib/validators'
+import InvalidCrmError from '~/errors/InvalidCrmError'
 import { zip } from '~/utils/validations'
-import crm from '~/utils/crm'
 import debounce from '~/utils/debounce'
 import unmaskText from '~/utils/unmaskText'
 import StatesAutocomplete from '~/components/StatesAutocomplete'
@@ -179,7 +179,7 @@ export default {
     isLoading: false,
     doctors: [],
     checkingCrm: false,
-    validCrm: false,
+    validCrm: true,
     form: {
       username: '',
       sort: '',
@@ -205,6 +205,7 @@ export default {
       const errors = []
       if (!this.$v.form.crm.$dirty) return errors
       !this.$v.form.crm.required && errors.push('Por favor, digite o CRM.')
+      !this.$v.form.crm.invalid && errors.push('CRM inválido.')
       return errors
     },
     nameErrors() {
@@ -272,7 +273,10 @@ export default {
         required
       },
       crm: {
-        required
+        required,
+        invalid() {
+          return this.validCrm
+        }
       },
       name: {
         required
@@ -303,25 +307,29 @@ export default {
 
     checkCrm: debounce(async function checkCrm() {
       if (this.checkingCrm || !this.form.fu || !this.form.crm) return
+      this.validCrm = true
+      this.checkingCrm = true
+
       try {
-        this.validCrm = false
-        this.checkingCrm = true
-        const crmInfo = await crm.retrieve(this.form.fu, this.form.crm)
-        const crmError = crm.validate(crmInfo)
+        const crmInfo = await this.$crm.searchByStateAndCode(
+          this.form.fu,
+          this.form.crm
+        )
 
-        if (crmError) return this.$toast.error(crmError)
-
-        this.validCrm = true
         this.pupulateFormInfo({
           name: crmInfo.nome,
           specialty: crmInfo.especialidade
         })
+
         this.$refs.usernameInput.focus()
+        return Promise.resolve(crmInfo)
       } catch (err) {
-        this.$toast.error(
-          'Ocorreu um erro ao verificar o CRM do médico, tente novamente mais tarde.'
-        )
-        throw err
+        this.validCrm = false
+        const message =
+          err instanceof InvalidCrmError
+            ? err.message
+            : 'Ocorreu um erro ao verificar o CRM do médico, tente novamente mais tarde.'
+        this.$toast.error(message)
       } finally {
         this.checkingCrm = false
       }

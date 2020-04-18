@@ -1,4 +1,4 @@
-import axios from 'axios'
+import InvalidCrmError from '~/errors/InvalidCrmError'
 
 const API_URLS = {
   SC:
@@ -23,19 +23,32 @@ const normalize = (result, fu) => {
   }
 }
 
-const retrieve = async (fu, code) => {
-  const federalUnity = fu.toUpperCase()
-  const { data } = await axios.get(getUrl(federalUnity, code))
-  return normalize(data[0], federalUnity)
-}
-
 const validate = (result) => {
   if (!result) return 'Nenhum resultado encontrado para este CRM'
   if (result.situacao !== 'Regular') return 'Situação da CRM não está regular'
   return null
 }
 
-export default {
-  retrieve,
-  validate
+const crmFactory = (axios) => ({
+  searchByStateAndCode: async (fu, code) => {
+    const federalUnity = fu.toUpperCase()
+    const data = await axios.$get(getUrl(federalUnity, code))
+    const normalizedData = normalize(data[0], federalUnity)
+
+    const validatedData = validate(normalizedData)
+    if (validatedData) return Promise.reject(new InvalidCrmError(validatedData))
+
+    return Promise.resolve(normalizedData)
+  }
+})
+
+export default ({ $axios }, inject) => {
+  // Inject `crm` key
+  // -> app.$crm
+  // -> this.$crm in vue components
+  // -> this.$crm in store actions/mutations
+  const axios = $axios.create()
+  axios.setToken(false)
+  const crm = crmFactory(axios)
+  inject('crm', crm)
 }
