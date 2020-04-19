@@ -189,19 +189,24 @@ functions:
           method: PUT
           path: /patients/{ticket}/status/ongoing
           cors: true
-          authorizer: adminAuthorizer
+          authorizer: doctorAuthorizer
 
       - http:
           method: PUT
           path: /patients/{ticket}/status/waiting_kit
           cors: true
-          authorizer: adminAuthorizer
+          authorizer: doctorAuthorizer
 
       - http:
           method: PUT
           path: /patients/{ticket}/status/finished
           cors: true
-          authorizer: adminAuthorizer
+          authorizer: doctorAuthorizer
+
+      - http:
+          method: PUT
+          path: /patients/{ticket}/status/gave_up
+          cors: true
 
       - http:
           method: PUT

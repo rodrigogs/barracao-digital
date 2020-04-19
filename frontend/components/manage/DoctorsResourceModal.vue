@@ -131,7 +131,7 @@
               ></v-switch>
             </v-col>
 
-            <v-col cols="6" sm="3">
+            <v-col v-if="!isCreating" cols="6" sm="3">
               <v-switch
                 id="active"
                 v-model="form.active"
@@ -299,8 +299,8 @@ export default {
           return !this.isCreating || required(this.form.password)
         },
         minLength() {
-          if (this.isCreating || this.form.password.length)
-            return minLength(this.form.password)
+          if (!this.isCreating || this.form.password.length)
+            return minLength(5)(this.form.password)
           return true
         }
       },

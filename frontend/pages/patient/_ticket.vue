@@ -16,6 +16,7 @@ import PatientOngoing from '@/components/patient/PatientOngoing.vue'
 import PatientFinished from '@/components/patient/PatientFinished.vue'
 import PatientCantBeAssisted from '@/components/patient/PatientCantBeAssisted.vue'
 import PatientFacilityNotAvailable from '@/components/patient/PatientFacilityNotAvailable.vue'
+import PatientGaveUp from '@/components/patient/PatientGaveUp.vue'
 
 const searchPatientByTicket = async (api, ticket) => {
   const {
@@ -103,11 +104,15 @@ export default {
         [PATIENT_STATUS.CANT_BE_ASSISTED]: () => ({
           component: PatientCantBeAssisted,
           props: {
-            name: this.patient.name
+            name: this.patient.name,
+            ticket: this.$route.params.ticket
           }
         }),
         [PATIENT_STATUS.FACILITY_NOT_AVAILABLE]: () => ({
           component: PatientFacilityNotAvailable
+        }),
+        [PATIENT_STATUS.GAVE_UP]: () => ({
+          component: PatientGaveUp
         })
       }[this.patient.status]()
     }
@@ -134,10 +139,7 @@ export default {
           const updatedToken = await this.$fireMess.getToken()
           this._updatePatientMessagingToken(updatedToken)
         })
-        this.$fireMess.onMessage((payload) => {
-          // eslint-disable-next-line no-console
-          console.log(payload) // Now that we dont need it... it works
-        })
+        this.$fireMess.onMessage(() => this.reloadPacientData())
       } catch (_error) {}
     },
     _updatePatientMessagingToken(token) {

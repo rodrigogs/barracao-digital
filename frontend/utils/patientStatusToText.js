@@ -21,5 +21,9 @@ export default (status) =>
     [PATIENT_STATUS.CANT_BE_ASSISTED]: {
       text: 'Sem atendimento',
       color: ''
+    },
+    [PATIENT_STATUS.GAVE_UP]: {
+      text: 'Desistiu',
+      color: ''
     }
   }[status] || { text: 'Sem status', color: '' })

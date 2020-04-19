@@ -4,7 +4,8 @@ export const PATIENT_STATUS = {
   FINISHED: 'finished',
   WAITING_KIT: 'waiting_kit',
   CANT_BE_ASSISTED: 'cant_be_assisted',
-  FACILITY_NOT_AVAILABLE: 'facility_not_available'
+  FACILITY_NOT_AVAILABLE: 'facility_not_available',
+  GAVE_UP: 'gave_up'
 }
 
 export const PATIENT_OUTCOMES = {

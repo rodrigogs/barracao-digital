@@ -45,6 +45,11 @@ module.exports.handler = async (event) => {
       return responseBuilder.success
         .ok({ body: await patientsService.setFinished(patient, user, body) });
     }
+    // /patients/{ticket}/status/gave_up
+    if (resource.endsWith('status/gave_up')) {
+      return responseBuilder.success
+        .ok({ body: await patientsService.setGaveUp(patient, user, body) });
+    }
     // /patients/{ticket}/feedback
     if (resource.endsWith('feedback')) {
       return responseBuilder.success
