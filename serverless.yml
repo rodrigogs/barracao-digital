@@ -94,8 +94,8 @@ functions:
           cors: true
 
   # Doctors
-  doctors:
-    handler: functions/api/doctors.handler
+  doctors-get:
+    handler: functions/api/doctors/get.handler
     events:
       - http:
           method: GET
@@ -115,6 +115,9 @@ functions:
           cors: true
           authorizer: doctorAuthorizer
 
+  doctors-post:
+    handler: functions/api/doctors/post.handler
+    events:
       - http:
           method: POST
           path: /doctors
@@ -127,12 +130,18 @@ functions:
           cors: true
           authorizer: adminAuthorizer
 
+  doctors-put:
+    handler: functions/api/doctors/put.handler
+    events:
       - http:
           method: PUT
           path: /doctors/{username}
           cors: true
           authorizer: adminAuthorizer
 
+  doctors-delete:
+    handler: functions/api/doctors/delete.handler
+    events:
       - http:
           method: DELETE
           path: /doctors/{username}
@@ -200,8 +209,8 @@ functions:
           cors: true
 
   # Facilities
-  facilities:
-    handler: functions/api/facilities.handler
+  facilities-get:
+    handler: functions/api/facilities/get.handler
     memorySize: 1024
     timeout: 30
     events:
@@ -228,18 +237,29 @@ functions:
           path: /facilities/origin/{origin}/check
           cors: true
 
+  facilities-post:
+    handler: functions/api/facilities/post.handler
+    events:
       - http:
           method: POST
           path: /facilities
           cors: true
           authorizer: masterAuthorizer
 
+  facilities-put:
+    handler: functions/api/facilities/put.handler
+    memorySize: 1024
+    timeout: 30
+    events:
       - http:
           method: PUT
           path: /facilities/{origin}
           cors: true
           authorizer: masterAuthorizer
 
+  facilities-delete:
+    handler: functions/api/facilities/delete.handler
+    events:
       - http:
           method: DELETE
           path: /facilities/{origin}
