@@ -57,6 +57,8 @@
             v-if="!insertZipsInBulk"
             v-model="$v.form.destinations.$model"
             :error-messages="destinationsErrors"
+            :disabled="isLoadingDestinations"
+            :loading="isLoadingDestinations"
             label="CEP's de destino"
             multiple
             small-chips
@@ -145,6 +147,7 @@ export default {
   data: () => ({
     isCreating: false,
     isLoading: false,
+    isLoadingDestinations: false,
     destinations: [],
     currentDestination: null,
     insertZipsInBulk: false,
@@ -205,16 +208,28 @@ export default {
       if (trueOrFalse) this.zipsBulk = this.form.destinations.join(',')
     }
   },
-  async mounted() {
-    this.destinations = this.facility.origin
-      ? await this.$api.getAllDestinationsByOrigin(this.facility.origin)
-      : []
+  mounted() {
+    this.isLoadingDestinations = true
+    this.$api
+      .getAllDestinationsByOrigin(this.facility.origin)
+      .then(
+        (destinations) => {
+          this.destinations = destinations
+          this.form.destinations = this.destinations
+        },
+        () => {
+          this.destinations = []
+        }
+      )
+      .finally(() => {
+        this.isLoadingDestinations = false
+      })
+
     if (!this.facility.origin) this.isCreating = true
     this.form.origin = this.facility.origin
     this.form.name = this.facility.name
     this.form.techDirector = this.facility.techDirector
     this.form.contact = this.facility.contact
-    this.form.destinations = this.destinations
   },
   validations: {
     form: {
