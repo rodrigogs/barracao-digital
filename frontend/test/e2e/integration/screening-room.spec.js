@@ -1,29 +1,38 @@
+import faker from 'faker/locale/pt_BR'
+import cpf from 'cpf'
+
 describe('Screening rooom screen', () => {
   it('Register a patient with existing CEP', () => {
+    const randomWords = faker.random
+      .words(3)
+      .split(' ')
+      .join(', ')
+    const phone = faker.phone.phoneNumber('(##) ####-####')
+
     cy.visit('/screening-room')
 
-    cy.contains('p', 'Adesão para pacientes')
-    cy.get('button').click()
+    cy.contains('.v-card__text', 'Termos de uso para utilizadores')
+    cy.get('.v-card__actions > .v-btn').click()
 
-    cy.get('input[id="name"]').type('John Doe')
-    cy.get('input[id="age"]').type('30')
-    cy.get('input[id="cpf"]').type('652.192.799-04')
+    cy.get('input[id="name"]').type(faker.name.findName())
+    cy.get('input[id="age"]').type(faker.random.number(120))
+    cy.get('input[id="cpf"]').type(cpf.generate())
     cy.get('input[id="cep"]').type('55555-550')
 
     cy.get('button#myDataBtn').click()
 
-    cy.get('input[id="meds"]').type('AAS')
-    cy.get('input[id="allergies"]').type('Dipirona')
+    cy.get('input[id="meds"]').type(randomWords)
+    cy.get('input[id="allergies"]').type(randomWords)
     cy.get('input[id="covenant"]').type('UNIMED')
 
     cy.get('button#medicalInformationsBtn').click()
 
-    cy.get('input[id="phone"]').type('(48) 3333-4444')
-    cy.get('input[id="email"]').type('john.doe@gmail.com')
-    cy.get('input[id="whatsapp"]').type('(48) 3333-4444')
-    cy.get('input[id="telegram"]').type('(48) 3333-4444')
-    cy.get('input[id="hangout"]').type('(48) 3333-4444')
-    cy.get('input[id="skype"]').type('john.doe@gmail.com')
+    cy.get('input[id="phone"]').type(phone)
+    cy.get('input[id="email"]').type(faker.internet.email())
+    cy.get('input[id="whatsapp"]').type(phone)
+    cy.get('input[id="telegram"]').type(phone)
+    cy.get('input[id="hangout"]').type(phone)
+    cy.get('input[id="skype"]').type(faker.internet.userName())
 
     cy.get('button#contactBtn').click()
 
