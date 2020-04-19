@@ -17,5 +17,9 @@ export default (status) =>
     [PATIENT_STATUS.FINISHED]: {
       text: 'Finalizado',
       color: ''
+    },
+    [PATIENT_STATUS.CANT_BE_ASSISTED]: {
+      text: 'Sem atendimento',
+      color: ''
     }
   }[status] || { text: 'Sem status', color: '' })

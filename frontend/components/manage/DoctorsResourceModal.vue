@@ -84,7 +84,6 @@
                 label="Senha*"
                 type="password"
                 autocomplete="new_password"
-                required
               ></v-text-field>
             </v-col>
 
@@ -129,6 +128,15 @@
                 v-model="form.master"
                 name="master"
                 label="Master?"
+              ></v-switch>
+            </v-col>
+
+            <v-col cols="6" sm="3">
+              <v-switch
+                id="active"
+                v-model="form.active"
+                name="active"
+                label="Ativo?"
               ></v-switch>
             </v-col>
           </v-row>
@@ -191,7 +199,8 @@ export default {
       fu: '',
       crm: null,
       master: false,
-      admin: false
+      admin: false,
+      active: false
     }
   }),
   computed: {
@@ -229,7 +238,6 @@ export default {
     },
     passwordErrors() {
       const errors = []
-      if (!this.$v.form.password.$dirty) return errors
       !this.$v.form.password.required &&
         errors.push('Por favor, digite a senha.')
       !this.$v.form.password.minLength &&
@@ -287,8 +295,14 @@ export default {
         minLength: minLength(3)
       },
       password: {
-        required,
-        minLength: minLength(5)
+        required() {
+          return !this.isCreating || required(this.form.password)
+        },
+        minLength() {
+          if (this.isCreating || this.form.password.length)
+            return minLength(this.form.password)
+          return true
+        }
       },
       email: {
         required,

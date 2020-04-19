@@ -25,6 +25,10 @@
         item-key="origin"
         class="elevation-1"
       >
+        <template v-slot:item.active="{ item }">
+          <v-switch :input-value="item.active" readonly></v-switch>
+        </template>
+
         <template v-slot:item.actions="{ item }">
           <v-icon small class="mr-2" @click="edit(item)">
             mdi-pencil
@@ -89,6 +93,7 @@ export default {
       { text: 'Nome', value: 'name' },
       { text: 'Diretor técnico', value: 'techDirector' },
       { text: 'Contato', value: 'contact' },
+      { text: 'Ativa?', value: 'active' },
       { text: '', value: 'actions', sortable: false }
     ]
   }),

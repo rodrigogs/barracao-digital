@@ -15,7 +15,7 @@ module.exports.handler = async (event) => {
 
     if (isAlternatingActivity) {
       return responseBuilder.success.ok({
-        body: await doctorsService.alternateActive(user.username),
+        body: await doctorsService.alternateActive(user.username, user),
       });
     }
 

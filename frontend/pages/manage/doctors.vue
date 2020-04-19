@@ -25,6 +25,18 @@
         item-key="username"
         class="elevation-1"
       >
+        <template v-slot:item.admin="{ item }">
+          <v-switch :input-value="item.admin" readonly></v-switch>
+        </template>
+
+        <template v-slot:item.master="{ item }">
+          <v-switch :input-value="item.master" readonly></v-switch>
+        </template>
+
+        <template v-slot:item.active="{ item }">
+          <v-switch :input-value="item.active" readonly></v-switch>
+        </template>
+
         <template v-slot:item.actions="{ item }">
           <v-icon small class="mr-2" @click="edit(item)">
             mdi-pencil
@@ -101,6 +113,9 @@ export default {
       { text: 'Nome', value: 'name' },
       { text: 'Nome de usuário', value: 'username' },
       { text: 'Email', value: 'email' },
+      { text: 'Admin?', value: 'admin' },
+      { text: 'Master?', value: 'master' },
+      { text: 'Ativo?', value: 'active' },
       { text: '', value: 'actions', sortable: false }
     ]
   }),

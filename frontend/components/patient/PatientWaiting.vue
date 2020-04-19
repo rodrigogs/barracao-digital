@@ -42,7 +42,7 @@ export default {
       required: true
     },
     ticket: {
-      type: Number,
+      type: String,
       required: true
     }
   },

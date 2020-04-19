@@ -84,7 +84,7 @@ export default {
           component: PatientWaiting,
           props: {
             createdAt: this.patient.createdAt,
-            ticket: Number(this.$route.params.ticket)
+            ticket: this.$route.params.ticket
           }
         }),
         [PATIENT_STATUS.ONGOING]: () => ({
@@ -128,7 +128,6 @@ export default {
     },
     async handleMessaging() {
       try {
-        await this.$fireMess.requestPermission()
         const currentToken = await this.$fireMess.getToken()
         await this._updatePatientMessagingToken(currentToken)
         this.$fireMess.onTokenRefresh(async () => {
@@ -136,7 +135,8 @@ export default {
           this._updatePatientMessagingToken(updatedToken)
         })
         this.$fireMess.onMessage((payload) => {
-          this.patient = payload.data
+          // eslint-disable-next-line no-console
+          console.log(payload) // Now that we dont need it... it works
         })
       } catch (_error) {}
     },
