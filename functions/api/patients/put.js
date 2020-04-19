@@ -62,7 +62,13 @@ module.exports.handler = async (event) => {
     }
     // /patients/{ticket}
     if (body) {
-      return responseBuilder.success.ok({ body: await updatePatient(patient, user, body) });
+      return responseBuilder.success.ok({
+        body: await updatePatient(patient, user, {
+          ...body,
+          status: undefined,
+          lastStatus: undefined,
+        }),
+      });
     }
 
     return responseBuilder.errors.badRequest();
