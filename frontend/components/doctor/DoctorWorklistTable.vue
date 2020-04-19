@@ -62,9 +62,7 @@
       </template>
 
       <template v-slot:item.status="{ item }">
-        <v-chip outlined>
-          {{ getStatusMessage(item.status) }}
-        </v-chip>
+        <StatusBadge :status="item.status" />
       </template>
     </v-data-table>
 
@@ -78,11 +76,14 @@
 <script>
 import percentageToColor from '~/utils/percentageToColor'
 import calculateTimeWaiting from '~/utils/calculateTimeWaiting'
-import patientStatusToText from '~/utils/patientStatusToText'
 import { PATIENT_STATUS } from '~/constants'
+import StatusBadge from '~/components/StatusBadge'
 
 export default {
   name: 'DoctorWorklistTable',
+  components: {
+    StatusBadge
+  },
   props: {
     patients: {
       type: Array,
@@ -168,9 +169,6 @@ export default {
       const oneHour = 1000 * 60 * 60
       const percent = (oneHour / timeWaiting) * 100
       return percentageToColor(percent)
-    },
-    getStatusMessage(status = PATIENT_STATUS.WAITING) {
-      return patientStatusToText(status).text
     },
     refreshPatients() {
       this.$emit('refresh')

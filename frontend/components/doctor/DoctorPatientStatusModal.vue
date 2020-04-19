@@ -24,13 +24,13 @@
       </v-card-title>
 
       <v-card-subtitle>
-        <v-chip outlined small>{{ status.text }}</v-chip>
+        <StatusBadge :status="patient.status" />
       </v-card-subtitle>
 
       <v-card-text>
         <DoctorPatientStatusModalSummary :patient="patient" />
 
-        <v-stepper v-model="step" vertical>
+        <v-stepper v-if="!hasPatientGaveUp" v-model="step" vertical>
           <v-stepper-step
             :step="statusesIndex[PATIENT_STATUS.WAITING]"
             :complete="step > statusesIndex[PATIENT_STATUS.WAITING]"
@@ -141,13 +141,14 @@
 import { required, minLength } from 'vuelidate/lib/validators'
 import { PATIENT_STATUS, PATIENT_OUTCOMES } from '~/constants'
 import calculateTimeWaiting from '~/utils/calculateTimeWaiting'
-import patientStatusToText from '~/utils/patientStatusToText'
+import StatusBadge from '~/components/StatusBadge'
 import DoctorPatientStatusModalSummary from '~/components/doctor/DoctorPatientStatusModalSummary'
 
 export default {
   name: 'DoctorPatientStatusModal',
   components: {
-    DoctorPatientStatusModalSummary
+    DoctorPatientStatusModalSummary,
+    StatusBadge
   },
   props: {
     patient: {
@@ -187,6 +188,9 @@ export default {
     PATIENT_STATUS() {
       return PATIENT_STATUS
     },
+    hasPatientGaveUp() {
+      return this.patient.status === PATIENT_STATUS.GAVE_UP
+    },
     statusesIndex() {
       return {
         [PATIENT_STATUS.WAITING]: 1,
@@ -217,9 +221,6 @@ export default {
     },
     timeWaiting() {
       return calculateTimeWaiting(this.patient.createdAt)
-    },
-    status() {
-      return patientStatusToText(this.patient.status)
     },
     statusIndex() {
       return this.statusesIndex[this.patient.status]

@@ -4,26 +4,26 @@ export default (status) =>
   ({
     [PATIENT_STATUS.WAITING]: {
       text: 'Aguardando',
-      color: ''
+      color: 'deep-purple'
     },
     [PATIENT_STATUS.WAITING_KIT]: {
       text: 'Aguardando kit',
-      color: ''
+      color: 'deep-orange'
     },
     [PATIENT_STATUS.ONGOING]: {
       text: 'Em andamento',
-      color: ''
+      color: 'green'
     },
     [PATIENT_STATUS.FINISHED]: {
       text: 'Finalizado',
-      color: ''
+      color: 'light-blue'
     },
     [PATIENT_STATUS.CANT_BE_ASSISTED]: {
       text: 'Sem atendimento',
-      color: ''
+      color: 'blue-grey'
     },
     [PATIENT_STATUS.GAVE_UP]: {
       text: 'Desistiu',
-      color: ''
+      color: 'brown'
     }
   }[status] || { text: 'Sem status', color: '' })
