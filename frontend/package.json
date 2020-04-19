@@ -40,7 +40,7 @@
     "qs": "^6.9.3",
     "ramda": "^0.27.0",
     "vue-cookie": "^1.1.4",
-    "vue-infinite-loading": "^2.4.5",
+    "vue-infinite-loading": "https://github.com/kuroski/vue-infinite-loading.git",
     "vue-linkify": "^1.0.1",
     "vue-the-mask": "^0.11.1",
     "vuelidate": "^0.7.5",
