@@ -320,6 +320,8 @@ export default {
     },
 
     checkCrm: debounce(async function checkCrm() {
+      if (this.doctor.fu === this.form.fu && this.doctor.crm === this.form.crm)
+        return
       if (this.checkingCrm || !this.form.fu || !this.form.crm) return
       this.validCrm = true
       this.checkingCrm = true
@@ -359,10 +361,17 @@ export default {
 
       this.isLoading = true
 
-      const doctor = {
+      const removeEmptyStringProps = (obj) =>
+        Object.keys(obj).reduce((result, key) => {
+          const value = obj[key]
+          if (value === '') return result
+          return { ...result, [key]: value }
+        }, {})
+
+      const doctor = removeEmptyStringProps({
         ...this.form,
         cep: unmaskText(this.form.cep)
-      }
+      })
 
       return this.submit(this.isCreating, doctor)
         .then(

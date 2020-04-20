@@ -51,7 +51,7 @@ export default {
       required: true
     },
     doctorCrm: {
-      type: Number,
+      type: String,
       required: true
     },
     doctorState: {

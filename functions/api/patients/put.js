@@ -67,6 +67,9 @@ module.exports.handler = async (event) => {
           ...body,
           status: undefined,
           lastStatus: undefined,
+          ongoingFeedback: undefined,
+          waitingKitFeedback: undefined,
+          finishedFeedback: undefined,
         }),
       });
     }
