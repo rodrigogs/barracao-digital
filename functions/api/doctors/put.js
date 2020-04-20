@@ -9,6 +9,7 @@ module.exports.handler = async (event) => {
       consumer: user,
       pathParameters,
       body,
+      resource,
     } = requestContext;
 
     const {
@@ -32,6 +33,13 @@ module.exports.handler = async (event) => {
       const storedDoctor = await doctorsService.getOneByUsername(username);
       if (!storedDoctor) {
         return responseBuilder.errors.notFound('Doutor não encontrado');
+      }
+
+      // /doctors/{username}/messaging/token
+      if (resource.endsWith('messaging/token')) {
+        if (!isSelfUpdate) return responseBuilder.errors.forbidden('Você só pode atualizar seu próprio token');
+        await doctorsService.setDoctorMessagingToken(storedDoctor, user, body);
+        return responseBuilder.success.noContent();
       }
 
       const isTryingToChangeAnotherAdmin = !isSelfUpdate

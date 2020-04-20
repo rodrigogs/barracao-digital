@@ -58,8 +58,6 @@ module.exports.handler = async (event) => {
       queryStringParameters,
     } = requestContext;
 
-    console.log(JSON.stringify(requestContext, null, 2));
-
     const { cep, ticket } = pathParameters || {};
     const {
       status, timeWaiting, lastEvaluatedKey, pageSize,

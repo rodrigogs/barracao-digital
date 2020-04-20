@@ -78,6 +78,7 @@ import percentageToColor from '~/utils/percentageToColor'
 import calculateTimeWaiting from '~/utils/calculateTimeWaiting'
 import { PATIENT_STATUS } from '~/constants'
 import StatusBadge from '~/components/StatusBadge'
+import debounce from '~/utils/debounce'
 
 export default {
   name: 'DoctorWorklistTable',
@@ -108,7 +109,8 @@ export default {
       { text: 'Nome', value: 'name', align: 'start', width: '60%' },
       { text: 'Tempo de espera', value: 'createdAt', align: 'center' },
       { text: 'Status', value: 'status' }
-    ]
+    ],
+    patientsSubscription: null
   }),
   computed: {
     statusFilters() {
@@ -150,7 +152,26 @@ export default {
     if (timeWaiting && !Number.isNaN(timeWaiting))
       this.timeWaiting = Number(timeWaiting)
   },
+  mounted() {
+    this.handlePatientsUpdate()
+  },
+  beforeDestroy() {
+    if (this.patientsSubscription) this.patientsSubscription() // Unsubscribes
+  },
   methods: {
+    handlePatientsUpdate() {
+      this.patientsSubscription = this.$fireStore
+        .collection('facilities')
+        .doc(this.$auth.user.cep)
+        .collection('patients')
+        .onSnapshot((snapshot) => {
+          // TODO update list dynamically
+          snapshot.docChanges().forEach((change) => {
+            // console.log(change.doc.data())
+          })
+          this.refreshPatients()
+        })
+    },
     handleNextPageRequest($loadingState) {
       return this.fetchNextPage().then(
         ({ lastEvaluatedKey }) => {
@@ -170,9 +191,9 @@ export default {
       const percent = (oneHour / timeWaiting) * 100
       return percentageToColor(percent)
     },
-    refreshPatients() {
+    refreshPatients: debounce(function refresh() {
       this.$emit('refresh')
-    }
+    }, 2000)
   }
 }
 </script>

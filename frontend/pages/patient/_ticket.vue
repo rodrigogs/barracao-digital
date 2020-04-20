@@ -20,6 +20,7 @@ import PatientGaveUp from '@/components/patient/PatientGaveUp.vue'
 
 const searchPatientByTicket = async (api, ticket) => {
   const {
+    originCep,
     name,
     createdAt,
     status,
@@ -28,6 +29,8 @@ const searchPatientByTicket = async (api, ticket) => {
   } = await api.searchPatientByTicket(ticket)
   return {
     patient: {
+      ticket,
+      originCep,
       name,
       createdAt,
       status,
@@ -76,7 +79,8 @@ export default {
         patientOutcome: null,
         patientFeedback: null
       }
-    }
+    },
+    patientSubscription: null
   }),
   computed: {
     patientStatusComponent() {
@@ -119,16 +123,21 @@ export default {
   },
   mounted() {
     this.handleMessaging()
-    this.handleStatusUpdate()
+    this.handleUpdates()
+  },
+  beforeDestroy() {
+    if (this.patientSubscription) this.patientSubscription() // Unsubscribes
   },
   methods: {
-    handleStatusUpdate() {
-      this.$fireStore
+    handleUpdates() {
+      if (this.patientSubscription) this.patientSubscription()
+      this.patientSubscription = this.$fireStore
+        .collection('facilities')
+        .doc(this.patient.originCep)
         .collection('patients')
-        .doc(this.$route.params.ticket)
+        .doc(this.patient.ticket)
         .onSnapshot((doc) => {
-          if (!doc.data()) return
-          setTimeout(() => this.reloadPacientData(), 5000)
+          this.patient = doc.data()
         })
     },
     async handleMessaging() {
@@ -139,25 +148,12 @@ export default {
           const updatedToken = await this.$fireMess.getToken()
           this._updatePatientMessagingToken(updatedToken)
         })
-        this.$fireMess.onMessage(() => this.reloadPacientData())
       } catch (_error) {}
     },
     _updatePatientMessagingToken(token) {
       return this.$api.setPatientMessagingToken(this.$route.params.ticket, {
         token
       })
-    },
-    async reloadPacientData() {
-      try {
-        const data = await searchPatientByTicket(
-          this.$api,
-          this.$route.params.ticket
-        )
-        this.patient = data.patient
-        return data
-      } catch (e) {
-        this.$nuxt.error({ message: 'Usuário Inexistente', statusCode: 404 })
-      }
     },
     ratingClicked(rating) {
       return this.$api

@@ -30,7 +30,11 @@
       <v-card-text>
         <DoctorPatientStatusModalSummary :patient="patient" />
 
-        <v-stepper v-if="!hasPatientGaveUp" v-model="step" vertical>
+        <v-stepper
+          v-if="!isUnassisted && !isPatientGaveUp"
+          v-model="step"
+          vertical
+        >
           <v-stepper-step
             :step="statusesIndex[PATIENT_STATUS.WAITING]"
             :complete="step > statusesIndex[PATIENT_STATUS.WAITING]"
@@ -188,7 +192,10 @@ export default {
     PATIENT_STATUS() {
       return PATIENT_STATUS
     },
-    hasPatientGaveUp() {
+    isUnassisted() {
+      return this.patient.status === PATIENT_STATUS.CANT_BE_ASSISTED
+    },
+    isPatientGaveUp() {
       return this.patient.status === PATIENT_STATUS.GAVE_UP
     },
     statusesIndex() {
