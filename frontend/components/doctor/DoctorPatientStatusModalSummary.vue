@@ -27,18 +27,6 @@
         </v-list>
       </v-col>
 
-      <v-col>
-        <v-list dense>
-          <v-subheader></v-subheader>
-
-          <v-list-item>
-            <v-list-item-content>
-              <v-list-item-title>{{ props.patient.ticket }}</v-list-item-title>
-              <v-list-item-subtitle>Senha</v-list-item-subtitle>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list>
-      </v-col>
     </v-row>
 
     <v-row>
