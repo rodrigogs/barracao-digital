@@ -180,6 +180,10 @@ export default {
       description:
         'Estruturação rápida de “postos de triagem” virtuais descentralizados para redução de visitas desnecessárias às emergências',
       lang: 'pt-BR'
+    },
+    manifest: {
+      name: 'Barracão Digital',
+      lang: 'pt-BR'
     }
   },
   /*
