@@ -199,17 +199,14 @@ export default {
   vue: {
     config: {
       productionTip: process.env.NODE_ENV === 'development',
-      devtools: process.env.NODE_ENV === 'development',
-      transpileDependencies: ['vuetify']
+      devtools: process.env.NODE_ENV === 'development'
     }
   },
   /*
    ** Build configuration
    */
   build: {
-    /*
-     ** You can extend webpack config here
-     */
+    transpile: [/vuetify/],
     extend(config, ctx) {}
   }
 }
