@@ -16,8 +16,8 @@ export default {
    ** Headers of the page
    */
   head: {
-    titleTemplate: 'Barracao Digital',
-    title: 'Barracao Digital',
+    titleTemplate: 'Barracão Digital',
+    title: 'Barrãcao Digital',
     meta: [
       { charset: 'utf-8' },
       {
