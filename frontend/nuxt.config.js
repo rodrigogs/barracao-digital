@@ -199,7 +199,8 @@ export default {
   vue: {
     config: {
       productionTip: process.env.NODE_ENV === 'development',
-      devtools: process.env.NODE_ENV === 'development'
+      devtools: process.env.NODE_ENV === 'development',
+      transpileDependencies: ['vuetify']
     }
   },
   /*

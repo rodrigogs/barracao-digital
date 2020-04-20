@@ -26,7 +26,6 @@
           </v-list-item>
         </v-list>
       </v-col>
-
     </v-row>
 
     <v-row>
