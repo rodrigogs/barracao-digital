@@ -551,10 +551,13 @@
             hint="Cite seu convênio"
           ></v-text-field>
 
+          <p class="mt-4 mb-1">
+            Já foi atendido pelo Barracão Digital antes?
+          </p>
           <v-radio-group
             id="hasBeenAssisted"
             v-model="medicalInformations.hasBeenAssisted"
-            label="Já foi atendido pelo Barracão Digital antes?"
+            class="mt-0"
           >
             <v-radio label="Sim" :value="true"></v-radio>
             <v-radio label="Não" :value="false"></v-radio>
