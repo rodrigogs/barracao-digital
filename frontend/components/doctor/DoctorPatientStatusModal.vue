@@ -227,7 +227,7 @@ export default {
       ]
     },
     timeWaiting() {
-      const ongoingStatus = this.patient[`${PATIENT_STATUS.WAITING}Status`]
+      const ongoingStatus = this.patient[`${PATIENT_STATUS.ONGOING}Status`]
 
       if (ongoingStatus) {
         return calculateTimeWaiting(
