@@ -49,13 +49,19 @@
         </v-toolbar>
       </template>
 
+      <template v-slot:item.ticket="{ item }">
+        <span class="subtitle-2">{{ item.ticket }}</span>
+        <v-spacer />
+        <small>{{ formatDate(item.createdAt) }}</small>
+      </template>
+
       <template v-slot:item.name="{ item }">
         <span class="subtitle-2">{{ item.name }}</span>
         <v-spacer />
         <small>{{ item.age }} anos</small>
       </template>
 
-      <template v-slot:item.createdAt="{ item }">
+      <template v-slot:item.waitingTime="{ item }">
         <v-chip outlined :color="`#${calulateColor(item)}`">
           {{ calculateTimeWaiting(item) }}
         </v-chip>
@@ -74,6 +80,7 @@
 </template>
 
 <script>
+import { format } from 'date-fns'
 import percentageToColor from '~/utils/percentageToColor'
 import calculateTimeWaiting from '~/utils/calculateTimeWaiting'
 import { PATIENT_STATUS } from '~/constants'
@@ -107,7 +114,7 @@ export default {
     headers: [
       { text: 'Ticket', value: 'ticket', align: 'start' },
       { text: 'Nome', value: 'name', align: 'start', width: '60%' },
-      { text: 'Tempo de espera', value: 'createdAt', align: 'center' },
+      { text: 'Tempo de espera', value: 'waitingTime', align: 'center' },
       { text: 'Status', value: 'status' }
     ],
     patientsSubscription: null
@@ -180,6 +187,9 @@ export default {
         },
         () => $loadingState.complete()
       )
+    },
+    formatDate(timestamp) {
+      return format(timestamp, 'dd/MM/y hh:mm')
     },
     calculateTimeWaiting(patient) {
       const ongoingStatus = patient[`${PATIENT_STATUS.ONGOING}Status`]
