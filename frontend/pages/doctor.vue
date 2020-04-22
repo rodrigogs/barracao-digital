@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <v-card elevation="0" append>
+    <v-card v-if="$auth.loggedIn" elevation="0" append>
       <DoctorStatus
         :active="$auth.user.active"
         :username="$auth.user.username"
