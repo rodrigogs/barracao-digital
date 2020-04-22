@@ -24,8 +24,8 @@ const searchPatientByTicket = async (api, ticket) => {
     name,
     createdAt,
     status,
-    ongoingFeedback,
-    finishedFeedback
+    ongoingStatus,
+    finishedStatus
   } = await api.searchPatientByTicket(ticket)
   return {
     patient: {
@@ -34,8 +34,8 @@ const searchPatientByTicket = async (api, ticket) => {
       name,
       createdAt,
       status,
-      ongoingFeedback,
-      finishedFeedback
+      ongoingStatus,
+      finishedStatus
     }
   }
 }
@@ -56,28 +56,31 @@ export default {
       name: null,
       createdAt: null,
       status: null,
-      ongoingFeedback: {
+      [`${PATIENT_STATUS.ONGOING}Status`]: {
         doctorName: null,
         doctorCrm: null,
         doctorState: null,
         doctorMessage: null,
-        facilityName: null
+        facilityName: null,
+        timestamp: null
       },
-      waitingKitFeedback: {
+      [`${PATIENT_STATUS.WAITING_KIT}Status`]: {
         doctorName: null,
         doctorCrm: null,
         doctorState: null,
         doctorMessage: null,
-        facilityName: null
+        facilityName: null,
+        timestamp: null
       },
-      finishedFeedback: {
+      [`${PATIENT_STATUS.FINISHED}Status`]: {
         doctorName: null,
         doctorCrm: null,
         doctorState: null,
         doctorMessage: null,
         facilityName: null,
         patientOutcome: null,
-        patientFeedback: null
+        patientFeedback: null,
+        timestamp: null
       }
     },
     patientSubscription: null
@@ -95,13 +98,20 @@ export default {
         [PATIENT_STATUS.ONGOING]: () => ({
           component: PatientOngoing,
           props: {
-            ...this.patient.ongoingFeedback
+            ...this.patient[`${PATIENT_STATUS.ONGOING}Status`]
+          }
+        }),
+        [PATIENT_STATUS.WAITING_KIT]: () => ({
+          component: PatientOngoing,
+          props: {
+            ...this.patient[`${PATIENT_STATUS.WAITING_KIT}Status`]
+            // TODO
           }
         }),
         [PATIENT_STATUS.FINISHED]: () => ({
           component: PatientFinished,
           props: {
-            ...this.patient.finishedFeedback,
+            ...this.patient[`${PATIENT_STATUS.FINISHED}Status`],
             clicked: this.ratingClicked
           }
         }),

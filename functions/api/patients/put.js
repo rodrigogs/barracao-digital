@@ -1,4 +1,5 @@
 const { patientsService } = require('barracao-digital/services');
+const { PATIENT_STATUSES } = require('barracao-digital/enums');
 const { getRequestContext, responseBuilder } = require('../../helpers');
 
 const updatePatient = async (patient, _user, body) => {
@@ -67,9 +68,13 @@ module.exports.handler = async (event) => {
           ...body,
           status: undefined,
           lastStatus: undefined,
-          ongoingFeedback: undefined,
-          waitingKitFeedback: undefined,
-          finishedFeedback: undefined,
+          [`${PATIENT_STATUSES.WAITING}Status`]: undefined,
+          [`${PATIENT_STATUSES.ONGOING}Status`]: undefined,
+          [`${PATIENT_STATUSES.FINISHED}Status`]: undefined,
+          [`${PATIENT_STATUSES.WAITING_KIT}Status`]: undefined,
+          [`${PATIENT_STATUSES.CANT_BE_ASSISTED}Status`]: undefined,
+          [`${PATIENT_STATUSES.FACILITY_NOT_AVAILABLE}Status`]: undefined,
+          [`${PATIENT_STATUSES.GAVE_UP}Status`]: undefined,
         }),
       });
     }

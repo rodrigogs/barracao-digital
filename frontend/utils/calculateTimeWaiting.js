@@ -1,6 +1,6 @@
 import Kairos from 'kairos'
 
-export default (createdAt) => {
-  const timeWaiting = Date.now() - createdAt
+export default (start, end) => {
+  const timeWaiting = end - start
   return Kairos.new(timeWaiting).toString('hh:mm', true)
 }
