@@ -1,5 +1,5 @@
 <template>
-  <v-toolbar dense dark :color="statusBarColor">
+  <v-toolbar extended dense dark :color="statusBarColor">
     <v-toolbar-title>{{ title }}</v-toolbar-title>
 
     <v-spacer></v-spacer>
@@ -14,15 +14,6 @@
     >
       {{ buttonText }}
     </v-btn>
-
-    <v-btn
-      small
-      outlined
-      :disabled="isLoggingOut"
-      :loading="isLoggingOut"
-      @click="signOut"
-      >Sair</v-btn
-    >
   </v-toolbar>
 </template>
 
@@ -78,10 +69,6 @@ export default {
       promise().finally(() => {
         this.isLoading = false
       })
-    },
-    signOut() {
-      this.isLoggingOut = true
-      this.$emit('signOut')
     }
   }
 }
