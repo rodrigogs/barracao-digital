@@ -41,6 +41,7 @@ const searchPatientByTicket = async (api, ticket) => {
 }
 
 export default {
+  layout: 'patients',
   validate({ params }) {
     return !isNaN(Number(params.ticket))
   },

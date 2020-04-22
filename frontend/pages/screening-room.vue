@@ -196,6 +196,7 @@ import debounce from '~/utils/debounce'
 import PatientTerms from '~/components/patient/PatientTerms'
 
 export default {
+  layout: 'patients',
   components: {
     PatientTerms
   },
