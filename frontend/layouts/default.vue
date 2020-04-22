@@ -27,7 +27,7 @@
 
           <v-spacer />
 
-          <v-menu v-if="isLoggedIn">
+          <v-menu>
             <template v-slot:activator="{ on }">
               <v-btn icon v-on="on">
                 <v-icon>mdi-dots-vertical</v-icon>
@@ -35,7 +35,7 @@
             </template>
 
             <v-list>
-              <v-list-item nuxt :to="{ name: 'profile' }">
+              <v-list-item v-if="isLoggedIn" nuxt :to="{ name: 'profile' }">
                 <v-list-item-icon>
                   <v-icon> mdi-account-settings</v-icon>
                 </v-list-item-icon>
@@ -71,7 +71,7 @@
                 <v-list-item-title>Relatar problema</v-list-item-title>
               </v-list-item>
 
-              <v-list-item @click="logout">
+              <v-list-item v-if="isLoggedIn" @click="logout">
                 <v-list-item-icon>
                   <v-icon>mdi-logout</v-icon>
                 </v-list-item-icon>
