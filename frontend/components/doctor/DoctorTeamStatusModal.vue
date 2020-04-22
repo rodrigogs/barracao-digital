@@ -13,21 +13,32 @@
         </v-btn>
       </v-card-title>
 
+      <v-card-subtitle>{{ facility.name }}</v-card-subtitle>
+
       <v-list two-line>
-        <v-list-item v-for="doctor of doctors" :key="doctor.username">
-          <v-list-item-content>
-            <v-list-item-title>{{ doctor.name }}</v-list-item-title>
-            <v-list-item-subtitle class="text--primary">
-              {{ doctor.specialty }}
-            </v-list-item-subtitle>
-            <v-list-item-subtitle>{{ doctor.email }}</v-list-item-subtitle>
-          </v-list-item-content>
-          <v-list-item-action>
-            <v-list-item-action-text
-              v-text="getDoctorStatus(doctor.active)"
-            ></v-list-item-action-text>
-          </v-list-item-action>
-        </v-list-item>
+        <v-list-item-group>
+          <template v-for="(doctor, index) of doctors">
+            <v-list-item :key="doctor.username">
+              <v-list-item-content>
+                <v-list-item-title>{{ doctor.name }}</v-list-item-title>
+                <v-list-item-subtitle class="text--primary">
+                  {{ doctor.specialty }}
+                </v-list-item-subtitle>
+                <v-list-item-subtitle>{{ doctor.email }}</v-list-item-subtitle>
+              </v-list-item-content>
+              <v-list-item-action>
+                <v-list-item-action-text
+                  v-text="getDoctorStatus(doctor.active)"
+                ></v-list-item-action-text>
+              </v-list-item-action>
+            </v-list-item>
+
+            <v-divider
+              v-if="index + 1 < doctors.length"
+              :key="index"
+            ></v-divider>
+          </template>
+        </v-list-item-group>
       </v-list>
     </v-card>
   </v-dialog>
@@ -37,15 +48,22 @@
 export default {
   data: () => ({
     dialog: false,
+    facility: {},
     doctors: [],
     doctorsSubscription: null
   }),
   watch: {
     dialog() {
       if (this.dialog) {
-        this.doctorsSubscription = this.$fireStore
+        const facilitiesDoc = this.$fireStore
           .collection('facilities')
           .doc(this.$auth.user.cep)
+
+        facilitiesDoc.get().then((doc) => {
+          this.facility = doc.data()
+        })
+
+        this.doctorsSubscription = facilitiesDoc
           .collection('doctors')
           .onSnapshot((snapshot) => {
             this.doctors = snapshot
