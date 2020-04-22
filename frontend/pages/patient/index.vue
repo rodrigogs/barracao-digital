@@ -35,6 +35,7 @@ import { mask } from 'vue-the-mask'
 import { required } from 'vuelidate/lib/validators'
 
 export default {
+  layout: 'patients',
   directives: { mask },
   data: () => ({
     ticket: '',
