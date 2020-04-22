@@ -56,8 +56,8 @@
       </template>
 
       <template v-slot:item.createdAt="{ item }">
-        <v-chip outlined :color="`#${calulateColor(item.createdAt)}`">
-          {{ calculateTimeWaiting(item.createdAt) }}
+        <v-chip outlined :color="`#${calulateColor(item)}`">
+          {{ calculateTimeWaiting(item) }}
         </v-chip>
       </template>
 
@@ -181,12 +181,28 @@ export default {
         () => $loadingState.complete()
       )
     },
-    calculateTimeWaiting(createdAt) {
-      return calculateTimeWaiting(createdAt)
+    calculateTimeWaiting(patient) {
+      const ongoingStatus = patient[`${PATIENT_STATUS.WAITING}Status`]
+
+      if (ongoingStatus) {
+        return calculateTimeWaiting(patient.createdAt, ongoingStatus.timestamp)
+      }
+
+      return calculateTimeWaiting(patient.createdAt, Date.now())
     },
-    calulateColor(createdAt) {
+    calulateColor(patient) {
+      const finishedStatuses = [
+        PATIENT_STATUS.FINISHED,
+        PATIENT_STATUS.FACILITY_NOT_AVAILABLE,
+        PATIENT_STATUS.GAVE_UP
+      ]
+
+      if (finishedStatuses.includes(patient.status)) {
+        return 'black'
+      }
+
       const now = Date.now()
-      const timeWaiting = now - createdAt
+      const timeWaiting = now - patient.createdAt
       const oneHour = 1000 * 60 * 60
       const percent = (oneHour / timeWaiting) * 100
       return percentageToColor(percent)

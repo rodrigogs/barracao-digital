@@ -227,7 +227,16 @@ export default {
       ]
     },
     timeWaiting() {
-      return calculateTimeWaiting(this.patient.createdAt)
+      const ongoingStatus = this.patient[`${PATIENT_STATUS.WAITING}Status`]
+
+      if (ongoingStatus) {
+        return calculateTimeWaiting(
+          this.patient.createdAt,
+          ongoingStatus.timestamp
+        )
+      }
+
+      return calculateTimeWaiting(this.patient.createdAt, Date.now())
     },
     statusIndex() {
       return this.statusesIndex[this.patient.status]
@@ -264,16 +273,17 @@ export default {
         () => {}
       )
     },
-    validateOnGoingSection() {
+    async validateOnGoingSection() {
       this.$v.onGoing.$touch()
       if (this.$v.onGoing.$invalid) {
-        return this.$toast.error(
+        this.$toast.error(
           'Existem erros no formulário, revise-os antes de seguir.'
         )
+        return Promise.reject(new Error('Erros encontrados no formulário'))
       }
 
       this.isLoading = true
-      return this.save({
+      return await this.save({
         status: PATIENT_STATUS.ONGOING,
         form: {
           ...this.onGoing
@@ -282,7 +292,7 @@ export default {
         this.isLoading = false
       })
     },
-    validateFinishedSection() {
+    async validateFinishedSection() {
       this.$v.finished.$touch()
       if (this.$v.finished.$invalid) {
         return this.$toast.error(
@@ -291,13 +301,14 @@ export default {
       }
 
       this.isLoading = true
-      return this.save({
+      return await this.save({
         status: PATIENT_STATUS.FINISHED,
         form: {
           ...this.finished
         }
       }).finally(() => {
         this.isLoading = false
+        this.$emit('close')
       })
     }
   }
