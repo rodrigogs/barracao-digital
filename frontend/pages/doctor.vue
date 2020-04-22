@@ -6,7 +6,6 @@
         :username="$auth.user.username"
         :start-service="toggleStatus"
         :stop-service="toggleStatus"
-        @signOut="signOut"
       />
       <DoctorWorklistTable
         :patients="patients"
@@ -82,10 +81,6 @@ export default {
       if (!this.$store.state.worklist.lastEvaluatedKey)
         return Promise.resolve({ lastEvaluatedKey: null })
       return this.$store.dispatch('worklist/fetchNextPatientsPage')
-    },
-    signOut() {
-      this.$destroy() // we must manually destroy the screen because of keep-alive
-      this.$auth.logout()
     },
     async _setQueryParamsAndFetch(filters = {}) {
       await new Promise((resolve, reject) =>

@@ -63,12 +63,31 @@
                 </v-list-item-icon>
                 <v-list-item-title>Médicos</v-list-item-title>
               </v-list-item>
+
+              <v-list-item @click="reportingIssue = true">
+                <v-list-item-icon>
+                  <v-icon>mdi-alert-circle-outline</v-icon>
+                </v-list-item-icon>
+                <v-list-item-title>Relatar problema</v-list-item-title>
+              </v-list-item>
+
+              <v-list-item @click="logout">
+                <v-list-item-icon>
+                  <v-icon>mdi-logout</v-icon>
+                </v-list-item-icon>
+                <v-list-item-title>Sair</v-list-item-title>
+              </v-list-item>
             </v-list>
           </v-menu>
         </v-row>
       </v-container>
     </v-app-bar>
     <v-content>
+      <ReportIssueDialog
+        v-if="reportingIssue"
+        @close="reportingIssue = false"
+      ></ReportIssueDialog>
+
       <v-container>
         <v-layout column justify-center align-center>
           <nuxt keep-alive :keep-alive-props="{ include: 'PagesDoctor' }" />
@@ -87,12 +106,17 @@
 
 <script>
 import { mapState } from 'vuex'
+import ReportIssueDialog from './_reportIssueDialog'
 import Logo from '~/components/Logo.vue'
 
 export default {
   components: {
-    Logo
+    Logo,
+    ReportIssueDialog
   },
+  data: () => ({
+    reportingIssue: false
+  }),
   computed: {
     ...mapState('worklist', {
       filters: 'filters'
@@ -105,6 +129,11 @@ export default {
     },
     isMaster() {
       return this.$auth.loggedIn && this.$auth.user.master
+    }
+  },
+  methods: {
+    logout() {
+      this.$auth.logout()
     }
   }
 }
