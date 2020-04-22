@@ -68,7 +68,7 @@
                 <v-list-item-icon>
                   <v-icon>mdi-alert-circle-outline</v-icon>
                 </v-list-item-icon>
-                <v-list-item-title>Relatar problema</v-list-item-title>
+                <v-list-item-title>Reportar problema</v-list-item-title>
               </v-list-item>
 
               <v-list-item v-if="isLoggedIn" @click="logout">
