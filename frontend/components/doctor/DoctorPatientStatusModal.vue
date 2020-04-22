@@ -2,7 +2,18 @@
   <v-dialog :value="patient" max-width="800" @click:outside="$emit('close')">
     <v-card>
       <v-card-title class="headline align-start">
-        <div>#{{ patient.ticket }}: {{ patient.name }}</div>
+        <div>#{{ patient.ticket }}</div>
+
+        <v-spacer />
+
+        <v-btn icon @click="$emit('close')">
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+      </v-card-title>
+
+      <v-card-title>
+        <StatusBadge :status="patient.status" />
+
         <v-spacer />
 
         <v-list class="py-0" dense>
@@ -17,21 +28,13 @@
             </v-list-item-content>
           </v-list-item>
         </v-list>
-
-        <v-btn icon @click="$emit('close')">
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
       </v-card-title>
-
-      <v-card-subtitle>
-        <StatusBadge :status="patient.status" />
-      </v-card-subtitle>
 
       <v-card-text>
         <DoctorPatientStatusModalSummary :patient="patient" />
 
         <v-stepper
-          v-if="!isUnassisted && !isPatientGaveUp"
+          v-if="!isUnassisted && !isFinishedStatus"
           v-model="step"
           vertical
         >
@@ -195,8 +198,13 @@ export default {
     isUnassisted() {
       return this.patient.status === PATIENT_STATUS.CANT_BE_ASSISTED
     },
-    isPatientGaveUp() {
-      return this.patient.status === PATIENT_STATUS.GAVE_UP
+    isFinishedStatus() {
+      const finishedStatuses = [
+        PATIENT_STATUS.FINISHED,
+        PATIENT_STATUS.FACILITY_NOT_AVAILABLE,
+        PATIENT_STATUS.GAVE_UP
+      ]
+      return finishedStatuses.includes(this.patient.status)
     },
     statusesIndex() {
       return {

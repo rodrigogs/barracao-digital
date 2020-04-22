@@ -128,7 +128,7 @@ functions:
           method: POST
           path: /doctors/alternate
           cors: true
-          authorizer: adminAuthorizer
+          authorizer: doctorAuthorizer
 
   doctors-put:
     handler: functions/api/doctors/put.handler
