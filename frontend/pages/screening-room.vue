@@ -760,7 +760,7 @@ export default {
 
   watch: {
     'myData.cep'(newCep) {
-      zip(newCep) && this.checkFacility()
+      newCep && zip(newCep) && this.checkFacility()
     }
   },
 

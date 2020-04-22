@@ -106,7 +106,7 @@
 
 <script>
 import { mapState } from 'vuex'
-import ReportIssueDialog from './_reportIssueDialog'
+import ReportIssueDialog from './ReportIssueModal'
 import Logo from '~/components/Logo.vue'
 
 export default {

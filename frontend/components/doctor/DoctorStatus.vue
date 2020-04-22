@@ -5,7 +5,6 @@
     <v-spacer></v-spacer>
 
     <v-btn
-      class="mr-4"
       small
       outlined
       :loading="isLoading"
@@ -14,12 +13,22 @@
     >
       {{ buttonText }}
     </v-btn>
+
+    <template v-slot:extension>
+      <v-spacer></v-spacer>
+      <DoctorTeamStatusModal />
+    </template>
   </v-toolbar>
 </template>
 
 <script>
+import DoctorTeamStatusModal from '@/components/doctor/DoctorTeamStatusModal'
+
 export default {
   name: 'DoctorStatus',
+  components: {
+    DoctorTeamStatusModal
+  },
   props: {
     active: {
       type: Boolean,
@@ -27,6 +36,10 @@ export default {
       required: true
     },
     username: {
+      type: String,
+      required: true
+    },
+    facilityCep: {
       type: String,
       required: true
     },

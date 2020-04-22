@@ -4,6 +4,7 @@
       <DoctorStatus
         :active="$auth.user.active"
         :username="$auth.user.username"
+        :facility-cep="$auth.user.cep"
         :start-service="toggleStatus"
         :stop-service="toggleStatus"
       />
@@ -40,6 +41,7 @@ export default {
       filters: this.$route.query
     })
   },
+  data: () => ({ showTeamStatus: false }),
   computed: {
     ...mapState('worklist', {
       patients: 'patients',

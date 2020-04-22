@@ -182,7 +182,7 @@ export default {
       )
     },
     calculateTimeWaiting(patient) {
-      const ongoingStatus = patient[`${PATIENT_STATUS.WAITING}Status`]
+      const ongoingStatus = patient[`${PATIENT_STATUS.ONGOING}Status`]
 
       if (ongoingStatus) {
         return calculateTimeWaiting(patient.createdAt, ongoingStatus.timestamp)
