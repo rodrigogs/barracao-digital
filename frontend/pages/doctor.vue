@@ -1,5 +1,12 @@
 <template>
   <v-container fluid>
+    <v-scroll-y-transition mode="out-in">
+      <v-alert v-if="timeoutAfterInactiveModalDisplayed" type="info">
+        Você está inativo a um tempo, iremos parar o seu atendimento se não
+        houver nenhuma atividade em 1 minuto
+      </v-alert>
+    </v-scroll-y-transition>
+
     <v-card v-if="$auth.loggedIn" elevation="0" append>
       <DoctorStatus
         :active="$auth.user.active"
@@ -23,11 +30,13 @@
 </template>
 
 <script>
+import IdleJs from 'idle-js'
 import { mapState } from 'vuex'
 import DoctorStatus from '@/components/doctor/DoctorStatus'
 import DoctorWorklistTable from '@/components/doctor/DoctorWorklistTable'
 
 const ONE_MINUTE = 60000
+const THIRTY_MINUTES = ONE_MINUTE * 30
 
 export default {
   name: 'PagesDoctor',
@@ -41,7 +50,11 @@ export default {
       filters: this.$route.query
     })
   },
-  data: () => ({ showTeamStatus: false }),
+  data: () => ({
+    showTeamStatus: false,
+    timeoutAfterInactiveModalDisplayed: null,
+    idle: null
+  }),
   computed: {
     ...mapState('worklist', {
       patients: 'patients',
@@ -55,6 +68,27 @@ export default {
     if (this.$fetchState.timestamp <= Date.now() - ONE_MINUTE) {
       this.$fetch()
     }
+  },
+  mounted() {
+    this.idle = new IdleJs({
+      idle: THIRTY_MINUTES,
+      onIdle: () => {
+        if (!this.$auth.user.active) return
+
+        this.timeoutAfterInactiveModalDisplayed = setTimeout(() => {
+          this.toggleStatus()
+          this.timeoutAfterInactiveModalDisplayed = null
+        }, ONE_MINUTE)
+      },
+      onActive: () => {
+        if (this.timeoutAfterInactiveModalDisplayed)
+          clearTimeout(this.timeoutAfterInactiveModalDisplayed)
+        this.timeoutAfterInactiveModalDisplayed = null
+      }
+    }).start()
+  },
+  beforeDestroy() {
+    this.idle && this.idle.stop()
   },
   methods: {
     toggleStatus() {
