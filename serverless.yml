@@ -55,16 +55,28 @@ provider:
       Action:
         - 'dynamodb:*'
       Resource: '*'
+    - Effect: Allow
+      Action:
+        - 'events:*'
+      Resource: 'arn:aws:events:*:*:rule/${self:service}-${self:custom.stage}-*'
+    - Effect: Allow
+      Action:
+        - 'lambda:*'
+      Resource: '*'
   deploymentBucket:
     name: ${self:service}-deploys
     maxPreviousDeploymentArtifacts: 10 # On every deployment the framework prunes the bucket to remove artifacts older than this limit. The default is 5
     blockPublicAccess: true # Prevents public access via ACLs or bucket policies. Default is false
   environment:
+    AWS_ACCOUNT_ID: '#{AWS::AccountId}'
+    STACK_NAME: ${self:service}
+    STAGE: ${self:custom.stage}
     CONFIGS_TABLE: ${self:custom.configsTableName}
     DOCTORS_TABLE: ${self:custom.doctorsTableName}
     PATIENTS_TABLE: ${self:custom.patientsTableName}
     FACILITIES_TABLE: ${self:custom.facilitiesTableName}
     GOOGLE_APPLICATION_CREDENTIALS: ${env:GOOGLE_APPLICATION_CREDENTIALS}
+    DOCTOR_INACTIVITY_TIMEOUT_IN_MINUTES: ${env:DOCTOR_INACTIVITY_TIMEOUT_IN_MINUTES, '33'}
 
 functions:
   doctorAuthorizer:
@@ -138,7 +150,6 @@ functions:
           path: /doctors/{username}
           cors: true
           authorizer: doctorAuthorizer
-
   doctors-delete:
     handler: functions/api/doctors/delete.handler
     events:
@@ -147,6 +158,10 @@ functions:
           path: /doctors/{username}
           cors: true
           authorizer: masterAuthorizer
+
+  ## Jobs
+  alternate-doctor-job:
+    handler: functions/jobs/alternate-doctor-job.handler
 
   # Patients
   patients-get:

@@ -1,4 +1,4 @@
-const { authService } = require('barracao-digital/services');
+const { authService, jobsService } = require('barracao-digital/services');
 const { responseBuilder } = require('../helpers');
 
 const createAccessPoliciy = (user, key, methodArn) => ({
@@ -36,12 +36,21 @@ const signin = (type, authorizationToken) => {
   throw new Error(`Unsupported Authorization Type "${type}"`);
 };
 
+const heartBeat = async (user) => {
+  const currentSchedule = await jobsService.retrieveCurrentAlternateDoctorJobSchedule(user);
+  if (currentSchedule) await jobsService.removeAlternateDoctorJobSchedule(user);
+  await jobsService.scheduleAlternateDoctorJob(user);
+};
+
 module.exports.handler = async (event) => {
   try {
     const { type, authorizationToken, methodArn } = event;
     const user = await signin(type, authorizationToken);
     const key = user.password;
     delete user.password;
+
+    if (user.active) await heartBeat(user);
+
     return createAccessPoliciy(user, key, methodArn);
   } catch (err) {
     console.error('Authorization error:', err);
