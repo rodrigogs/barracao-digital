@@ -1,10 +1,13 @@
 <template>
   <v-dialog v-model="dialog" max-width="800">
-    <template v-slot:activator="{ on }">
-      <v-btn icon color="warning" v-on="on">
-        <v-icon>mdi-alert-circle-outline</v-icon>
-      </v-btn>
-    </template>
+    <v-tooltip bottom>
+      <template v-slot:activator="{ on }">
+        <v-btn icon color="warning" v-on="on">
+          <v-icon>mdi-alert-circle-outline</v-icon>
+        </v-btn>
+      </template>
+      <span>Reportar problema</span>
+    </v-tooltip>
     <v-card ref="modal">
       <v-card-actions>
         <v-spacer></v-spacer>
