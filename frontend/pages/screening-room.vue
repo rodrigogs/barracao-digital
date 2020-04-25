@@ -28,10 +28,10 @@
             id="name"
             name="name"
             :value="$v.myData.name.$model"
-            @input="setMyDataName"
             :error-messages="nameErrors"
             label="Nome*"
             required
+            @input="setMyDataName"
           ></v-text-field>
 
           <v-text-field
