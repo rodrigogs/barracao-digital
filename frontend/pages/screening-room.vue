@@ -19,9 +19,16 @@
             autofocus
           ></v-text-field>
 
+          <!--
+            v-model not used in the input here because of a known issue with
+            user interaction and the default Android Chrome keyboard.
+            https://github.com/vuejs/vue/issues/9777
+          -->
           <v-text-field
             id="name"
-            v-model="$v.myData.name.$model"
+            name="name"
+            :value="$v.myData.name.$model"
+            @input="setMyDataName"
             :error-messages="nameErrors"
             label="Nome*"
             required
@@ -310,6 +317,10 @@ export default {
     }
   },
   methods: {
+    setMyDataName(value) {
+      this.myData.name = value
+      this.$v.myData.name.$touch()
+    },
     checkFacility: debounce(async function check() {
       const cep = unmaskText(this.myData.cep)
 
