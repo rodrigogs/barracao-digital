@@ -1,9 +1,14 @@
 <template>
-  <v-dialog :value="true" max-width="800" @click:outside="$emit('close')">
+  <v-dialog v-model="dialog" max-width="800">
+    <template v-slot:activator="{ on }">
+      <v-btn icon color="warning" v-on="on">
+        <v-icon>mdi-alert-circle-outline</v-icon>
+      </v-btn>
+    </template>
     <v-card ref="modal">
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn icon @click="$emit('close')">
+        <v-btn icon @click="dialog = false">
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-card-actions>
@@ -23,17 +28,30 @@
 <script>
 export default {
   data: () => ({
+    dialog: false,
     interval: null,
     modalWidth: 0,
     modalHeight: 0
   }),
-  mounted() {
-    this.interval = setInterval(() => this.updateModalSize(), 1000)
+  watch: {
+    dialog() {
+      if (this.dialog) {
+        this.startUpdatingModalSize()
+      } else {
+        this.stopUpdatingModalSize()
+      }
+    }
   },
   destroyed() {
-    this.interval && clearInterval(this.interval)
+    this.stopUpdatingModalSize()
   },
   methods: {
+    startUpdatingModalSize() {
+      this.interval = setInterval(() => this.updateModalSize(), 1000)
+    },
+    stopUpdatingModalSize() {
+      this.interval && clearInterval(this.interval)
+    },
     updateModalSize() {
       this.modalHeight = this.$refs.modal.$el.clientHeight
       this.modalWidth = this.$refs.modal.$el.clientWidth

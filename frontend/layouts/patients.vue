@@ -3,11 +3,20 @@
     <v-app-bar app elevation="1" height="80">
       <v-container>
         <v-row align="center" justify="center">
+          <v-spacer></v-spacer>
+
           <v-col class="text-center" align-self="center">
             <nuxt-link class="d-flex align-center" :to="{ name: 'index' }">
               <Logo :width="$vuetify.breakpoint.xsOnly ? '150' : '200'" />
             </nuxt-link>
           </v-col>
+
+          <v-spacer></v-spacer>
+
+          <ReportIssueDialog
+            text="Reportar problema"
+            v-on="on"
+          ></ReportIssueDialog>
         </v-row>
       </v-container>
     </v-app-bar>
@@ -30,10 +39,12 @@
 
 <script>
 import Logo from '~/components/Logo.vue'
+import ReportIssueDialog from '~/components/ReportIssueModal'
 
 export default {
   components: {
-    Logo
+    Logo,
+    ReportIssueDialog
   }
 }
 </script>

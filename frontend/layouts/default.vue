@@ -27,7 +27,7 @@
 
           <v-spacer />
 
-          <v-menu>
+          <v-menu v-if="isLoggedIn">
             <template v-slot:activator="{ on }">
               <v-btn icon v-on="on">
                 <v-icon>mdi-dots-vertical</v-icon>
@@ -37,7 +37,7 @@
             <v-list>
               <v-list-item v-if="isLoggedIn" nuxt :to="{ name: 'profile' }">
                 <v-list-item-icon>
-                  <v-icon> mdi-account-settings</v-icon>
+                  <v-icon>mdi-account-settings</v-icon>
                 </v-list-item-icon>
                 <v-list-item-title>Perfil</v-list-item-title>
               </v-list-item>
@@ -48,7 +48,7 @@
                 :to="{ name: 'manage-facilities' }"
               >
                 <v-list-item-icon>
-                  <v-icon> mdi-hospital-building</v-icon>
+                  <v-icon>mdi-hospital-building</v-icon>
                 </v-list-item-icon>
                 <v-list-item-title>Instalações</v-list-item-title>
               </v-list-item>
@@ -59,7 +59,7 @@
                 :to="{ name: 'manage-doctors' }"
               >
                 <v-list-item-icon>
-                  <v-icon> mdi-doctor</v-icon>
+                  <v-icon>mdi-doctor</v-icon>
                 </v-list-item-icon>
                 <v-list-item-title>Médicos</v-list-item-title>
               </v-list-item>
@@ -79,15 +79,16 @@
               </v-list-item>
             </v-list>
           </v-menu>
+          <v-tooltip v-else bottom>
+            <template v-slot:activator="{ on }">
+              <ReportIssueDialog v-on="on"></ReportIssueDialog>
+            </template>
+            <span>Reportar problema</span>
+          </v-tooltip>
         </v-row>
       </v-container>
     </v-app-bar>
     <v-content>
-      <ReportIssueDialog
-        v-if="reportingIssue"
-        @close="reportingIssue = false"
-      ></ReportIssueDialog>
-
       <v-container>
         <v-layout column justify-center align-center>
           <nuxt keep-alive :keep-alive-props="{ include: 'PagesDoctor' }" />
@@ -106,7 +107,7 @@
 
 <script>
 import { mapState } from 'vuex'
-import ReportIssueDialog from './ReportIssueModal'
+import ReportIssueDialog from '~/components/ReportIssueModal'
 import Logo from '~/components/Logo.vue'
 
 export default {
