@@ -97,8 +97,16 @@
     </v-content>
     <v-footer>
       <v-row justify="center" no-gutters>
+        <v-spacer />
+
         <v-btn text small href="mailto:faleconosco@barracaodigital.com">
           faleconosco@barracaodigital.com
+        </v-btn>
+
+        <v-spacer />
+
+        <v-btn text small href="mailto:faleconosco@barracaodigital.com">
+          <small>v{{ version }}</small>
         </v-btn>
       </v-row>
     </v-footer>
@@ -107,6 +115,7 @@
 
 <script>
 import { mapState } from 'vuex'
+import { version } from '../package.json'
 import ReportIssueDialog from '~/components/ReportIssueModal'
 import Logo from '~/components/Logo.vue'
 
@@ -130,6 +139,9 @@ export default {
     },
     isMaster() {
       return this.$auth.loggedIn && this.$auth.user.master
+    },
+    version() {
+      return version
     }
   },
   methods: {
