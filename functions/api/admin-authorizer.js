@@ -1,11 +1,24 @@
 const doctorAuthorizer = require('./doctor-authorizer');
-const { responseBuilder } = require('../helpers');
 
-module.exports.handler = async (event) => {
-  const accessPoliciy = await doctorAuthorizer.handler(event);
-  const user = JSON.parse(accessPoliciy.context.consumer);
-  if (user && (!user.master && !user.admin)) {
-    return responseBuilder.errors.unauthorized('Admnistrator user required');
-  }
-  return accessPoliciy;
+module.exports.handler = (event, context, callback) => {
+  (async () => {
+    try {
+      const doctorAuthorizerResult = await new Promise((resolve) => {
+        doctorAuthorizer.handler(event, context, (err, result) => {
+          resolve(err || result);
+        });
+      });
+
+      if (typeof doctorAuthorizerResult === 'string') return callback(doctorAuthorizerResult);
+
+      const user = JSON.parse(doctorAuthorizerResult.context.consumer);
+      if (user && (!user.master && !user.admin)) {
+        return callback('Unauthorized');
+      }
+      return callback(null, doctorAuthorizerResult);
+    } catch (err) {
+      console.error('AdminAuthorizerError', err);
+      return callback('Error');
+    }
+  })();
 };

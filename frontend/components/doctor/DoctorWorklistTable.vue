@@ -43,8 +43,15 @@
 
           <v-spacer />
 
-          <v-btn icon @click="refreshPatients">
-            <v-icon>mdi-table-refresh</v-icon>
+          <v-btn icon :loading="isLoading" @click="refreshPatients">
+            <v-badge
+              :content="patientsChanges"
+              :value="patientsChanges"
+              color="green"
+              overlap
+            >
+              <v-icon>mdi-table-refresh</v-icon>
+            </v-badge>
           </v-btn>
         </v-toolbar>
       </template>
@@ -117,7 +124,8 @@ export default {
       { text: 'Tempo de espera', value: 'waitingTime', align: 'center' },
       { text: 'Status', value: 'status' }
     ],
-    patientsSubscription: null
+    patientsSubscription: null,
+    patientsChanges: 0
   }),
   computed: {
     statusFilters() {
@@ -167,16 +175,18 @@ export default {
   },
   methods: {
     handlePatientsUpdate() {
+      let isFisrtLoad = true
       this.patientsSubscription = this.$fireStore
         .collection('facilities')
         .doc(this.$auth.user.cep)
         .collection('patients')
         .onSnapshot((snapshot) => {
           // TODO update list dynamically
+          if (isFisrtLoad) return (isFisrtLoad = false)
           snapshot.docChanges().forEach((change) => {
             // console.log(change.doc.data())
+            this.patientsChanges += 1
           })
-          this.refreshPatients()
         })
     },
     handleNextPageRequest($loadingState) {
@@ -218,8 +228,9 @@ export default {
       return percentageToColor(percent)
     },
     refreshPatients: debounce(function refresh() {
+      this.patientsChanges = 0
       this.$emit('refresh')
-    }, 2000)
+    }, 1000)
   }
 }
 </script>

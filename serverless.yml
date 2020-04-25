@@ -6,7 +6,6 @@ plugins:
   - serverless-webpack
   - serverless-offline
   - serverless-finch
-  - serverless-pseudo-parameters
   - serverless-domain-manager
 
 package:
@@ -68,7 +67,7 @@ provider:
     maxPreviousDeploymentArtifacts: 10 # On every deployment the framework prunes the bucket to remove artifacts older than this limit. The default is 5
     blockPublicAccess: true # Prevents public access via ACLs or bucket policies. Default is false
   environment:
-    AWS_ACCOUNT_ID: '#{AWS::AccountId}'
+    AWS_ACCOUNT_ID: ${file(./serverless.js):getAccountId}
     STACK_NAME: ${self:service}
     STAGE: ${self:custom.stage}
     CONFIGS_TABLE: ${self:custom.configsTableName}
@@ -76,6 +75,8 @@ provider:
     PATIENTS_TABLE: ${self:custom.patientsTableName}
     FACILITIES_TABLE: ${self:custom.facilitiesTableName}
     GOOGLE_APPLICATION_CREDENTIALS: ${env:GOOGLE_APPLICATION_CREDENTIALS}
+    OPENTOK_API_KEY: ${env:OPENTOK_API_KEY}
+    OPENTOK_API_SECRET: ${env:OPENTOK_API_SECRET}
     DOCTOR_INACTIVITY_TIMEOUT_IN_MINUTES: ${env:DOCTOR_INACTIVITY_TIMEOUT_IN_MINUTES, '33'}
 
 functions:
@@ -142,6 +143,12 @@ functions:
           cors: true
           authorizer: doctorAuthorizer
 
+      - http:
+          method: POST
+          path: /doctors/video/{ticket}
+          cors: true
+          authorizer: doctorAuthorizer
+
   doctors-put:
     handler: functions/api/doctors/put.handler
     events:
@@ -150,6 +157,7 @@ functions:
           path: /doctors/{username}
           cors: true
           authorizer: doctorAuthorizer
+
   doctors-delete:
     handler: functions/api/doctors/delete.handler
     events:

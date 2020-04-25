@@ -86,6 +86,15 @@ export default {
         this.timeoutAfterInactiveModalDisplayed = null
       }
     }).start()
+
+    this.$fireStore
+      .collection('facilities')
+      .doc(this.$auth.user.cep)
+      .collection('doctors')
+      .doc(this.$auth.user.username)
+      .onSnapshot((doc) => {
+        this.$auth.setUser(doc.data())
+      })
   },
   beforeDestroy() {
     this.idle && this.idle.stop()
@@ -93,7 +102,7 @@ export default {
   methods: {
     toggleStatus() {
       return this.$api.alternateDoctorStatus().then(
-        (user) => this.$auth.setUser(user),
+        () => {},
         () =>
           this.$toast.error(
             'Não foi possivel alterar o status de atendimento, tente novamente mais tarde.'

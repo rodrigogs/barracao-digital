@@ -1,5 +1,4 @@
 const { authService, jobsService } = require('barracao-digital/services');
-const { responseBuilder } = require('../helpers');
 
 const createAccessPoliciy = (user, key, methodArn) => ({
   principalId: key,
@@ -42,18 +41,24 @@ const heartBeat = async (user) => {
   await jobsService.scheduleAlternateDoctorJob(user);
 };
 
-module.exports.handler = async (event) => {
-  try {
-    const { type, authorizationToken, methodArn } = event;
-    const user = await signin(type, authorizationToken);
-    const key = user.password;
-    delete user.password;
+module.exports.handler = (event, context, callback) => {
+  (async () => {
+    try {
+      const { type, authorizationToken, methodArn } = event;
+      const user = await signin(type, authorizationToken);
 
-    if (user.active) await heartBeat(user);
+      if (!user) return callback('Unauthorized');
 
-    return createAccessPoliciy(user, key, methodArn);
-  } catch (err) {
-    console.error('Authorization error:', err);
-    return responseBuilder.errors.unauthorized(err.message);
-  }
+      const key = user.password;
+      delete user.password;
+
+      if (user.active) await heartBeat({ ...user });
+
+      const accessPolicy = createAccessPoliciy(user, key, methodArn);
+      return callback(null, accessPolicy);
+    } catch (err) {
+      console.error('Authorization error:', err);
+      return callback('Error');
+    }
+  })();
 };

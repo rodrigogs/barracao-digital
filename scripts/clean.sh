@@ -32,6 +32,11 @@
     cd providers/gmaps || exit
     rm -rf node_modules
     rm -rf package-lock.json
+  ) &
+  (
+    cd providers/opentok || exit
+    rm -rf node_modules
+    rm -rf package-lock.json
   )
 ) &
 (

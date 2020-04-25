@@ -9,13 +9,25 @@ module.exports.handler = async (event) => {
       consumer: user,
       body,
       path,
+      pathParameters,
     } = requestContext;
 
     const isAlternatingActivity = (path && path.endsWith('alternate'));
+    const isCreatingVideoSession = (pathParameters && pathParameters.ticket);
 
     if (isAlternatingActivity) {
       return responseBuilder.success.ok({
-        body: await doctorsService.alternateActive(user.username, user),
+        body: await doctorsService.alternateActive(user.username),
+      });
+    }
+
+    if (isCreatingVideoSession) {
+      const token = await doctorsService.createVideoSession(
+        user.username,
+        pathParameters.ticket,
+      );
+      return responseBuilder.success.ok({
+        body: { token },
       });
     }
 

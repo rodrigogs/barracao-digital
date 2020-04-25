@@ -32,6 +32,7 @@
     "@nuxtjs/pwa": "^3.0.0-0",
     "@nuxtjs/sentry": "^4.0.1",
     "@nuxtjs/vuetify": "^1.0.0",
+    "@opentok/client": "^2.17.1",
     "@rodrigogs/promise-pool": "^1.0.3",
     "core-js": "2",
     "date-fns": "^2.12.0",

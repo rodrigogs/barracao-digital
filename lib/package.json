@@ -22,6 +22,7 @@
   "submodules": [
     "providers/aws",
     "providers/firebase",
-    "providers/gmaps"
+    "providers/gmaps",
+    "providers/opentok"
   ]
 }
