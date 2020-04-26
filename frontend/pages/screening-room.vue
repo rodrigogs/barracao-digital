@@ -350,13 +350,19 @@ export default {
         )
       }
 
-      const patient = {
+      const patient = Object.entries({
         ...this.myData,
         cep: unmaskText(this.myData.cep),
         cpf: unmaskText(this.myData.cpf),
         ...this.medicalInformations,
         ...this.contact
-      }
+      }).reduce(
+        (acc, [key, value]) => ({
+          ...acc,
+          [key]: value || null
+        }),
+        {}
+      )
 
       this.isSaving = true
 
