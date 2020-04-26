@@ -171,11 +171,11 @@ export default {
     step: 1,
     isLoading: false,
     onGoing: {
-      message: null
+      message: ''
     },
     finished: {
-      message: null,
-      outcome: null
+      message: '',
+      outcome: ''
     }
   }),
   validations: {

@@ -103,7 +103,6 @@ export default {
    ** Plugins to load before mounting the App
    */
   plugins: [
-    '~/plugins/v-eager',
     '~/plugins/vuetify-toast',
     '~/plugins/vuelidate',
     '~/plugins/vue-the-mask',
