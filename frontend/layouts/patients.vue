@@ -13,10 +13,7 @@
 
           <v-spacer></v-spacer>
 
-          <ReportIssueDialog
-            text="Reportar problema"
-            v-on="on"
-          ></ReportIssueDialog>
+          <ReportIssueDialog />
         </v-row>
       </v-container>
     </v-app-bar>
