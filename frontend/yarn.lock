@@ -1562,6 +1562,14 @@
     "@types/yargs" "^15.0.0"
     chalk "^3.0.0"
 
+"@kuroski/v-eager@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@kuroski/v-eager/-/v-eager-1.0.0.tgz#732be0a3c64937f45acd2c0d99c9c207be08b569"
+  integrity sha512-R8T5vneIVorNnCMG1xkV8XIaT0OQnm7TCZfNGBNt0AsbmFXKQfa5WwwnBTrNTIRweNDujyUQw+uIzhCS7omrxQ==
+  dependencies:
+    core-js "^3.6.4"
+    vue "^2.6.11"
+
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/@mrmlnc/readdir-enhanced/-/readdir-enhanced-2.2.1.tgz#524af240d1a360527b730475ecfa1344aa540dde"
@@ -4246,7 +4254,7 @@ core-js@2, core-js@^2.6.5:
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.6.11.tgz#38831469f9922bded8ee21c9dc46985e0399308c"
   integrity sha512-5wjnpaT/3dV+XB4borEsnAYQchn00XSgTAWKDkEqv+K8KevjbzmofK6hfJ9TZIlpj2N0xQpazy7PiRQiWHqzWg==
 
-core-js@3.6.5:
+core-js@3.6.5, core-js@^3.6.4:
   version "3.6.5"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.6.5.tgz#7395dc273af37fb2e50e9bd3d9fe841285231d1a"
   integrity sha512-vZVEEwZoIsI+vPEuoF9Iqf5H7/M3eeQqWlQnYa8FSKKePuYTf5MWnxb5SDAzCa60b3JBRS5g9b+Dq7b1y/RCrA==

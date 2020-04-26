@@ -19,19 +19,14 @@
             autofocus
           ></v-text-field>
 
-          <!--
-            v-model not used in the input here because of a known issue with
-            user interaction and the default Android Chrome keyboard.
-            https://github.com/vuejs/vue/issues/9777
-          -->
           <v-text-field
             id="name"
             name="name"
-            :value="$v.myData.name.$model"
+            v-model="$v.myData.name.$model"
+            v-eager
             :error-messages="nameErrors"
             label="Nome*"
             required
-            @input="setMyDataName"
           ></v-text-field>
 
           <v-text-field
@@ -81,6 +76,7 @@
           <v-text-field
             id="meds"
             v-model="medicalInformations.meds"
+            v-eager
             label="Você faz uso de algum remédio todos os dias? Quais?"
             hint="Exemplo: Enalapril, Metformina, AAS"
             autofocus
@@ -89,6 +85,7 @@
           <v-text-field
             id="allergies"
             v-model="medicalInformations.allergies"
+            v-eager
             label="Você tem alguma alergia? Quais?"
             hint="Exemplo: Dipirona, Penicilina, Paracetamol"
           ></v-text-field>
@@ -96,6 +93,7 @@
           <v-text-field
             id="covenant"
             v-model="medicalInformations.covenant"
+            v-eager
             label="Você tem algum convênio de saúde? Qual?"
             hint="Cite seu convênio"
           ></v-text-field>
@@ -147,6 +145,7 @@
           <v-text-field
             id="email"
             v-model="contact.email"
+            v-eager
             label="Email"
           ></v-text-field>
 
@@ -167,12 +166,14 @@
           <v-text-field
             id="hangout"
             v-model="contact.hangout"
+            v-eager
             label="Hangouts"
           ></v-text-field>
 
           <v-text-field
             id="skype"
             v-model="contact.skype"
+            v-eager
             label="Skype"
           ></v-text-field>
 
@@ -317,10 +318,6 @@ export default {
     }
   },
   methods: {
-    setMyDataName(value) {
-      this.myData.name = value
-      this.$v.myData.name.$touch()
-    },
     checkFacility: debounce(async function check() {
       const cep = unmaskText(this.myData.cep)
 
