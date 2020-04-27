@@ -4,6 +4,7 @@
       <v-tooltip bottom>
         <template v-slot:activator="tooltipActivator">
           <v-btn
+            :style="hidden && { display: 'none' }"
             icon
             color="warning"
             v-on="tooltipActivator.on"
@@ -37,6 +38,16 @@
 
 <script>
 export default {
+  props: {
+    open: {
+      type: Boolean,
+      required: false
+    },
+    hidden: {
+      type: Boolean,
+      required: false
+    }
+  },
   data: () => ({
     dialog: false,
     interval: null,
@@ -50,6 +61,9 @@ export default {
       } else {
         this.stopUpdatingModalSize()
       }
+    },
+    open() {
+      this.dialog = open
     }
   },
   destroyed() {

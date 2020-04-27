@@ -22,12 +22,12 @@ module.exports.handler = async (event) => {
     }
 
     if (isCreatingVideoSession) {
-      const token = await doctorsService.createVideoSession(
+      const videoSession = await doctorsService.createVideoSession(
         user.username,
         pathParameters.ticket,
       );
       return responseBuilder.success.ok({
-        body: { token },
+        body: videoSession,
       });
     }
 

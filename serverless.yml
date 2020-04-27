@@ -57,7 +57,7 @@ provider:
     - Effect: Allow
       Action:
         - 'events:*'
-      Resource: 'arn:aws:events:*:*:rule/${self:service}-${self:custom.stage}-*'
+      Resource: 'arn:aws:events:*:*:rule/*'
     - Effect: Allow
       Action:
         - 'lambda:*'
@@ -78,6 +78,7 @@ provider:
     OPENTOK_API_KEY: ${env:OPENTOK_API_KEY}
     OPENTOK_API_SECRET: ${env:OPENTOK_API_SECRET}
     DOCTOR_INACTIVITY_TIMEOUT_IN_MINUTES: ${env:DOCTOR_INACTIVITY_TIMEOUT_IN_MINUTES, '33'}
+    VIDEO_CALL_CLEANUP_TIMEOUT_IN_MINUTES: ${env:VIDEO_CALL_CLEANUP_TIMEOUT_IN_MINUTES, '60'}
 
 functions:
   doctorAuthorizer:
@@ -96,6 +97,17 @@ functions:
           method: GET
           path: /
           cors: true
+
+  # Jobs
+  alternate-doctor-job:
+    handler: functions/jobs/alternate-doctor-job.handler
+    memorySize: 1024
+    timeout: 30
+
+  video-call-cleanup-job:
+    handler: functions/jobs/video-call-cleanup-job.handler
+    memorySize: 1024
+    timeout: 30
 
   # Auth
   auth:
@@ -130,6 +142,8 @@ functions:
 
   doctors-post:
     handler: functions/api/doctors/post.handler
+    memorySize: 512
+    timeout: 30
     events:
       - http:
           method: POST
@@ -167,9 +181,11 @@ functions:
           cors: true
           authorizer: masterAuthorizer
 
-  ## Jobs
-  alternate-doctor-job:
-    handler: functions/jobs/alternate-doctor-job.handler
+      - http:
+          method: DELETE
+          path: /doctors/video/{ticket}
+          cors: true
+          authorizer: doctorAuthorizer
 
   # Patients
   patients-get:

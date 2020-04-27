@@ -31,5 +31,6 @@
     "invalidate-cloudfront-cache": "node ./scripts/invalidate-cloudfront-cache.js web.barracaodigital.com dev.barracaodigital.com",
     "test:frontend": "(cd frontend && yarn test:e2e:ci)"
   },
-  "license": "BSD-3-Clause"
+  "license": "BSD-3-Clause",
+  "dependencies": {}
 }

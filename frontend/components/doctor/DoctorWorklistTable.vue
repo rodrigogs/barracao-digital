@@ -113,6 +113,10 @@ export default {
     fetchNextPage: {
       type: Function,
       required: true
+    },
+    patientsChanges: {
+      type: Number,
+      required: true
     }
   },
   data: () => ({
@@ -124,8 +128,7 @@ export default {
       { text: 'Tempo de espera', value: 'waitingTime', align: 'center' },
       { text: 'Status', value: 'status' }
     ],
-    patientsSubscription: null,
-    patientsChanges: 0
+    patientsSubscription: null
   }),
   computed: {
     statusFilters() {
@@ -167,28 +170,7 @@ export default {
     if (timeWaiting && !Number.isNaN(timeWaiting))
       this.timeWaiting = Number(timeWaiting)
   },
-  mounted() {
-    this.handlePatientsUpdate()
-  },
-  beforeDestroy() {
-    if (this.patientsSubscription) this.patientsSubscription() // Unsubscribes
-  },
   methods: {
-    handlePatientsUpdate() {
-      let isFisrtLoad = true
-      this.patientsSubscription = this.$fireStore
-        .collection('facilities')
-        .doc(this.$auth.user.cep)
-        .collection('patients')
-        .onSnapshot((snapshot) => {
-          // TODO update list dynamically
-          if (isFisrtLoad) return (isFisrtLoad = false)
-          snapshot.docChanges().forEach((change) => {
-            // console.log(change.doc.data())
-            this.patientsChanges += 1
-          })
-        })
-    },
     handleNextPageRequest($loadingState) {
       return this.fetchNextPage().then(
         ({ lastEvaluatedKey }) => {
@@ -228,7 +210,6 @@ export default {
       return percentageToColor(percent)
     },
     refreshPatients: debounce(function refresh() {
-      this.patientsChanges = 0
       this.$emit('refresh')
     }, 1000)
   }

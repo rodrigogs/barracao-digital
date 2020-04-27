@@ -81,7 +81,7 @@
           </v-menu>
           <v-tooltip v-else bottom>
             <template v-slot:activator="{ on }">
-              <ReportIssueDialog v-on="on"></ReportIssueDialog>
+              <ReportIssueDialog v-on="on" />
             </template>
             <span>Reportar problema</span>
           </v-tooltip>
@@ -89,6 +89,7 @@
       </v-container>
     </v-app-bar>
     <v-content>
+      <ReportIssueDialog hidden :open="reportingIssue" />
       <v-container>
         <v-layout column justify-center align-center>
           <nuxt keep-alive :keep-alive-props="{ include: 'PagesDoctor' }" />

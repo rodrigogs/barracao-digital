@@ -14,11 +14,13 @@
         :facility-cep="$auth.user.cep"
         :start-service="toggleStatus"
         :stop-service="toggleStatus"
+        @refresh="$fetch()"
       />
       <DoctorWorklistTable
         :patients="patients"
         :is-loading="$fetchState.pending"
         :fetch-next-page="fetchNextPatientPage"
+        :patients-changes="patientsChanges"
         @status="statusChanged"
         @timeWaiting="timeWaitingChanged"
         @refresh="$fetch()"
@@ -34,6 +36,7 @@ import IdleJs from 'idle-js'
 import { mapState } from 'vuex'
 import DoctorStatus from '@/components/doctor/DoctorStatus'
 import DoctorWorklistTable from '@/components/doctor/DoctorWorklistTable'
+import debounce from '@/utils/debounce'
 
 const ONE_MINUTE = 60000
 const THIRTY_MINUTES = ONE_MINUTE * 30
@@ -46,14 +49,28 @@ export default {
     DoctorWorklistTable
   },
   fetch() {
-    return this.$store.dispatch('worklist/fetchPatients', {
-      filters: this.$route.query
-    })
+    if (this.fetching) return
+    this.fetching = true
+    this.patientsChanges = 0
+    return this.$store
+      .dispatch('worklist/fetchPatients', {
+        filters: this.$route.query
+      })
+      .finally(() => {
+        this.fetching = false
+        this.fetchWhenChangesDetected = false
+      })
   },
   data: () => ({
     showTeamStatus: false,
     timeoutAfterInactiveModalDisplayed: null,
-    idle: null
+    idle: null,
+    doctorSubscription: null,
+    patientsSubscription: null,
+    patientsChanges: 0,
+    fetching: false,
+    togglingStatus: false,
+    fetchWhenChangesDetected: false
   }),
   computed: {
     ...mapState('worklist', {
@@ -87,27 +104,57 @@ export default {
       }
     }).start()
 
-    this.$fireStore
+    this.doctorSubscription = this.$fireStore
       .collection('facilities')
       .doc(this.$auth.user.cep)
       .collection('doctors')
       .doc(this.$auth.user.username)
       .onSnapshot((doc) => {
-        this.$auth.setUser(doc.data())
+        const updatedDoctor = doc.data()
+        if (
+          this.$auth.user.active !== updatedDoctor.active &&
+          !this.togglingStatus
+        ) {
+          this.fetchWhenChangesDetected = true
+        }
+        this.$auth.setUser(updatedDoctor)
+      })
+
+    let isFirstLoad = true
+    this.patientsSubscription = this.$fireStore
+      .collection('facilities')
+      .doc(this.$auth.user.cep)
+      .collection('patients')
+      .onSnapshot((snapshot) => {
+        // TODO update list dynamically
+        if (isFirstLoad) return (isFirstLoad = false)
+        snapshot.docChanges().forEach((change) => {
+          // console.log(change.doc.data())
+          if (this.fetchWhenChangesDetected) this.debouncedFetch()
+          this.patientsChanges += 1
+        })
       })
   },
   beforeDestroy() {
     this.idle && this.idle.stop()
+    this.doctorSubscription && this.doctorSubscription()
+    this.patientsSubscription && this.patientsSubscription()
   },
   methods: {
+    debouncedFetch: debounce(function() {
+      this.$fetch()
+    }, 500),
     toggleStatus() {
-      return this.$api.alternateDoctorStatus().then(
-        () => {},
-        () =>
+      this.togglingStatus = true
+      return this.$api
+        .alternateDoctorStatus()
+        .then(() => this.$fetch())
+        .catch(() =>
           this.$toast.error(
             'Não foi possivel alterar o status de atendimento, tente novamente mais tarde.'
           )
-      )
+        )
+        .finally(() => (this.togglingStatus = false))
     },
     statusChanged(status) {
       this._setQueryParamsAndFetch({ status })
