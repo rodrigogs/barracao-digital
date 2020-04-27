@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" max-width="800">
+  <v-dialog v-model="isOpen" max-width="800" @click:outside="close">
     <template v-slot:activator="dialogActivator">
       <v-tooltip bottom>
         <template v-slot:activator="tooltipActivator">
@@ -19,7 +19,7 @@
     <v-card ref="modal">
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn icon @click="dialog = false">
+        <v-btn icon @click="close">
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-card-actions>
@@ -48,28 +48,36 @@ export default {
       required: false
     }
   },
-  data: () => ({
-    dialog: false,
-    interval: null,
-    modalWidth: 0,
-    modalHeight: 0
-  }),
+  data() {
+    return {
+      dialog: !!this.open,
+      interval: null,
+      modalWidth: 0,
+      modalHeight: 0
+    }
+  },
+  computed: {
+    isOpen() {
+      return this.open || this.dialog
+    }
+  },
   watch: {
-    dialog() {
-      if (this.dialog) {
+    isOpen() {
+      if (this.isOpen) {
         this.startUpdatingModalSize()
       } else {
         this.stopUpdatingModalSize()
       }
-    },
-    open() {
-      this.dialog = open
     }
   },
   destroyed() {
     this.stopUpdatingModalSize()
   },
   methods: {
+    close() {
+      this.dialog = false
+      this.$emit('close')
+    },
     startUpdatingModalSize() {
       this.interval = setInterval(() => this.updateModalSize(), 1000)
     },

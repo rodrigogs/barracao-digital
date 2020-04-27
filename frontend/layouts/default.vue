@@ -89,7 +89,11 @@
       </v-container>
     </v-app-bar>
     <v-content>
-      <ReportIssueDialog hidden :open="reportingIssue" />
+      <ReportIssueDialog
+        hidden
+        :open="reportingIssue"
+        @close="reportingIssue = false"
+      />
       <v-container>
         <v-layout column justify-center align-center>
           <nuxt keep-alive :keep-alive-props="{ include: 'PagesDoctor' }" />
