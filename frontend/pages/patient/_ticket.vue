@@ -1,7 +1,7 @@
 <template>
   <v-card elevation="0">
     <v-container>
-      <OpentokSubscriber
+      <OpentokSession
         v-if="hasOpentokCredentials"
         :session-id="patient.videoSession.sessionId"
         :token="patient.videoSession.token"
@@ -22,7 +22,7 @@ import PatientFinished from '@/components/patient/PatientFinished.vue'
 import PatientCantBeAssisted from '@/components/patient/PatientCantBeAssisted.vue'
 import PatientFacilityNotAvailable from '@/components/patient/PatientFacilityNotAvailable.vue'
 import PatientGaveUp from '@/components/patient/PatientGaveUp.vue'
-import OpentokSubscriber from '@/components/opentok/OpentokSubscriber.vue'
+import OpentokSession from '@/components/opentok/OpentokSession.vue'
 
 const searchPatientByTicket = async (api, ticket) => {
   const {
@@ -54,7 +54,7 @@ export default {
     return !isNaN(Number(params.ticket))
   },
   components: {
-    OpentokSubscriber
+    OpentokSession
   },
   async asyncData({ app, params, error }) {
     try {

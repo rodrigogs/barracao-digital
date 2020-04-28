@@ -33,10 +33,10 @@
       <v-card-text>
         <DoctorPatientStatusModalSummary :patient="patient" />
 
-        <OpentokPublisher
-          v-if="session"
-          :session="session"
-          @error="errorHandler"
+        <OpentokSession
+          v-if="hasOpentokCredentials"
+          :session-id="videoSession.sessionId"
+          :token="videoSession.token"
         />
 
         <v-stepper
@@ -151,20 +151,19 @@
 </template>
 
 <script>
-import OT from '@opentok/client'
 import { required, minLength } from 'vuelidate/lib/validators'
 import { PATIENT_STATUS, PATIENT_OUTCOMES } from '~/constants'
 import calculateTimeWaiting from '~/utils/calculateTimeWaiting'
 import StatusBadge from '~/components/StatusBadge'
 import DoctorPatientStatusModalSummary from '~/components/doctor/DoctorPatientStatusModalSummary'
-import OpentokPublisher from '@/components/opentok/OpentokPublisher'
+import OpentokSession from '@/components/opentok/OpentokSession.vue'
 
 export default {
   name: 'DoctorPatientStatusModal',
   components: {
     DoctorPatientStatusModalSummary,
     StatusBadge,
-    OpentokPublisher
+    OpentokSession
   },
   props: {
     patient: {
@@ -175,9 +174,8 @@ export default {
       type: Function,
       required: true
     },
-    session: {
-      type: OT.Session,
-      required: false,
+    videoSession: {
+      type: Object,
       default: null
     }
   },
@@ -206,6 +204,13 @@ export default {
     }
   },
   computed: {
+    hasOpentokCredentials() {
+      return (
+        this.videoSession &&
+        this.videoSession.sessionId &&
+        this.videoSession.token
+      )
+    },
     PATIENT_STATUS() {
       return PATIENT_STATUS
     },
@@ -282,14 +287,14 @@ export default {
   },
   mounted() {
     this.step = this.statusesIndex[this.patient.status]
-    this.onGoing.message = this.patient.ongoingDoctorFeedback
-    this.finished.message = this.patient.finishedDoctorFeedback
-    this.finished.outcome = this.patient.patientOutcome
+    this.onGoing.message =
+      this.patient.ongoingStatus && this.patient.ongoingStatus.doctorMessage
+    this.finished.message =
+      this.patient.finishedStatus && this.patient.finishedStatus.doctorMessage
+    this.finished.outcome =
+      this.patient.finishedStatus && this.patient.finishedStatus.patientOutcome
   },
   methods: {
-    errorHandler(err) {
-      this.$sentry.captureException(err)
-    },
     validateAndContinueOnGoingSection() {
       this.validateOnGoingSection().then(
         () => {
