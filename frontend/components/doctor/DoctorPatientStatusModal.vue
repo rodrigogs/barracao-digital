@@ -33,6 +33,12 @@
       <v-card-text>
         <DoctorPatientStatusModalSummary :patient="patient" />
 
+        <OpentokPublisher
+          v-if="session"
+          :session="session"
+          @error="errorHandler"
+        />
+
         <v-stepper
           v-if="!isUnassisted && !isFinishedStatus"
           v-model="step"
@@ -145,17 +151,20 @@
 </template>
 
 <script>
+import OT from '@opentok/client'
 import { required, minLength } from 'vuelidate/lib/validators'
 import { PATIENT_STATUS, PATIENT_OUTCOMES } from '~/constants'
 import calculateTimeWaiting from '~/utils/calculateTimeWaiting'
 import StatusBadge from '~/components/StatusBadge'
 import DoctorPatientStatusModalSummary from '~/components/doctor/DoctorPatientStatusModalSummary'
+import OpentokPublisher from '@/components/opentok/OpentokPublisher'
 
 export default {
   name: 'DoctorPatientStatusModal',
   components: {
     DoctorPatientStatusModalSummary,
-    StatusBadge
+    StatusBadge,
+    OpentokPublisher
   },
   props: {
     patient: {
@@ -165,6 +174,11 @@ export default {
     save: {
       type: Function,
       required: true
+    },
+    session: {
+      type: OT.Session,
+      required: false,
+      default: null
     }
   },
   data: () => ({
@@ -273,6 +287,9 @@ export default {
     this.finished.outcome = this.patient.patientOutcome
   },
   methods: {
+    errorHandler(err) {
+      this.$sentry.captureException(err)
+    },
     validateAndContinueOnGoingSection() {
       this.validateOnGoingSection().then(
         () => {
