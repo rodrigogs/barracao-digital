@@ -2,13 +2,12 @@
   <DoctorPatientStatusModal
     :patient="patient"
     :save="savePatient"
-    :session="session"
+    :video-session="videoSession"
     @close="modalClosed"
   />
 </template>
 
 <script>
-import OT from '@opentok/client'
 import DoctorPatientStatusModal from '@/components/doctor/DoctorPatientStatusModal'
 
 export default {
@@ -28,7 +27,7 @@ export default {
     )
   },
   data: () => ({
-    session: null
+    videoSession: null
   }),
   methods: {
     savePatient({ status, form, next }) {
@@ -55,16 +54,11 @@ export default {
     createOpentokSession(patient) {
       return this.$api
         .createVideoSession(patient.ticket)
-        .then((videoSession) => {
-          this.session = OT.initSession(
-            videoSession.apiKey,
-            videoSession.sessionId
-          )
-          this.session.connect(videoSession.token, (err) => {
-            if (err) {
-              this.$sentry.captureException(err)
-            }
-          })
+        .then(({ sessionId, token }) => {
+          this.videoSession = {
+            sessionId,
+            token
+          }
         })
     },
     modalClosed() {
