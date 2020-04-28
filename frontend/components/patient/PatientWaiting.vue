@@ -53,7 +53,7 @@
 
     <v-card>
       <v-card-title>
-        Em quanto espera, informe-se
+        Enquanto espera, informe-se
       </v-card-title>
       <v-card-subtitle>
         Mantenha-se atualizado sobre o COVID-19 por fontes confiáveis.
