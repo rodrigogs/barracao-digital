@@ -1,6 +1,11 @@
 <template>
   <v-card elevation="0">
     <v-container>
+      <OpentokSubscriber
+        v-if="hasOpentokCredentials"
+        :session-id="patient.videoSession.sessionId"
+        :token="patient.videoSession.token"
+      />
       <component
         :is="patientStatusComponent.component"
         v-bind="patientStatusComponent.props"
@@ -17,6 +22,7 @@ import PatientFinished from '@/components/patient/PatientFinished.vue'
 import PatientCantBeAssisted from '@/components/patient/PatientCantBeAssisted.vue'
 import PatientFacilityNotAvailable from '@/components/patient/PatientFacilityNotAvailable.vue'
 import PatientGaveUp from '@/components/patient/PatientGaveUp.vue'
+import OpentokSubscriber from '@/components/opentok/OpentokSubscriber.vue'
 
 const searchPatientByTicket = async (api, ticket) => {
   const {
@@ -25,7 +31,8 @@ const searchPatientByTicket = async (api, ticket) => {
     createdAt,
     status,
     ongoingStatus,
-    finishedStatus
+    finishedStatus,
+    videoSession
   } = await api.searchPatientByTicket(ticket)
   return {
     patient: {
@@ -35,7 +42,8 @@ const searchPatientByTicket = async (api, ticket) => {
       createdAt,
       status,
       ongoingStatus,
-      finishedStatus
+      finishedStatus,
+      videoSession
     }
   }
 }
@@ -44,6 +52,9 @@ export default {
   layout: 'patients',
   validate({ params }) {
     return !isNaN(Number(params.ticket))
+  },
+  components: {
+    OpentokSubscriber
   },
   async asyncData({ app, params, error }) {
     try {
@@ -87,6 +98,13 @@ export default {
     patientSubscription: null
   }),
   computed: {
+    hasOpentokCredentials() {
+      return (
+        this.patient.videoSession &&
+        this.patient.videoSession.sessionId &&
+        this.patient.videoSession.token
+      )
+    },
     patientStatusComponent() {
       return {
         [PATIENT_STATUS.WAITING]: () => ({
@@ -148,7 +166,7 @@ export default {
         .collection('patients')
         .doc(this.patient.ticket)
         .onSnapshot((doc) => {
-          this.patient = doc.data()
+          this.$set(this, 'patient', doc.data())
         })
     },
     async handleMessaging() {
@@ -160,11 +178,6 @@ export default {
           this._updatePatientMessagingToken(updatedToken)
         })
       } catch (_error) {}
-    },
-    _updatePatientMessagingToken(token) {
-      return this.$api.setPatientMessagingToken(this.$route.params.ticket, {
-        token
-      })
     },
     ratingClicked(rating) {
       return this.$api
@@ -181,6 +194,11 @@ export default {
             return Promise.reject(error)
           }
         )
+    },
+    _updatePatientMessagingToken(token) {
+      return this.$api.setPatientMessagingToken(this.$route.params.ticket, {
+        token
+      })
     }
   }
 }

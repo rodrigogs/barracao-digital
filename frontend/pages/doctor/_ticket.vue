@@ -2,11 +2,13 @@
   <DoctorPatientStatusModal
     :patient="patient"
     :save="savePatient"
+    :session="session"
     @close="modalClosed"
   />
 </template>
 
 <script>
+import OT from '@opentok/client'
 import DoctorPatientStatusModal from '@/components/doctor/DoctorPatientStatusModal'
 
 export default {
@@ -25,6 +27,9 @@ export default {
       () => error({ message: 'Usuário Inexistente', statusCode: 404 })
     )
   },
+  data: () => ({
+    session: null
+  }),
   methods: {
     savePatient({ status, form, next }) {
       return this.$store
@@ -37,6 +42,7 @@ export default {
           (patient) => {
             this.$toast.success('Status do paciente alterado com sucesso.')
             this.patient = patient
+            this.createOpentokSession(patient)
           },
           (error) => {
             this.$toast.error(
@@ -45,6 +51,21 @@ export default {
             return Promise.reject(error)
           }
         )
+    },
+    createOpentokSession(patient) {
+      return this.$api
+        .createVideoSession(patient.ticket)
+        .then((videoSession) => {
+          this.session = OT.initSession(
+            videoSession.apiKey,
+            videoSession.sessionId
+          )
+          this.session.connect(videoSession.token, (err) => {
+            if (err) {
+              this.$sentry.captureException(err)
+            }
+          })
+        })
     },
     modalClosed() {
       this.$router.push({ name: 'doctor' })
