@@ -33,12 +33,6 @@
       <v-card-text>
         <DoctorPatientStatusModalSummary :patient="patient" />
 
-        <OpentokSession
-          v-if="hasOpentokCredentials"
-          :session-id="videoSession.sessionId"
-          :token="videoSession.token"
-        />
-
         <v-stepper
           v-if="!isUnassisted && !isFinishedStatus"
           v-model="step"
@@ -70,7 +64,7 @@
             <span class="title">Em andamento</span>
           </v-stepper-step>
           <v-stepper-content :step="statusesIndex[PATIENT_STATUS.ONGOING]">
-            <form @keydown.enter.prevent="validateOnGoingSection">
+            <v-form @keydown.enter.prevent="validateOnGoingSection">
               <v-textarea
                 v-model="$v.onGoing.message.$model"
                 :error-messages="onGoingMessageErrors"
@@ -86,19 +80,28 @@
                 :disabled="isLoading"
                 @click="validateOnGoingSection"
               >
-                Enviar
+                Salvar
               </v-btn>
 
               <v-btn
-                class="mt-4"
+                class="mt-4 mx-4"
                 color="primary"
                 :loading="isLoading"
                 :disabled="isLoading"
                 @click="validateAndContinueOnGoingSection"
               >
-                Enviar e continuar
+                Continuar
               </v-btn>
-            </form>
+
+              <v-btn
+                v-if="isOngoing"
+                class="mt-4"
+                @click="$emit('startSession')"
+              >
+                <v-icon left>mdi-video</v-icon>
+                <span>Iniciar sessão</span>
+              </v-btn>
+            </v-form>
           </v-stepper-content>
 
           <v-stepper-step
@@ -156,14 +159,12 @@ import { PATIENT_STATUS, PATIENT_OUTCOMES } from '~/constants'
 import calculateTimeWaiting from '~/utils/calculateTimeWaiting'
 import StatusBadge from '~/components/StatusBadge'
 import DoctorPatientStatusModalSummary from '~/components/doctor/DoctorPatientStatusModalSummary'
-import OpentokSession from '@/components/opentok/OpentokSession.vue'
 
 export default {
   name: 'DoctorPatientStatusModal',
   components: {
     DoctorPatientStatusModalSummary,
-    StatusBadge,
-    OpentokSession
+    StatusBadge
   },
   props: {
     patient: {
@@ -173,10 +174,6 @@ export default {
     save: {
       type: Function,
       required: true
-    },
-    videoSession: {
-      type: Object,
-      default: null
     }
   },
   data: () => ({
@@ -204,18 +201,14 @@ export default {
     }
   },
   computed: {
-    hasOpentokCredentials() {
-      return (
-        this.videoSession &&
-        this.videoSession.sessionId &&
-        this.videoSession.token
-      )
-    },
     PATIENT_STATUS() {
       return PATIENT_STATUS
     },
     isUnassisted() {
       return this.patient.status === PATIENT_STATUS.CANT_BE_ASSISTED
+    },
+    isOngoing() {
+      return this.patient.status === PATIENT_STATUS.ONGOING
     },
     isFinishedStatus() {
       const finishedStatuses = [

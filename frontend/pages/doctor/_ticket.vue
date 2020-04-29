@@ -1,21 +1,31 @@
 <template>
-  <DoctorPatientStatusModal
-    :patient="patient"
-    :save="savePatient"
-    :video-session="videoSession"
-    @close="modalClosed"
-  />
+  <div>
+    <DoctorPatientStatusModal
+      :patient="patient"
+      :save="savePatient"
+      @startSession="createOpentokSession"
+      @close="modalClosed"
+    />
+
+    <OpentokSession
+      v-if="hasOpentokCredentials"
+      :session-id="videoSession.sessionId"
+      :token="videoSession.token"
+    />
+  </div>
 </template>
 
 <script>
 import DoctorPatientStatusModal from '@/components/doctor/DoctorPatientStatusModal'
+import OpentokSession from '@/components/opentok/OpentokSession.vue'
 
 export default {
   validate({ params }) {
     return !isNaN(Number(params.ticket))
   },
   components: {
-    DoctorPatientStatusModal
+    DoctorPatientStatusModal,
+    OpentokSession
   },
   asyncData({ app, store, params, error }) {
     const storePatient = store.getters['worklist/getPatient'](params.ticket)
@@ -29,6 +39,15 @@ export default {
   data: () => ({
     videoSession: null
   }),
+  computed: {
+    hasOpentokCredentials() {
+      return (
+        this.videoSession &&
+        this.videoSession.sessionId &&
+        this.videoSession.token
+      )
+    }
+  },
   mounted() {
     this.videoSession =
       this.$auth.user.videoSessions &&
@@ -46,7 +65,6 @@ export default {
           (patient) => {
             this.$toast.success('Status do paciente alterado com sucesso.')
             this.patient = patient
-            this.createOpentokSession(patient)
           },
           (error) => {
             this.$toast.error(
@@ -56,9 +74,9 @@ export default {
           }
         )
     },
-    createOpentokSession(patient) {
+    createOpentokSession() {
       return this.$api
-        .createVideoSession(patient.ticket)
+        .createVideoSession(this.patient.ticket)
         .then(({ sessionId, token }) => {
           this.videoSession = {
             sessionId,
