@@ -1,13 +1,31 @@
 <template>
-  <div>
-    <div ref="publisher"></div>
-    <div
-      v-for="stream of streams"
-      :key="stream.streamId"
-      :ref="`stream-${stream.streamId}`"
-      @error="errorHandler"
-    ></div>
-  </div>
+  <v-dialog
+    :value="true"
+    fullscreen
+    hide-overlay
+    transition="dialog-bottom-transition"
+  >
+    <v-card>
+      <v-toolbar dark color="primary">
+        <v-btn icon dark @click="$emit('close')">
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+      </v-toolbar>
+
+      <div class="video-chat">
+        <div class="publisher" ref="publisher"></div>
+
+        <div class="subscribers">
+          <div
+            v-for="stream of streams"
+            :key="stream.streamId"
+            :ref="`stream-${stream.streamId}`"
+            @error="errorHandler"
+          ></div>
+        </div>
+      </div>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script>
@@ -53,29 +71,11 @@ export default {
         }
       })
 
-      this.session.on('sessionConnected', () => {
-        this.sessionConnected()
-      })
-
-      this.session.on('streamCreated', (event) => {
-        this.streams.push(event.stream)
-        this.streamCreated(event.stream)
-      })
-
-      this.session.on('streamDestroyed', (event) => {
-        const idx = this.streams.indexOf(event.stream)
-        if (idx > -1) {
-          this.streams.splice(idx, 1)
-        }
-      })
+      this.session.on('sessionConnected', this.sessionConnected.bind(this))
+      this.session.on('streamCreated', this.streamCreated.bind(this))
+      this.session.on('streamDestroyed', this.streamDestroyed.bind(this))
     },
     sessionConnected() {
-      this.publish()
-    },
-    streamCreated(stream) {
-      this.subscribe(stream)
-    },
-    publish() {
       const publisher = OT.initPublisher(
         this.$refs.publisher,
         this.opts,
@@ -85,11 +85,22 @@ export default {
           }
         }
       )
+
       this.session.publish(publisher, (err) => {
         if (err) {
           this.errorHandler(err)
         }
       })
+    },
+    streamCreated({ stream }) {
+      this.streams.push(stream)
+      this.subscribe(stream)
+    },
+    streamDestroyed({ stream }) {
+      const index = this.streams.indexOf(stream)
+      if (index > -1) {
+        this.$delete(this.streams, index)
+      }
     },
     subscribe(stream) {
       Vue.nextTick(() => {
@@ -108,3 +119,32 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.video-chat {
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  min-height: calc(100vh - 56px);
+}
+
+.video-chat > .publisher {
+  grid-row: 1 / 2;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.video-chat > .subscribers {
+  grid-row: 2 / 3;
+  width: 100% !important;
+  height: 100% !important;
+
+  display: flex;
+  flex-wrap: wrap;
+  box-sizing: border-box;
+}
+
+.subscribers > * {
+  width: 100% !important;
+  height: 100% !important;
+}
+</style>
