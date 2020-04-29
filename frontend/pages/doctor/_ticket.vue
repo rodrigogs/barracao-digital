@@ -29,6 +29,11 @@ export default {
   data: () => ({
     videoSession: null
   }),
+  mounted() {
+    this.videoSession =
+      this.$auth.user.videoSessions &&
+      this.$auth.user.videoSessions[this.$route.params.ticket]
+  },
   methods: {
     savePatient({ status, form, next }) {
       return this.$store
