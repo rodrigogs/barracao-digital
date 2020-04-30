@@ -1,4 +1,6 @@
 const doctorsService = require('barracao-digital/services/doctors.service');
+const videoChatService = require('barracao-digital/services/videoChat.service');
+const jobsService = require('barracao-digital/services/jobs.service');
 const { getRequestContext, responseBuilder } = require('../../helpers');
 
 module.exports.handler = async (event) => {
@@ -16,7 +18,18 @@ module.exports.handler = async (event) => {
 
     const {
       username,
+      ticket,
     } = pathParameters;
+
+    const isDeletingVideoSession = !!ticket;
+    if (isDeletingVideoSession) {
+      await videoChatService.removeVideoSession(user.username, ticket);
+      await jobsService.removeVideoCallCleanupJobSchedule({
+        doctorUsername: user.username,
+        patientTicket: ticket,
+      });
+      return responseBuilder.success.noContent();
+    }
 
     const storedDoctor = await doctorsService.getOneByUsername(username);
     const isFromSameFacility = user.cep === storedDoctor.cep;
