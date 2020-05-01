@@ -3,7 +3,7 @@
     <DoctorPatientStatusModal
       :patient="patient"
       :save="savePatient"
-      @startSession="createOpentokSession"
+      :start-session="createOpentokSession"
       @close="modalClosed"
     />
 
@@ -11,6 +11,7 @@
       v-if="hasOpentokCredentials"
       :session-id="videoSession.sessionId"
       :token="videoSession.token"
+      :end-session="deleteOpentokSession"
     />
   </div>
 </template>
@@ -48,11 +49,6 @@ export default {
       )
     }
   },
-  mounted() {
-    this.videoSession =
-      this.$auth.user.videoSessions &&
-      this.$auth.user.videoSessions[this.$route.params.ticket]
-  },
   methods: {
     savePatient({ status, form, next }) {
       return this.$store
@@ -75,6 +71,14 @@ export default {
         )
     },
     createOpentokSession() {
+      const videoSession =
+        this.$auth.user.videoSessions &&
+        this.$auth.user.videoSessions[this.$route.params.ticket]
+      if (videoSession) {
+        this.videoSession = videoSession
+        return Promise.resolve(videoSession)
+      }
+
       return this.$api
         .createVideoSession(this.patient.ticket)
         .then(({ sessionId, token }) => {
@@ -83,6 +87,11 @@ export default {
             token
           }
         })
+    },
+    deleteOpentokSession() {
+      return this.$api.deleteVideoSession(this.patient.ticket).then(() => {
+        this.videoSession = null
+      })
     },
     modalClosed() {
       this.$router.push({ name: 'doctor' })

@@ -95,8 +95,12 @@
 
               <v-btn
                 v-if="isOngoing"
-                class="mt-4"
-                @click="$emit('startSession')"
+                class="mt-4 float-right"
+                color="green"
+                outlined
+                :loading="isLoadingSession"
+                :disabled="isLoadingSession"
+                @click="startOpentokSession"
               >
                 <v-icon left>mdi-video</v-icon>
                 <span>Iniciar sessão</span>
@@ -174,11 +178,16 @@ export default {
     save: {
       type: Function,
       required: true
+    },
+    startSession: {
+      type: Function,
+      required: true
     }
   },
   data: () => ({
     step: 1,
     isLoading: false,
+    isLoadingSession: false,
     onGoing: {
       message: ''
     },
@@ -288,6 +297,12 @@ export default {
       this.patient.finishedStatus && this.patient.finishedStatus.patientOutcome
   },
   methods: {
+    startOpentokSession() {
+      this.isLoadingSession = true
+      this.startSession().finally(() => {
+        this.isLoadingSession = false
+      })
+    },
     validateAndContinueOnGoingSection() {
       this.validateOnGoingSection().then(
         () => {

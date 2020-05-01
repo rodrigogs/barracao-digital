@@ -7,13 +7,20 @@
   >
     <v-card>
       <v-toolbar dark color="primary">
-        <v-btn icon dark @click="$emit('close')">
-          <v-icon>mdi-close</v-icon>
+        <v-spacer />
+        <v-btn
+          v-if="endSession"
+          :loading="isDeleting"
+          :disabled="isDeleting"
+          light
+          @click="deleteOpentokSession"
+        >
+          Encerrar
         </v-btn>
       </v-toolbar>
 
       <div class="video-chat">
-        <div class="publisher" ref="publisher"></div>
+        <div ref="publisher" class="publisher"></div>
 
         <div class="subscribers">
           <div
@@ -23,6 +30,13 @@
             @error="errorHandler"
           ></div>
         </div>
+
+        <v-overlay absolute :value="isLoading">
+          <v-progress-circular
+            indeterminate
+            color="primary"
+          ></v-progress-circular>
+        </v-overlay>
       </div>
     </v-card>
   </v-dialog>
@@ -46,9 +60,16 @@ export default {
     publisher: {
       type: Boolean,
       default: () => false
+    },
+    endSession: {
+      type: Function,
+      required: false,
+      default: null
     }
   },
   data: () => ({
+    isLoading: true,
+    isDeleting: false,
     sessions: null,
     streams: []
   }),
@@ -56,18 +77,26 @@ export default {
     this.openStream()
   },
   methods: {
+    deleteOpentokSession() {
+      this.isDeleting = true
+      Promise.all([this.endSession(), this.session.disconnect()]).finally(
+        () => {
+          this.isDeleting = false
+        }
+      )
+    },
     errorHandler(err) {
       this.$sentry.captureException(err)
-    },
-    opentokErrorDispatched(error) {
-      this.$sentry.captureException(error)
+      this.$toast.error(
+        'Ocorreu um erro ao tentar iniciar chat por video, por favor tente recarregar a página.'
+      )
     },
     openStream() {
       this.session = OT.initSession(process.env.OPENTOK_API_KEY, this.sessionId)
 
       this.session.connect(this.token, (err) => {
         if (err) {
-          this.opentokErrorDispatched(err)
+          this.errorHandler(err)
         }
       })
 
@@ -82,6 +111,8 @@ export default {
         (err) => {
           if (err) {
             this.errorHandler('error', err)
+          } else {
+            this.isLoading = false
           }
         }
       )
@@ -122,6 +153,7 @@ export default {
 
 <style scoped>
 .video-chat {
+  position: relative;
   display: grid;
   grid-template-rows: 1fr 1fr;
   min-height: calc(100vh - 56px);
