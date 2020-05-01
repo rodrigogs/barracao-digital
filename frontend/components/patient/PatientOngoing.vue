@@ -34,14 +34,58 @@
         </v-card-text>
       </v-card>
     </v-card-text>
+
+    <OpentokSession
+      v-if="hasOpentokCredentials && isVideoChatOpen"
+      :session-id="videoSession.sessionId"
+      :token="videoSession.token"
+      @close="isVideoChatOpen = false"
+    />
+
+    <v-dialog
+      :value="isAlertDialogOpen && hasOpentokCredentials"
+      max-width="380"
+    >
+      <v-card>
+        <v-card-title class="headline">
+          O médico irá te atender agora
+        </v-card-title>
+
+        <v-card-actions class="justify-space-between mt-6">
+          <v-btn outlined @click="isAlertDialogOpen = false">
+            Cancelar
+          </v-btn>
+
+          <v-btn color="primary" @click="openVideoChat">
+            <v-icon left>mdi-video</v-icon>
+            <span>Iniciar sessão</span>
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-btn
+      v-if="hasOpentokCredentials"
+      class="mt-4 float-right"
+      color="green"
+      outlined
+      @click="openVideoChat"
+    >
+      <v-icon left>mdi-video</v-icon>
+      <span>Iniciar sessão</span>
+    </v-btn>
   </v-card>
 </template>
 
 <script>
 import linkify from 'vue-linkify'
+import OpentokSession from '@/components/opentok/OpentokSession.vue'
 
 export default {
   name: 'PatientOngoing',
+  components: {
+    OpentokSession
+  },
   directives: {
     linkified: linkify
   },
@@ -65,6 +109,29 @@ export default {
     facilityName: {
       type: String,
       required: true
+    },
+    videoSession: {
+      type: Object,
+      required: true
+    }
+  },
+  data: () => ({
+    isVideoChatOpen: false,
+    isAlertDialogOpen: true
+  }),
+  computed: {
+    hasOpentokCredentials() {
+      return (
+        this.videoSession &&
+        this.videoSession.sessionId &&
+        this.videoSession.token
+      )
+    }
+  },
+  methods: {
+    openVideoChat() {
+      this.isVideoChatOpen = true
+      this.isAlertDialogOpen = false
     }
   }
 }
