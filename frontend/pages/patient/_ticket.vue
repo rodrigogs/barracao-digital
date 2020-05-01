@@ -1,11 +1,6 @@
 <template>
   <v-card elevation="0">
     <v-container>
-      <OpentokSession
-        v-if="hasOpentokCredentials"
-        :session-id="patient.videoSession.sessionId"
-        :token="patient.videoSession.token"
-      />
       <component
         :is="patientStatusComponent.component"
         v-bind="patientStatusComponent.props"
@@ -22,7 +17,6 @@ import PatientFinished from '@/components/patient/PatientFinished.vue'
 import PatientCantBeAssisted from '@/components/patient/PatientCantBeAssisted.vue'
 import PatientFacilityNotAvailable from '@/components/patient/PatientFacilityNotAvailable.vue'
 import PatientGaveUp from '@/components/patient/PatientGaveUp.vue'
-import OpentokSession from '@/components/opentok/OpentokSession.vue'
 
 const searchPatientByTicket = async (api, ticket) => {
   const {
@@ -52,9 +46,6 @@ export default {
   layout: 'patients',
   validate({ params }) {
     return !isNaN(Number(params.ticket))
-  },
-  components: {
-    OpentokSession
   },
   async asyncData({ app, params, error }) {
     try {
@@ -95,16 +86,10 @@ export default {
         timestamp: null
       }
     },
+    isVideoChatOpen: false,
     patientSubscription: null
   }),
   computed: {
-    hasOpentokCredentials() {
-      return (
-        this.patient.videoSession &&
-        this.patient.videoSession.sessionId &&
-        this.patient.videoSession.token
-      )
-    },
     patientStatusComponent() {
       return {
         [PATIENT_STATUS.WAITING]: () => ({
@@ -117,7 +102,8 @@ export default {
         [PATIENT_STATUS.ONGOING]: () => ({
           component: PatientOngoing,
           props: {
-            ...this.patient[`${PATIENT_STATUS.ONGOING}Status`]
+            ...this.patient[`${PATIENT_STATUS.ONGOING}Status`],
+            videoSession: this.patient.videoSession || {}
           }
         }),
         [PATIENT_STATUS.WAITING_KIT]: () => ({

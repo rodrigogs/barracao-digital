@@ -79,11 +79,13 @@ export default {
   methods: {
     deleteOpentokSession() {
       this.isDeleting = true
-      Promise.all([this.endSession(), this.session.disconnect()]).finally(
-        () => {
-          this.isDeleting = false
-        }
+      const promises = [this.endSession, this.session.disconnect].map(
+        (fn) => fn && fn()
       )
+      Promise.all(promises).finally(() => {
+        this.isDeleting = false
+      })
+      this.$emit('close')
     },
     errorHandler(err) {
       this.$sentry.captureException(err)
@@ -130,6 +132,7 @@ export default {
     streamDestroyed({ stream }) {
       const index = this.streams.indexOf(stream)
       if (index > -1) {
+        this.deleteOpentokSession()
         this.$delete(this.streams, index)
       }
     },
