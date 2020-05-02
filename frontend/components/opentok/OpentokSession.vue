@@ -19,25 +19,39 @@
         </v-btn>
       </v-toolbar>
 
-      <div class="video-chat">
-        <div ref="publisher" class="publisher"></div>
+      <v-container>
+        <v-row justify="center">
+          <v-col
+            v-if="isVideoAllowed"
+            cols="12"
+            md="6"
+            class="ma-2"
+            :style="{ display: isVideoReady ? 'block' : 'none' }"
+          >
+            <div class="video-container">
+              <div
+                v-for="stream of streams"
+                :key="stream.streamId"
+                :ref="`stream-${stream.streamId}`"
+                class="subscriber"
+                @error="errorHandler"
+              ></div>
+              <span ref="publisher" class="publisher"></span>
+            </div>
+          </v-col>
 
-        <div class="subscribers">
-          <div
-            v-for="stream of streams"
-            :key="stream.streamId"
-            :ref="`stream-${stream.streamId}`"
-            @error="errorHandler"
-          ></div>
-        </div>
+          <v-col cols="6" class="chat ma-2">
+            <!--<Chat></Chat>-->
+          </v-col>
 
-        <v-overlay absolute :value="isLoading">
-          <v-progress-circular
-            indeterminate
-            color="primary"
-          ></v-progress-circular>
-        </v-overlay>
-      </div>
+          <v-overlay absolute :value="isLoading">
+            <v-progress-circular
+              indeterminate
+              color="primary"
+            ></v-progress-circular>
+          </v-overlay>
+        </v-row>
+      </v-container>
     </v-card>
   </v-dialog>
 </template>
@@ -45,9 +59,14 @@
 <script>
 import Vue from 'vue'
 import OT from '@opentok/client'
+import delay from '~/utils/promiseDelay'
+/* import Chat from '~/components/chat/Chat' */
 
 export default {
-  name: 'OpentokSession',
+  name: 'ConversationSession',
+  components: {
+    /* Chat */
+  },
   props: {
     sessionId: {
       type: String,
@@ -65,16 +84,33 @@ export default {
       type: Function,
       required: false,
       default: null
+    },
+    isVideoAllowed: {
+      type: Boolean,
+      default: () => true
     }
   },
   data: () => ({
     isLoading: true,
     isDeleting: false,
-    sessions: null,
+    session: null,
+    published: false,
+    subscribed: false,
     streams: []
   }),
+  computed: {
+    isVideoReady() {
+      return (
+        this.session && this.streams.length && this.published && this.subscribed
+      )
+    }
+  },
   mounted() {
-    this.openStream()
+    if (this.isVideoAllowed) {
+      this.openStream()
+    } else {
+      this.isLoading = false
+    }
   },
   methods: {
     deleteOpentokSession() {
@@ -106,7 +142,11 @@ export default {
       this.session.on('streamCreated', this.streamCreated.bind(this))
       this.session.on('streamDestroyed', this.streamDestroyed.bind(this))
     },
-    sessionConnected() {
+    async sessionConnected() {
+      if (this.publisher) {
+        this.isLoading = false
+        await this.waitForPatientVideo()
+      }
       const publisher = OT.initPublisher(
         this.$refs.publisher,
         this.opts,
@@ -122,6 +162,8 @@ export default {
       this.session.publish(publisher, (err) => {
         if (err) {
           this.errorHandler(err)
+        } else {
+          this.published = true
         }
       })
     },
@@ -145,41 +187,57 @@ export default {
           (err) => {
             if (err) {
               this.errorHandler('error', err)
+            } else {
+              this.subscribed = true
             }
           }
         )
       })
+    },
+    async waitForPatientVideo() {
+      do {
+        await delay(1000)
+      } while (!this.streams.length)
     }
   }
 }
 </script>
 
 <style scoped>
-.video-chat {
+.video-container {
+  min-height: calc(50vh - 72px);
+  max-height: calc(50vh - 72px);
+  min-width: 50vh;
+  max-width: 50vh;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.subscriber {
+  min-height: calc(50vh - 72px);
+  max-height: calc(50vh - 72px);
+  min-width: 50vh;
+  max-width: 50vh;
+  z-index: 8001;
+}
+
+.publisher {
   position: relative;
-  display: grid;
-  grid-template-rows: 1fr 1fr;
-  min-height: calc(100vh - 56px);
+  float: right;
+  min-height: 10vh;
+  max-height: 10vh;
+  min-width: 12vh;
+  max-width: 13vh;
+  margin-top: -10.5vh;
+  margin-right: 0.5vw;
+  z-index: 8002;
 }
 
-.video-chat > .publisher {
-  grid-row: 1 / 2;
-  width: 100% !important;
-  height: 100% !important;
-}
-
-.video-chat > .subscribers {
-  grid-row: 2 / 3;
-  width: 100% !important;
-  height: 100% !important;
-
-  display: flex;
-  flex-wrap: wrap;
-  box-sizing: border-box;
-}
-
-.subscribers > * {
-  width: 100% !important;
-  height: 100% !important;
+.chat {
+  border: dashed black;
+  min-height: calc(50vh - 72px);
+  max-height: calc(50vh - 72px);
+  min-width: 50vh;
+  max-width: 50vh;
 }
 </style>
