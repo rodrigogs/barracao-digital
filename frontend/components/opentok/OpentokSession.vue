@@ -204,13 +204,12 @@ export default {
   --header-height: 56px;
   display: flex;
   flex-direction: column;
-  width: 100vw;
+  width: 100%;
   height: calc(100vh - var(--header-height));
 }
 
 .conversation__video > div {
   position: relative;
-  max-width: 400px;
   min-height: calc(50vh - var(--header-height));
   max-height: calc(50vh - var(--header-height));
   min-width: 50vh;
