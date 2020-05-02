@@ -314,10 +314,9 @@ export default {
     async validateOnGoingSection() {
       this.$v.onGoing.$touch()
       if (this.$v.onGoing.$invalid) {
-        this.$toast.error(
+        return this.$toast.error(
           'Existem erros no formulário, revise-os antes de seguir.'
         )
-        return Promise.reject(new Error('Erros encontrados no formulário'))
       }
 
       this.isLoading = true
