@@ -39,41 +39,52 @@
       v-if="hasOpentokCredentials && isVideoChatOpen"
       :session-id="videoSession.sessionId"
       :token="videoSession.token"
+      :is-video-allowed="isVideoAllowed"
+      :publisher="false"
       @close="isVideoChatOpen = false"
     />
 
     <v-dialog
       :value="isAlertDialogOpen && hasOpentokCredentials"
       max-width="380"
+      @click:outside="isAlertDialogOpen = false"
     >
       <v-card>
         <v-card-title class="headline">
-          O médico irá te atender agora
+          O médico irá atendê-lo agora
         </v-card-title>
 
-        <v-card-actions class="justify-space-between mt-6">
-          <v-btn outlined @click="isAlertDialogOpen = false">
-            Cancelar
+        <v-card-text>
+          <h3>Como você prefere ser atendido?</h3>
+        </v-card-text>
+
+        <v-card-actions class="justify-center">
+          <v-btn color="secondary" class="ma-2" @click="openChatOnly">
+            <v-icon left>mdi-text</v-icon>
+            <span>Apenas texto</span>
           </v-btn>
 
-          <v-btn color="primary" @click="openVideoChat">
+          <v-btn color="primary" class="ma-2" @click="openChatWithVideo">
             <v-icon left>mdi-video</v-icon>
-            <span>Iniciar sessão</span>
+            <span>Com vídeo</span>
           </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
 
-    <v-btn
-      v-if="hasOpentokCredentials"
-      class="mt-4 float-right"
-      color="green"
-      outlined
-      @click="openVideoChat"
-    >
-      <v-icon left>mdi-video</v-icon>
-      <span>Iniciar sessão</span>
-    </v-btn>
+    <v-card-subtitle v-if="hasOpentokCredentials" class="text-center">
+      O médico ainda está aguardando o seu contato
+    </v-card-subtitle>
+    <v-card-actions class="justify-center">
+      <v-btn
+        v-if="hasOpentokCredentials"
+        class="mt-4 float-right"
+        color="accent"
+        @click="isAlertDialogOpen = true"
+      >
+        <span>Quero ser atendido</span>
+      </v-btn>
+    </v-card-actions>
   </v-card>
 </template>
 
@@ -117,7 +128,8 @@ export default {
   },
   data: () => ({
     isVideoChatOpen: false,
-    isAlertDialogOpen: true
+    isAlertDialogOpen: true,
+    isVideoAllowed: false
   }),
   computed: {
     hasOpentokCredentials() {
@@ -128,10 +140,21 @@ export default {
       )
     }
   },
+  watch: {
+    hasOpentokCredentials() {
+      this.isAlertDialogOpen = true
+    }
+  },
   methods: {
-    openVideoChat() {
+    openChatOnly() {
       this.isVideoChatOpen = true
       this.isAlertDialogOpen = false
+      this.isVideoAllowed = false
+    },
+    openChatWithVideo() {
+      this.isVideoChatOpen = true
+      this.isAlertDialogOpen = false
+      this.isVideoAllowed = true
     }
   }
 }

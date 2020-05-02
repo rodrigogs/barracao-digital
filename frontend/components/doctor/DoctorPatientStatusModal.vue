@@ -74,37 +74,43 @@
                 counter
               />
 
-              <v-btn
-                class="mt-4"
-                :loading="isLoading"
-                :disabled="isLoading"
-                @click="validateOnGoingSection"
-              >
-                Salvar
-              </v-btn>
+              <v-row>
+                <v-col cols="12" class="text-center">
+                  <v-spacer></v-spacer>
+                  <v-tooltip bottom>
+                    <template v-slot:activator="{ on }">
+                      <v-btn
+                        color="secondary"
+                        class="ma-1"
+                        :loading="isLoading"
+                        :disabled="isLoading"
+                        v-on="on"
+                        @click="validateOnGoingSection"
+                      >
+                        <v-icon>mdi-send</v-icon>
+                      </v-btn>
+                    </template>
+                    <span>Enviar mensagem para o paciente</span>
+                  </v-tooltip>
 
-              <v-btn
-                class="mt-4 mx-4"
-                color="primary"
-                :loading="isLoading"
-                :disabled="isLoading"
-                @click="validateAndContinueOnGoingSection"
-              >
-                Continuar
-              </v-btn>
-
-              <v-btn
-                v-if="isOngoing"
-                class="mt-4 float-right"
-                color="green"
-                outlined
-                :loading="isLoadingSession"
-                :disabled="isLoadingSession"
-                @click="startOpentokSession"
-              >
-                <v-icon left>mdi-video</v-icon>
-                <span>Iniciar sessão</span>
-              </v-btn>
+                  <v-tooltip bottom>
+                    <template v-slot:activator="{ on }">
+                      <v-btn
+                        v-if="isOngoing"
+                        color="primary"
+                        class="ma-1"
+                        :loading="isLoadingSession"
+                        :disabled="isLoadingSession"
+                        v-on="on"
+                        @click="startOpentokSession"
+                      >
+                        <v-icon>mdi-video</v-icon>
+                      </v-btn>
+                    </template>
+                    <span>Iniciar chamade de vídeo com o paciente</span>
+                  </v-tooltip>
+                </v-col>
+              </v-row>
             </v-form>
           </v-stepper-content>
 
@@ -188,6 +194,7 @@ export default {
     step: 1,
     isLoading: false,
     isLoadingSession: false,
+    fab: false,
     onGoing: {
       message: ''
     },
@@ -299,9 +306,13 @@ export default {
   methods: {
     startOpentokSession() {
       this.isLoadingSession = true
-      this.startSession().finally(() => {
-        this.isLoadingSession = false
-      })
+      this.startSession()
+        .catch((err) => {
+          this.$toast.error(err.response && err.response.data.message)
+        })
+        .finally(() => {
+          this.isLoadingSession = false
+        })
     },
     validateAndContinueOnGoingSection() {
       this.validateOnGoingSection().then(

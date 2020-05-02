@@ -12,6 +12,7 @@
       :session-id="videoSession.sessionId"
       :token="videoSession.token"
       :end-session="deleteOpentokSession"
+      :publisher="true"
     />
   </div>
 </template>
