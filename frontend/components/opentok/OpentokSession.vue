@@ -19,39 +19,35 @@
         </v-btn>
       </v-toolbar>
 
-      <v-container>
-        <v-row justify="center">
-          <v-col
-            v-if="isVideoAllowed"
-            cols="12"
-            md="6"
-            class="ma-2"
-            :style="{ display: isVideoReady ? 'block' : 'none' }"
-          >
-            <div class="video-container">
-              <div
-                v-for="stream of streams"
-                :key="stream.streamId"
-                :ref="`stream-${stream.streamId}`"
-                class="subscriber"
-                @error="errorHandler"
-              ></div>
-              <span ref="publisher" class="publisher"></span>
-            </div>
-          </v-col>
+      <div class="conversation">
+        <div
+          v-if="isVideoAllowed"
+          v-show="isVideoReady"
+          class="conversation__video secondary"
+        >
+          <div>
+            <div
+              v-for="stream of streams"
+              :key="stream.streamId"
+              :ref="`stream-${stream.streamId}`"
+              class="conversation__subscriber"
+              @error="errorHandler"
+            ></div>
+            <span ref="publisher" class="conversation__publisher"></span>
+          </div>
+        </div>
 
-          <v-col cols="6" class="chat ma-2">
-            <!--<Chat></Chat>-->
-          </v-col>
+        <div class="conversation__chat">
+          <!--<Chat></Chat>-->
+        </div>
 
-          <v-overlay absolute :value="isLoading">
-            <v-progress-circular
-              indeterminate
-              color="primary"
-            ></v-progress-circular>
-          </v-overlay>
-        </v-row>
-      </v-container>
+        <v-overlay absolute :value="isLoading">
+          <v-progress-circular
+            indeterminate
+            color="primary"
+          ></v-progress-circular>
+        </v-overlay>
+      </div>
     </v-card>
   </v-dialog>
 </template>
@@ -204,11 +200,54 @@ export default {
 </script>
 
 <style scoped>
-.video-container {
-  min-height: calc(50vh - 72px);
-  max-height: calc(50vh - 72px);
+.conversation {
+  --header-height: 56px;
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: calc(100vh - var(--header-height));
+}
+
+.conversation__video > div {
+  position: relative;
+  max-width: 400px;
+  min-height: calc(50vh - var(--header-height));
+  max-height: calc(50vh - var(--header-height));
   min-width: 50vh;
   max-width: 50vh;
+  margin: 0 auto;
+}
+
+.conversation__subscriber {
+  min-height: calc(50vh - var(--header-height));
+  max-height: calc(50vh - var(--header-height));
+  min-width: 50vh;
+  max-width: 50vh;
+}
+
+.conversation__publisher {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  min-height: 10vh;
+  max-height: 10vh;
+  min-width: 12vh;
+  max-width: 13vh;
+  z-index: 100;
+}
+
+.conversation__chat {
+  border: dashed 3px black;
+  height: 100%;
+}
+
+@media screen and (min-width: 960px) {
+  .conversation {
+    --header-height: 64px;
+  }
+}
+
+/* .video-container {
   margin-left: auto;
   margin-right: auto;
 }
@@ -239,5 +278,5 @@ export default {
   max-height: calc(50vh - 72px);
   min-width: 50vh;
   max-width: 50vh;
-}
+} */
 </style>
