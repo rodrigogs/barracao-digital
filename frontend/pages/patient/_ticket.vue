@@ -60,6 +60,9 @@ export default {
       createdAt: null,
       status: null,
       [`${PATIENT_STATUS.ONGOING}Status`]: {
+        originCep: null,
+        patientTicket: null,
+        doctorUsername: null,
         doctorName: null,
         doctorCrm: null,
         doctorState: null,
@@ -103,6 +106,7 @@ export default {
           component: PatientOngoing,
           props: {
             ...this.patient[`${PATIENT_STATUS.ONGOING}Status`],
+            patient: this.patient,
             videoSession: this.patient.videoSession || {}
           }
         }),

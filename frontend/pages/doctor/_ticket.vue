@@ -7,19 +7,21 @@
       @close="modalClosed"
     />
 
-    <OpentokSession
+    <ConversationSession
       v-if="hasOpentokCredentials"
-      :session-id="videoSession.sessionId"
-      :token="videoSession.token"
-      :end-session="deleteOpentokSession"
-      :publisher="true"
+      :origin-cep="patient.originCep"
+      :doctor-username="$auth.user.username"
+      :patient-ticket="patient.ticket"
+      :is-video-allowed="true"
+      :is-publisher="true"
+      @close="isConversationOpen = false"
     />
   </div>
 </template>
 
 <script>
 import DoctorPatientStatusModal from '@/components/doctor/DoctorPatientStatusModal'
-import OpentokSession from '@/components/opentok/OpentokSession.vue'
+import ConversationSession from '@/components/conversation'
 
 export default {
   validate({ params }) {
@@ -27,7 +29,7 @@ export default {
   },
   components: {
     DoctorPatientStatusModal,
-    OpentokSession
+    ConversationSession
   },
   asyncData({ app, store, params, error }) {
     const storePatient = store.getters['worklist/getPatient'](params.ticket)
@@ -38,10 +40,14 @@ export default {
       () => error({ message: 'Usuário Inexistente', statusCode: 404 })
     )
   },
-  data: () => ({
-    videoSession: null
-  }),
   computed: {
+    videoSession() {
+      return (
+        this.$auth.user &&
+        this.$auth.user.videoSessions &&
+        this.$auth.user.videoSessions[this.patient.ticket]
+      )
+    },
     hasOpentokCredentials() {
       return (
         this.videoSession &&
@@ -71,28 +77,14 @@ export default {
           }
         )
     },
-    createOpentokSession() {
+    async createOpentokSession() {
       const videoSession =
         this.$auth.user.videoSessions &&
         this.$auth.user.videoSessions[this.$route.params.ticket]
       if (videoSession) {
-        this.videoSession = videoSession
-        return Promise.resolve(videoSession)
+        await this.$api.deleteVideoSession(this.patient.ticket)
       }
-
-      return this.$api
-        .createVideoSession(this.patient.ticket)
-        .then(({ sessionId, token }) => {
-          this.videoSession = {
-            sessionId,
-            token
-          }
-        })
-    },
-    deleteOpentokSession() {
-      return this.$api.deleteVideoSession(this.patient.ticket).then(() => {
-        this.videoSession = null
-      })
+      return this.$api.createVideoSession(this.patient.ticket)
     },
     modalClosed() {
       this.$router.push({ name: 'doctor' })

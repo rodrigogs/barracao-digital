@@ -35,13 +35,14 @@
       </v-card>
     </v-card-text>
 
-    <OpentokSession
-      v-if="hasOpentokCredentials && isVideoChatOpen"
-      :session-id="videoSession.sessionId"
-      :token="videoSession.token"
+    <ConversationSession
+      v-if="hasOpentokCredentials && isConversationOpen"
+      :origin-cep="patient.originCep"
+      :doctor-username="doctorUsername"
+      :patient-ticket="patient.ticket"
       :is-video-allowed="isVideoAllowed"
-      :publisher="false"
-      @close="isVideoChatOpen = false"
+      :is-publisher="false"
+      @close="isConversationOpen = false"
     />
 
     <v-dialog
@@ -90,17 +91,25 @@
 
 <script>
 import linkify from 'vue-linkify'
-import OpentokSession from '@/components/opentok/OpentokSession.vue'
+import ConversationSession from '@/components/conversation'
 
 export default {
   name: 'PatientOngoing',
   components: {
-    OpentokSession
+    ConversationSession
   },
   directives: {
     linkified: linkify
   },
   props: {
+    patient: {
+      type: Object,
+      required: true
+    },
+    doctorUsername: {
+      type: String,
+      required: true
+    },
     doctorName: {
       type: String,
       required: true
@@ -120,23 +129,20 @@ export default {
     facilityName: {
       type: String,
       required: true
-    },
-    videoSession: {
-      type: Object,
-      required: true
     }
   },
   data: () => ({
-    isVideoChatOpen: false,
+    isConversationOpen: false,
     isAlertDialogOpen: true,
     isVideoAllowed: false
   }),
   computed: {
     hasOpentokCredentials() {
       return (
-        this.videoSession &&
-        this.videoSession.sessionId &&
-        this.videoSession.token
+        this.patient &&
+        this.patient.videoSession &&
+        this.patient.videoSession.sessionId &&
+        this.patient.videoSession.token
       )
     }
   },
@@ -147,12 +153,12 @@ export default {
   },
   methods: {
     openChatOnly() {
-      this.isVideoChatOpen = true
+      this.isConversationOpen = true
       this.isAlertDialogOpen = false
       this.isVideoAllowed = false
     },
     openChatWithVideo() {
-      this.isVideoChatOpen = true
+      this.isConversationOpen = true
       this.isAlertDialogOpen = false
       this.isVideoAllowed = true
     }

@@ -1,9 +1,10 @@
-<template lang="pug">
-  .chat-history(ref="history")
-
-    v-row(v-for="(message, index) in messages" :key="index")
-      v-spacer(v-if="message.from === 'me'")
-      ChatMessage(:message="message" :ref="`message-${index}`")
+<template>
+  <div ref="history" class="chat-history">
+    <v-row v-for="(message, index) in messages" :key="index">
+      <v-spacer v-if="message.from === 'me'"></v-spacer>
+      <ChatMessage :ref="`message-${index}`" :message="message"></ChatMessage>
+    </v-row>
+  </div>
 </template>
 
 <script>

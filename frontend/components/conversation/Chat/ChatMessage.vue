@@ -1,11 +1,25 @@
-<template lang="pug">
-  v-row.chat-message(:class="rowClass")
-    v-col(cols="9" :class="colStyle")
-
-      v-expand-transition
-        .message-box.elevation-3(:class="messageStyle" v-show="show")
-          .message-content
-            | {{ (message.mask || message.content) }}
+<template>
+  <v-row class="chat-message" :class="rowClass">
+    <v-col cols="9" :class="colStyle">
+      <v-expand-transition>
+        <div
+          v-show="show"
+          class="message-box elevation-3"
+          :class="messageStyle"
+        >
+          <div
+            v-show="show"
+            class="message-box elevation-3"
+            :class="messageStyle"
+          >
+            <div class="message-content">
+              {{ message.content }}
+            </div>
+          </div>
+        </div>
+      </v-expand-transition>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
@@ -41,9 +55,6 @@ export default {
     },
     colStyle() {
       return this.isMessageFromMe ? 'd-flex justify-end' : ''
-    },
-    avatarClass() {
-      return this.isMessageFromMe ? 'right-avatar' : 'left-avatar'
     }
   },
   created() {
@@ -65,15 +76,5 @@ export default {
   float: left;
   margin: 5px;
   padding: 5px 10px 5px 10px;
-}
-.right-row {
-  display: contents;
-}
-.right-avatar {
-  float: right;
-  margin: 0 0 0 10px;
-}
-.left-avatar {
-  margin: 0 10px 0 0;
 }
 </style>
