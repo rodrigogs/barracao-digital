@@ -3,7 +3,7 @@
     <v-form ref="form" class="action-text" lazy-validation>
       <v-text-field
         ref="input"
-        v-model="message"
+        v-model="text"
         type="text"
         placeholder="Digite sua mensagem"
         counter
@@ -11,8 +11,8 @@
         clearable
         append-outer-icon="mdi-send"
         :loading="loading"
-        @keyup.enter="send"
-        @click:append-outer="send"
+        @keyup.enter="$emit('send', text)"
+        @click:append-outer="$emit('send', text)"
       >
       </v-text-field>
     </v-form>
@@ -22,28 +22,15 @@
 <script>
 export default {
   name: 'ChatActions',
-  data: () => ({
-    message: '',
-    loading: false
-  }),
-  methods: {
-    async send() {
-      if (this.loading) return
-      const { cursor, section, subsection, message } = this
-      try {
-        this.loading = true
-        await this.$store.dispatch('chat/sendMessage', {
-          cursor,
-          section,
-          subsection,
-          message
-        })
-        this.message = { from: 'me', content: '' }
-      } finally {
-        this.loading = false
-      }
+  props: {
+    loading: {
+      type: Boolean,
+      default: () => false
     }
-  }
+  },
+  data: () => ({
+    text: ''
+  })
 }
 </script>
 

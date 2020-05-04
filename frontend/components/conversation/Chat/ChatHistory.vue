@@ -1,14 +1,19 @@
 <template>
   <div ref="history" class="chat-history">
     <v-row v-for="(message, index) in messages" :key="index">
-      <v-spacer v-if="message.from === 'me'"></v-spacer>
-      <ChatMessage :ref="`message-${index}`" :message="message"></ChatMessage>
+      <v-spacer v-if="isMessageFromMe(message)"></v-spacer>
+      <ChatMessage
+        :ref="`message-${index}`"
+        :is-doctor="isDoctor"
+        :doctor="doctor"
+        :patient="patient"
+        :message="message"
+      ></ChatMessage>
     </v-row>
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 import ChatMessage from './ChatMessage.vue'
 
 export default {
@@ -16,25 +21,41 @@ export default {
   components: {
     ChatMessage
   },
+  props: {
+    doctor: {
+      type: Object,
+      required: true
+    },
+    patient: {
+      type: Object,
+      required: true
+    },
+    isDoctor: {
+      type: Boolean,
+      required: true
+    },
+    messages: {
+      type: Array,
+      required: true
+    }
+  },
   data: () => ({
     scrollDownTimeout: null
   }),
-  computed: {
-    ...mapGetters('chat', {
-      messages: 'sortedMessages'
-    })
-  },
   watch: {
     messages() {
       this.scrollDown()
     }
   },
-  created() {
-    this.$nextTick(() => {
-      if (this.messages.length) this.scrollDown()
-    })
+  mounted() {
+    if (this.messages.length) this.scrollDown()
   },
   methods: {
+    isMessageFromMe(message) {
+      return this.isDoctor
+        ? message.from === 'doctor'
+        : message.from === 'patient'
+    },
     scrollDown() {
       if (this.scrollDownTimeout) clearTimeout(this.scrollDownTimeout)
       this.scrollDownTimeout = setTimeout(() => {
@@ -50,15 +71,5 @@ export default {
 .chat-history {
   overflow-y: auto;
   overflow-x: hidden;
-}
-@media screen and (max-width: 959px) {
-  .chat-history {
-    height: calc(100vh - 346px);
-  }
-}
-@media screen and (min-width: 960px) {
-  .chat-history {
-    height: calc(100vh - 354px);
-  }
 }
 </style>

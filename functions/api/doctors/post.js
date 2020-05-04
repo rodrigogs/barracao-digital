@@ -13,7 +13,7 @@ module.exports.handler = async (event) => {
     } = requestContext;
 
     const isAlternatingActivity = (path && path.endsWith('alternate'));
-    const isCreatingVideoSession = (pathParameters && pathParameters.ticket);
+    const isCreatingConversationSession = (pathParameters && pathParameters.ticket);
 
     if (isAlternatingActivity) {
       return responseBuilder.success.ok({
@@ -21,14 +21,12 @@ module.exports.handler = async (event) => {
       });
     }
 
-    if (isCreatingVideoSession) {
-      const videoSession = await doctorsService.createVideoSession(
+    if (isCreatingConversationSession) {
+      await doctorsService.createConversationSession(
         user.username,
         pathParameters.ticket,
       );
-      return responseBuilder.success.ok({
-        body: videoSession,
-      });
+      return responseBuilder.success.noContent();
     }
 
     const {

@@ -13,8 +13,10 @@ const apiFactory = (axios) => ({
   setPatientMessagingToken: (ticket, { token }) =>
     axios.$put(`patients/${ticket}/messaging/token`, { ticket, token }),
   // Doctors
-  createVideoSession: (ticket) => axios.$post(`doctors/video/${ticket}`),
-  deleteVideoSession: (ticket) => axios.$delete(`doctors/video/${ticket}`),
+  createConversationSession: (ticket) =>
+    axios.$post(`doctors/conversation/${ticket}`),
+  deleteConversationSession: (ticket) =>
+    axios.$delete(`doctors/conversation/${ticket}`),
   createDoctor: (doctor) => axios.$post(`doctors`, doctor),
   updateDoctor: (username, doctor) => axios.$put(`doctors/${username}`, doctor),
   deleteDoctor: (username) => axios.$delete(`doctors/${username}`),

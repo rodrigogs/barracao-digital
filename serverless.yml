@@ -78,7 +78,7 @@ provider:
     OPENTOK_API_KEY: ${env:OPENTOK_API_KEY}
     OPENTOK_API_SECRET: ${env:OPENTOK_API_SECRET}
     DOCTOR_INACTIVITY_TIMEOUT_IN_MINUTES: ${env:DOCTOR_INACTIVITY_TIMEOUT_IN_MINUTES, '33'}
-    VIDEO_CALL_CLEANUP_TIMEOUT_IN_MINUTES: ${env:VIDEO_CALL_CLEANUP_TIMEOUT_IN_MINUTES, '60'}
+    CONVERSATION_CLEANUP_TIMEOUT_IN_MINUTES: ${env:CONVERSATION_CLEANUP_TIMEOUT_IN_MINUTES, '60'}
 
 functions:
   doctorAuthorizer:
@@ -104,8 +104,8 @@ functions:
     memorySize: 1024
     timeout: 30
 
-  video-call-cleanup-job:
-    handler: functions/jobs/video-call-cleanup-job.handler
+  conversation-cleanup-job:
+    handler: functions/jobs/conversation-cleanup-job.handler
     memorySize: 1024
     timeout: 30
 
@@ -159,7 +159,7 @@ functions:
 
       - http:
           method: POST
-          path: /doctors/video/{ticket}
+          path: /doctors/conversation/{ticket}
           cors: true
           authorizer: doctorAuthorizer
 
@@ -183,7 +183,7 @@ functions:
 
       - http:
           method: DELETE
-          path: /doctors/video/{ticket}
+          path: /doctors/conversation/{ticket}
           cors: true
           authorizer: doctorAuthorizer
 

@@ -1,5 +1,5 @@
 const doctorsService = require('barracao-digital/services/doctors.service');
-const videoChatService = require('barracao-digital/services/videoChat.service');
+const conversationService = require('barracao-digital/services/conversation.service');
 const jobsService = require('barracao-digital/services/jobs.service');
 const { getRequestContext, responseBuilder } = require('../../helpers');
 
@@ -21,10 +21,10 @@ module.exports.handler = async (event) => {
       ticket,
     } = pathParameters;
 
-    const isDeletingVideoSession = !!ticket;
-    if (isDeletingVideoSession) {
-      await videoChatService.removeVideoSession(user.username, ticket);
-      await jobsService.removeVideoCallCleanupJobSchedule({
+    const isDeletingConversationSession = !!ticket;
+    if (isDeletingConversationSession) {
+      await conversationService.removeSession(user.username, ticket);
+      await jobsService.removeConversationCleanupJobSchedule({
         doctorUsername: user.username,
         patientTicket: ticket,
       });
