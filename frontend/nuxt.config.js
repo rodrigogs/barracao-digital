@@ -145,6 +145,7 @@ export default {
     }
   },
   auth: {
+    plugins: ['~/plugins/auth.js'],
     redirect: {
       home: '/doctor'
     },
