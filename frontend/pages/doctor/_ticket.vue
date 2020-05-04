@@ -82,9 +82,9 @@ export default {
         this.$auth.user.videoSessions &&
         this.$auth.user.videoSessions[this.$route.params.ticket]
       if (videoSession) {
-        await this.$api.deleteVideoSession(this.patient.ticket)
+        await this.$api.deleteConversationSession(this.patient.ticket)
       }
-      return this.$api.createVideoSession(this.patient.ticket)
+      return this.$api.createConversationSession(this.patient.ticket)
     },
     modalClosed() {
       this.$router.push({ name: 'doctor' })

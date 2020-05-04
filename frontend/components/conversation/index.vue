@@ -7,6 +7,7 @@
   >
     <v-card>
       <v-toolbar dark color="primary">
+        <v-toolbar-title>Conversa com {{ talkingWith }}</v-toolbar-title>
         <v-spacer />
         <v-btn
           :loading="isDeletingVideoSession"
@@ -35,7 +36,12 @@
         </div>
 
         <div class="conversation__chat">
-          <!--  <Chat></Chat>-->
+          <Chat
+            v-if="isFullyLoaded"
+            :doctor="doctor"
+            :patient="patient"
+            :is-doctor="isPublisher"
+          ></Chat>
         </div>
       </div>
     </v-card>
@@ -44,13 +50,13 @@
 
 <script>
 import Video from './Video'
-// import Chat from './Chat'
+import Chat from './Chat'
 
 export default {
   name: 'ConversationSession',
   components: {
-    Video
-    // Chat
+    Video,
+    Chat
   },
   props: {
     originCep: {
@@ -90,6 +96,11 @@ export default {
     },
     isFullyLoaded() {
       return this.doctor && this.patient && this.validateSession()
+    },
+    talkingWith() {
+      return this.isPublisher
+        ? this.patient && this.patient.name
+        : this.doctor && this.doctor.name
     }
   },
   async mounted() {
@@ -152,6 +163,7 @@ export default {
       this.isVideoReady = ready
     },
     async deleteVideoSession() {
+      if (!confirm('Esta ação deletará todos os dados desta conversa')) return
       try {
         if (this.isPublisher) {
           this.isDeletingVideoSession = true
@@ -168,12 +180,22 @@ export default {
 </script>
 
 <style scoped>
-.conversation {
+:root {
   --header-height: 56px;
+}
+
+@media screen and (min-width: 960px) {
+  .conversation {
+    --header-height: 64px;
+  }
+}
+
+.conversation {
   display: flex;
   flex-direction: column;
   width: 100%;
   height: calc(100vh - var(--header-height));
+  position: absolute;
 }
 
 .conversation__video > div {
@@ -186,13 +208,6 @@ export default {
 }
 
 .conversation__chat {
-  border: dashed 3px black;
-  height: 100%;
-}
-
-@media screen and (min-width: 960px) {
-  .conversation {
-    --header-height: 64px;
-  }
+  height: 100vh;
 }
 </style>
