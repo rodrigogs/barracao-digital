@@ -2,7 +2,6 @@ export default class BasicAuthScheme {
   constructor(auth, options) {
     this.$auth = auth
     this.name = options._name
-    this.userSubscription = null
 
     this.options = Object.assign({}, DEFAULTS, options)
   }
@@ -21,23 +20,13 @@ export default class BasicAuthScheme {
     }
   }
 
-  async mounted() {
+  mounted() {
     if (this.options.tokenRequired) {
       const token = this.$auth.syncToken(this.name)
       this._setToken(token)
     }
 
-    await this.$auth.fetchUserOnce()
-
-    this.userSubscription = this.$auth.ctx.app.$fireStore
-      .collection('facilities')
-      .doc(this.$auth.user.cep)
-      .collection('doctors')
-      .doc(this.$auth.user.username)
-      .onSnapshot((doc) => {
-        console.log('Updating doctor')
-        this.doctor = doc.data()
-      })
+    return this.$auth.fetchUserOnce()
   }
 
   async login(endpoint) {
@@ -117,8 +106,6 @@ export default class BasicAuthScheme {
         .requestWith(this.name, endpoint, this.options.endpoints.logout)
         .catch(() => {})
     }
-
-    this.userSubscription && this.userSubscription()
 
     // But reset regardless
     return this.$auth.reset()
