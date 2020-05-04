@@ -23,7 +23,7 @@ module.exports.handler = async (event) => {
 
     const isDeletingConversationSession = !!ticket;
     if (isDeletingConversationSession) {
-      await conversationService.removeSession(user.username, ticket);
+      await conversationService.removeSession(user.cep, user.username, ticket);
       await jobsService.removeConversationCleanupJobSchedule({
         doctorUsername: user.username,
         patientTicket: ticket,

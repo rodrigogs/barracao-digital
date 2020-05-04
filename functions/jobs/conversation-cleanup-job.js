@@ -1,8 +1,9 @@
-const { jobsService, conversationService } = require('barracao-digital/services');
+const { jobsService, conversationService, doctorsService } = require('barracao-digital/services');
 
 module.exports.handler = async ({ doctorUsername, patientTicket }) => {
   try {
-    await conversationService.removeSession(doctorUsername, patientTicket);
+    const doctor = await doctorsService.getOneByUsername(doctorUsername);
+    await conversationService.removeSession(doctor.cep, doctorUsername, patientTicket);
   } catch (err) {
     console.error('Error removing conversation session', err);
   }

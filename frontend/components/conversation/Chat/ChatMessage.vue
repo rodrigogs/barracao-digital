@@ -62,8 +62,8 @@ export default {
     },
     messageStyle() {
       return this.isMessageFromMe
-        ? 'right-message light-blue lighten-4'
-        : 'left-message teal lighten-4'
+        ? 'right-message amber lighten-4'
+        : 'left-message blue lighten-4'
     },
     rowClass() {
       return this.isMessageFromMe ? 'right-row' : 'left-row'

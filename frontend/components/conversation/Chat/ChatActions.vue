@@ -1,6 +1,6 @@
 <template>
   <div class="chat-actions">
-    <v-form ref="form" class="action-text" lazy-validation>
+    <v-form ref="form" class="action-text" lazy-validation @submit.stop="">
       <v-text-field
         ref="input"
         v-model="text"
