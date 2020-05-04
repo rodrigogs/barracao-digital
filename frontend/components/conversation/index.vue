@@ -1,6 +1,7 @@
 <template>
   <v-dialog
     :value="true"
+    :retain-focus="false"
     fullscreen
     hide-overlay
     transition="dialog-bottom-transition"
@@ -13,7 +14,7 @@
           :loading="isDeletingVideoSession"
           :disabled="isDeletingVideoSession"
           light
-          @click="deleteVideoSession"
+          @click="deleteConversationSession(true)"
         >
           Encerrar
         </v-btn>
@@ -31,7 +32,7 @@
             :token="videoSession.token"
             :is-publisher="isPublisher"
             @video-ready="setVideoReady"
-            @disconnection="deleteVideoSession"
+            @disconnection="deleteConversationSession"
           ></Video>
         </div>
 
@@ -162,12 +163,16 @@ export default {
     setVideoReady(ready) {
       this.isVideoReady = ready
     },
-    async deleteVideoSession() {
-      if (!confirm('Esta ação deletará todos os dados desta conversa')) return
+    async deleteConversationSession(shouldConfirm = false) {
+      if (
+        shouldConfirm &&
+        !confirm('Esta ação deletará todos os dados desta conversa')
+      )
+        return
       try {
         if (this.isPublisher) {
           this.isDeletingVideoSession = true
-          await this.$api.deleteVideoSession(this.patient.ticket)
+          await this.$api.deleteConversationSession(this.patient.ticket)
         } else {
           this.$refs.video.disconnect()
         }
@@ -180,22 +185,14 @@ export default {
 </script>
 
 <style scoped>
-:root {
-  --header-height: 56px;
-}
-
-@media screen and (min-width: 960px) {
-  .conversation {
-    --header-height: 64px;
-  }
-}
-
 .conversation {
+  --header-height: 56px;
   display: flex;
   flex-direction: column;
   width: 100%;
   height: calc(100vh - var(--header-height));
-  position: absolute;
+  min-height: calc(100vh - var(--header-height));
+  max-height: calc(100vh - var(--header-height));
 }
 
 .conversation__video > div {
@@ -208,6 +205,13 @@ export default {
 }
 
 .conversation__chat {
-  height: 100vh;
+  border: dashed 3px black;
+  height: 100%;
+}
+
+@media screen and (min-width: 960px) {
+  .conversation {
+    --header-height: 64px;
+  }
 }
 </style>
