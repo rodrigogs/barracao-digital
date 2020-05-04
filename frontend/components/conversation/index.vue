@@ -205,7 +205,6 @@ export default {
 }
 
 .conversation__chat {
-  border: dashed 3px black;
   height: 100%;
 }
 
