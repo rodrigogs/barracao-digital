@@ -9,10 +9,7 @@
         >
           <div class="message-content">
             <v-avatar :class="avatarClass" size="30">
-              <v-img
-                v-if="isMessageFromMe && avatarImage"
-                :src="avatarImage"
-              ></v-img>
+              <v-img v-if="avatarImage" :src="avatarImage"></v-img>
               <v-icon v-else>mdi-account</v-icon>
             </v-avatar>
             {{ message.text }}
@@ -27,6 +24,7 @@
 import md5 from 'crypto-js/md5'
 
 const gravatarWrapper = (email) => {
+  if (!email) return null
   const emailMd5 = md5(email.trim())
   return `https://www.gravatar.com/avatar/${emailMd5}`
 }
@@ -75,8 +73,18 @@ export default {
       return this.isMessageFromMe ? 'd-flex justify-end' : ''
     },
     avatarImage() {
-      const email = this.isDoctor ? this.doctor.email : this.patient.email
-      if (email) return gravatarWrapper(email)
+      if (
+        (this.isDoctor && !this.isMessageFromMe) ||
+        (!this.isDoctor && this.isMessageFromMe)
+      ) {
+        return gravatarWrapper(this.patient.email)
+      }
+      if (
+        (!this.isDoctor && !this.isMessageFromMe) ||
+        (this.isDoctor && this.isMessageFromMe)
+      ) {
+        return gravatarWrapper(this.doctor.email)
+      }
       return null
     }
   },

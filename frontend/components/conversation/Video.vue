@@ -137,7 +137,7 @@ export default {
     },
     disconnect() {
       this.session &&
-        this.session.currentState === 'connected' &&
+        this.session.currentState !== 'disconnected' &&
         this.session.disconnect()
     },
     async waitForPatientVideo() {

@@ -3,18 +3,17 @@
     <DoctorPatientStatusModal
       :patient="patient"
       :save="savePatient"
-      :start-session="createOpentokSession"
+      :start-session="createConversationSession"
       @close="modalClosed"
     />
 
     <ConversationSession
-      v-if="hasOpentokCredentials"
+      v-if="hasActiveConversation"
       :origin-cep="patient.originCep"
       :doctor-username="$auth.user.username"
       :patient-ticket="patient.ticket"
-      :is-video-allowed="true"
-      :is-publisher="true"
-      @close="isConversationOpen = false"
+      :is-video-allowed="!!videoSession"
+      :is-doctor="true"
     />
   </div>
 </template>
@@ -40,7 +39,17 @@ export default {
       () => error({ message: 'Usuário Inexistente', statusCode: 404 })
     )
   },
+  data: () => ({
+    chatSession: null,
+    chatSessionSubscription: null
+  }),
   computed: {
+    hasActiveConversation() {
+      return this.hasOpentokCredentials || this.hasActiveChat
+    },
+    hasActiveChat() {
+      return !!this.chatSession
+    },
     videoSession() {
       return (
         this.$auth.user &&
@@ -55,6 +64,19 @@ export default {
         this.videoSession.token
       )
     }
+  },
+  mounted() {
+    this.chatSessionSubscription = this.$fireStore
+      .collection('facilities')
+      .doc(this.patient.originCep)
+      .collection('conversations')
+      .doc(`${this.$auth.user.username}#${this.patient.ticket}`)
+      .onSnapshot((doc) => {
+        this.chatSession = doc.data()
+      })
+  },
+  beforeDestroy() {
+    this.chatSessionSubscription && this.chatSessionSubscription()
   },
   methods: {
     savePatient({ status, form, next }) {
@@ -77,14 +99,14 @@ export default {
           }
         )
     },
-    async createOpentokSession() {
-      const videoSession =
-        this.$auth.user.videoSessions &&
-        this.$auth.user.videoSessions[this.$route.params.ticket]
-      if (videoSession) {
+    async createConversationSession({ text, video }) {
+      if (this.hasActiveConversation) {
         await this.$api.deleteConversationSession(this.patient.ticket)
       }
-      return this.$api.createConversationSession(this.patient.ticket)
+      return this.$api.createConversationSession(this.patient.ticket, {
+        text,
+        video
+      })
     },
     modalClosed() {
       this.$router.push({ name: 'doctor' })

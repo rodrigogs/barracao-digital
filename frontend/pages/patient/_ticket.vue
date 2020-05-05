@@ -106,8 +106,7 @@ export default {
           component: PatientOngoing,
           props: {
             ...this.patient[`${PATIENT_STATUS.ONGOING}Status`],
-            patient: this.patient,
-            videoSession: this.patient.videoSession || {}
+            patient: this.patient
           }
         }),
         [PATIENT_STATUS.WAITING_KIT]: () => ({
