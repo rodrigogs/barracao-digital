@@ -26,23 +26,23 @@
           v-show="isVideoReady"
           class="conversation__video secondary"
         >
-          <Video
+          <ConversationVideo
             ref="video"
             :session-id="videoSession.sessionId"
             :token="videoSession.token"
             :is-publisher="isDoctor"
             @video-ready="setVideoReady"
             @disconnection="deleteConversationSession"
-          ></Video>
+          />
         </div>
 
         <div class="conversation__chat">
-          <Chat
+          <ConversationChat
             v-if="isFullyLoaded"
             :doctor="doctor"
             :patient="patient"
             :is-doctor="isDoctor"
-          ></Chat>
+          />
         </div>
       </div>
     </v-card>
@@ -50,14 +50,14 @@
 </template>
 
 <script>
-import Video from './Video'
-import Chat from './Chat'
+import ConversationVideo from '~/components/conversation/ConversationVideo'
+import ConversationChat from '~/components/conversation/ConversationChat'
 
 export default {
   name: 'ConversationSession',
   components: {
-    Video,
-    Chat
+    ConversationVideo,
+    ConversationChat
   },
   props: {
     originCep: {
@@ -234,7 +234,7 @@ export default {
 }
 
 .conversation__chat {
-  height: 100%;
+  /* height: 100%; */
 }
 
 @media screen and (min-width: 960px) {

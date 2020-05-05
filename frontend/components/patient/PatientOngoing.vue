@@ -121,7 +121,7 @@
 
 <script>
 import linkify from 'vue-linkify'
-import ConversationSession from '@/components/conversation'
+import ConversationSession from '@/components/conversation/ConversationSession'
 
 export default {
   name: 'PatientOngoing',

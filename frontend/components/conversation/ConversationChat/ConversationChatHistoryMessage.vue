@@ -30,7 +30,7 @@ const gravatarWrapper = (email) => {
 }
 
 export default {
-  name: 'ChatMessage',
+  name: 'ConversationChatHistoryMessage',
   props: {
     doctor: {
       type: Object,

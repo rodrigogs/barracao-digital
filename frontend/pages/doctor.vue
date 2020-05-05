@@ -14,7 +14,7 @@
         :facility-cep="$auth.user.cep"
         :start-service="toggleStatus"
         :stop-service="toggleStatus"
-        @refresh="$fetch()"
+        @refresh="refresh"
       />
       <DoctorWorklistTable
         :patients="patients"
@@ -23,7 +23,7 @@
         :patients-changes="patientsChanges"
         @status="statusChanged"
         @timeWaiting="timeWaitingChanged"
-        @refresh="$fetch()"
+        @refresh="refresh"
         @click="patientSelected"
       />
       <nuxt-child />
@@ -49,15 +49,12 @@ export default {
     DoctorWorklistTable
   },
   fetch() {
-    if (this.fetching) return
-    this.fetching = true
     this.patientsChanges = 0
     return this.$store
       .dispatch('worklist/fetchPatients', {
         filters: this.$route.query
       })
       .finally(() => {
-        this.fetching = false
         this.fetchWhenChangesDetected = false
       })
   },
@@ -68,7 +65,6 @@ export default {
     doctorSubscription: null,
     patientsSubscription: null,
     patientsChanges: 0,
-    fetching: false,
     togglingStatus: false,
     fetchWhenChangesDetected: false
   }),
@@ -144,6 +140,9 @@ export default {
     debouncedFetch: debounce(function() {
       this.$fetch()
     }, 500),
+    refresh() {
+      if (!this.$fetchState.pending) this.$fetch()
+    },
     toggleStatus() {
       this.togglingStatus = true
       return this.$api

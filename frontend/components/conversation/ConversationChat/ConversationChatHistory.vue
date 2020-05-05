@@ -2,24 +2,24 @@
   <div ref="history" class="chat-history">
     <v-row v-for="(message, index) in messages" :key="index">
       <v-spacer v-if="isMessageFromMe(message)"></v-spacer>
-      <ChatMessage
+      <ConversationChatHistoryMessage
         :ref="`message-${index}`"
         :is-doctor="isDoctor"
         :doctor="doctor"
         :patient="patient"
         :message="message"
-      ></ChatMessage>
+      />
     </v-row>
   </div>
 </template>
 
 <script>
-import ChatMessage from './ChatMessage.vue'
+import ConversationChatHistoryMessage from '~/components/conversation/ConversationChat/ConversationChatHistoryMessage'
 
 export default {
-  name: 'ChatHistory',
+  name: 'ConversationChatHistory',
   components: {
-    ChatMessage
+    ConversationChatHistoryMessage
   },
   props: {
     doctor: {

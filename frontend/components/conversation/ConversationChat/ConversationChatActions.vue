@@ -21,7 +21,7 @@
 
 <script>
 export default {
-  name: 'ChatActions',
+  name: 'ConversationChatActions',
   props: {
     loading: {
       type: Boolean,
