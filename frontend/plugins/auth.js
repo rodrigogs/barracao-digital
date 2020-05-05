@@ -17,11 +17,11 @@ export default function({ $auth }) {
   }
 
   $auth.onRedirect((to, from) => {
-    if (from === '/login' && !userSubscription) {
+    if (from === $auth.options.redirect.login && !userSubscription) {
       userSubscription = subscribeUser($auth)
     }
 
-    if (to === '/' && userSubscription) {
+    if (to === $auth.options.redirect.logout && userSubscription) {
       userSubscription()
       userSubscription = null
     }
