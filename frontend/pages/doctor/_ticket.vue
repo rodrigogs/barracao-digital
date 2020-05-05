@@ -20,7 +20,7 @@
 
 <script>
 import DoctorPatientStatusModal from '@/components/doctor/DoctorPatientStatusModal'
-import ConversationSession from '@/components/conversation'
+import ConversationSession from '@/components/conversation/ConversationSession'
 
 export default {
   validate({ params }) {
