@@ -36,17 +36,17 @@
     </v-card-text>
 
     <ConversationSession
-      v-if="hasOpentokCredentials && isConversationOpen"
+      v-if="hasActiveConversation && isConversationOpen"
       :origin-cep="patient.originCep"
       :doctor-username="doctorUsername"
       :patient-ticket="patient.ticket"
-      :is-video-allowed="isVideoAllowed"
-      :is-publisher="false"
+      :is-video-allowed="videoSession && isVideoAllowed"
+      :is-doctor="false"
       @close="isConversationOpen = false"
     />
 
     <v-dialog
-      :value="isAlertDialogOpen && hasOpentokCredentials"
+      :value="isAlertDialogOpen && hasActiveConversation"
       max-width="380"
       @click:outside="isAlertDialogOpen = false"
     >
@@ -55,17 +55,47 @@
           O médico irá atendê-lo agora
         </v-card-title>
 
-        <v-card-text>
+        <v-card-text v-if="videoSession && textSession">
           <h3>Como você prefere ser atendido?</h3>
         </v-card-text>
 
         <v-card-actions class="justify-center">
-          <v-btn color="secondary" class="ma-2" @click="openChatOnly">
+          <v-btn
+            v-if="textSession && !videoSession"
+            color="primary"
+            class="ma-2"
+            @click="openChatOnly"
+          >
+            <v-icon left>mdi-chat</v-icon>
+            <span>Entrar na conversa</span>
+          </v-btn>
+
+          <v-btn
+            v-if="videoSession && !textSession"
+            color="primary"
+            class="ma-2"
+            @click="openChatWithVideo"
+          >
+            <v-icon left>mdi-video</v-icon>
+            <span>Entrar na chamada com vídeo</span>
+          </v-btn>
+
+          <v-btn
+            v-if="videoSession && textSession"
+            color="secondary"
+            class="ma-2"
+            @click="openChatOnly"
+          >
             <v-icon left>mdi-text</v-icon>
             <span>Apenas texto</span>
           </v-btn>
 
-          <v-btn color="primary" class="ma-2" @click="openChatWithVideo">
+          <v-btn
+            v-if="videoSession && textSession"
+            color="primary"
+            class="ma-2"
+            @click="openChatWithVideo"
+          >
             <v-icon left>mdi-video</v-icon>
             <span>Com vídeo</span>
           </v-btn>
@@ -73,12 +103,12 @@
       </v-card>
     </v-dialog>
 
-    <v-card-subtitle v-if="hasOpentokCredentials" class="text-center">
+    <v-card-subtitle v-if="hasActiveConversation" class="text-center">
       O médico ainda está aguardando o seu contato
     </v-card-subtitle>
     <v-card-actions class="justify-center">
       <v-btn
-        v-if="hasOpentokCredentials"
+        v-if="hasActiveConversation"
         class="mt-4 float-right"
         color="accent"
         @click="isAlertDialogOpen = true"
@@ -133,22 +163,31 @@ export default {
   },
   data: () => ({
     isConversationOpen: false,
-    isAlertDialogOpen: true,
+    isAlertDialogOpen: false,
     isVideoAllowed: false
   }),
   computed: {
-    hasOpentokCredentials() {
-      return (
-        this.patient &&
-        this.patient.videoSession &&
-        this.patient.videoSession.sessionId &&
-        this.patient.videoSession.token
-      )
+    hasActiveConversation() {
+      return this.videoSession || this.textSession
+    },
+    textSession() {
+      return this.patient.textSession
+    },
+    videoSession() {
+      return this.patient.videoSession
     }
   },
   watch: {
-    hasOpentokCredentials() {
-      this.isAlertDialogOpen = true
+    hasActiveConversation() {
+      if (this.hasActiveConversation) {
+        setTimeout(() => {
+          this.isConversationOpen = false
+          this.isAlertDialogOpen = true
+        }, 2000)
+      } else {
+        this.isConversationOpen = false
+        this.isAlertDialogOpen = false
+      }
     }
   },
   methods: {

@@ -1,6 +1,6 @@
 <template>
   <div class="chat-actions">
-    <v-form ref="form" class="action-text" lazy-validation @submit.stop="">
+    <v-form ref="form" class="action-text" lazy-validation @submit.prevent="">
       <v-text-field
         ref="input"
         v-model="text"
@@ -11,8 +11,8 @@
         clearable
         append-outer-icon="mdi-send"
         :loading="loading"
-        @keyup.enter="$emit('send', text)"
-        @click:append-outer="$emit('send', text)"
+        @keyup.enter="send"
+        @click:append-outer="send"
       >
       </v-text-field>
     </v-form>
@@ -30,7 +30,14 @@ export default {
   },
   data: () => ({
     text: ''
-  })
+  }),
+  methods: {
+    send() {
+      if (this.text === '') return
+      this.$emit('send', this.text)
+      this.text = ''
+    }
+  }
 }
 </script>
 

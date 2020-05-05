@@ -25,6 +25,7 @@ module.exports.handler = async (event) => {
       await doctorsService.createConversationSession(
         user.username,
         pathParameters.ticket,
+        { text: !!body.text, video: !!body.video },
       );
       return responseBuilder.success.noContent();
     }

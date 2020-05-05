@@ -65,25 +65,27 @@
           </v-stepper-step>
           <v-stepper-content :step="statusesIndex[PATIENT_STATUS.ONGOING]">
             <v-form @keydown.enter.prevent="validateOnGoingSection">
-              <v-textarea
-                v-model="$v.onGoing.message.$model"
-                :error-messages="onGoingMessageErrors"
-                label="Mensagem para o paciente*"
-                required
-                autofocus
-                counter
-              />
-
               <v-row>
-                <v-col cols="12" class="text-center">
-                  <v-spacer></v-spacer>
+                <v-col cols="12" sm="10" class="text-center">
+                  <v-textarea
+                    v-model="$v.onGoing.message.$model"
+                    :error-messages="onGoingMessageErrors"
+                    label="Mensagem para o paciente*"
+                    required
+                    autofocus
+                    counter
+                    rows="3"
+                  />
+                </v-col>
+
+                <v-col class="text-center">
                   <v-tooltip bottom>
                     <template v-slot:activator="{ on }">
                       <v-btn
                         color="secondary"
                         class="ma-1"
-                        :loading="isLoading"
-                        :disabled="isLoading"
+                        :loading="isLoading || isLoadingConversation"
+                        outlined
                         v-on="on"
                         @click="validateOnGoingSection"
                       >
@@ -96,13 +98,28 @@
                   <v-tooltip bottom>
                     <template v-slot:activator="{ on }">
                       <v-btn
-                        v-if="isOngoing"
+                        color="accent"
+                        class="ma-1"
+                        :loading="isLoading || isLoadingConversation"
+                        outlined
+                        v-on="on"
+                        @click="startConversationSession({ video: false })"
+                      >
+                        <v-icon>mdi-chat</v-icon>
+                      </v-btn>
+                    </template>
+                    <span>Iniciar chat com o paciente</span>
+                  </v-tooltip>
+
+                  <v-tooltip bottom>
+                    <template v-slot:activator="{ on }">
+                      <v-btn
                         color="primary"
                         class="ma-1"
-                        :loading="isLoadingSession"
-                        :disabled="isLoadingSession"
+                        :loading="isLoading || isLoadingConversation"
+                        outlined
                         v-on="on"
-                        @click="startOpentokSession"
+                        @click="startConversationSession"
                       >
                         <v-icon>mdi-video</v-icon>
                       </v-btn>
@@ -127,6 +144,7 @@
                 v-model="finished.message"
                 label="Mensagem para o paciente"
                 autofocus
+                rows="3"
               />
 
               <v-select
@@ -193,8 +211,7 @@ export default {
   data: () => ({
     step: 1,
     isLoading: false,
-    isLoadingSession: false,
-    fab: false,
+    isLoadingConversation: false,
     onGoing: {
       message: ''
     },
@@ -304,18 +321,19 @@ export default {
       this.patient.finishedStatus && this.patient.finishedStatus.patientOutcome
   },
   methods: {
-    startOpentokSession() {
-      this.isLoadingSession = true
-      this.startSession()
+    startConversationSession({ text = true, video = true } = {}) {
+      this.isLoadingConversation = true
+      this.validateOnGoingSection()
+        .then(() => this.startSession({ text, video }))
         .catch((err) => {
           this.$toast.error(err.response && err.response.data.message)
         })
         .finally(() => {
-          this.isLoadingSession = false
+          this.isLoadingConversation = false
         })
     },
     validateAndContinueOnGoingSection() {
-      this.validateOnGoingSection().then(
+      return this.validateOnGoingSection().then(
         () => {
           this.step = this.statusesIndex[PATIENT_STATUS.FINISHED]
         },

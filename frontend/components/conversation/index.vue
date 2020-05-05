@@ -11,8 +11,8 @@
         <v-toolbar-title>Conversa com {{ talkingWith }}</v-toolbar-title>
         <v-spacer />
         <v-btn
-          :loading="isDeletingVideoSession"
-          :disabled="isDeletingVideoSession"
+          :loading="isDeletingConversationSession"
+          :disabled="isDeletingConversationSession"
           light
           @click="deleteConversationSession(true)"
         >
@@ -22,7 +22,7 @@
 
       <div class="conversation">
         <div
-          v-if="isFullyLoaded && isVideoAllowed"
+          v-if="isFullyLoaded && isVideoAllowed && videoSession"
           v-show="isVideoReady"
           class="conversation__video secondary"
         >
@@ -30,7 +30,7 @@
             ref="video"
             :session-id="videoSession.sessionId"
             :token="videoSession.token"
-            :is-publisher="isPublisher"
+            :is-publisher="isDoctor"
             @video-ready="setVideoReady"
             @disconnection="deleteConversationSession"
           ></Video>
@@ -41,7 +41,7 @@
             v-if="isFullyLoaded"
             :doctor="doctor"
             :patient="patient"
-            :is-doctor="isPublisher"
+            :is-doctor="isDoctor"
           ></Chat>
         </div>
       </div>
@@ -72,7 +72,7 @@ export default {
       type: String,
       required: true
     },
-    isPublisher: {
+    isDoctor: {
       type: Boolean,
       default: () => false
     },
@@ -82,7 +82,7 @@ export default {
     }
   },
   data: () => ({
-    isDeletingVideoSession: false,
+    isDeletingConversationSession: false,
     isVideoReady: false,
     patient: null,
     doctor: null,
@@ -90,8 +90,11 @@ export default {
     patientSubscription: null
   }),
   computed: {
+    patientTextSession() {
+      return this.patient && this.patient.textSession
+    },
     videoSession() {
-      return this.isPublisher
+      return this.isDoctor
         ? this.doctor && this.doctor.videoSessions[this.patientTicket]
         : this.patient && this.patient.videoSession
     },
@@ -99,9 +102,20 @@ export default {
       return this.doctor && this.patient && this.validateSession()
     },
     talkingWith() {
-      return this.isPublisher
+      return this.isDoctor
         ? this.patient && this.patient.name
         : this.doctor && this.doctor.name
+    }
+  },
+  watch: {
+    patientTextSession(newSession, oldSession) {
+      if (
+        oldSession &&
+        !newSession &&
+        this.isFullyLoaded &&
+        !this.patientTextSession
+      )
+        this.deleteConversationSession()
     }
   },
   async mounted() {
@@ -149,16 +163,22 @@ export default {
     },
     validateSession() {
       const {
-        patient: { videoSession: patientSession },
+        patient: {
+          textSession: patientTextSession,
+          videoSession: patientVideoSession
+        },
         doctor: {
-          videoSessions: { [this.patientTicket]: doctorSession }
+          textSessions: { [this.patientTicket]: doctorTextSession },
+          videoSessions: { [this.patientTicket]: doctorVideoSession }
         }
       } = this
-      return (
-        doctorSession &&
-        patientSession &&
-        doctorSession.sessionId === patientSession.sessionId
-      )
+
+      const validateTextSession = () => !patientTextSession || doctorTextSession
+
+      const validateVideoSession = () =>
+        !patientVideoSession || doctorVideoSession
+
+      return validateTextSession() && validateVideoSession()
     },
     setVideoReady(ready) {
       this.isVideoReady = ready
@@ -170,11 +190,20 @@ export default {
       )
         return
       try {
-        if (this.isPublisher) {
-          this.isDeletingVideoSession = true
+        if (this.isDoctor) {
+          this.isDeletingConversationSession = true
           await this.$api.deleteConversationSession(this.patient.ticket)
         } else {
-          this.$refs.video.disconnect()
+          this.$refs.video && (await this.$refs.video.disconnect())
+          await this.$fireStore
+            .collection('facilities')
+            .doc(this.patient.originCep)
+            .collection('patients')
+            .doc(this.patient.ticket)
+            .set({
+              ...this.patient,
+              textSession: null
+            })
         }
       } catch (err) {
         this.$sentry.captureException(err)
