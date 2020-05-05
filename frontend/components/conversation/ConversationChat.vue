@@ -1,15 +1,13 @@
 <template>
-  <v-card class="fill-height d-flex flex-column elevation-4" flat>
-    <v-card-text class="history fill-height d-flex flex-column grey lighten-5">
-      <ConversationChatHistory
-        :is-doctor="isDoctor"
-        :doctor="doctor"
-        :patient="patient"
-        :messages="messages"
-        class="pa-2 ma-1 flex-grow-1"
-      />
-    </v-card-text>
-    <v-card-actions class="actions blue-grey lighten-5">
+  <v-card class="conversation-chat elevation-4" flat>
+    <ConversationChatHistory
+      class="grey lighten-5 conversation-chat__history"
+      :is-doctor="isDoctor"
+      :doctor="doctor"
+      :patient="patient"
+      :messages="messages"
+    />
+    <v-card-actions class="blue-grey lighten-5">
       <ConversationChatActions @send="sendMessage" />
     </v-card-actions>
   </v-card>
@@ -82,7 +80,16 @@ export default {
 </script>
 
 <style scoped>
-.actions {
-  padding: 0 5vh 1vh 5vh;
+.conversation-chat {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  height: 100%;
+  max-height: 100%;
+  overflow-y: scroll;
+}
+
+.conversation-chat__history {
+  padding: 1rem;
+  height: 100%;
 }
 </style>
