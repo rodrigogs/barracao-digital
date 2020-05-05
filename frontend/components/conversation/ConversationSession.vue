@@ -36,14 +36,13 @@
           />
         </div>
 
-        <div class="conversation__chat">
-          <ConversationChat
-            v-if="isFullyLoaded"
-            :doctor="doctor"
-            :patient="patient"
-            :is-doctor="isDoctor"
-          />
-        </div>
+        <ConversationChat
+          v-if="isFullyLoaded"
+          class="conversation__chat"
+          :doctor="doctor"
+          :patient="patient"
+          :is-doctor="isDoctor"
+        />
       </div>
     </v-card>
   </v-dialog>
@@ -234,7 +233,8 @@ export default {
 }
 
 .conversation__chat {
-  /* height: 100%; */
+  height: 100%;
+  max-height: 100%;
 }
 
 @media screen and (min-width: 960px) {
