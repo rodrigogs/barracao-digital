@@ -183,7 +183,7 @@ export default {
         setTimeout(() => {
           this.isConversationOpen = false
           this.isAlertDialogOpen = true
-        }, 2000)
+        }, 1000)
       } else {
         this.isConversationOpen = false
         this.isAlertDialogOpen = false
