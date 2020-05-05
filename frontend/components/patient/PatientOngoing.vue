@@ -83,7 +83,6 @@
           <v-btn
             v-if="videoSession && textSession"
             color="secondary"
-            class="ma-2"
             @click="openChatOnly"
           >
             <v-icon left>mdi-text</v-icon>
@@ -93,7 +92,6 @@
           <v-btn
             v-if="videoSession && textSession"
             color="primary"
-            class="ma-2"
             @click="openChatWithVideo"
           >
             <v-icon left>mdi-video</v-icon>
