@@ -143,32 +143,6 @@
             label="Email"
           ></v-text-field>
 
-          <v-text-field
-            id="whatsapp"
-            v-model="contact.whatsapp"
-            v-mask="['(##) ####-####', '(##) #####-####']"
-            label="Whatsapp"
-          ></v-text-field>
-
-          <v-text-field
-            id="telegram"
-            v-model="contact.telegram"
-            v-mask="['(##) ####-####', '(##) #####-####']"
-            label="Telegram"
-          ></v-text-field>
-
-          <v-text-field
-            id="hangout"
-            v-model="contact.hangout"
-            label="Hangouts"
-          ></v-text-field>
-
-          <v-text-field
-            id="skype"
-            v-model="contact.skype"
-            label="Skype"
-          ></v-text-field>
-
           <div class="mt-4">
             <v-btn @click.native="step = 2">Voltar</v-btn>
             <v-btn
@@ -221,11 +195,7 @@ export default {
     },
     contact: {
       phone: '',
-      email: '',
-      whatsapp: '',
-      telegram: '',
-      hangout: '',
-      skype: ''
+      email: ''
     }
   }),
   validations: {
