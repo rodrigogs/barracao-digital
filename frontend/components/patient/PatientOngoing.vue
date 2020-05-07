@@ -40,7 +40,7 @@
       :origin-cep="patient.originCep"
       :doctor-username="doctorUsername"
       :patient-ticket="patient.ticket"
-      :is-video-allowed="videoSession && isVideoAllowed"
+      :is-video-allowed="isVideoAllowed"
       :is-doctor="false"
       @close="isConversationOpen = false"
     />
@@ -166,7 +166,7 @@ export default {
   }),
   computed: {
     hasActiveConversation() {
-      return this.videoSession || this.textSession
+      return !!this.videoSession || !!this.textSession
     },
     textSession() {
       return this.patient.textSession
@@ -176,16 +176,11 @@ export default {
     }
   },
   watch: {
-    hasActiveConversation() {
-      if (this.hasActiveConversation) {
-        setTimeout(() => {
-          this.isConversationOpen = false
-          this.isAlertDialogOpen = true
-        }, 1000)
-      } else {
-        this.isConversationOpen = false
-        this.isAlertDialogOpen = false
-      }
+    hasActiveConversation(hasActiveConversation, hadActiveConversation) {
+      this.isAlertDialogOpen = hasActiveConversation && !this.isConversationOpen
+      this.isConversationOpen = hadActiveConversation
+        ? hasActiveConversation
+        : this.isConversationOpen
     }
   },
   methods: {

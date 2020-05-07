@@ -1,13 +1,13 @@
 <template>
-  <v-card class="conversation-chat elevation-4" flat>
+  <v-card class="conversation-chat" tile width="800px">
     <ConversationChatHistory
-      class="grey lighten-5 conversation-chat__history"
+      class="conversation-chat__history"
       :is-doctor="isDoctor"
       :doctor="doctor"
       :patient="patient"
       :messages="messages"
     />
-    <v-card-actions class="blue-grey lighten-5">
+    <v-card-actions class="conversation-chat__actions grey lighten-3">
       <ConversationChatActions @send="sendMessage" />
     </v-card-actions>
   </v-card>
@@ -85,11 +85,10 @@ export default {
   grid-template-rows: 1fr auto;
   height: 100%;
   max-height: 100%;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 .conversation-chat__history {
   padding: 1rem;
-  height: 100%;
 }
 </style>

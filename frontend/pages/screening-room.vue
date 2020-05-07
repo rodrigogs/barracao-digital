@@ -118,11 +118,10 @@
         </form>
       </v-stepper-content>
 
-      <v-stepper-step step="3" :complete="step > 3" :editable="step === 3">
+      <v-stepper-step step="3" :complete="step > 3">
         <span class="title">Contato</span>
         <span
-          >É como um médico irá falar com você. Coloque somente contatos que
-          você tem acesso imediato!</span
+          >Por favor, informe apenas contatos que você tem acesso imediato</span
         >
       </v-stepper-step>
       <v-stepper-content step="3">

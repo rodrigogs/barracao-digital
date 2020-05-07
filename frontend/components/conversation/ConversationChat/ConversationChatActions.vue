@@ -9,10 +9,10 @@
         counter
         autofocus
         clearable
-        append-outer-icon="mdi-send"
+        append-icon="mdi-send"
         :loading="loading"
         @keyup.enter="send"
-        @click:append-outer="send"
+        @click:append="send"
       >
       </v-text-field>
     </v-form>

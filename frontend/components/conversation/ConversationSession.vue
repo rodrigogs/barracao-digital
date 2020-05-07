@@ -6,27 +6,27 @@
     hide-overlay
     transition="dialog-bottom-transition"
   >
-    <v-card>
-      <v-toolbar dark color="primary">
+    <v-card tile>
+      <v-toolbar flat dark color="primary">
         <v-toolbar-title>Conversa com {{ talkingWith }}</v-toolbar-title>
         <v-spacer />
         <v-btn
           :loading="isDeletingConversationSession"
           :disabled="isDeletingConversationSession"
-          light
+          color="error"
           @click="deleteConversationSession(true)"
         >
           Encerrar
         </v-btn>
       </v-toolbar>
 
-      <div class="conversation">
+      <div v-if="isFullyLoaded" class="conversation">
         <div
-          v-if="isFullyLoaded && isVideoAllowed && videoSession"
-          v-show="isVideoReady"
-          class="conversation__video secondary"
+          v-if="patientVideoSession"
+          class="conversation__video grey lighten-3"
         >
           <ConversationVideo
+            v-if="isVideoAllowed && videoSession"
             ref="video"
             :session-id="videoSession.sessionId"
             :token="videoSession.token"
@@ -37,7 +37,7 @@
         </div>
 
         <ConversationChat
-          v-if="isFullyLoaded"
+          v-if="patientTextSession"
           class="conversation__chat"
           :doctor="doctor"
           :patient="patient"
@@ -83,19 +83,23 @@ export default {
   data: () => ({
     isDeletingConversationSession: false,
     isVideoReady: false,
+    isPatientVideoAllowed: true,
     patient: null,
     doctor: null,
     doctorSubscription: null,
     patientSubscription: null
   }),
   computed: {
-    patientTextSession() {
-      return this.patient && this.patient.textSession
-    },
     videoSession() {
       return this.isDoctor
         ? this.doctor && this.doctor.videoSessions[this.patientTicket]
         : this.patient && this.patient.videoSession
+    },
+    patientTextSession() {
+      return this.patient && this.patient.textSession
+    },
+    patientVideoSession() {
+      return this.patient && this.patient.videoSession
     },
     isFullyLoaded() {
       return this.doctor && this.patient && this.validateSession()
@@ -107,14 +111,16 @@ export default {
     }
   },
   watch: {
-    patientTextSession(newSession, oldSession) {
-      if (
-        oldSession &&
-        !newSession &&
-        this.isFullyLoaded &&
-        !this.patientTextSession
-      )
-        this.deleteConversationSession()
+    patientTextSession(hasSession, hadSession) {
+      const wasSessionDeleted = hadSession && !hasSession
+      if (wasSessionDeleted) {
+        return this.deleteConversationSession()
+      }
+    },
+    isFullyLoaded() {
+      if (this.isFullyLoaded && !this.isDoctor && !this.isVideoAllowed) {
+        this.deletePatientFirestoreVideoSession()
+      }
     }
   },
   async mounted() {
@@ -182,6 +188,28 @@ export default {
     setVideoReady(ready) {
       this.isVideoReady = ready
     },
+    deletePatientFirestoreTextSession() {
+      return this.$fireStore
+        .collection('facilities')
+        .doc(this.patient.originCep)
+        .collection('patients')
+        .doc(this.patient.ticket)
+        .set({
+          ...this.patient,
+          textSession: null
+        })
+    },
+    deletePatientFirestoreVideoSession() {
+      return this.$fireStore
+        .collection('facilities')
+        .doc(this.patient.originCep)
+        .collection('patients')
+        .doc(this.patient.ticket)
+        .set({
+          ...this.patient,
+          videoSession: null
+        })
+    },
     async deleteConversationSession(shouldConfirm = false) {
       if (
         shouldConfirm &&
@@ -194,15 +222,8 @@ export default {
           await this.$api.deleteConversationSession(this.patient.ticket)
         } else {
           this.$refs.video && (await this.$refs.video.disconnect())
-          await this.$fireStore
-            .collection('facilities')
-            .doc(this.patient.originCep)
-            .collection('patients')
-            .doc(this.patient.ticket)
-            .set({
-              ...this.patient,
-              textSession: null
-            })
+          await this.deletePatientFirestoreTextSession()
+          await this.deletePatientFirestoreVideoSession()
         }
       } catch (err) {
         this.$sentry.captureException(err)
@@ -217,10 +238,15 @@ export default {
   --header-height: 56px;
   display: flex;
   flex-direction: column;
-  width: 100%;
   height: calc(100vh - var(--header-height));
   min-height: calc(100vh - var(--header-height));
   max-height: calc(100vh - var(--header-height));
+  align-items: center;
+}
+
+.conversation__video {
+  width: 100%;
+  max-width: 800px;
 }
 
 .conversation__video > div {
