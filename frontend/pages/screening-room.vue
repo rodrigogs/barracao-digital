@@ -2,7 +2,7 @@
   <PatientTerms v-if="!isConsentAccepted" @accepted="isConsent = true" />
   <v-card v-else>
     <v-stepper v-model="step" vertical>
-      <v-stepper-step step="1" :complete="step > 1">
+      <v-stepper-step step="1" :complete="step > 1" :editable="step > 1">
         <span class="title">Seus dados</span>
         <span>Preencha seus dados para direcionarmos seu atendimento</span>
       </v-stepper-step>
@@ -65,7 +65,7 @@
         </form>
       </v-stepper-content>
 
-      <v-stepper-step step="2" :complete="step > 2">
+      <v-stepper-step step="2" :complete="step > 2" :editable="step > 2">
         <span class="title">Informações médicas</span>
         <span>Informe sobre sua situação médica</span>
       </v-stepper-step>
@@ -118,7 +118,7 @@
         </form>
       </v-stepper-content>
 
-      <v-stepper-step step="3" :complete="step > 3">
+      <v-stepper-step step="3" :complete="step > 3" :editable="step === 3">
         <span class="title">Contato</span>
         <span
           >É como um médico irá falar com você. Coloque somente contatos que
