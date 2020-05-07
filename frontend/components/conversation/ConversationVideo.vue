@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="black">
     <div
       v-for="stream of streams"
       :key="stream.streamId"
@@ -9,7 +9,7 @@
     ></div>
     <span ref="publisher" class="conversation__publisher"></span>
 
-    <v-overlay absolute :value="isLoading">
+    <v-overlay absolute :value="!isVideoReady">
       <v-progress-circular indeterminate color="primary"></v-progress-circular>
     </v-overlay>
   </div>
@@ -83,6 +83,7 @@ export default {
       this.session.on('streamDestroyed', this.streamDestroyed.bind(this))
     },
     async sessionConnected() {
+      if (this.published) return
       if (this.isPublisher) {
         this.isLoading = false
         await this.waitForPatientVideo()
@@ -108,6 +109,7 @@ export default {
       })
     },
     streamCreated({ stream }) {
+      if (this.streams.length > 0) return
       this.streams.push(stream)
       this.subscribe(stream)
     },
@@ -137,7 +139,7 @@ export default {
     },
     disconnect() {
       this.session &&
-        this.session.currentState !== 'disconnected' &&
+        this.session.currentState === 'connected' &&
         this.session.disconnect()
     },
     async waitForPatientVideo() {

@@ -1,5 +1,5 @@
 <template>
-  <v-row class="chat-message" :class="rowClass">
+  <v-row class="chat-message">
     <v-col :class="colStyle">
       <v-expand-transition>
         <div
@@ -7,11 +7,12 @@
           class="message-box elevation-3"
           :class="messageStyle"
         >
-          <div class="message-content">
+          <div class="message-box__content">
             <v-avatar :class="avatarClass" size="30">
               <v-img v-if="avatarImage" :src="avatarImage"></v-img>
               <v-icon v-else>mdi-account</v-icon>
             </v-avatar>
+            <small class="message-boc__footer"></small>
             {{ message.text }}
           </div>
         </div>
@@ -63,9 +64,6 @@ export default {
         ? 'right-message amber lighten-4'
         : 'left-message blue lighten-4'
     },
-    rowClass() {
-      return this.isMessageFromMe ? 'right-row' : 'left-row'
-    },
     avatarClass() {
       return this.isMessageFromMe ? 'right-avatar' : 'left-avatar'
     },
@@ -97,19 +95,31 @@ export default {
 </script>
 
 <style scoped>
+.chat-message {
+  display: contents;
+}
 .message-box {
   float: left;
   min-height: 30px;
   margin-left: 5px;
   border-radius: 8px;
+  max-width: 70vw;
 }
-.message-content {
+.message-box__content {
   float: left;
-  margin: 5px;
   padding: 5px 10px 5px 10px;
+  word-wrap: break-word;
+  max-width: 100%;
 }
-.right-row {
-  display: contents;
+.right-message .message-box__content {
+  float: right;
+  text-align: right;
+}
+.message-box__footer {
+  float: left;
+  padding: 5px 10px 5px 10px;
+  word-wrap: break-word;
+  max-width: 100%;
 }
 .right-avatar {
   float: right;

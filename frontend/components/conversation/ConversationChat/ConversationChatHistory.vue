@@ -1,7 +1,6 @@
 <template>
   <div ref="history" class="chat-history">
     <v-row v-for="(message, index) in messages" :key="index">
-      <v-spacer v-if="isMessageFromMe(message)"></v-spacer>
       <ConversationChatHistoryMessage
         :ref="`message-${index}`"
         :is-doctor="isDoctor"
@@ -59,7 +58,8 @@ export default {
     scrollDown() {
       if (this.scrollDownTimeout) clearTimeout(this.scrollDownTimeout)
       this.scrollDownTimeout = setTimeout(() => {
-        this.$refs.history.scrollTop = this.$refs.history.scrollHeight
+        if (this.$refs.history)
+          this.$refs.history.scrollTop = this.$refs.history.scrollHeight
         clearTimeout(this.scrollDownTimeout)
       }, 400)
     }

@@ -66,7 +66,7 @@
           <v-stepper-content :step="statusesIndex[PATIENT_STATUS.ONGOING]">
             <v-form @keydown.enter.prevent="validateOnGoingSection">
               <v-row>
-                <v-col cols="12" sm="10" class="text-center">
+                <v-col cols="12" md="10" class="text-center">
                   <v-textarea
                     v-model="$v.onGoing.message.$model"
                     :error-messages="onGoingMessageErrors"
