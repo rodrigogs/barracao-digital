@@ -32,7 +32,7 @@ export default {
   props: {
     active: {
       type: Boolean,
-      defaulf: false,
+      default: false,
       required: true
     },
     username: {
@@ -72,7 +72,7 @@ export default {
       return `Olá, ${this.username}, você não está atendendo`
     },
     buttonText() {
-      return this.active ? 'Parar atendimento' : 'Iniciar atendimento'
+      return this.active ? 'Parar atendimento' : 'Ficar on-line'
     }
   },
   methods: {
