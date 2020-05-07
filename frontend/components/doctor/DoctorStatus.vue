@@ -72,7 +72,7 @@ export default {
       return `Olá, ${this.username}, você não está atendendo`
     },
     buttonText() {
-      return this.active ? 'Parar atendimento' : 'Ficar on-line'
+      return this.active ? 'Ficar offline' : 'Ficar online'
     }
   },
   methods: {
