@@ -74,6 +74,7 @@ provider:
     DOCTORS_TABLE: ${self:custom.doctorsTableName}
     PATIENTS_TABLE: ${self:custom.patientsTableName}
     FACILITIES_TABLE: ${self:custom.facilitiesTableName}
+    APP_URL: ${env:APP_URL}
     GOOGLE_APPLICATION_CREDENTIALS: ${env:GOOGLE_APPLICATION_CREDENTIALS}
     OPENTOK_API_KEY: ${env:OPENTOK_API_KEY}
     OPENTOK_API_SECRET: ${env:OPENTOK_API_SECRET}

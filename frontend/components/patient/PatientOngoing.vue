@@ -119,6 +119,7 @@
 
 <script>
 import linkify from 'vue-linkify'
+import debounce from '../../utils/debounce'
 import ConversationSession from '@/components/conversation/ConversationSession'
 
 export default {
@@ -176,11 +177,8 @@ export default {
     }
   },
   watch: {
-    hasActiveConversation(hasActiveConversation, hadActiveConversation) {
-      this.isAlertDialogOpen = hasActiveConversation && !this.isConversationOpen
-      this.isConversationOpen = hadActiveConversation
-        ? hasActiveConversation
-        : this.isConversationOpen
+    hasActiveConversation() {
+      this.updateSmoothly()
     }
   },
   methods: {
@@ -193,7 +191,11 @@ export default {
       this.isConversationOpen = true
       this.isAlertDialogOpen = false
       this.isVideoAllowed = true
-    }
+    },
+    updateSmoothly: debounce(function() {
+      this.isAlertDialogOpen = this.hasActiveConversation
+      if (!this.hasActiveConversation) this.isConversationOpen = false
+    }, 1500)
   }
 }
 </script>

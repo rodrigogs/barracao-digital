@@ -9,7 +9,6 @@
       class="elevation-1 worklist"
       disable-filtering
       disable-pagination
-      disable-sort
       hide-default-footer
       @click:row="$emit('click', $event)"
     >
