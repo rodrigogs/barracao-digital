@@ -68,6 +68,17 @@ export default {
 </script>
 
 <style scoped>
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #c0c0c0;
+  border-radius: 0;
+}
+::-webkit-scrollbar-thumb {
+  background: #dddddd;
+  border-radius: 0;
+}
 .chat-history {
   overflow-y: auto;
   overflow-x: hidden;
