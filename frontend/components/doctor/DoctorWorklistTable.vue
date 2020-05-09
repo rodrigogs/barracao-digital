@@ -2,57 +2,18 @@
   <div>
     <v-data-table
       :headers="headers"
-      :items="patients"
-      :loading="isLoading"
-      sort-by="createdAt"
+      :items="filteredPatients"
+      sort-by="ticket"
+      sort-desc
+      multi-sort
       item-key="id"
       class="elevation-1 worklist"
-      disable-filtering
       disable-pagination
       hide-default-footer
       @click:row="$emit('click', $event)"
     >
       <template v-slot:top>
-        <v-toolbar elevation="1">
-          <v-toolbar-items>
-            <v-row>
-              <v-col>
-                <v-select
-                  v-model="timeWaiting"
-                  :items="timeWaitingFilters"
-                  label="Hora de entrada"
-                  dense
-                  clearable
-                  @change="$emit('timeWaiting', $event)"
-                />
-              </v-col>
-
-              <v-col>
-                <v-select
-                  v-model="status"
-                  :items="statusFilters"
-                  label="Status"
-                  dense
-                  clearable
-                  @change="$emit('status', $event)"
-                />
-              </v-col>
-            </v-row>
-          </v-toolbar-items>
-
-          <v-spacer />
-
-          <v-btn icon :loading="isLoading" @click="refreshPatients">
-            <v-badge
-              :content="patientsChanges"
-              :value="patientsChanges"
-              color="green"
-              overlap
-            >
-              <v-icon>mdi-table-refresh</v-icon>
-            </v-badge>
-          </v-btn>
-        </v-toolbar>
+        <DoctorWorklistFilter v-model="filter" />
       </template>
 
       <template v-slot:item.ticket="{ item }">
@@ -68,7 +29,7 @@
       </template>
 
       <template v-slot:item.waitingTime="{ item }">
-        <v-chip outlined :color="`#${calulateColor(item)}`">
+        <v-chip outlined :color="`#${calculateColor(item)}`">
           {{ calculateTimeWaiting(item) }}
         </v-chip>
       </template>
@@ -77,11 +38,6 @@
         <StatusBadge :status="item.status" />
       </template>
     </v-data-table>
-
-    <infinite-loading
-      v-if="!isLoading"
-      @infinite="handleNextPageRequest"
-    ></infinite-loading>
   </div>
 </template>
 
@@ -89,95 +45,88 @@
 import { format } from 'date-fns'
 import percentageToColor from '~/utils/percentageToColor'
 import calculateTimeWaiting from '~/utils/calculateTimeWaiting'
-import { PATIENT_STATUS } from '~/constants'
 import StatusBadge from '~/components/StatusBadge'
-import debounce from '~/utils/debounce'
+import DoctorWorklistFilter from '~/components/doctor/DoctorWorklistFilter/DoctorWorklistFilter'
+import { PATIENT_STATUS } from '~/constants'
 
 export default {
   name: 'DoctorWorklistTable',
   components: {
-    StatusBadge
+    StatusBadge,
+    DoctorWorklistFilter
   },
-  props: {
-    patients: {
-      type: Array,
-      required: true,
-      deafult: () => []
-    },
-    isLoading: {
-      type: Boolean,
-      required: true,
-      default: false
-    },
-    fetchNextPage: {
-      type: Function,
-      required: true
-    },
-    patientsChanges: {
-      type: Number,
-      required: true
+  data() {
+    return {
+      filter: {
+        search: '',
+        options: {}
+      },
+      headers: [
+        { text: 'Ticket', value: 'ticket', align: 'start' },
+        { text: 'Nome', value: 'name', align: 'start', width: '60%' },
+        { text: 'Tempo de espera', value: 'waitingTime', align: 'center' },
+        { text: 'Status', value: 'status' }
+      ],
+      patientsSubscription: null,
+      patients: []
     }
   },
-  data: () => ({
-    status: null,
-    timeWaiting: null,
-    headers: [
-      { text: 'Ticket', value: 'ticket', align: 'start' },
-      { text: 'Nome', value: 'name', align: 'start', width: '60%' },
-      { text: 'Tempo de espera', value: 'waitingTime', align: 'center' },
-      { text: 'Status', value: 'status' }
-    ],
-    patientsSubscription: null
-  }),
   computed: {
-    statusFilters() {
-      return [
-        {
-          text: 'Aguardando',
-          value: PATIENT_STATUS.WAITING
-        },
-        {
-          text: 'Aguardando kit',
-          value: PATIENT_STATUS.WAITING_KIT
-        },
-        {
-          text: 'Em andamento',
-          value: PATIENT_STATUS.ONGOING
-        },
-        {
-          text: 'Finalizado',
-          value: PATIENT_STATUS.FINISHED
-        }
-      ]
-    },
-    timeWaitingFilters() {
-      return [
-        {
-          text: 'Últimas 24h',
-          value: 86400000
-        },
-        {
-          text: 'Últimas 6h',
-          value: 21600000
-        }
-      ]
+    filteredPatients() {
+      return this.patients.filter(({ name }) =>
+        name.toLowerCase().includes((this.filter.search || '').toLowerCase())
+      )
     }
   },
-  activated() {
-    const { status, timeWaiting } = this.$route.query
-    if (status) this.status = status
-    if (timeWaiting && !Number.isNaN(timeWaiting))
-      this.timeWaiting = Number(timeWaiting)
+  watch: {
+    'filter.options'() {
+      this.updatePatientsQuerySubscription()
+    }
   },
   methods: {
-    handleNextPageRequest($loadingState) {
-      return this.fetchNextPage().then(
-        ({ lastEvaluatedKey }) => {
-          if (lastEvaluatedKey) $loadingState.loaded()
-          else $loadingState.complete()
-        },
-        () => $loadingState.complete()
-      )
+    async updatePatientsQuerySubscription() {
+      if (this.patientsSubscription) await this.patientsSubscription()
+
+      let query = this.$fireStore
+        .collection('facilities')
+        .doc(this.$auth.user.cep)
+        .collection('patients')
+
+      if (this.filter.options.statuses.length)
+        query = query.where(
+          'status',
+          'in',
+          this.filter.options.statuses.map(({ value }) => value)
+        )
+      if (this.filter.options.hoursWaiting) {
+        const now = Date.now()
+        const initialTime =
+          now - this.filter.options.hoursWaiting * 60 * 60 * 1000
+        query = query.where('createdAt', '>', initialTime)
+      }
+
+      return new Promise((resolve, reject) => {
+        this.patients = []
+        this.patientsSubscription = query.onSnapshot((snapshot) => {
+          snapshot.docChanges().forEach((change) => {
+            const patient = change.doc.data()
+            const index = this.patients.findIndex(
+              ({ ticket }) => patient.ticket === ticket
+            )
+            if (change.type === 'added') {
+              if (index !== -1) this.patients.splice(index, 1, patient)
+              else this.patients.push(patient)
+            }
+            if (change.type === 'modified') {
+              this.patients.splice(index, 1, patient)
+            }
+            if (change.type === 'removed') {
+              this.patients.splice(index, 1)
+            }
+          })
+          resolve()
+        }, reject)
+      })
     },
     formatDate(timestamp) {
       return format(timestamp, 'dd/MM/y hh:mm')
@@ -191,7 +140,7 @@ export default {
 
       return calculateTimeWaiting(patient.createdAt, Date.now())
     },
-    calulateColor(patient) {
+    calculateColor(patient) {
       const finishedStatuses = [
         PATIENT_STATUS.FINISHED,
         PATIENT_STATUS.FACILITY_NOT_AVAILABLE,
@@ -207,10 +156,7 @@ export default {
       const oneHour = 1000 * 60 * 60
       const percent = (oneHour / timeWaiting) * 100
       return percentageToColor(percent)
-    },
-    refreshPatients: debounce(function refresh() {
-      this.$emit('refresh')
-    }, 1000)
+    }
   }
 }
 </script>

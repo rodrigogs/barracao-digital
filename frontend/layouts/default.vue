@@ -5,12 +5,7 @@
         <v-row align="center" justify="center">
           <v-tooltip bottom>
             <template v-slot:activator="{ on }">
-              <v-btn
-                icon
-                nuxt
-                :to="{ name: 'doctor', query: filters }"
-                v-on="on"
-              >
+              <v-btn icon nuxt :to="{ name: 'doctor' }" v-on="on">
                 <v-icon>mdi-view-dashboard</v-icon>
               </v-btn>
             </template>
@@ -119,10 +114,13 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import IdleJs from 'idle-js'
 import { version } from '../package.json'
 import ReportIssueDialog from '~/components/ReportIssueModal'
 import Logo from '~/components/Logo.vue'
+
+const ONE_MINUTE = 60000
+const THIRTY_MINUTES = ONE_MINUTE * 30
 
 export default {
   components: {
@@ -133,9 +131,6 @@ export default {
     reportingIssue: false
   }),
   computed: {
-    ...mapState('worklist', {
-      filters: 'filters'
-    }),
     isLoggedIn() {
       return this.$auth.loggedIn
     },
@@ -148,6 +143,24 @@ export default {
     version() {
       return version
     }
+  },
+  mounted() {
+    this.idle = new IdleJs({
+      idle: THIRTY_MINUTES,
+      onIdle: () => {
+        if (!this.$auth.user.active) return
+
+        this.timeoutAfterInactiveModalDisplayed = setTimeout(() => {
+          this.toggleStatus()
+          this.timeoutAfterInactiveModalDisplayed = null
+        }, ONE_MINUTE)
+      },
+      onActive: () => {
+        if (this.timeoutAfterInactiveModalDisplayed)
+          clearTimeout(this.timeoutAfterInactiveModalDisplayed)
+        this.timeoutAfterInactiveModalDisplayed = null
+      }
+    }).start()
   },
   methods: {
     logout() {

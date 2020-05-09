@@ -30,25 +30,21 @@ export default {
     DoctorPatientStatusModal,
     ConversationSession
   },
-  asyncData({ app, store, params, error }) {
-    const storePatient = store.getters['worklist/getPatient'](params.ticket)
-    if (storePatient) return Promise.resolve({ patient: storePatient })
-
-    return store.dispatch('worklist/fetchPatient', params.ticket).then(
+  asyncData({ app, params, error }) {
+    return app.$api.searchPatientByTicket(params.ticket).then(
       (patient) => ({ patient }),
       () => error({ message: 'Usuário Inexistente', statusCode: 404 })
     )
   },
   data: () => ({
-    chatSession: null,
-    chatSessionSubscription: null
+    patientSubscription: null
   }),
   computed: {
     hasActiveConversation() {
-      return this.hasOpentokCredentials || this.hasActiveChat
+      return !!this.videoSession || !!this.textSession
     },
-    hasActiveChat() {
-      return !!this.chatSession
+    textSession() {
+      return this.patient.textSession
     },
     videoSession() {
       return (
@@ -56,33 +52,25 @@ export default {
         this.$auth.user.videoSessions &&
         this.$auth.user.videoSessions[this.patient.ticket]
       )
-    },
-    hasOpentokCredentials() {
-      return (
-        this.videoSession &&
-        this.videoSession.sessionId &&
-        this.videoSession.token
-      )
     }
   },
   mounted() {
-    this.chatSessionSubscription = this.$fireStore
+    this.patientSubscription = this.$fireStore
       .collection('facilities')
       .doc(this.patient.originCep)
-      .collection('conversations')
-      .doc(`${this.$auth.user.username}#${this.patient.ticket}`)
+      .collection('patients')
+      .doc(this.patient.ticket)
       .onSnapshot((doc) => {
-        this.chatSession = doc.data()
+        this.patient = doc.data()
       })
   },
   beforeDestroy() {
-    this.chatSessionSubscription && this.chatSessionSubscription()
+    this.patientSubscription && this.patientSubscription()
   },
   methods: {
-    savePatient({ status, form, next }) {
-      return this.$store
-        .dispatch('worklist/savePatientStatus', {
-          ticket: this.patient.ticket,
+    savePatient({ status, form }) {
+      return this.$api
+        .setPatientStatus(this.patient.ticket, {
           status,
           form
         })
