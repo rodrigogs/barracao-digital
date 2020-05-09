@@ -1,6 +1,8 @@
 <template>
   <v-toolbar extended dense dark :color="statusBarColor">
-    <v-toolbar-title>{{ title }}</v-toolbar-title>
+    <v-avatar size="40px" color="grey lighten-5">
+      <v-img v-if="$auth.user.email" :src="avatar" :alt="$auth.user.email" />
+    </v-avatar>
 
     <v-spacer></v-spacer>
 
@@ -15,6 +17,7 @@
     </v-btn>
 
     <template v-slot:extension>
+      <v-toolbar-title>{{ $auth.user.name }}</v-toolbar-title>
       <v-spacer></v-spacer>
       <DoctorTeamStatusModal />
     </template>
@@ -23,6 +26,7 @@
 
 <script>
 import DoctorTeamStatusModal from '@/components/doctor/DoctorTeamStatusModal'
+import avatarUtil from '@/utils/avatar'
 
 export default {
   name: 'DoctorStatus',
@@ -53,27 +57,25 @@ export default {
     }
   },
   data: () => ({
+    avatar: '',
     isLoading: false,
-    isLoggingOut: false
+    isLoggingOut: false,
+    emailTooltip: false
   }),
   computed: {
     statusBarColor() {
       return this.active ? 'primary' : 'red'
     },
-    title() {
-      if (this.isLoggingOut) {
-        return 'Saindo do aplicativo'
-      }
-
-      if (this.active) {
-        return `Olá, ${this.username}, você está atendendo`
-      }
-
-      return `Olá, ${this.username}, você não está atendendo`
-    },
     buttonText() {
       return this.active ? 'Ficar offline' : 'Ficar online'
     }
+  },
+  mounted() {
+    avatarUtil(this.$auth.user.email || this.$auth.user.username).then(
+      (imgSrc) => {
+        this.avatar = imgSrc
+      }
+    )
   },
   methods: {
     toggleServiceStatus() {

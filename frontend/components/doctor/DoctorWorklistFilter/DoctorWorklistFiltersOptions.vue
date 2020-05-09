@@ -30,7 +30,7 @@
             ></v-combobox>
           </v-col>
           <v-col cols="12">
-            <v-subheader class="pl-0">Horas aguardando</v-subheader>
+            <v-subheader class="pl-0">Horas na fila</v-subheader>
             <v-slider
               v-model="options.hoursWaiting"
               thumb-label="always"

@@ -22,13 +22,7 @@
 </template>
 
 <script>
-import md5 from 'crypto-js/md5'
-
-const gravatarWrapper = (email) => {
-  if (!email) return null
-  const emailMd5 = md5(email.trim())
-  return `https://www.gravatar.com/avatar/${emailMd5}`
-}
+import avatarUtil from '@/utils/avatar'
 
 export default {
   name: 'ConversationChatHistoryMessage',
@@ -75,13 +69,13 @@ export default {
         (this.isDoctor && !this.isMessageFromMe) ||
         (!this.isDoctor && this.isMessageFromMe)
       ) {
-        return gravatarWrapper(this.patient.email)
+        return avatarUtil(this.patient.email || this.patient.ticket)
       }
       if (
         (!this.isDoctor && !this.isMessageFromMe) ||
         (this.isDoctor && this.isMessageFromMe)
       ) {
-        return gravatarWrapper(this.doctor.email)
+        return avatarUtil(this.doctor.email || this.doctor.username)
       }
       return null
     }

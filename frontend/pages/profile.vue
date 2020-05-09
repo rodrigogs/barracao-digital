@@ -2,8 +2,8 @@
   <v-container>
     <v-card max-width="500" class="mx-auto">
       <v-list-item>
-        <v-list-item-avatar color="primary">
-          <span class="white--text">{{ user.initials }}</span>
+        <v-list-item-avatar color="grey lighten-5">
+          <v-img :src="avatar" />
         </v-list-item-avatar>
         <v-list-item-content>
           <v-list-item-title class="headline">
@@ -116,11 +116,12 @@
 
 <script>
 import { required, minLength, email, sameAs } from 'vuelidate/lib/validators'
-import getInitials from '~/utils/getInitials'
+import avatarUtil from '~/utils/avatar'
 
 export default {
   middleware: 'auth',
   data: () => ({
+    avatar: '',
     isLoadingProfile: false,
     isLoadingPassword: false,
     profile: {
@@ -135,8 +136,7 @@ export default {
   computed: {
     user() {
       return {
-        ...this.$auth.user,
-        initials: getInitials(this.$auth.user.name)
+        ...this.$auth.user
       }
     },
     usernameErrors() {
@@ -200,6 +200,9 @@ export default {
     this.profile.name = name
     this.profile.username = username
     this.profile.email = email
+    avatarUtil(email || username).then((imgSrc) => {
+      this.avatar = imgSrc
+    })
   },
   methods: {
     validateAndSubmitProfile() {
