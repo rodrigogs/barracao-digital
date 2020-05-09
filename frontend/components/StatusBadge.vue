@@ -1,5 +1,10 @@
 <template>
-  <v-chip outlined :color="data.color">
+  <v-chip
+    v-bind="$attrs"
+    outlined
+    :color="data.color"
+    @click:close="$emit('close')"
+  >
     {{ data.text }}
   </v-chip>
 </template>

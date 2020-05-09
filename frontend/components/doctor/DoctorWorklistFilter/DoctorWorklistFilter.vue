@@ -35,7 +35,10 @@ export default {
   },
   methods: {
     updated() {
-      this.$emit('input', { search: this.search, options: this.options })
+      this.$emit('input', {
+        search: this.search,
+        options: this.options
+      })
     }
   }
 }

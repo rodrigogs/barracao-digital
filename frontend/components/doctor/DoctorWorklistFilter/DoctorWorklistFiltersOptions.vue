@@ -3,12 +3,19 @@
     v-model="menu"
     :close-on-content-click="false"
     :nudge-width="600"
+    max-width="600"
     left
   >
     <template v-slot:activator="{ on }">
-      <v-btn icon title="Filtros" v-on="on">
-        <v-icon>mdi-filter-variant</v-icon>
-      </v-btn>
+      <v-badge
+        color="green"
+        :content="filtersApplied"
+        title="Filtros aplicados"
+      >
+        <v-btn icon title="Filtros" v-on="on">
+          <v-icon>mdi-filter-variant</v-icon>
+        </v-btn>
+      </v-badge>
     </template>
 
     <v-card>
@@ -27,7 +34,18 @@
               chips
               clearable
               multiple
-            ></v-combobox>
+            >
+              <template v-slot:selection="data">
+                <StatusBadge
+                  :input-value="data.selected"
+                  close
+                  :status="data.item.value"
+                  v-bind="data.attrs"
+                  @click="data.select"
+                  @close="removeStatusFromFilter(data.item)"
+                />
+              </template>
+            </v-combobox>
           </v-col>
           <v-col cols="12">
             <v-subheader class="pl-0">Horas na fila</v-subheader>
@@ -54,29 +72,38 @@
 </template>
 
 <script>
+import StatusBadge from '~/components/StatusBadge'
+import patientStatusToText from '~/utils/patientStatusToText'
 import { PATIENT_STATUS } from '~/constants'
 
 const statuses = [
   {
-    text: 'Aguardando',
+    text: patientStatusToText(PATIENT_STATUS.WAITING).text,
     value: PATIENT_STATUS.WAITING
   },
-  // {
-  //   text: 'Aguardando kit',
-  //   value: PATIENT_STATUS.WAITING_KIT
-  // },
   {
-    text: 'Em andamento',
+    text: patientStatusToText(PATIENT_STATUS.ONGOING).text,
     value: PATIENT_STATUS.ONGOING
   },
   {
-    text: 'Finalizado',
+    text: patientStatusToText(PATIENT_STATUS.WAITING_KIT).text,
+    value: PATIENT_STATUS.WAITING_KIT
+  },
+  {
+    text: patientStatusToText(PATIENT_STATUS.FINISHED).text,
     value: PATIENT_STATUS.FINISHED
+  },
+  {
+    text: patientStatusToText(PATIENT_STATUS.CANT_BE_ASSISTED).text,
+    value: PATIENT_STATUS.CANT_BE_ASSISTED
   }
 ]
 
 export default {
   name: 'DoctorWorklistFiltersOptions',
+  components: {
+    StatusBadge
+  },
   props: {
     value: {
       type: Object,
@@ -86,6 +113,7 @@ export default {
   data() {
     return {
       menu: false,
+      filtersApplied: 0,
       options: {
         statuses: this.value.statuses || [],
         hoursWaiting: this.value.hoursWaiting || 24
@@ -103,7 +131,16 @@ export default {
   methods: {
     update() {
       this.menu = false
+      this.filtersApplied = this.options.hoursWaiting > 0 ? 1 : 0
+      if (this.options.statuses)
+        this.filtersApplied += this.options.statuses.length
       this.$emit('input', { ...this.options })
+    },
+    removeStatusFromFilter(status) {
+      const index = this.options.statuses.findIndex(
+        ({ value }) => status.value === value
+      )
+      if (index >= 0) this.options.statuses.splice(index, 1)
     }
   }
 }
