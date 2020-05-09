@@ -66,9 +66,22 @@ export default {
         this.doctorsSubscription = facilitiesDoc
           .collection('doctors')
           .onSnapshot((snapshot) => {
-            this.doctors = snapshot
-              .docChanges()
-              .map((change) => change.doc.data())
+            snapshot.docChanges().forEach((change) => {
+              const doctor = change.doc.data()
+              const index = this.doctors.findIndex(
+                ({ username }) => doctor.username === username
+              )
+              if (change.type === 'added') {
+                if (index !== -1) this.doctors.splice(index, 1, doctor)
+                else this.doctors.push(doctor)
+              }
+              if (change.type === 'modified') {
+                this.doctors.splice(index, 1, doctor)
+              }
+              if (change.type === 'removed') {
+                this.doctors.splice(index, 1)
+              }
+            })
           })
       } else {
         this.doctorsSubscription && this.doctorsSubscription()
