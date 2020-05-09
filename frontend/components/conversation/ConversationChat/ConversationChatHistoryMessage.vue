@@ -8,9 +8,8 @@
           :class="messageStyle"
         >
           <div class="message-box__content">
-            <v-avatar :class="avatarClass" size="30">
-              <v-img v-if="avatarImage" :src="avatarImage"></v-img>
-              <v-icon v-else>mdi-account</v-icon>
+            <v-avatar :class="avatarClass" size="30" color="grey lighten-3">
+              <v-img :src="avatar"></v-img>
             </v-avatar>
             <small class="message-boc__footer"></small>
             {{ message.text }}
@@ -45,6 +44,7 @@ export default {
     }
   },
   data: () => ({
+    avatar: '',
     show: false
   }),
   computed: {
@@ -63,21 +63,20 @@ export default {
     },
     colStyle() {
       return this.isMessageFromMe ? 'd-flex justify-end' : ''
-    },
-    avatarImage() {
-      if (
-        (this.isDoctor && !this.isMessageFromMe) ||
-        (!this.isDoctor && this.isMessageFromMe)
-      ) {
-        return avatarUtil(this.patient.email || this.patient.ticket)
-      }
-      if (
-        (!this.isDoctor && !this.isMessageFromMe) ||
-        (this.isDoctor && this.isMessageFromMe)
-      ) {
-        return avatarUtil(this.doctor.email || this.doctor.username)
-      }
-      return null
+    }
+  },
+  async mounted() {
+    if (
+      (this.isDoctor && !this.isMessageFromMe) ||
+      (!this.isDoctor && this.isMessageFromMe)
+    ) {
+      this.avatar = await avatarUtil(this.patient.email || this.patient.ticket)
+    }
+    if (
+      (!this.isDoctor && !this.isMessageFromMe) ||
+      (this.isDoctor && this.isMessageFromMe)
+    ) {
+      this.avatar = await avatarUtil(this.doctor.email || this.doctor.username)
     }
   },
   created() {
