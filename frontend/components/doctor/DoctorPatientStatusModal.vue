@@ -60,6 +60,7 @@
           <v-stepper-step
             :step="statusesIndex[PATIENT_STATUS.ONGOING]"
             :complete="step > statusesIndex[PATIENT_STATUS.ONGOING]"
+            :rules="[() => !$v.onGoing.$invalid]"
           >
             <span class="title">Em andamento</span>
           </v-stepper-step>
@@ -126,6 +127,52 @@
                     </template>
                     <span>Iniciar chamade de vídeo com o paciente</span>
                   </v-tooltip>
+                </v-col>
+              </v-row>
+            </v-form>
+          </v-stepper-content>
+
+          <v-stepper-step
+            :step="statusesIndex[PATIENT_STATUS.WAITING_KIT]"
+            :complete="step > statusesIndex[PATIENT_STATUS.WAITING_KIT]"
+            editable
+          >
+            <span class="title">Kit médico</span>
+          </v-stepper-step>
+          <v-stepper-content :step="statusesIndex[PATIENT_STATUS.WAITING_KIT]">
+            <p v-if="isWaitingKit">
+              O paciente já está aguardando kit médico
+            </p>
+
+            <v-form @keydown.enter.prevent="validateWaitingKitSection">
+              <v-row>
+                <v-col>
+                  <v-btn
+                    :loading="isLoading"
+                    :disabled="isLoading"
+                    @click="step = statusesIndex[PATIENT_STATUS.ONGOING]"
+                  >
+                    Voltar
+                  </v-btn>
+
+                  <v-btn
+                    v-if="!isWaitingKit"
+                    color="primary"
+                    :loading="isLoading"
+                    :disabled="isLoading"
+                    @click="validateWaitingKitSection"
+                  >
+                    Enviar kit médico
+                  </v-btn>
+                  <v-btn
+                    v-else
+                    color="primary"
+                    @click.native="
+                      step = statusesIndex[PATIENT_STATUS.FINISHED]
+                    "
+                  >
+                    Próximo
+                  </v-btn>
                 </v-col>
               </v-row>
             </v-form>
@@ -240,8 +287,8 @@ export default {
     isUnassisted() {
       return this.patient.status === PATIENT_STATUS.CANT_BE_ASSISTED
     },
-    isOngoing() {
-      return this.patient.status === PATIENT_STATUS.ONGOING
+    isWaitingKit() {
+      return this.patient.status === PATIENT_STATUS.WAITING_KIT
     },
     isFinishedStatus() {
       const finishedStatuses = [
@@ -255,8 +302,8 @@ export default {
       return {
         [PATIENT_STATUS.WAITING]: 1,
         [PATIENT_STATUS.ONGOING]: 2,
-        [PATIENT_STATUS.WAITING_KIT]: 4,
-        [PATIENT_STATUS.FINISHED]: 3
+        [PATIENT_STATUS.WAITING_KIT]: 3,
+        [PATIENT_STATUS.FINISHED]: 4
       }
     },
     patientOutcomeItems() {
@@ -332,15 +379,7 @@ export default {
           this.isLoadingConversation = false
         })
     },
-    validateAndContinueOnGoingSection() {
-      return this.validateOnGoingSection().then(
-        () => {
-          this.step = this.statusesIndex[PATIENT_STATUS.FINISHED]
-        },
-        () => {}
-      )
-    },
-    async validateOnGoingSection() {
+    validateOnGoingSection() {
       this.$v.onGoing.$touch()
       if (this.$v.onGoing.$invalid) {
         return this.$toast.error(
@@ -348,17 +387,11 @@ export default {
         )
       }
 
-      this.isLoading = true
-      return await this.save({
-        status: PATIENT_STATUS.ONGOING,
-        form: {
-          ...this.onGoing
-        }
-      }).finally(() => {
-        this.isLoading = false
+      return this._changeStatus(PATIENT_STATUS.ONGOING, {
+        ...this.onGoing
       })
     },
-    async validateFinishedSection() {
+    validateFinishedSection() {
       this.$v.finished.$touch()
       if (this.$v.finished.$invalid) {
         return this.$toast.error(
@@ -366,16 +399,32 @@ export default {
         )
       }
 
-      this.isLoading = true
-      return await this.save({
-        status: PATIENT_STATUS.FINISHED,
-        form: {
-          ...this.finished
-        }
-      }).finally(() => {
-        this.isLoading = false
-        this.$emit('close')
+      return this._changeStatus(PATIENT_STATUS.FINISHED, {
+        ...this.finished
       })
+    },
+    validateWaitingKitSection() {
+      this.$v.onGoing.$touch()
+      if (this.$v.onGoing.$invalid) {
+        return this.$toast.error(
+          'O médico deve deixar uma mensagem para o paciente ao trocar o status para "Aguardando kit"'
+        )
+      }
+
+      return this._changeStatus(PATIENT_STATUS.WAITING_KIT)
+    },
+    _changeStatus(status = PATIENT_STATUS.ONGOING, form = {}) {
+      this.isLoading = true
+      return this.save({
+        status,
+        form
+      })
+        .catch((error) => {
+          this.$toast.error(error.response.data.message)
+        })
+        .finally(() => {
+          this.isLoading = false
+        })
     }
   }
 }
