@@ -119,8 +119,8 @@
 
 <script>
 import linkify from 'vue-linkify'
-import debounce from '../../utils/debounce'
 import ConversationSession from '@/components/conversation/ConversationSession'
+import debounce from '~/utils/debounce'
 
 export default {
   name: 'PatientOngoing',
