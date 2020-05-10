@@ -64,7 +64,7 @@
               <v-list-item-title>
                 {{ props.patient.allergies }}
               </v-list-item-title>
-              <v-list-item-subtitle>Altergias</v-list-item-subtitle>
+              <v-list-item-subtitle>Alergias</v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
 
@@ -110,6 +110,17 @@
             <v-list-item-content>
               <v-list-item-title>{{ props.patient.phone }}</v-list-item-title>
               <v-list-item-subtitle>Telefone</v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-list-item v-if="props.patient.email">
+            <v-list-item-icon>
+              <v-icon>mdi-email</v-icon>
+            </v-list-item-icon>
+
+            <v-list-item-content>
+              <v-list-item-title>{{ props.patient.email }}</v-list-item-title>
+              <v-list-item-subtitle>Email</v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
 
