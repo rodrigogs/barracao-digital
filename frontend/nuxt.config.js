@@ -2,13 +2,8 @@ import qs from 'qs'
 
 require('dotenv').config()
 
-if (!process.env.FIREBASE_CONFIG)
-  throw new Error(
-    'You must provide a base64 firebase config in order to run the project'
-  )
-const firebaseConfig = JSON.parse(
-  Buffer.from(process.env.FIREBASE_CONFIG, 'base64').toString('utf8')
-)
+// eslint-disable-next-line import/first
+import * as config from './config'
 
 export default {
   mode: 'spa',
@@ -139,7 +134,7 @@ export default {
    ** See https://axios.nuxtjs.org/options
    */
   axios: {
-    baseURL: process.env.API_URL || '',
+    baseURL: config.API_URL || '',
     paramsSerializer: function paramsSerializer(params) {
       return qs.stringify(params, { arrayFormat: 'brackets' })
     }
@@ -167,7 +162,7 @@ export default {
     }
   },
   firebase: {
-    config: firebaseConfig, // this is a BASE64 env var, that must be converted to a object
+    config: config.FIREBASE_CONFIG, // this is a BASE64 env var, that must be converted to a object
     services: {
       messaging: {
         createServiceWorker: true
@@ -199,9 +194,12 @@ export default {
   },
   vue: {
     config: {
-      productionTip: process.env.NODE_ENV === 'development',
-      devtools: process.env.NODE_ENV === 'development'
+      productionTip: config.NODE_ENV === 'development',
+      devtools: config.NODE_ENV === 'development'
     }
+  },
+  env: {
+    ...config
   },
   /*
    ** Build configuration

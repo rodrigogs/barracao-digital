@@ -17,6 +17,8 @@ module.exports = {
   ],
   plugins: ['prettier', 'cypress'],
   // add your custom rules here
-  rules: {},
+  rules: {
+    'node/no-process-env': ['error']
+  },
   ignorePatterns: ['static/']
 }

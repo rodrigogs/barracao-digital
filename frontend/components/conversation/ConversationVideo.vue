@@ -19,6 +19,7 @@
 import Vue from 'vue'
 import OT from '@opentok/client'
 import delay from '~/utils/promiseDelay'
+import { OPENTOK_API_KEY } from '~/config'
 
 export default {
   name: 'ConversationVideo',
@@ -70,7 +71,7 @@ export default {
       )
     },
     openStream() {
-      this.session = OT.initSession(process.env.OPENTOK_API_KEY, this.sessionId)
+      this.session = OT.initSession(OPENTOK_API_KEY, this.sessionId)
 
       this.session.connect(this.token, (err) => {
         if (err) {
