@@ -1,12 +1,16 @@
 import qs from 'qs'
+import { normalizeEnv } from './config'
 
 require('dotenv').config()
 
-// eslint-disable-next-line import/first
-import * as config from './config'
+// eslint-disable-next-line node/no-process-env
+const config = normalizeEnv()
 
 export default {
   mode: 'spa',
+  env: {
+    ...config
+  },
   /*
    ** Headers of the page
    */
@@ -197,9 +201,6 @@ export default {
       productionTip: config.NODE_ENV === 'development',
       devtools: config.NODE_ENV === 'development'
     }
-  },
-  env: {
-    ...config
   },
   /*
    ** Build configuration
