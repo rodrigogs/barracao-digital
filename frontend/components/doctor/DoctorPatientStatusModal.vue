@@ -141,15 +141,87 @@
             <span class="title">Kit médico</span>
           </v-stepper-step>
           <v-stepper-content :step="statusesIndex[PATIENT_STATUS.WAITING_KIT]">
-            <p v-if="isWaitingKit && !isPatientKitReceived">
-              O paciente está aguardando o kit médico
-            </p>
-            <p v-else-if="isPatientKitReceived">
-              O paciente recebeu o kit médico
-            </p>
-            <p v-else-if="isPatientKitComingBack">
-              O kit médico foi recolhido e está retornando para o barracão
-            </p>
+            <v-timeline v-if="isWaitingKit" align-top dense>
+              <v-timeline-item color="red" small icon="mdi-moped" fill-dot>
+                <v-row dense>
+                  <v-col cols="3">
+                    <strong>
+                      {{
+                        formatTime(
+                          patient[`${PATIENT_STATUS.WAITING_KIT}Status`]
+                            .timestamp
+                        )
+                      }}
+                    </strong>
+                  </v-col>
+                  <v-col>
+                    <strong>O kit médico foi enviado</strong>
+                  </v-col>
+                </v-row>
+              </v-timeline-item>
+
+              <v-timeline-item
+                v-if="isPatientKitReceived"
+                color="yellow"
+                small
+                fill-dot
+              >
+                <template v-slot:icon>
+                  <v-icon small>mdi-cube-send</v-icon>
+                </template>
+                <v-row dense>
+                  <v-col cols="3">
+                    <strong>{{
+                      formatTime(
+                        patient[`${PATIENT_STATUS.WAITING_KIT}Status`]
+                          .receivedAt
+                      )
+                    }}</strong>
+                  </v-col>
+                  <v-col>
+                    <strong>O paciente recebeu o kit</strong>
+                    <div class="caption">
+                      {{
+                        patient[`${PATIENT_STATUS.WAITING_KIT}Status`]
+                          .receivedMessage
+                      }}
+                    </div>
+                  </v-col>
+                </v-row>
+              </v-timeline-item>
+
+              <v-timeline-item
+                v-if="isPatientKitComingBack"
+                color="green"
+                small
+                fill-dot
+              >
+                <template v-slot:icon>
+                  <v-icon dark small>mdi-moped mdi-flip-h</v-icon>
+                </template>
+                <v-row dense>
+                  <v-col cols="3" class="">
+                    <strong>{{
+                      formatTime(
+                        patient[`${PATIENT_STATUS.WAITING_KIT}Status`].sentAt
+                      )
+                    }}</strong>
+                  </v-col>
+                  <v-col>
+                    <strong>
+                      O kit médico foi recolhido e está retornando para o
+                      barracão
+                    </strong>
+                    <div class="caption">
+                      {{
+                        patient[`${PATIENT_STATUS.WAITING_KIT}Status`]
+                          .sentMessage
+                      }}
+                    </div>
+                  </v-col>
+                </v-row>
+              </v-timeline-item>
+            </v-timeline>
 
             <v-form @keydown.enter.prevent="validateWaitingKitSection">
               <v-row>
@@ -263,6 +335,7 @@
 
 <script>
 import { required, minLength } from 'vuelidate/lib/validators'
+import format from 'date-fns/format'
 import { PATIENT_STATUS, PATIENT_OUTCOMES } from '~/constants'
 import calculateTimeWaiting from '~/utils/calculateTimeWaiting'
 import StatusBadge from '~/components/StatusBadge'
@@ -388,7 +461,7 @@ export default {
       const waitingKitStatus = this.patient[
         `${PATIENT_STATUS.WAITING_KIT}Status`
       ]
-      return waitingKitStatus && !!waitingKitStatus.received
+      return waitingKitStatus && !!waitingKitStatus.receivedAt
     },
     isPatientKitComingBack() {
       const waitingKitStatus = this.patient[
@@ -439,6 +512,9 @@ export default {
       this.patient[`${PATIENT_STATUS.FINISHED}Status`].patientOutcome
   },
   methods: {
+    formatTime(timestamp) {
+      return format(timestamp, 'h:mm a')
+    },
     startConversationSession({ text = true, video = true } = {}) {
       this.isLoadingConversation = true
       this.validateOnGoingSection()
