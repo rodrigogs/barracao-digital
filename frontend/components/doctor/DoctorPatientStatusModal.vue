@@ -152,90 +152,96 @@
           </v-stepper-step>
           <v-stepper-content :step="statusesIndex[PATIENT_STATUS.WAITING_KIT]">
             <v-timeline v-if="isWaitingKit" align-top dense>
-              <v-timeline-item color="red" small icon="mdi-moped" fill-dot>
-                <v-row dense>
-                  <v-col cols="3">
-                    <strong>
-                      {{
+              <v-expand-transition>
+                <v-timeline-item color="red" small icon="mdi-moped" fill-dot>
+                  <v-row dense>
+                    <v-col cols="3">
+                      <strong>
+                        {{
+                          formatTime(
+                            patient[`${PATIENT_STATUS.WAITING_KIT}Status`]
+                              .timestamp
+                          )
+                        }}
+                      </strong>
+                    </v-col>
+                    <v-col>
+                      <strong>O kit médico foi enviado</strong>
+                    </v-col>
+                  </v-row>
+                </v-timeline-item>
+              </v-expand-transition>
+
+              <v-expand-transition>
+                <v-timeline-item
+                  v-if="isPatientKitReceived"
+                  color="yellow"
+                  small
+                  fill-dot
+                >
+                  <template v-slot:icon>
+                    <v-icon small>mdi-cube-send</v-icon>
+                  </template>
+                  <v-row dense>
+                    <v-col cols="3">
+                      <strong>{{
                         formatTime(
                           patient[`${PATIENT_STATUS.WAITING_KIT}Status`]
-                            .timestamp
+                            .receivedAt
                         )
-                      }}
-                    </strong>
-                  </v-col>
-                  <v-col>
-                    <strong>O kit médico foi enviado</strong>
-                  </v-col>
-                </v-row>
-              </v-timeline-item>
+                      }}</strong>
+                    </v-col>
+                    <v-col>
+                      <strong>O paciente recebeu o kit</strong>
+                      <div class="caption">
+                        {{
+                          patient[`${PATIENT_STATUS.WAITING_KIT}Status`]
+                            .receivedMessage
+                        }}
+                      </div>
+                    </v-col>
+                  </v-row>
+                </v-timeline-item>
+              </v-expand-transition>
 
-              <v-timeline-item
-                v-if="isPatientKitReceived"
-                color="yellow"
-                small
-                fill-dot
-              >
-                <template v-slot:icon>
-                  <v-icon small>mdi-cube-send</v-icon>
-                </template>
-                <v-row dense>
-                  <v-col cols="3">
-                    <strong>{{
-                      formatTime(
-                        patient[`${PATIENT_STATUS.WAITING_KIT}Status`]
-                          .receivedAt
-                      )
-                    }}</strong>
-                  </v-col>
-                  <v-col>
-                    <strong>O paciente recebeu o kit</strong>
-                    <div class="caption">
-                      {{
-                        patient[`${PATIENT_STATUS.WAITING_KIT}Status`]
-                          .receivedMessage
-                      }}
-                    </div>
-                  </v-col>
-                </v-row>
-              </v-timeline-item>
-
-              <v-timeline-item
-                v-if="isPatientKitComingBack"
-                color="green"
-                small
-                fill-dot
-              >
-                <template v-slot:icon>
-                  <v-icon dark small>mdi-moped mdi-flip-h</v-icon>
-                </template>
-                <v-row dense>
-                  <v-col cols="3" class="">
-                    <strong>{{
-                      formatTime(
-                        patient[`${PATIENT_STATUS.WAITING_KIT}Status`].sentAt
-                      )
-                    }}</strong>
-                  </v-col>
-                  <v-col>
-                    <strong>
-                      O kit médico foi recolhido e está retornando para o
-                      barracão
-                    </strong>
-                    <div class="caption">
-                      {{
-                        patient[`${PATIENT_STATUS.WAITING_KIT}Status`]
-                          .sentMessage
-                      }}
-                    </div>
-                  </v-col>
-                </v-row>
-              </v-timeline-item>
+              <v-expand-transition>
+                <v-timeline-item
+                  v-if="isPatientKitComingBack"
+                  color="green"
+                  small
+                  fill-dot
+                >
+                  <template v-slot:icon>
+                    <v-icon dark small>mdi-moped mdi-flip-h</v-icon>
+                  </template>
+                  <v-row dense>
+                    <v-col cols="3" class="">
+                      <strong>{{
+                        formatTime(
+                          patient[`${PATIENT_STATUS.WAITING_KIT}Status`].sentAt
+                        )
+                      }}</strong>
+                    </v-col>
+                    <v-col>
+                      <strong>
+                        O kit médico foi recolhido e está retornando para o
+                        barracão
+                      </strong>
+                      <div class="caption">
+                        {{
+                          patient[`${PATIENT_STATUS.WAITING_KIT}Status`]
+                            .sentMessage
+                        }}
+                      </div>
+                    </v-col>
+                  </v-row>
+                </v-timeline-item>
+              </v-expand-transition>
             </v-timeline>
 
             <v-form @keydown.enter.prevent="validateWaitingKitSection">
               <v-row>
-                <v-col cols="12" md="10" class="text-center">
+                <v-col cols="12">
                   <v-textarea
                     v-model="$v.waitingKit.message.$model"
                     :error-messages="waitingKitMessageErrors"
