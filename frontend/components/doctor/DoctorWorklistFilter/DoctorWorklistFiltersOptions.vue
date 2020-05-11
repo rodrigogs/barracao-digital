@@ -94,6 +94,10 @@ const statuses = [
     value: PATIENT_STATUS.FINISHED
   },
   {
+    text: patientStatusToText(PATIENT_STATUS.GAVE_UP).text,
+    value: PATIENT_STATUS.GAVE_UP
+  },
+  {
     text: patientStatusToText(PATIENT_STATUS.CANT_BE_ASSISTED).text,
     value: PATIENT_STATUS.CANT_BE_ASSISTED
   }

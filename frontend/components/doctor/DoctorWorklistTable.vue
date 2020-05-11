@@ -3,7 +3,7 @@
     <v-data-table
       :headers="headers"
       :items="filteredPatients"
-      sort-by="ticket"
+      sort-by="createdAt"
       sort-desc
       multi-sort
       item-key="id"
@@ -23,9 +23,27 @@
       </template>
 
       <template v-slot:item.name="{ item }">
-        <span class="subtitle-2">{{ item.name }}</span>
-        <v-spacer />
-        <small>{{ item.age }} anos</small>
+        <v-row>
+          <v-col cols="10">
+            <span class="subtitle-2">{{ item.name }}</span>
+            <v-spacer />
+            <small>{{ item.age }} anos</small>
+          </v-col>
+          <v-col align-self="center">
+            <v-icon
+              v-if="item.videoSession"
+              :title="
+                `Chamada de vídeo em andamento com o Dr. ${item.textSession}`
+              "
+              >mdi-video</v-icon
+            >
+            <v-icon
+              v-else-if="item.textSession"
+              :title="`Em uma conversa com o Dr. ${item.textSession}`"
+              >mdi-chat</v-icon
+            >
+          </v-col>
+        </v-row>
       </template>
 
       <template v-slot:item.waitingTime="{ item }">
@@ -62,7 +80,7 @@ export default {
         options: {}
       },
       headers: [
-        { text: 'Ticket', value: 'ticket', align: 'start' },
+        { text: 'Ticket', value: 'createdAt', align: 'start' },
         { text: 'Nome', value: 'name', align: 'start', width: '60%' },
         { text: 'Tempo de espera', value: 'waitingTime', align: 'center' },
         { text: 'Status', value: 'status' }
