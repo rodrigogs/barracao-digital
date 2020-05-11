@@ -60,7 +60,12 @@
           <v-stepper-step
             :step="statusesIndex[PATIENT_STATUS.ONGOING]"
             :complete="step > statusesIndex[PATIENT_STATUS.ONGOING]"
-            :rules="[() => !$v.onGoing.$invalid]"
+            :rules="[
+              () =>
+                step !== statusesIndex[PATIENT_STATUS.ONGOING] ||
+                !!patient[`${PATIENT_STATUS.ONGOING}Status`] ||
+                ($v.onGoing.$touch() && !$v.onGoing.$invalid)
+            ]"
           >
             <span class="title">Em andamento</span>
           </v-stepper-step>
@@ -135,8 +140,13 @@
           <v-stepper-step
             :step="statusesIndex[PATIENT_STATUS.WAITING_KIT]"
             :complete="step > statusesIndex[PATIENT_STATUS.WAITING_KIT]"
-            :editable="step >= statusesIndex[PATIENT_STATUS.ONGOING]"
-            :rules="[() => isPatientKitReceived]"
+            :editable="!!patient[`${PATIENT_STATUS.ONGOING}Status`]"
+            :rules="[
+              () =>
+                step !== statusesIndex[PATIENT_STATUS.WAITING_KIT] ||
+                !patient[`${PATIENT_STATUS.WAITING_KIT}Status`] ||
+                isPatientKitComingBack
+            ]"
           >
             <span class="title">Kit médico</span>
           </v-stepper-step>
@@ -238,7 +248,7 @@
                   />
                 </v-col>
 
-                <v-col v-if="!isPatientKitComingBack">
+                <v-col v-if="isWaitingKit && !isPatientKitComingBack">
                   <v-btn
                     color="primary"
                     :loading="isLoading"
@@ -248,7 +258,7 @@
                     Atualizar instruções
                   </v-btn>
                 </v-col>
-                <v-col v-else>
+                <v-col v-else-if="!isWaitingKit">
                   <v-btn
                     :loading="isLoading"
                     :disabled="isLoading"
@@ -258,22 +268,12 @@
                   </v-btn>
 
                   <v-btn
-                    v-if="!isWaitingKit"
                     color="primary"
                     :loading="isLoading"
                     :disabled="isLoading"
                     @click="validateWaitingKitSection"
                   >
-                    Enviar kit médico
-                  </v-btn>
-                  <v-btn
-                    v-else
-                    color="primary"
-                    @click.native="
-                      step = statusesIndex[PATIENT_STATUS.FINISHED]
-                    "
-                  >
-                    Próximo
+                    Enviar kit
                   </v-btn>
                 </v-col>
               </v-row>
@@ -284,8 +284,9 @@
             :step="statusesIndex[PATIENT_STATUS.FINISHED]"
             :complete="statusIndex === statusesIndex[PATIENT_STATUS.FINISHED]"
             :editable="
-              patient.status !== PATIENT_STATUS.WAITING_KIT ||
-                isPatientKitComingBack
+              !!patient[`${PATIENT_STATUS.ONGOING}Status`] &&
+                (patient.status !== PATIENT_STATUS.WAITING_KIT ||
+                  isPatientKitComingBack)
             "
           >
             <span class="title">Finalizado</span>
@@ -439,6 +440,10 @@ export default {
         {
           text: 'Caso sem suspeita referenciado',
           value: PATIENT_OUTCOMES.NON_SUSPECT_CASE_REFERENCED
+        },
+        {
+          text: 'Não atendido',
+          value: PATIENT_OUTCOMES.NOT_ATTENDED
         }
       ]
     },
@@ -526,7 +531,7 @@ export default {
           this.isLoadingConversation = false
         })
     },
-    validateOnGoingSection() {
+    async validateOnGoingSection() {
       this.$v.onGoing.$touch()
       if (this.$v.onGoing.$invalid) {
         return this.$toast.error(
@@ -534,11 +539,11 @@ export default {
         )
       }
 
-      return this._changeStatus(PATIENT_STATUS.ONGOING, {
+      return await this._changeStatus(PATIENT_STATUS.ONGOING, {
         ...this.onGoing
       })
     },
-    validateFinishedSection() {
+    async validateFinishedSection() {
       this.$v.finished.$touch()
       if (this.$v.finished.$invalid) {
         return this.$toast.error(
@@ -546,11 +551,11 @@ export default {
         )
       }
 
-      return this._changeStatus(PATIENT_STATUS.FINISHED, {
+      return await this._changeStatus(PATIENT_STATUS.FINISHED, {
         ...this.finished
       })
     },
-    validateWaitingKitSection() {
+    async validateWaitingKitSection() {
       this.$v.onGoing.$touch()
       if (this.$v.onGoing.$invalid) {
         return this.$toast.error(
@@ -558,7 +563,7 @@ export default {
         )
       }
 
-      return this._changeStatus(PATIENT_STATUS.WAITING_KIT, {
+      return await this._changeStatus(PATIENT_STATUS.WAITING_KIT, {
         ...this.waitingKit
       })
     },

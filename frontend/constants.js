@@ -12,5 +12,6 @@ export const PATIENT_OUTCOMES = {
   SUSPECT_CASE_HOME_ISOLATION: 'suspect_case_home_isolation',
   SUSPECT_CASE_REFERENCED: 'suspect_case_referenced',
   NON_SUSPECT_CASE: 'non_suspect_case',
-  NON_SUSPECT_CASE_REFERENCED: 'non_suspect_case_referenced'
+  NON_SUSPECT_CASE_REFERENCED: 'non_suspect_case_referenced',
+  NOT_ATTENDED: 'no_attended'
 }
