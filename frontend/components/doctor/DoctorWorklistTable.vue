@@ -16,7 +16,7 @@
         <DoctorWorklistFilter v-model="filter" />
       </template>
 
-      <template v-slot:item.ticket="{ item }">
+      <template v-slot:item.createdAt="{ item }">
         <span class="subtitle-2">{{ item.ticket }}</span>
         <v-spacer />
         <small>{{ formatDate(item.createdAt) }}</small>
@@ -91,9 +91,14 @@ export default {
   },
   computed: {
     filteredPatients() {
-      return this.patients.filter(({ name }) =>
-        name.toLowerCase().includes((this.filter.search || '').toLowerCase())
-      )
+      return this.patients
+        .filter(({ name }) =>
+          name.toLowerCase().includes((this.filter.search || '').toLowerCase())
+        )
+        .map((patient) => ({
+          ...patient,
+          waitingTime: this.calculateTimeWaiting(patient)
+        }))
     }
   },
   watch: {

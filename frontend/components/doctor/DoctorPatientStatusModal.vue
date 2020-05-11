@@ -141,11 +141,24 @@
           </v-stepper-step>
           <v-stepper-content :step="statusesIndex[PATIENT_STATUS.WAITING_KIT]">
             <p v-if="isWaitingKit">
-              O paciente já está aguardando kit médico
+              O paciente está aguardando o kit médico
             </p>
 
             <v-form @keydown.enter.prevent="validateWaitingKitSection">
               <v-row>
+                <v-col cols="12" md="10" class="text-center">
+                  <v-textarea
+                    v-model="$v.waitingKit.message.$model"
+                    :error-messages="waitingKitMessageErrors"
+                    label="Instruções para o paciente*"
+                    required
+                    autofocus
+                    counter
+                    clearable
+                    rows="3"
+                  />
+                </v-col>
+
                 <v-col>
                   <v-btn
                     :loading="isLoading"
@@ -262,6 +275,10 @@ export default {
     onGoing: {
       message: ''
     },
+    waitingKit: {
+      message:
+        'Um kit médico com instruções de uso está sendo enviado para a sua localização. Por favor, certifique-se de que ele será recebido ao chegar no local.'
+    },
     finished: {
       message: '',
       outcome: ''
@@ -269,6 +286,12 @@ export default {
   }),
   validations: {
     onGoing: {
+      message: {
+        required,
+        minLength: minLength(10)
+      }
+    },
+    waitingKit: {
       message: {
         required,
         minLength: minLength(10)
@@ -350,6 +373,15 @@ export default {
         errors.push('O feedback deve ter mais de 10 caracteres')
       return errors
     },
+    waitingKitMessageErrors() {
+      const errors = []
+      if (!this.$v.waitingKit.message.$dirty) return errors
+      !this.$v.waitingKit.message.required &&
+        errors.push('Por favor, digite instruções para o paciente.')
+      !this.$v.waitingKit.message.minLength &&
+        errors.push('As instruções deve ter no mínimo 10 caracteres')
+      return errors
+    },
     finishedOutcomeErrors() {
       const errors = []
       if (!this.$v.finished.outcome.$dirty) return errors
@@ -361,11 +393,18 @@ export default {
   mounted() {
     this.step = this.statusesIndex[this.patient.status]
     this.onGoing.message =
-      this.patient.ongoingStatus && this.patient.ongoingStatus.doctorMessage
+      this.patient[`${PATIENT_STATUS.ONGOING}Status`] &&
+      this.patient[`${PATIENT_STATUS.ONGOING}Status`].doctorMessage
+    this.waitingKit.message =
+      (this.patient[`${PATIENT_STATUS.WAITING_KIT}Status`] &&
+        this.patient[`${PATIENT_STATUS.WAITING_KIT}Status`].doctorMessage) ||
+      this.waitingKit.message
     this.finished.message =
-      this.patient.finishedStatus && this.patient.finishedStatus.doctorMessage
+      this.patient[`${PATIENT_STATUS.FINISHED}Status`] &&
+      this.patient[`${PATIENT_STATUS.FINISHED}Status`].doctorMessage
     this.finished.outcome =
-      this.patient.finishedStatus && this.patient.finishedStatus.patientOutcome
+      this.patient[`${PATIENT_STATUS.FINISHED}Status`] &&
+      this.patient[`${PATIENT_STATUS.FINISHED}Status`].patientOutcome
   },
   methods: {
     startConversationSession({ text = true, video = true } = {}) {
@@ -407,11 +446,13 @@ export default {
       this.$v.onGoing.$touch()
       if (this.$v.onGoing.$invalid) {
         return this.$toast.error(
-          'O médico deve deixar uma mensagem para o paciente ao trocar o status para "Aguardando kit"'
+          'O médico deve deixar instruções para o paciente ao trocar o status para "Aguardando kit"'
         )
       }
 
-      return this._changeStatus(PATIENT_STATUS.WAITING_KIT)
+      return this._changeStatus(PATIENT_STATUS.WAITING_KIT, {
+        ...this.waitingKit
+      })
     },
     _changeStatus(status = PATIENT_STATUS.ONGOING, form = {}) {
       this.isLoading = true
