@@ -41,6 +41,16 @@ module.exports.handler = async (event) => {
       return responseBuilder.success
         .ok({ body: await patientsService.setWaitingKit(patient, user, body) });
     }
+    // /patients/{ticket}/status/received_kit
+    if (resource.endsWith('status/received_kit')) {
+      return responseBuilder.success
+        .ok({ body: await patientsService.setReceivedKit(patient, user, body) });
+    }
+    // /patients/{ticket}/status/sent_kit
+    if (resource.endsWith('status/sent_kit')) {
+      return responseBuilder.success
+        .ok({ body: await patientsService.setSentKit(patient, user, body) });
+    }
     // /patients/{ticket}/status/finished
     if (resource.endsWith('status/finished')) {
       return responseBuilder.success

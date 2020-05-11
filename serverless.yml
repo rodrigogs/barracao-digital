@@ -239,6 +239,16 @@ functions:
 
       - http:
           method: PUT
+          path: /patients/{ticket}/status/received_kit
+          cors: true
+
+      - http:
+          method: PUT
+          path: /patients/{ticket}/status/sent_kit
+          cors: true
+
+      - http:
+          method: PUT
           path: /patients/{ticket}/status/finished
           cors: true
           authorizer: doctorAuthorizer

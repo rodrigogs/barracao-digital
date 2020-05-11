@@ -135,13 +135,20 @@
           <v-stepper-step
             :step="statusesIndex[PATIENT_STATUS.WAITING_KIT]"
             :complete="step > statusesIndex[PATIENT_STATUS.WAITING_KIT]"
-            editable
+            :editable="step >= statusesIndex[PATIENT_STATUS.ONGOING]"
+            :rules="[() => isPatientKitReceived]"
           >
             <span class="title">Kit médico</span>
           </v-stepper-step>
           <v-stepper-content :step="statusesIndex[PATIENT_STATUS.WAITING_KIT]">
-            <p v-if="isWaitingKit">
+            <p v-if="isWaitingKit && !isPatientKitReceived">
               O paciente está aguardando o kit médico
+            </p>
+            <p v-else-if="isPatientKitReceived">
+              O paciente recebeu o kit médico
+            </p>
+            <p v-else-if="isPatientKitComingBack">
+              O kit médico foi recolhido e está retornando para o barracão
             </p>
 
             <v-form @keydown.enter.prevent="validateWaitingKitSection">
@@ -159,7 +166,17 @@
                   />
                 </v-col>
 
-                <v-col>
+                <v-col v-if="!isPatientKitComingBack">
+                  <v-btn
+                    color="primary"
+                    :loading="isLoading"
+                    :disabled="isLoading"
+                    @click="validateWaitingKitSection"
+                  >
+                    Atualizar instruções
+                  </v-btn>
+                </v-col>
+                <v-col v-else>
                   <v-btn
                     :loading="isLoading"
                     :disabled="isLoading"
@@ -194,7 +211,10 @@
           <v-stepper-step
             :step="statusesIndex[PATIENT_STATUS.FINISHED]"
             :complete="statusIndex === statusesIndex[PATIENT_STATUS.FINISHED]"
-            editable
+            :editable="
+              patient.status !== PATIENT_STATUS.WAITING_KIT ||
+                isPatientKitComingBack
+            "
           >
             <span class="title">Finalizado</span>
           </v-stepper-step>
@@ -363,6 +383,18 @@ export default {
     },
     statusIndex() {
       return this.statusesIndex[this.patient.status]
+    },
+    isPatientKitReceived() {
+      const waitingKitStatus = this.patient[
+        `${PATIENT_STATUS.WAITING_KIT}Status`
+      ]
+      return waitingKitStatus && !!waitingKitStatus.received
+    },
+    isPatientKitComingBack() {
+      const waitingKitStatus = this.patient[
+        `${PATIENT_STATUS.WAITING_KIT}Status`
+      ]
+      return waitingKitStatus && !!waitingKitStatus.sentAt
     },
     onGoingMessageErrors() {
       const errors = []
