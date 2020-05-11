@@ -97,7 +97,12 @@
                 type="email"
                 autocomplete="no"
                 required
-              ></v-text-field>
+                messages="O avatar do seu email pode ser alterado em https://br.gravatar.com/"
+              >
+                <template v-slot:message="{ message }">
+                  <span v-linkified>{{ message }}</span>
+                </template>
+              </v-text-field>
             </v-col>
 
             <v-col cols="12" sm="6">
@@ -160,6 +165,7 @@
 </template>
 
 <script>
+import linkify from 'vue-linkify'
 import { required, minLength, email } from 'vuelidate/lib/validators'
 import InvalidCrmError from '~/errors/InvalidCrmError'
 import { zip } from '~/utils/validations'
@@ -171,6 +177,9 @@ export default {
   name: 'DoctorsResourceModal',
   components: {
     StatesAutocomplete
+  },
+  directives: {
+    linkified: linkify
   },
   props: {
     doctor: {

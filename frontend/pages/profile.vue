@@ -45,7 +45,12 @@
                       type="email"
                       autocomplete="no"
                       required
-                    />
+                      messages="O avatar do seu email pode ser alterado em https://br.gravatar.com/"
+                    >
+                      <template v-slot:message="{ message }">
+                        <span v-linkified>{{ message }}</span>
+                      </template>
+                    </v-text-field>
                   </v-col>
                 </v-row>
               </form>
@@ -115,11 +120,15 @@
 </template>
 
 <script>
+import linkify from 'vue-linkify'
 import { required, minLength, email, sameAs } from 'vuelidate/lib/validators'
 import avatarUtil from '~/utils/avatar'
 
 export default {
   middleware: 'auth',
+  directives: {
+    linkified: linkify
+  },
   data: () => ({
     avatar: '',
     isLoadingProfile: false,
