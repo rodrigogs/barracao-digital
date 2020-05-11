@@ -13,6 +13,7 @@
 import { PATIENT_STATUS } from '@/constants'
 import PatientWaiting from '@/components/patient/PatientWaiting.vue'
 import PatientOngoing from '@/components/patient/PatientOngoing.vue'
+import PatientWaitingKit from '@/components/patient/PatientWaitingKit.vue'
 import PatientFinished from '@/components/patient/PatientFinished.vue'
 import PatientCantBeAssisted from '@/components/patient/PatientCantBeAssisted.vue'
 import PatientFacilityNotAvailable from '@/components/patient/PatientFacilityNotAvailable.vue'
@@ -25,6 +26,8 @@ const searchPatientByTicket = async (api, ticket) => {
     createdAt,
     status,
     ongoingStatus,
+    // eslint-disable-next-line camelcase
+    waiting_kitStatus,
     finishedStatus,
     videoSession
   } = await api.searchPatientByTicket(ticket)
@@ -36,6 +39,7 @@ const searchPatientByTicket = async (api, ticket) => {
       createdAt,
       status,
       ongoingStatus,
+      waiting_kitStatus,
       finishedStatus,
       videoSession
     }
@@ -76,6 +80,10 @@ export default {
         doctorState: null,
         doctorMessage: null,
         facilityName: null,
+        receivedAt: null,
+        receivedMessage: null,
+        sentAt: null,
+        sentMessage: null,
         timestamp: null
       },
       [`${PATIENT_STATUS.FINISHED}Status`]: {
@@ -110,10 +118,9 @@ export default {
           }
         }),
         [PATIENT_STATUS.WAITING_KIT]: () => ({
-          component: PatientOngoing,
+          component: PatientWaitingKit,
           props: {
-            ...this.patient[`${PATIENT_STATUS.WAITING_KIT}Status`]
-            // TODO
+            patient: this.patient
           }
         }),
         [PATIENT_STATUS.FINISHED]: () => ({
