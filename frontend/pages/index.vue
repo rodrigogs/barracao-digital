@@ -1,4 +1,4 @@
-<template functional>
+<template>
   <v-card elevation="0" max-width="600">
     <v-card-text
       class="text-center grey--text text--darken-4 title font-weight-regular"
@@ -57,3 +57,7 @@
     </v-container>
   </v-card>
 </template>
+
+<script>
+export default {}
+</script>
