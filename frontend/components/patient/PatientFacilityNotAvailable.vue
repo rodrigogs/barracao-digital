@@ -1,4 +1,4 @@
-<template functional>
+<template>
   <div id="facility-not-available">
     <h3 class="mb-8 text-center red--text">
       Infelizmente não encontramos nenhum barracão digital disponível para a sua
@@ -189,3 +189,9 @@
     </v-expansion-panels>
   </div>
 </template>
+
+<script>
+export default {
+  name: 'PatientFacilityNotAvailable'
+}
+</script>

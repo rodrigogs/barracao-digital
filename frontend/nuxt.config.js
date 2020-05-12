@@ -192,7 +192,6 @@ export default {
    */
   vuetify: {
     customVariables: ['~/assets/variables.scss'],
-    treeShake: false,
     theme: {},
     optionsPath: './vuetify.options.js'
   },
@@ -207,6 +206,22 @@ export default {
    */
   build: {
     transpile: [/vuetify/],
+    optimization: {
+      splitChunks: {
+        cacheGroups: {
+          opentok: {
+            test: /@opentok\/client/,
+            name: 'opentok',
+            chunks: 'all'
+          },
+          vuetify: {
+            test: /vuetify/,
+            name: 'vuetify',
+            chunks: 'all'
+          }
+        }
+      }
+    },
     extend(config, ctx) {}
   }
 }
