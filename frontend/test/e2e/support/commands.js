@@ -1,5 +1,28 @@
 import faker from 'faker/locale/pt_BR'
 import cpf from 'cpf'
+import unmaskText from '../../../utils/unmaskText'
+
+Cypress.Commands.add('createPatient', ({ cep = '55555550' } = {}) => {
+  const randomWords = faker.random
+    .words(3)
+    .split(' ')
+    .join(', ')
+
+  const patient = {
+    name: faker.name.findName(),
+    age: faker.random.number(120),
+    cpf: unmaskText(cpf.generate()),
+    cep,
+    meds: randomWords,
+    allergies: randomWords,
+    covenant: 'UNIMED',
+    phone: faker.phone.phoneNumber('(##) ####-####'),
+    email: faker.internet.email()
+  }
+
+  const URL = `${Cypress.env('apiUrl')}/patients`
+  return cy.request('POST', URL, patient).then((response) => response.body)
+})
 
 Cypress.Commands.add('registerPatient', ({ cep = '55555-550' } = {}) => {
   const randomWords = faker.random
@@ -28,10 +51,6 @@ Cypress.Commands.add('registerPatient', ({ cep = '55555-550' } = {}) => {
 
   cy.get('input[id="phone"]').type(phone)
   cy.get('input[id="email"]').type(faker.internet.email())
-  cy.get('input[id="whatsapp"]').type(phone)
-  cy.get('input[id="telegram"]').type(phone)
-  cy.get('input[id="hangout"]').type(phone)
-  cy.get('input[id="skype"]').type(faker.internet.userName())
 
   cy.get('button#contactBtn').click()
 })

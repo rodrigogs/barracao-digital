@@ -1,5 +1,5 @@
 describe('Login screen', () => {
-  it('Logs in a doctor', () => {
+  it('Logs in as a doctor', () => {
     cy.server()
     cy.fixture('patients').as('patientsJSON')
     cy.route('GET', `${Cypress.env('apiUrl')}/patients/**`, '@patientsJSON').as(

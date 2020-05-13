@@ -5,13 +5,14 @@
         <v-card class="pa-4">
           <form @keydown.enter.prevent="validateForm">
             <v-text-field
+              id="ticket"
               v-model="$v.ticket.$model"
               v-mask="'XXXXXXXXX'"
               :error-messages="ticketErrors"
               label="Senha de retorno*"
               required
               autofocus
-            ></v-text-field>
+            />
 
             <v-btn
               block
