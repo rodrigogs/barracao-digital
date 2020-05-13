@@ -153,19 +153,13 @@ export default {
     receiveKit() {
       this.isLoading = true
       return this.$api
-        .setWaitingKitReceived(this.patient.ticket, {
-          message: this.message ? this.message : undefined
-        })
-        .then(() => (this.message = ''))
+        .setWaitingKitReceived(this.patient.ticket)
         .finally(() => (this.isLoading = false))
     },
     sentKit() {
       this.isLoading = true
       return this.$api
-        .setWaitingKitSent(this.patient.ticket, {
-          message: this.message ? this.message : undefined
-        })
-        .then(() => (this.message = ''))
+        .setWaitingKitSent(this.patient.ticket)
         .finally(() => (this.isLoading = false))
     }
   }

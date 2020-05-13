@@ -1,12 +1,5 @@
 <template>
   <v-container fluid>
-    <v-scroll-y-transition mode="out-in">
-      <v-alert v-if="timeoutAfterInactiveModalDisplayed" type="info">
-        Você está inativo a um tempo, iremos parar o seu atendimento se não
-        houver nenhuma atividade em 1 minuto
-      </v-alert>
-    </v-scroll-y-transition>
-
     <v-card v-if="$auth.loggedIn" elevation="0" append>
       <DoctorStatus
         :active="$auth.user.active"
@@ -34,16 +27,11 @@ export default {
   },
   data: () => ({
     showTeamStatus: false,
-    timeoutAfterInactiveModalDisplayed: null,
-    idle: null,
     doctorSubscription: null,
     patientsSubscription: null,
     togglingStatus: false,
     patients: []
   }),
-  beforeDestroy() {
-    this.idle && this.idle.stop()
-  },
   methods: {
     toggleStatus() {
       this.togglingStatus = true

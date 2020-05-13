@@ -131,7 +131,8 @@ export default {
     '@nuxtjs/dotenv',
     '@nuxtjs/auth',
     '@nuxtjs/firebase',
-    '@nuxtjs/sentry'
+    '@nuxtjs/sentry',
+    'vuetify-dialog/nuxt'
   ],
   /*
    ** Axios module configuration

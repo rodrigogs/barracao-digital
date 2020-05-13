@@ -40,7 +40,6 @@
       :origin-cep="patient.originCep"
       :doctor-username="doctorUsername"
       :patient-ticket="patient.ticket"
-      :is-video-allowed="isVideoAllowed"
       :is-doctor="false"
       @close="isConversationOpen = false"
     />

@@ -212,8 +212,13 @@ export default {
     edit(item) {
       this.selectedFacility = item
     },
-    remove({ origin }) {
-      if (!confirm(`Deletar a instalação ${origin}?`)) return
+    async remove({ origin }) {
+      if (
+        !(await this.$dialog.confirm({
+          text: `Deletar a instalação ${origin}?`
+        }))
+      )
+        return
       this.isLoading = true
       const index = this._findFacilityIndex(origin)
 
