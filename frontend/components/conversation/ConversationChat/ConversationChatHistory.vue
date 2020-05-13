@@ -41,6 +41,11 @@ export default {
   data: () => ({
     scrollDownTimeout: null
   }),
+  computed: {
+    noMessages() {
+      return !this.messages || !this.messages.length
+    }
+  },
   watch: {
     messages() {
       this.scrollDown()

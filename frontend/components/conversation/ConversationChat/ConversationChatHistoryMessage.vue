@@ -12,7 +12,9 @@
               <v-img :src="avatar"></v-img>
             </v-avatar>
             <small class="message-boc__footer"></small>
-            {{ message.text }}
+            <span v-linkified>
+              {{ message.text }}
+            </span>
           </div>
         </div>
       </v-expand-transition>
@@ -21,10 +23,14 @@
 </template>
 
 <script>
+import linkify from 'vue-linkify'
 import avatarUtil from '@/utils/avatar'
 
 export default {
   name: 'ConversationChatHistoryMessage',
+  directives: {
+    linkified: linkify
+  },
   props: {
     doctor: {
       type: Object,
@@ -76,7 +82,8 @@ export default {
       (!this.isDoctor && !this.isMessageFromMe) ||
       (this.isDoctor && this.isMessageFromMe)
     ) {
-      this.avatar = await avatarUtil(this.doctor.email || this.doctor.username)
+      // this.avatar = await avatarUtil(this.doctor.email || this.doctor.username)
+      this.avatar = '/favicon.ico'
     }
   },
   created() {

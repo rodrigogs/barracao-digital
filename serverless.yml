@@ -79,7 +79,6 @@ provider:
     OPENTOK_API_KEY: ${env:OPENTOK_API_KEY}
     OPENTOK_API_SECRET: ${env:OPENTOK_API_SECRET}
     DOCTOR_INACTIVITY_TIMEOUT_IN_MINUTES: ${env:DOCTOR_INACTIVITY_TIMEOUT_IN_MINUTES, '35'}
-    CONVERSATION_CLEANUP_TIMEOUT_IN_MINUTES: ${env:CONVERSATION_CLEANUP_TIMEOUT_IN_MINUTES, '60'}
 
 functions:
   doctorAuthorizer:
@@ -102,11 +101,6 @@ functions:
   # Jobs
   alternate-doctor-job:
     handler: functions/jobs/alternate-doctor-job.handler
-    memorySize: 1024
-    timeout: 30
-
-  conversation-cleanup-job:
-    handler: functions/jobs/conversation-cleanup-job.handler
     memorySize: 1024
     timeout: 30
 

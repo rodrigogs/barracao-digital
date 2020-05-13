@@ -1,6 +1,7 @@
 <template>
   <div>
     <v-data-table
+      v-if="!hasSelectedPatient"
       :headers="headers"
       :items="filteredPatients"
       sort-by="createdAt"
@@ -143,6 +144,9 @@ export default {
           ...patient,
           waitingTime: this.calculateTimeWaiting(patient)
         }))
+    },
+    hasSelectedPatient() {
+      return !!this.$route.params.ticket
     }
   },
   watch: {

@@ -4,6 +4,7 @@
       <v-text-field
         ref="input"
         v-model="text"
+        class="px-6"
         type="text"
         placeholder="Digite sua mensagem"
         counter

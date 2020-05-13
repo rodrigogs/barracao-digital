@@ -1,5 +1,5 @@
 <template>
-  <v-card class="conversation-chat" tile width="800px">
+  <v-card class="conversation-chat" tile width="100%">
     <ConversationChatHistory
       class="conversation-chat__history"
       :is-doctor="isDoctor"
@@ -14,8 +14,10 @@
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex'
 import ConversationChatActions from '~/components/conversation/ConversationChat/ConversationChatActions'
 import ConversationChatHistory from '~/components/conversation/ConversationChat/ConversationChatHistory'
+import promiseDelay from '~/utils/promiseDelay'
 
 export default {
   name: 'ConversationChat',
@@ -37,43 +39,46 @@ export default {
       required: true
     }
   },
-  data: () => ({
-    messages: []
-  }),
   computed: {
-    messagesQuery() {
-      return this.$fireStore
-        .collection('facilities')
-        .doc(this.doctor.cep)
-        .collection('conversations')
-        .doc(`${this.doctor.username}#${this.patient.ticket}`)
-        .collection('messages')
+    ...mapGetters('chat', {
+      isReady: 'isReady',
+      messages: 'getMessages'
+    })
+  },
+  watch: {
+    isReady() {
+      if (this.isReady && this.isDoctor && !this.messages.length)
+        this.sendHintMessages()
     }
   },
   mounted() {
-    this.syncMessages()
-  },
-  destroyed() {
-    this.messagesSubscription && this.messagesSubscription()
+    this.subscribeToMessages({
+      originCep: this.patient.originCep,
+      doctorUsername: this.doctor.username,
+      patientTicket: this.patient.ticket
+    })
   },
   methods: {
-    syncMessages() {
-      this.messagesSubscription = this.messagesQuery.onSnapshot((snapshot) => {
-        snapshot.docChanges().forEach((change) => {
-          const doc = change.doc.data()
-          this.messages.push(doc)
-        })
-      })
+    ...mapActions('chat', ['subscribeToMessages', 'sendMessage']),
+    async sendHintMessages() {
+      await this.newMessage('Opa, bem vindo(a) ao Barracão Digital')
+      await promiseDelay(300)
+      await this.newMessage(
+        'A equipe ainda vai bolar um script interessante para mim'
+      )
+      await promiseDelay(300)
+      await this.newMessage('Por enquanto só curte um som aí')
+      await promiseDelay(300)
+      await this.newMessage('https://www.youtube.com/watch?v=tmozGmGoJuw')
     },
-    sendMessage(text) {
-      const message = {
+    newMessage(text) {
+      return this.sendMessage({
         from: this.isDoctor ? 'doctor' : 'patient',
-        patient: this.patient.ticket,
-        doctor: this.doctor.username,
-        timestamp: Date.now(),
+        originCep: this.patient.originCep,
+        patientTicket: this.patient.ticket,
+        doctorUsername: this.doctor.username,
         text
-      }
-      return this.messagesQuery.doc(String(message.timestamp)).set(message)
+      })
     }
   }
 }

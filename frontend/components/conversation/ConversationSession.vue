@@ -1,111 +1,29 @@
 <template>
-  <v-dialog
-    :value="true"
-    :retain-focus="false"
-    fullscreen
-    hide-overlay
-    transition="dialog-bottom-transition"
-  >
-    <v-card tile>
-      <v-toolbar flat dark extended color="primary">
-        <template v-slot:extension>
-          <v-toolbar-title>
-            {{ talkingWith }}, {{ patient && patient.age }} anos
-          </v-toolbar-title>
-
-          <v-spacer></v-spacer>
-
-          <v-tooltip v-if="isDoctor" bottom open-on-click>
-            <template v-slot:activator="{ on }">
-              <v-btn
-                :loading="isDeletingConversationSession"
-                :disabled="isDeletingConversationSession"
-                icon
-                dark
-                v-on="on"
-              >
-                <v-icon>mdi-account-details</v-icon>
-              </v-btn>
-            </template>
-            <span>
-              <p>
-                <strong>Alergias:</strong> {{ patient && patient.allergies }}
-              </p>
-              <p><strong>Medicações:</strong> {{ patient && patient.meds }}</p>
-              <p>
-                <strong>Convênio:</strong> {{ patient && patient.covenant }}
-              </p>
-              <p>
-                <strong>Já foi atendido?</strong>
-                {{ yesOrNo(patient && patient.hasBeenAssisted) }}
-              </p>
-            </span>
-          </v-tooltip>
-        </template>
-
-        Senha {{ patient && patient.ticket }}
-
-        <v-spacer />
-
-        <v-tooltip v-if="isDoctor" bottom>
-          <template v-slot:activator="{ on }">
-            <v-btn
-              :loading="isDeletingConversationSession"
-              :disabled="isDeletingConversationSession"
-              icon
-              dark
-              v-on="on"
-              @click="deleteConversationSession(true)"
-            >
-              <v-icon>mdi-medical-bag</v-icon>
-            </v-btn>
-          </template>
-          <span>Enviar kit médico</span>
-        </v-tooltip>
-
-        <v-tooltip bottom>
-          <template v-slot:activator="{ on }">
-            <v-btn
-              icon
-              dark
-              :loading="isDeletingConversationSession"
-              :disabled="isDeletingConversationSession"
-              v-on="on"
-              @click="deleteConversationSession(true)"
-            >
-              <v-icon>mdi-power</v-icon>
-            </v-btn>
-          </template>
-          <span>Encerrar sessão</span>
-        </v-tooltip>
-      </v-toolbar>
-
-      <div v-if="isFullyLoaded" class="conversation">
-        <div
-          v-if="patientVideoSession"
-          class="conversation__video grey lighten-3"
-        >
-          <ConversationVideo
-            v-if="isVideoAllowed && videoSession"
-            ref="video"
-            :session-id="videoSession.sessionId"
-            :token="videoSession.token"
-            :is-publisher="isDoctor"
-            @video-ready="setVideoReady"
-            @disconnection="deleteConversationSession"
-          />
-        </div>
-
-        <ConversationChat
-          v-if="patientTextSession"
-          class="conversation__chat"
-          :doctor="doctor"
-          :patient="patient"
-          :is-doctor="isDoctor"
+  <v-card tile flat width="100%">
+    <div v-if="isFullyLoaded" class="conversation">
+      <div
+        v-if="patientVideoSession"
+        class="conversation__video grey lighten-3"
+      >
+        <ConversationVideo
+          v-if="isVideoAllowed && videoSession"
+          ref="video"
+          :session-id="videoSession.sessionId"
+          :token="videoSession.token"
+          :is-publisher="isDoctor"
+          @video-ready="setVideoReady"
+          @disconnection="deleteVideoSession"
         />
       </div>
-    </v-card>
-  </v-dialog>
+
+      <ConversationChat
+        class="conversation__chat"
+        :doctor="doctor"
+        :patient="patient"
+        :is-doctor="isDoctor"
+      />
+    </div>
+  </v-card>
 </template>
 
 <script>
@@ -141,7 +59,6 @@ export default {
     }
   },
   data: () => ({
-    isDeletingConversationSession: false,
     isVideoReady: false,
     isPatientVideoAllowed: true,
     patient: null,
@@ -162,7 +79,7 @@ export default {
       return this.patient && this.patient.videoSession
     },
     isFullyLoaded() {
-      return this.doctor && this.patient && this.validateSession()
+      return this.doctor && this.patient
     },
     talkingWith() {
       return this.isDoctor
@@ -174,7 +91,10 @@ export default {
     patientTextSession(hasSession, hadSession) {
       const wasSessionDeleted = hadSession && !hasSession
       if (wasSessionDeleted) {
-        return this.deleteConversationSession()
+        return this.$api.deleteConversationSession(this.patient.ticket, {
+          video: true,
+          text: true
+        })
       }
     },
     isFullyLoaded() {
@@ -226,27 +146,13 @@ export default {
         })
       ])
     },
-    validateSession() {
-      const {
-        patient: {
-          textSession: patientTextSession,
-          videoSession: patientVideoSession
-        },
-        doctor: {
-          textSessions: { [this.patientTicket]: doctorTextSession },
-          videoSessions: { [this.patientTicket]: doctorVideoSession }
-        }
-      } = this
-
-      const validateTextSession = () => !patientTextSession || doctorTextSession
-
-      const validateVideoSession = () =>
-        !patientVideoSession || doctorVideoSession
-
-      return validateTextSession() && validateVideoSession()
-    },
     setVideoReady(ready) {
       this.isVideoReady = ready
+    },
+    deleteVideoSession() {
+      return this.$api.deleteConversationSession(this.patient.ticket, {
+        video: true
+      })
     },
     deletePatientFirestoreTextSession() {
       return this.$fireStore
@@ -270,25 +176,6 @@ export default {
           videoSession: null
         })
     },
-    async deleteConversationSession(shouldConfirm = false) {
-      if (
-        shouldConfirm &&
-        !confirm('Esta ação deletará todos os dados desta conversa')
-      )
-        return
-      try {
-        if (this.isDoctor) {
-          this.isDeletingConversationSession = true
-          await this.$api.deleteConversationSession(this.patient.ticket)
-        } else {
-          this.$refs.video && (await this.$refs.video.disconnect())
-          await this.deletePatientFirestoreTextSession()
-          await this.deletePatientFirestoreVideoSession()
-        }
-      } catch (err) {
-        this.$sentry.captureException(err)
-      }
-    },
     yesOrNo(bool) {
       return bool ? 'Sim' : 'Não'
     }
@@ -298,7 +185,7 @@ export default {
 
 <style scoped>
 .conversation {
-  --header-height: 56px;
+  --header-height: 120px;
   display: flex;
   flex-direction: column;
   height: calc(100vh - var(--header-height));
@@ -309,7 +196,6 @@ export default {
 
 .conversation__video {
   width: 100%;
-  max-width: 800px;
 }
 
 .conversation__video > div {
@@ -324,11 +210,5 @@ export default {
 .conversation__chat {
   height: 100%;
   max-height: 100%;
-}
-
-@media screen and (min-width: 960px) {
-  .conversation {
-    --header-height: 64px;
-  }
 }
 </style>
