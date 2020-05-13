@@ -7,17 +7,77 @@
     transition="dialog-bottom-transition"
   >
     <v-card tile>
-      <v-toolbar flat dark color="primary">
-        <v-toolbar-title>Conversa com {{ talkingWith }}</v-toolbar-title>
+      <v-toolbar flat dark extended color="primary">
+        <template v-slot:extension>
+          <v-toolbar-title>
+            {{ talkingWith }}, {{ patient && patient.age }} anos
+          </v-toolbar-title>
+
+          <v-spacer></v-spacer>
+
+          <v-tooltip v-if="isDoctor" bottom open-on-click>
+            <template v-slot:activator="{ on }">
+              <v-btn
+                :loading="isDeletingConversationSession"
+                :disabled="isDeletingConversationSession"
+                icon
+                dark
+                v-on="on"
+              >
+                <v-icon>mdi-account-details</v-icon>
+              </v-btn>
+            </template>
+            <span>
+              <p>
+                <strong>Alergias:</strong> {{ patient && patient.allergies }}
+              </p>
+              <p><strong>Medicações:</strong> {{ patient && patient.meds }}</p>
+              <p>
+                <strong>Convênio:</strong> {{ patient && patient.covenant }}
+              </p>
+              <p>
+                <strong>Já foi atendido?</strong>
+                {{ yesOrNo(patient && patient.hasBeenAssisted) }}
+              </p>
+            </span>
+          </v-tooltip>
+        </template>
+
+        Senha {{ patient && patient.ticket }}
+
         <v-spacer />
-        <v-btn
-          :loading="isDeletingConversationSession"
-          :disabled="isDeletingConversationSession"
-          color="error"
-          @click="deleteConversationSession(true)"
-        >
-          Encerrar
-        </v-btn>
+
+        <v-tooltip v-if="isDoctor" bottom>
+          <template v-slot:activator="{ on }">
+            <v-btn
+              :loading="isDeletingConversationSession"
+              :disabled="isDeletingConversationSession"
+              icon
+              dark
+              v-on="on"
+              @click="deleteConversationSession(true)"
+            >
+              <v-icon>mdi-medical-bag</v-icon>
+            </v-btn>
+          </template>
+          <span>Enviar kit médico</span>
+        </v-tooltip>
+
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on }">
+            <v-btn
+              icon
+              dark
+              :loading="isDeletingConversationSession"
+              :disabled="isDeletingConversationSession"
+              v-on="on"
+              @click="deleteConversationSession(true)"
+            >
+              <v-icon>mdi-power</v-icon>
+            </v-btn>
+          </template>
+          <span>Encerrar sessão</span>
+        </v-tooltip>
       </v-toolbar>
 
       <div v-if="isFullyLoaded" class="conversation">
@@ -228,6 +288,9 @@ export default {
       } catch (err) {
         this.$sentry.captureException(err)
       }
+    },
+    yesOrNo(bool) {
+      return bool ? 'Sim' : 'Não'
     }
   }
 }

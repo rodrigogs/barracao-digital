@@ -249,28 +249,32 @@
                     required
                     autofocus
                     counter
-                    clearable
+                    :clearable="
+                      step === statusesIndex[PATIENT_STATUS.WAITING_KIT]
+                    "
+                    :readonly="
+                      step === statusesIndex[PATIENT_STATUS.WAITING_KIT]
+                    "
                     rows="3"
                   />
                 </v-col>
 
-                <v-col v-if="isWaitingKit && !isPatientKitComingBack">
-                  <v-btn
-                    color="primary"
-                    :loading="isLoading"
-                    :disabled="isLoading"
-                    @click="validateWaitingKitSection"
-                  >
-                    Atualizar instruções
-                  </v-btn>
-                </v-col>
-                <v-col v-else-if="!isWaitingKit">
+                <v-col v-if="!isWaitingKit">
                   <v-btn
                     :loading="isLoading"
                     :disabled="isLoading"
                     @click="step = statusesIndex[PATIENT_STATUS.ONGOING]"
                   >
                     Voltar
+                  </v-btn>
+
+                  <v-btn
+                    color="error"
+                    :loading="isLoading"
+                    :disabled="isLoading"
+                    @click="step = statusesIndex[PATIENT_STATUS.FINISHED]"
+                  >
+                    Não enviar
                   </v-btn>
 
                   <v-btn
@@ -562,6 +566,8 @@ export default {
       })
     },
     async validateWaitingKitSection() {
+      if (!confirm('Você confirma o envio do kit?')) return
+
       this.$v.onGoing.$touch()
       if (this.$v.onGoing.$invalid) {
         return this.$toast.error(

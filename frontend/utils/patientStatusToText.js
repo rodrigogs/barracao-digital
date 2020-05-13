@@ -7,7 +7,7 @@ export default (status) =>
       color: 'deep-purple'
     },
     [PATIENT_STATUS.WAITING_KIT]: {
-      text: 'Aguardando kit',
+      text: 'Kit médico',
       color: 'deep-orange'
     },
     [PATIENT_STATUS.ONGOING]: {

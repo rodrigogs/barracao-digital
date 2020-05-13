@@ -23,27 +23,69 @@
       </template>
 
       <template v-slot:item.name="{ item }">
-        <v-row>
-          <v-col cols="10">
-            <span class="subtitle-2">{{ item.name }}</span>
-            <v-spacer />
-            <small>{{ item.age }} anos</small>
-          </v-col>
-          <v-col align-self="center">
-            <v-icon
-              v-if="item.videoSession"
-              :title="
-                `Chamada de vídeo em andamento com o Dr. ${item.textSession}`
-              "
-              >mdi-video</v-icon
-            >
-            <v-icon
-              v-else-if="item.textSession"
-              :title="`Em uma conversa com o Dr. ${item.textSession}`"
-              >mdi-chat</v-icon
-            >
-          </v-col>
-        </v-row>
+        <span class="subtitle-2">{{ item.name }}</span>
+        <v-spacer />
+        <small>{{ item.age }} anos</small>
+      </template>
+
+      <template v-slot:item.interactions="{ item }">
+        <v-icon
+          v-if="item.videoSession"
+          :title="`Chamada de vídeo em andamento com o Dr. ${item.textSession}`"
+          >mdi-video</v-icon
+        >
+        <v-icon
+          v-else-if="item.textSession"
+          :title="`Em uma conversa com o Dr. ${item.textSession}`"
+        >
+          mdi-chat
+        </v-icon>
+      </template>
+
+      <template v-slot:item.kitStatus="{ item }">
+        <span v-if="getWaitingKitStatus(item) && showKitStatus(item)">
+          <v-tooltip
+            v-if="getWaitingKitStatus(item) && !getWaitingKitReceivedAt(item)"
+            left
+          >
+            <template v-slot:activator="{ on }">
+              <v-btn fab elevation="0" x-small color="red" v-on="on">
+                <v-icon color="white">mdi-moped</v-icon>
+              </v-btn>
+            </template>
+            <span>
+              Enviado em
+              {{ formatDate((getWaitingKitStatus(item) || {}).timestamp) }}
+            </span>
+          </v-tooltip>
+          <v-tooltip
+            v-else-if="
+              !getWaitingKitSentAt(item) && getWaitingKitReceivedAt(item)
+            "
+            left
+          >
+            <template v-slot:activator="{ on }">
+              <v-btn fab elevation="0" x-small color="yellow" v-on="on">
+                <v-icon color="black">mdi-cube-send</v-icon>
+              </v-btn>
+            </template>
+            <span>
+              Recebido em
+              {{ formatDate(getWaitingKitReceivedAt(item)) }}
+            </span>
+          </v-tooltip>
+          <v-tooltip v-else-if="getWaitingKitSentAt(item)" left>
+            <template v-slot:activator="{ on }">
+              <v-btn fab elevation="0" x-small color="green" v-on="on">
+                <v-icon color="white">mdi-moped mdi-flip-h</v-icon>
+              </v-btn>
+            </template>
+            <span>
+              Enviado de volta em
+              {{ formatDate(getWaitingKitSentAt(item)) }}
+            </span>
+          </v-tooltip>
+        </span>
       </template>
 
       <template v-slot:item.waitingTime="{ item }">
@@ -80,8 +122,10 @@ export default {
         options: {}
       },
       headers: [
-        { text: 'Ticket', value: 'createdAt', align: 'start' },
+        { text: 'Senha', value: 'createdAt', align: 'start' },
         { text: 'Nome', value: 'name', align: 'start', width: '60%' },
+        { value: 'interactions', sortable: false },
+        { value: 'kitStatus', sortable: false },
         { text: 'Tempo de espera', value: 'waitingTime', align: 'center' },
         { text: 'Status', value: 'status' }
       ],
@@ -152,6 +196,7 @@ export default {
       })
     },
     formatDate(timestamp) {
+      if (!timestamp) return
       return format(timestamp, 'dd/MM/y hh:mm')
     },
     calculateTimeWaiting(patient) {
@@ -179,6 +224,20 @@ export default {
       const oneHour = 1000 * 60 * 60
       const percent = (oneHour / timeWaiting) * 100
       return percentageToColor(percent)
+    },
+    getWaitingKitStatus(patient) {
+      return patient && patient[`${PATIENT_STATUS.WAITING_KIT}Status`]
+    },
+    getWaitingKitReceivedAt(patient) {
+      return (this.getWaitingKitStatus(patient) || {}).receivedAt
+    },
+    getWaitingKitSentAt(patient) {
+      return (this.getWaitingKitStatus(patient) || {}).sentAt
+    },
+    showKitStatus(patient) {
+      return [PATIENT_STATUS.WAITING_KIT, PATIENT_STATUS.FINISHED].includes(
+        patient.status
+      )
     }
   }
 }

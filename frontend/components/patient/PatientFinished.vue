@@ -25,7 +25,7 @@
         </v-list-item>
       </v-list>
 
-      <v-card class="my-4">
+      <v-card v-if="doctorMessage" class="my-4">
         <v-card-title>
           Confira o feedback do seu atendimento:
         </v-card-title>
@@ -34,7 +34,7 @@
         </v-card-text>
       </v-card>
 
-      <v-card>
+      <v-card class="my-4">
         <v-card-text class="text-center subtitle-1">
           <span class="subtitle-1" v-text="ratingTitle">
             Avalie o seu atendimento:

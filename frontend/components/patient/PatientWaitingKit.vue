@@ -71,8 +71,8 @@
         v-if="!status.receivedAt || !status.sentAt"
         class="justify-center"
       >
-        <v-row>
-          <v-col cols="12" class="text-center">
+        <v-row justify="center">
+          <v-col cols="12" sm="8">
             <v-textarea
               v-model="message"
               label="Deixar mensagem para o médico(opcional)"
