@@ -1,6 +1,5 @@
 const doctorsService = require('barracao-digital/services/doctors.service');
 const conversationService = require('barracao-digital/services/conversation.service');
-const jobsService = require('barracao-digital/services/jobs.service');
 const { getRequestContext, responseBuilder } = require('../../helpers');
 
 module.exports.handler = async (event) => {
@@ -10,6 +9,7 @@ module.exports.handler = async (event) => {
     const {
       consumer: user,
       pathParameters,
+      body = {},
     } = requestContext;
 
     const {
@@ -23,10 +23,8 @@ module.exports.handler = async (event) => {
 
     const isDeletingConversationSession = !!ticket;
     if (isDeletingConversationSession) {
-      await conversationService.removeSession(user.cep, user.username, ticket);
-      await jobsService.removeConversationCleanupJobSchedule({
-        doctorUsername: user.username,
-        patientTicket: ticket,
+      await conversationService.removeSession(user.cep, user.username, ticket, {
+        text: !!body.text, video: !!body.video,
       });
       return responseBuilder.success.noContent();
     }
