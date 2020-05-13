@@ -84,6 +84,12 @@
       </v-container>
     </v-app-bar>
     <v-content>
+      <v-scroll-y-transition mode="out-in">
+        <v-alert v-if="timeoutAfterInactiveModalDisplayed" type="info">
+          Você está inativo a um tempo, iremos parar o seu atendimento se não
+          houver nenhuma atividade em 1 minuto
+        </v-alert>
+      </v-scroll-y-transition>
       <ReportIssueDialog
         hidden
         :open="reportingIssue"
@@ -128,6 +134,8 @@ export default {
     ReportIssueDialog
   },
   data: () => ({
+    idle: null,
+    timeoutAfterInactiveModalDisplayed: null,
     reportingIssue: false
   }),
   computed: {
@@ -161,6 +169,9 @@ export default {
         this.timeoutAfterInactiveModalDisplayed = null
       }
     }).start()
+  },
+  beforeDestroy() {
+    this.idle && this.idle.stop()
   },
   methods: {
     logout() {

@@ -13648,6 +13648,11 @@ vuelidate@^0.7.5:
   resolved "https://registry.yarnpkg.com/vuelidate/-/vuelidate-0.7.5.tgz#ff48c75ae9d24ea24c24e9ea08065eda0a0cba0a"
   integrity sha512-GAAG8QAFVp7BFeQlNaThpTbimq3+HypBPNwdkCkHZZeVaD5zmXXfhp357dcUJXHXTZjSln0PvP6wiwLZXkFTwg==
 
+vuetify-dialog@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/vuetify-dialog/-/vuetify-dialog-2.0.2.tgz#1bc0db21988e085adc6bf32c0e9c902b739bebf0"
+  integrity sha512-11GyUC2sYj5BcDHZpjbisTIm/325xICXLKg4n5EIfTpiS+95BUESdrzieQBGS03/2EI5OWI40/wopq9XmpmeTg==
+
 vuetify-loader@^1.4.3:
   version "1.4.3"
   resolved "https://registry.yarnpkg.com/vuetify-loader/-/vuetify-loader-1.4.3.tgz#df1323c558be09890877e5fbe817b3a71a6c538d"

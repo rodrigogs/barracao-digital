@@ -88,7 +88,6 @@
                     :origin-cep="patient.originCep"
                     :doctor-username="$auth.user.username"
                     :patient-ticket="patient.ticket"
-                    :is-video-allowed="!!videoSession"
                     :is-doctor="true"
                   />
                 </v-tab-item>

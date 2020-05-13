@@ -210,8 +210,11 @@ export default {
     edit(item) {
       this.selectedDoctor = item
     },
-    remove({ username }) {
-      if (!confirm(`Deletar o médico ${username}?`)) return
+    async remove({ username }) {
+      if (
+        !(await this.$dialog.confirm({ text: `Deletar o médico ${username}?` }))
+      )
+        return
       this.isLoading = true
       const index = this._findDoctorIndex(username)
 

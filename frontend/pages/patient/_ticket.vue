@@ -1,12 +1,85 @@
 <template>
-  <v-card elevation="0">
-    <v-container>
+  <v-container fluid>
+    <div v-if="showStatus">
       <component
         :is="patientStatusComponent.component"
         v-bind="patientStatusComponent.props"
       />
-    </v-container>
-  </v-card>
+    </div>
+    <div v-else>
+      <v-dialog :value="patient" fullscreen>
+        <v-card elevation="0" append flat tile>
+          <v-app-bar color="primary" dense extended dark>
+            <v-toolbar-title v-if="currentStatus">
+              {{ currentStatus.doctorName }} está atendendo você
+            </v-toolbar-title>
+            <template v-slot:extension>
+              <v-spacer></v-spacer>
+
+              <v-toolbar-items>
+                <v-tooltip v-if="isWaitingKit" bottom>
+                  <template v-slot:activator="{ on }">
+                    <v-btn
+                      text
+                      dark
+                      :loading="isLoading"
+                      @click="receiveKit"
+                      v-on="on"
+                    >
+                      Recebi o kit <v-icon right>mdi-medical-bag</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>Informar recebimento do kit médico</span>
+                </v-tooltip>
+
+                <v-tooltip v-if="isSendingKitBack" bottom>
+                  <template v-slot:activator="{ on }">
+                    <v-btn
+                      text
+                      dark
+                      :loading="isLoading"
+                      @click="sendKit"
+                      v-on="on"
+                    >
+                      Devolvi o kit <v-icon right>mdi-medical-bag</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>Informar que você já devolveu o kit médico</span>
+                </v-tooltip>
+
+                <v-tooltip v-if="patient.videoSession" bottom>
+                  <template v-slot:activator="{ on }">
+                    <v-btn text dark @click="finishVideoSession" v-on="on">
+                      Encerrar vídeo <v-icon right>mdi-video-off</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>Encerrar a sessão de vídeo</span>
+                </v-tooltip>
+              </v-toolbar-items>
+
+              <v-spacer></v-spacer>
+            </template>
+          </v-app-bar>
+          <v-container fluid>
+            <v-row justify="center" no-gutters>
+              <v-col cols="12" md="10">
+                <v-card flat tile>
+                  <ConversationSession
+                    v-if="patient.textSession"
+                    ref="conversationSession"
+                    :origin-cep="patient.originCep"
+                    :doctor-username="currentStatus.doctorUsername"
+                    :patient-ticket="patient.ticket"
+                    :is-doctor="false"
+                  />
+                </v-card>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-card>
+      </v-dialog>
+    </div>
+  </v-container>
 </template>
 
 <script>
@@ -18,6 +91,7 @@ import PatientFinished from '@/components/patient/PatientFinished.vue'
 import PatientCantBeAssisted from '@/components/patient/PatientCantBeAssisted.vue'
 import PatientFacilityNotAvailable from '@/components/patient/PatientFacilityNotAvailable.vue'
 import PatientGaveUp from '@/components/patient/PatientGaveUp.vue'
+import ConversationSession from '@/components/conversation/ConversationSession'
 
 const searchPatientByTicket = async (api, ticket) => {
   const {
@@ -29,6 +103,7 @@ const searchPatientByTicket = async (api, ticket) => {
     // eslint-disable-next-line camelcase
     waiting_kitStatus,
     finishedStatus,
+    textSession,
     videoSession
   } = await api.searchPatientByTicket(ticket)
   return {
@@ -41,6 +116,7 @@ const searchPatientByTicket = async (api, ticket) => {
       ongoingStatus,
       waiting_kitStatus,
       finishedStatus,
+      textSession,
       videoSession
     }
   }
@@ -51,6 +127,9 @@ export default {
   validate({ params }) {
     return !isNaN(Number(params.ticket))
   },
+  components: {
+    ConversationSession
+  },
   async asyncData({ app, params, error }) {
     try {
       return await searchPatientByTicket(app.$api, params.ticket)
@@ -59,6 +138,10 @@ export default {
     }
   },
   data: () => ({
+    isLoading: false,
+    tab: null,
+    isVideoChatOpen: false,
+    patientSubscription: null,
     patient: {
       name: null,
       createdAt: null,
@@ -96,11 +179,32 @@ export default {
         patientFeedback: null,
         timestamp: null
       }
-    },
-    isVideoChatOpen: false,
-    patientSubscription: null
+    }
   }),
   computed: {
+    currentStatus() {
+      return this.patient && this.patient[`${this.patient.status}Status`]
+    },
+    showStatus() {
+      return [
+        PATIENT_STATUS.WAITING,
+        PATIENT_STATUS.GAVE_UP,
+        PATIENT_STATUS.FINISHED
+      ].includes(this.patient.status)
+    },
+    isWaitingKit() {
+      return (
+        this.patient.status === PATIENT_STATUS.WAITING_KIT &&
+        !this.patient[`${this.patient.status}Status`].receivedAt
+      )
+    },
+    isSendingKitBack() {
+      return (
+        !this.isWaitingKit &&
+        this.patient.status === PATIENT_STATUS.WAITING_KIT &&
+        !this.patient[`${this.patient.status}Status`].sentAt
+      )
+    },
     patientStatusComponent() {
       return {
         [PATIENT_STATUS.WAITING]: () => ({
@@ -175,6 +279,12 @@ export default {
         })
       } catch (_error) {}
     },
+    finishVideoSession() {
+      this.videoLoading = true
+      this.$refs.conversationSession
+        .deleteVideoSession()
+        .finally(() => (this.videoLoading = false))
+    },
     ratingClicked(rating) {
       return this.$api
         .savePatientFeedback(this.$route.params.ticket, rating)
@@ -195,6 +305,30 @@ export default {
       return this.$api.setPatientMessagingToken(this.$route.params.ticket, {
         token
       })
+    },
+    async receiveKit() {
+      if (
+        !(await this.$dialog.confirm({
+          text: 'Você confirma que já recebeu o kit médico?'
+        }))
+      )
+        return
+      this.isLoading = true
+      return this.$api
+        .setWaitingKitReceived(this.patient.ticket)
+        .finally(() => (this.isLoading = false))
+    },
+    async sendKit() {
+      if (
+        !(await this.$dialog.confirm({
+          text: 'Você confirma que já devolveu o kit médico?'
+        }))
+      )
+        return
+      this.isLoading = true
+      return this.$api
+        .setWaitingKitSent(this.patient.ticket)
+        .finally(() => (this.isLoading = false))
     }
   }
 }

@@ -66,22 +66,41 @@
         </v-stepper-step>
         <v-stepper-content :step="statusesIndex[PATIENT_STATUS.ONGOING]">
           <v-form>
-            <v-btn
-              v-if="!patient.textSession"
-              color="primary"
-              :loading="isLoading"
-              @click="validateOnGoingSection"
-            >
-              Iniciar atendimento
-            </v-btn>
-            <v-btn
-              v-else
-              color="primary"
-              :loading="isLoading"
-              @click="openConversation"
-            >
-              Abrir conversa
-            </v-btn>
+            <v-row>
+              <v-col cols="12">
+                <v-btn
+                  v-if="!patient.textSession"
+                  color="primary"
+                  :loading="isLoading"
+                  @click="validateOnGoingSection"
+                >
+                  Iniciar atendimento
+                </v-btn>
+                <div v-else>
+                  <v-btn
+                    color="primary"
+                    :loading="isLoading"
+                    @click="openConversation"
+                  >
+                    Abrir conversa <v-icon right>mdi-chat</v-icon>
+                  </v-btn>
+                  <v-btn
+                    color="warning"
+                    :loading="isLoading"
+                    @click="step = statusesIndex[PATIENT_STATUS.WAITING_KIT]"
+                  >
+                    Enviar kit <v-icon right>mdi-medical-bag</v-icon>
+                  </v-btn>
+                  <v-btn
+                    color="error"
+                    :loading="isLoading"
+                    @click="step = statusesIndex[PATIENT_STATUS.FINISHED]"
+                  >
+                    Finalizar
+                  </v-btn>
+                </div>
+              </v-col>
+            </v-row>
           </v-form>
         </v-stepper-content>
 
@@ -189,22 +208,6 @@
 
           <v-form @keydown.enter.prevent="validateWaitingKitSection">
             <v-row>
-              <v-col cols="12">
-                <v-textarea
-                  v-model="$v.waitingKit.message.$model"
-                  :error-messages="waitingKitMessageErrors"
-                  label="Instruções para o paciente*"
-                  required
-                  autofocus
-                  counter
-                  :clearable="
-                    step !== statusesIndex[PATIENT_STATUS.WAITING_KIT]
-                  "
-                  :readonly="step === statusesIndex[PATIENT_STATUS.WAITING_KIT]"
-                  rows="3"
-                />
-              </v-col>
-
               <v-col v-if="!isWaitingKit">
                 <v-btn
                   :loading="isLoading"
@@ -290,7 +293,7 @@
 </template>
 
 <script>
-import { required, minLength } from 'vuelidate/lib/validators'
+import { required } from 'vuelidate/lib/validators'
 import format from 'date-fns/format'
 import { PATIENT_STATUS, PATIENT_OUTCOMES } from '~/constants'
 import calculateTimeWaiting from '~/utils/calculateTimeWaiting'
@@ -335,18 +338,8 @@ export default {
     }
   }),
   validations: {
-    onGoing: {
-      message: {
-        required,
-        minLength: minLength(10)
-      }
-    },
-    waitingKit: {
-      message: {
-        required,
-        minLength: minLength(10)
-      }
-    },
+    onGoing: {},
+    waitingKit: {},
     finished: {
       outcome: {
         required
@@ -433,19 +426,11 @@ export default {
     onGoingMessageErrors() {
       const errors = []
       if (!this.$v.onGoing.message.$dirty) return errors
-      !this.$v.onGoing.message.required &&
-        errors.push('Por favor, digite uma mensagem para o paciente.')
-      !this.$v.onGoing.message.minLength &&
-        errors.push('O feedback deve ter mais de 10 caracteres')
       return errors
     },
     waitingKitMessageErrors() {
       const errors = []
       if (!this.$v.waitingKit.message.$dirty) return errors
-      !this.$v.waitingKit.message.required &&
-        errors.push('Por favor, digite instruções para o paciente.')
-      !this.$v.waitingKit.message.minLength &&
-        errors.push('As instruções deve ter no mínimo 10 caracteres')
       return errors
     },
     finishedOutcomeErrors() {
@@ -506,7 +491,10 @@ export default {
       }).finally(() => (this.isLoading = true))
     },
     async validateWaitingKitSection() {
-      if (!confirm('Você confirma o envio do kit?')) return
+      if (
+        !(await this.$dialog.confirm({ text: 'Você confirma o envio do kit?' }))
+      )
+        return
 
       this.$v.onGoing.$touch()
       if (this.$v.onGoing.$invalid) {

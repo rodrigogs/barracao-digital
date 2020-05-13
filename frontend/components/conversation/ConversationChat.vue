@@ -8,7 +8,7 @@
       :messages="messages"
     />
     <v-card-actions class="conversation-chat__actions grey lighten-3">
-      <ConversationChatActions @send="sendMessage" />
+      <ConversationChatActions @send="newMessage" />
     </v-card-actions>
   </v-card>
 </template>
