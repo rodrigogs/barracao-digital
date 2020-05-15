@@ -42,19 +42,6 @@
         </v-btn>
       </div>
     </v-card-actions>
-
-    <v-container class="mt-12">
-      <v-row justify="center">
-        <v-tooltip bottom>
-          <template v-slot:activator="{ on }">
-            <v-badge color="warning" icon="mdi-wrench" overlap>
-              <v-btn text href="#" small v-on="on">Quero ajudar</v-btn>
-            </v-badge>
-          </template>
-          <span>Em construção</span>
-        </v-tooltip>
-      </v-row>
-    </v-container>
   </v-card>
 </template>
 
