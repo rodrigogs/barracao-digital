@@ -7,8 +7,9 @@
   "supportFile": "test/e2e/support/index.js",
   "videosFolder": "test/e2e/videos",
   "env": {
-    "username": "dkuroski",
-    "password": "secret",
+    "username": "e2e",
+    "password": "e2e",
+    "cep": "00000000",
     "apiUrl": "https://api.barracaodigital.com/development"
   }
 }
