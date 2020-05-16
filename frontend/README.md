@@ -27,12 +27,30 @@ $ yarn generate
 
 ## Testing
 
-``` bash
+### Unit tests
+
+```bash
+yarn test
+```
+
+### E2E tests
+
+- Make sure you finish the [Build Setup](#build-setup) step
+- Ask for a `serviceAccount.json` file from our Firebase, this file is required in order to run the tests
+- Then you can run the tests
+
+```bash
+# start your dev environemnt
+$ yarn dev
+
 # runnin e2e tests
 $ yarn test:e2e
 
-# opening cypress environment
+# or opening cypress environment
 $ yarn test:e2e:open
+
+# if you don't want to start the dev environment (yarn dev) you can run this command
+yarn test:e2e:ci
 ```
 
 For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).
