@@ -1,10 +1,16 @@
+import patientsFixture from '../fixtures/patients.json'
+
 describe('Login screen', () => {
   it('Logs in as a doctor', () => {
-    cy.server()
-    cy.fixture('patients').as('patientsJSON')
-    cy.route('GET', `${Cypress.env('apiUrl')}/patients/**`, '@patientsJSON').as(
-      'getPatients'
-    )
+    const docPath = `facilities/${Cypress.env('cep')}/patients`
+
+    cy.callFirestore('delete', docPath, { recursive: true })
+    patientsFixture.items.forEach((patient) => {
+      cy.callFirestore('add', docPath, {
+        ...patient,
+        createdAt: Date.now()
+      })
+    })
 
     cy.visit('/login')
 
@@ -13,11 +19,16 @@ describe('Login screen', () => {
 
     cy.get('button.primary').click()
 
-    cy.location('pathname', { timeout: 10000 }).should('eq', '/doctor/')
+    cy.location('pathname', { timeout: 10000 })
+      .should('eq', '/doctor/')
+      .then(() => {
+        cy.get('#cy-doctor-status').then(($element) => {
+          if ($element.text() === 'Ficar online') {
+            $element.click()
+          }
+        })
 
-    cy.wait('@getPatients').then(({ response }) => {
-      const patients = response.body.items
-      cy.get('tbody > tr').should('have.length', patients.length)
-    })
+        cy.get('tbody > tr').should('have.length', 5)
+      })
   })
 })

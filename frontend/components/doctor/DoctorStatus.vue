@@ -7,6 +7,7 @@
     <v-spacer></v-spacer>
 
     <v-btn
+      id="cy-doctor-status"
       small
       outlined
       :loading="isLoading"
