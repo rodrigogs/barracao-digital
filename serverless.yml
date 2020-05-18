@@ -257,6 +257,14 @@ functions:
           path: /patients/{ticket}/messaging/token
           cors: true
 
+  patients-delete:
+    handler: functions/api/patients/delete.handler
+    events:
+      - http:
+          method: DELETE
+          path: /patients/{ticket}/video
+          cors: true
+
   # Facilities
   facilities-get:
     handler: functions/api/facilities/get.handler

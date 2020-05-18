@@ -1,32 +1,17 @@
 #!/bin/bash
 
-## Text Tools
-RESET="\e[0m"
-BOLD="\e[1m"
-YELLOW="\e[33m"
-RED="\e[91m"
-GREEN="\e[32m"
+# Global
+script_dir=$(dirname "$0")
+processors=$(ps aux --no-heading | wc -l)
+npm install -g concurrently
 
 if [ -z $NODE_ENV ]; then
   echo -e "${BOLD}${RED}Missing environment variable NODE_ENV${RESET}"
   exit 1
 fi
 
-(
-  echo -e "${BOLD}${YELLOW}Installing frontend dependencies...${RESET}"
-  npm run install:frontend
-  echo -e "${BOLD}${YELLOW}Building frontend...${RESET}"
-  npm run build:frontend
-  echo -e "${BOLD}${YELLOW}Deploying frontend...${RESET}"
-  npm run deploy:frontend
-  echo -e "${BOLD}${YELLOW}Crlearing frontend cache...${RESET}"
-  npm run invalidate-cloudfront-cache
-) &
-(
-  echo -e "${BOLD}${YELLOW}Installing backend dependencies...${RESET}"
-  npm run install:backend
-  echo -e "${BOLD}${YELLOW}Deploying backend...${RESET}"
-  npm run deploy:backend
-)
-
-echo -e "${BOLD}${GREEN}Done!${RESET}"
+concurrently\
+  --max-processes "$processors"\
+  --kill-others-on-fail\
+  "$script_dir/deploy_local_backend.sh"\
+  "$script_dir/deploy_local_frontend.sh"\

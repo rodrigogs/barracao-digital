@@ -2,27 +2,22 @@
   <v-row class="chat-message">
     <v-col :class="colStyle">
       <v-expand-transition>
-        <v-tooltip bottom>
-          <template v-slot:activator="{ on }">
-            <div
-              v-show="show"
-              class="message-box elevation-3"
-              :class="messageStyle"
-              v-on="on"
-            >
-              <div class="message-box__content">
-                <v-avatar :class="avatarClass" size="30" color="grey lighten-3">
-                  <v-img :src="avatar"></v-img>
-                </v-avatar>
-                <small class="message-boc__footer"></small>
-                <span v-linkified>
-                  {{ message.text }}
-                </span>
-              </div>
-            </div>
-          </template>
-          <span>{{ formatDate(message.timestamp) }}</span>
-        </v-tooltip>
+        <div
+          v-show="show"
+          :title="formatDate(message.timestamp)"
+          class="message-box elevation-3"
+          :class="messageStyle"
+        >
+          <div class="message-box__content">
+            <v-avatar :class="avatarClass" size="30" color="grey lighten-3">
+              <v-img :src="avatar"></v-img>
+            </v-avatar>
+            <small class="message-boc__footer"></small>
+            <span v-linkified>
+              {{ message.text }}
+            </span>
+          </div>
+        </div>
       </v-expand-transition>
     </v-col>
   </v-row>

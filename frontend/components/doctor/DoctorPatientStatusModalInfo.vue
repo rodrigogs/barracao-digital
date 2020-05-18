@@ -75,6 +75,7 @@
                   @click="validateOnGoingSection"
                 >
                   Iniciar atendimento
+                  <v-icon right>mdi-file-document-edit</v-icon>
                 </v-btn>
                 <div v-else>
                   <v-btn
@@ -97,6 +98,7 @@
                     @click="step = statusesIndex[PATIENT_STATUS.FINISHED]"
                   >
                     Finalizar
+                    <v-icon right>mdi-exit-run</v-icon>
                   </v-btn>
                 </div>
               </v-col>
@@ -473,9 +475,8 @@ export default {
       await this._changeStatus(PATIENT_STATUS.ONGOING, {
         ...this.onGoing
       })
-
-      await this.openConversation()
-      this.isLoading = false
+        .then(() => this.openConversation())
+        .finally(() => (this.isLoading = false))
     },
     async validateFinishedSection() {
       this.$v.finished.$touch()
@@ -488,7 +489,7 @@ export default {
       this.isLoading = true
       return await this._changeStatus(PATIENT_STATUS.FINISHED, {
         ...this.finished
-      }).finally(() => (this.isLoading = true))
+      }).finally(() => (this.isLoading = false))
     },
     async validateWaitingKitSection() {
       if (
@@ -506,7 +507,7 @@ export default {
       this.isLoading = true
       return await this._changeStatus(PATIENT_STATUS.WAITING_KIT, {
         ...this.waitingKit
-      }).finally(() => (this.isLoading = true))
+      }).finally(() => (this.isLoading = false))
     },
     _changeStatus(status = PATIENT_STATUS.ONGOING, form = {}) {
       return this.save({

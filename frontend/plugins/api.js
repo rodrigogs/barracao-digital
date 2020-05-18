@@ -10,12 +10,13 @@ const apiFactory = (axios) => ({
     axios.$get(`patients/cep/${cep}`, {
       params: { ...filters, lastEvaluatedKey, pageSize: 20 }
     }),
-  setPatientMessagingToken: (ticket, { token }) =>
-    axios.$put(`patients/${ticket}/messaging/token`, ({ ticket, token } = {})),
+  setPatientMessagingToken: (ticket, { token } = {}) =>
+    axios.$put(`patients/${ticket}/messaging/token`, { token }),
   setWaitingKitReceived: (ticket, { message } = {}) =>
-    axios.$put(`patients/${ticket}/status/received_kit`, ({ message } = {})),
+    axios.$put(`patients/${ticket}/status/received_kit`, { message }),
   setWaitingKitSent: (ticket, { message } = {}) =>
-    axios.$put(`patients/${ticket}/status/sent_kit`, ({ message } = {})),
+    axios.$put(`patients/${ticket}/status/sent_kit`, { message }),
+  deleteVideoSession: (ticket) => axios.$delete(`/patients/${ticket}/video`),
   // Doctors
   createConversationSession: (ticket, { text = false, video = false }) =>
     axios.$post(`doctors/conversation/${ticket}`, { text, video }),

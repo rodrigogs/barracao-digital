@@ -59,12 +59,19 @@
             <v-tabs-slider></v-tabs-slider>
             <v-tab href="#info">
               Informações
-              <v-icon>mdi-status</v-icon>
+              <v-icon right>mdi-file-document-edit</v-icon>
             </v-tab>
 
             <v-tab v-if="patient.textSession" href="#conversation">
               Conversa
-              <v-icon>mdi-status</v-icon>
+              <v-badge
+                v-if="getReceivedMessages > 0 && tab !== 'conversation'"
+                color="red"
+                dot
+              >
+                <v-icon right>mdi-chat</v-icon>
+              </v-badge>
+              <v-icon v-else right>mdi-chat</v-icon>
             </v-tab>
           </v-tabs>
         </template>
@@ -101,7 +108,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import DoctorPatientStatusModalInfo from './DoctorPatientStatusModalInfo'
 import ConversationSession from '~/components/conversation/ConversationSession'
 
@@ -126,6 +133,9 @@ export default {
     videoLoading: false
   }),
   computed: {
+    ...mapGetters('chat', {
+      getReceivedMessages: 'getReceivedMessages'
+    }),
     hasActiveConversation() {
       return !!this.videoSession || !!this.textSession
     },
@@ -140,8 +150,18 @@ export default {
       )
     }
   },
+  watch: {
+    tab(newTab, oldTab) {
+      if (newTab === 'conversation' || oldTab === 'conversation')
+        this.readMessages()
+    }
+  },
   methods: {
-    ...mapActions('chat', ['startConversation', 'deleteConversation']),
+    ...mapActions('chat', [
+      'readMessages',
+      'startConversation',
+      'deleteConversation'
+    ]),
     openConversationTab() {
       return Promise.resolve()
         .then(() => {
