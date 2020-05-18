@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env nodejs
 
 const promisePool = require('@rodrigogs/promise-pool');
 const barracaoDigital = require('../lib');
