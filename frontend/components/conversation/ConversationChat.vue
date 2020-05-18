@@ -61,15 +61,11 @@ export default {
   methods: {
     ...mapActions('chat', ['subscribeToMessages', 'sendMessage']),
     async sendHintMessages() {
-      await this.newMessage('Opa, bem vindo(a) ao Barracão Digital')
-      await promiseDelay(300)
-      await this.newMessage(
-        'A equipe ainda vai bolar um script interessante para mim'
-      )
-      await promiseDelay(300)
-      await this.newMessage('Por enquanto só curte um som aí')
-      await promiseDelay(300)
-      await this.newMessage('https://www.youtube.com/watch?v=tmozGmGoJuw')
+      await this.newMessage('Olá. Bem vindo(a) ao Barracão Digital!')
+      await promiseDelay(500)
+      await this.newMessage('Vamos começar o seu atendimento')
+      await promiseDelay(500)
+      await this.newMessage('Como você está se sentindo hoje?')
     },
     newMessage(text) {
       return this.sendMessage({
