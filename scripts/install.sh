@@ -1,30 +1,21 @@
 #!/bin/bash
 
 # Global
-npm install yarn -g
-npm install serverless -g
+processors=$(ps aux --no-heading | wc -l)
+npm install -g concurrently
 
-(
-  # Root
-  npm install --production=false
-) &
-(
-  # cep-crawler
-  cd cep-crawler || exit
-  npm install --production=false
-) &
-(
-  # Lib
-  cd lib || exit
-  npm install --production=false
-) &
-(
-  # Functions
-  cd functions || exit
-  npm install --production=false
-) &
-(
-  # Frontend
-  cd frontend || exit
-  yarn install --production=false
-)
+concurrently\
+  --max-processes "$processors"\
+  --kill-others-on-fail\
+  "npm install yarn -g"\
+  "npm install serverless -g"
+
+# Tasks
+concurrently\
+  --max-processes "$processors"\
+  --kill-others-on-fail\
+  "(npm install --production=false)"\
+  "(cd cep-crawler || exit && npm install --production=false)"\
+  "(cd lib || exit && npm install --production=false)"\
+  "(cd functions || exit && npm install --production=false)"\
+  "(cd frontend || exit && yarn install --production=false)"

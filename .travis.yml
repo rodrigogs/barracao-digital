@@ -8,9 +8,13 @@ install:
   - npm install serverless --g
   - chmod +x ./scripts/deploy_travis.sh
   - chmod +x ./scripts/invalidate-cloudfront-cache.js
+  - chmod +x ./scripts/after_deploy.js
 
 script:
   - npm run deploy:travis
+
+after_success:
+  - ./scripts/after_deploy.js
 
 branches:
   only:

@@ -13,7 +13,7 @@
         </v-btn>
       </v-card-title>
 
-      <v-card-subtitle>{{ facility.name }}</v-card-subtitle>
+      <v-card-subtitle v-if="facility">{{ facility.name }}</v-card-subtitle>
 
       <v-list two-line>
         <v-list-item-group>

@@ -41,6 +41,7 @@ export default {
     isLoading: true,
     isDeleting: false,
     session: null,
+    publisher: null,
     published: false,
     subscribed: false,
     streams: []
@@ -61,7 +62,7 @@ export default {
     this.openStream()
   },
   beforeDestroy() {
-    this.disconnect()
+    return this.disconnect()
   },
   methods: {
     errorHandler(err) {
@@ -89,7 +90,7 @@ export default {
         this.isLoading = false
         await this.waitForPatientVideo()
       }
-      const publisher = OT.initPublisher(
+      this.publisher = OT.initPublisher(
         this.$refs.publisher,
         this.opts,
         (err) => {
@@ -101,7 +102,7 @@ export default {
         }
       )
 
-      this.session.publish(publisher, (err) => {
+      this.session.publish(this.publisher, (err) => {
         if (err) {
           this.errorHandler(err)
         } else {
@@ -138,10 +139,21 @@ export default {
         )
       })
     },
-    disconnect() {
-      this.session &&
-        this.session.currentState === 'connected' &&
-        this.session.disconnect()
+    async disconnect() {
+      try {
+        if (this.session) {
+          // eslint-disable-next-line no-console
+          console.log('Disconnecting stream')
+          if (this.publisher) await this.session.unpublish(this.publisher)
+          this.publisher = null
+          // eslint-disable-next-line no-console
+          console.log('Disconnecting subscription')
+          await this.session.disconnect()
+        }
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.error(`Disconnection failed`, err)
+      }
     },
     async waitForPatientVideo() {
       do {

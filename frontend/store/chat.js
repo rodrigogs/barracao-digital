@@ -11,7 +11,8 @@ const getMessagesQuery = (app) => (originCep, doctorUsername, patientTicket) =>
 export const state = () => ({
   ready: false,
   messages: [],
-  subscription: null
+  subscription: null,
+  receivedMessages: 0
 })
 
 export const getters = {
@@ -20,10 +21,14 @@ export const getters = {
     const messages = [...state.messages]
     messages.sort((a, b) => (a.timestamp > b.timestamp ? 1 : -1))
     return messages
-  }
+  },
+  getReceivedMessages: (state) => state.receivedMessages
 }
 
 export const actions = {
+  readMessages({ commit }) {
+    commit('resetReceivedMessages')
+  },
   startConversation(
     { dispatch },
     { originCep, doctorUsername, patientTicket, text, video }
@@ -67,6 +72,7 @@ export const actions = {
           ({ timestamp }) => message.timestamp === timestamp
         )
         if (change.type === 'added') {
+          commit('incrementReceivedMessages')
           commit('addMessage', message)
         }
         if (change.type === 'modified') {
@@ -117,5 +123,11 @@ export const mutations = {
   },
   removeMessage(state, index) {
     state.messages.splice(index, 1)
+  },
+  incrementReceivedMessages(state) {
+    Vue.set(state, 'receivedMessages', state.receivedMessages + 1)
+  },
+  resetReceivedMessages(state) {
+    Vue.set(state, 'receivedMessages', 0)
   }
 }

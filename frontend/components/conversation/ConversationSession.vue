@@ -7,6 +7,7 @@
       >
         <ConversationVideo
           v-if="videoSession && (isDoctor || isVideoAuthorized)"
+          :key="NaN"
           ref="video"
           :session-id="videoSession.sessionId"
           :token="videoSession.token"
@@ -17,11 +18,18 @@
       </div>
 
       <ConversationChat
-        class="conversation__chat"
+        class="conversatios__chat"
         :doctor="doctor"
         :patient="patient"
         :is-doctor="isDoctor"
       />
+    </div>
+    <div v-else>
+      <v-overlay absolute :opacity="0.5">
+        <v-icon color="orange lighten-2">
+          mdi-loading
+        </v-icon>
+      </v-overlay>
     </div>
   </v-card>
 </template>
@@ -112,9 +120,10 @@ export default {
       this.$nuxt.error(err)
     }
   },
-  destroyed() {
-    this.doctorSubscription && this.doctorSubscription()
-    this.patientSubscription && this.patientSubscription()
+  async destroyed() {
+    this.$refs.video && (await this.$refs.video.disconnect())
+    this.doctorSubscription && (await this.doctorSubscription())
+    this.patientSubscription && (await this.patientSubscription())
   },
   methods: {
     async syncData() {
@@ -153,29 +162,15 @@ export default {
       this.isVideoReady = ready
     },
     deleteVideoSession() {
-      return Promise.resolve().then(() => {
+      return Promise.resolve().then(async () => {
         if (this.isDoctor) {
           return this.$api.deleteConversationSession(this.patient.ticket, {
             video: true
           })
         }
-        return (
-          this.$refs.video &&
-          this.$refs.video.disconnect() &&
-          this.deletePatientFirestoreVideoSession()
-        )
+        await this.informPatientCanceledVideo()
+        return this.$api.deleteVideoSession(this.patient.ticket)
       })
-    },
-    deletePatientFirestoreTextSession() {
-      return this.$fireStore
-        .collection('facilities')
-        .doc(this.patient.originCep)
-        .collection('patients')
-        .doc(this.patient.ticket)
-        .set({
-          ...this.patient,
-          textSession: null
-        })
     },
     deletePatientFirestoreVideoSession() {
       const patient = {

@@ -7,15 +7,21 @@
     left
   >
     <template v-slot:activator="{ on }">
-      <v-badge
-        color="green"
-        :content="filtersApplied"
-        title="Filtros aplicados"
-      >
-        <v-btn icon title="Filtros" v-on="on">
+      <span v-on="on">
+        <v-badge
+          v-if="filtersApplied > 0"
+          color="green"
+          :content="filtersApplied"
+          title="Filtros aplicados"
+        >
+          <v-btn icon title="Filtros">
+            <v-icon>mdi-filter-variant</v-icon>
+          </v-btn>
+        </v-badge>
+        <v-btn v-else icon title="Filtros">
           <v-icon>mdi-filter-variant</v-icon>
         </v-btn>
-      </v-badge>
+      </span>
     </template>
 
     <v-card>
@@ -135,7 +141,7 @@ export default {
   methods: {
     update() {
       this.menu = false
-      this.filtersApplied = this.options.hoursWaiting > 0 ? 1 : 0
+      this.filtersApplied = 0
       if (this.options.statuses)
         this.filtersApplied += this.options.statuses.length
       this.$emit('input', { ...this.options })

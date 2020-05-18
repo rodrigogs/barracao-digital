@@ -9,7 +9,13 @@
     <div v-else>
       <v-dialog :value="patient" fullscreen>
         <v-card elevation="0" append flat tile>
-          <v-app-bar color="primary" dense extended dark>
+          <v-app-bar
+            v-if="patient.textSession"
+            color="primary"
+            dense
+            extended
+            dark
+          >
             <v-toolbar-title v-if="currentStatus">
               {{ currentStatus.doctorName }} está atendendo você
             </v-toolbar-title>
@@ -49,7 +55,13 @@
 
                 <v-tooltip v-if="patient.videoSession" bottom>
                   <template v-slot:activator="{ on }">
-                    <v-btn text dark @click="finishVideoSession" v-on="on">
+                    <v-btn
+                      text
+                      dark
+                      :loading="isVideoLoading"
+                      @click="finishVideoSession"
+                      v-on="on"
+                    >
                       Encerrar vídeo <v-icon right>mdi-video-off</v-icon>
                     </v-btn>
                   </template>
@@ -72,6 +84,11 @@
                     :patient-ticket="patient.ticket"
                     :is-doctor="false"
                   />
+                  <v-overlay v-else opacity="0.8" class="text-center">
+                    <p>Aguarde</p>
+                    <p>Seu atendimento iniciará em um instante</p>
+                    <v-icon>mdi-loading mdi-spin</v-icon>
+                  </v-overlay>
                 </v-card>
               </v-col>
             </v-row>
@@ -139,6 +156,7 @@ export default {
   },
   data: () => ({
     isLoading: false,
+    isVideoLoading: false,
     tab: null,
     isVideoChatOpen: false,
     patientSubscription: null,
@@ -189,7 +207,9 @@ export default {
       return [
         PATIENT_STATUS.WAITING,
         PATIENT_STATUS.GAVE_UP,
-        PATIENT_STATUS.FINISHED
+        PATIENT_STATUS.FINISHED,
+        PATIENT_STATUS.CANT_BE_ASSISTED,
+        PATIENT_STATUS.FACILITY_NOT_AVAILABLE
       ].includes(this.patient.status)
     },
     isWaitingKit() {
@@ -275,15 +295,15 @@ export default {
         await this._updatePatientMessagingToken(currentToken)
         this.$fireMess.onTokenRefresh(async () => {
           const updatedToken = await this.$fireMess.getToken()
-          this._updatePatientMessagingToken(updatedToken)
+          await this._updatePatientMessagingToken(updatedToken)
         })
       } catch (_error) {}
     },
     finishVideoSession() {
-      this.videoLoading = true
+      this.isVideoLoading = true
       this.$refs.conversationSession
         .deleteVideoSession()
-        .finally(() => (this.videoLoading = false))
+        .finally(() => (this.isVideoLoading = false))
     },
     ratingClicked(rating) {
       return this.$api
@@ -302,6 +322,7 @@ export default {
         )
     },
     _updatePatientMessagingToken(token) {
+      if (!token) return Promise.reject(new Error('Invalid token!'))
       return this.$api.setPatientMessagingToken(this.$route.params.ticket, {
         token
       })
