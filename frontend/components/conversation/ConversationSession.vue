@@ -35,6 +35,8 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
+import promiseDelay from '~/utils/promiseDelay'
 import ConversationVideo from '~/components/conversation/ConversationVideo'
 import ConversationChat from '~/components/conversation/ConversationChat'
 
@@ -73,9 +75,13 @@ export default {
   }),
   computed: {
     videoSession() {
-      return this.isDoctor
-        ? this.doctor && this.doctor.videoSessions[this.patientTicket]
-        : this.patient && this.patient.videoSession
+      return this.isDoctor ? this.doctorVideoSession : this.patientVideoSession
+    },
+    doctorTextSession() {
+      return this.doctor && this.doctor.textSessions[this.patientTicket]
+    },
+    doctorVideoSession() {
+      return this.doctor && this.doctor.videoSessions[this.patientTicket]
     },
     patientTextSession() {
       return this.patient && this.patient.textSession
@@ -93,20 +99,15 @@ export default {
     }
   },
   watch: {
-    patientVideoSession(hasSession, hadSession) {
+    async patientVideoSession(hasSession, hadSession) {
       const wasSessionCreated = !hadSession && hasSession
+      await promiseDelay(2000)
+      if (!this.doctorVideoSession && !this.isDoctor) {
+        return this.deleteVideoSession(false)
+      }
       if (wasSessionCreated && !this.isDoctor) {
         this.isVideoAuthorized = false
-        this.confirmVideoChat()
-      }
-    },
-    patientTextSession(hasSession, hadSession) {
-      const wasSessionDeleted = hadSession && !hasSession
-      if (wasSessionDeleted && this.isDoctor) {
-        return this.$api.deleteConversationSession(this.patient.ticket, {
-          video: true,
-          text: true
-        })
+        return this.confirmVideoChat()
       }
     }
   },
@@ -126,6 +127,10 @@ export default {
     this.patientSubscription && (await this.patientSubscription())
   },
   methods: {
+    ...mapActions('chat', {
+      sendChatMessage: 'sendMessage',
+      informPatientCanceledVideo: 'informPatientCanceledVideo'
+    }),
     async syncData() {
       const facilityRef = this.$fireStore
         .collection('facilities')
@@ -161,40 +166,22 @@ export default {
     setVideoReady(ready) {
       this.isVideoReady = ready
     },
-    deleteVideoSession() {
-      return Promise.resolve().then(async () => {
+    deleteVideoSession(inform = true) {
+      return Promise.resolve().then(() => {
         if (this.isDoctor) {
           return this.$api.deleteConversationSession(this.patient.ticket, {
             video: true
           })
         }
-        await this.informPatientCanceledVideo()
-        return this.$api.deleteVideoSession(this.patient.ticket)
-      })
-    },
-    deletePatientFirestoreVideoSession() {
-      const patient = {
-        ...this.patient,
-        videoSession: null
-      }
-      delete patient.canceledVideo
-      return this.$fireStore
-        .collection('facilities')
-        .doc(this.patient.originCep)
-        .collection('patients')
-        .doc(this.patient.ticket)
-        .set(patient)
-    },
-    informPatientCanceledVideo() {
-      return this.$fireStore
-        .collection('facilities')
-        .doc(this.patient.originCep)
-        .collection('patients')
-        .doc(this.patient.ticket)
-        .set({
-          ...this.patient,
-          canceledVideo: true
+        return this.$api.deleteVideoSession(this.patient.ticket).then(() => {
+          if (!inform) return
+          return this.informPatientCanceledVideo({
+            originCep: this.patient.originCep,
+            doctorUsername: this.doctorUsername,
+            patientTicket: this.patientTicket
+          })
         })
+      })
     },
     yesOrNo(bool) {
       return bool ? 'Sim' : 'Não'
@@ -203,10 +190,7 @@ export default {
       this.isVideoAuthorized = await this.$dialog.confirm({
         text: 'O médico deseja iniciar uma chamada de vídeo. Você autoriza?'
       })
-      if (!this.isVideoAuthorized) {
-        await this.informPatientCanceledVideo()
-        await this.deletePatientFirestoreVideoSession()
-      }
+      if (!this.isVideoAuthorized) await this.deleteVideoSession()
     }
   }
 }

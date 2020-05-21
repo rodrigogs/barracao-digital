@@ -100,6 +100,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 import { PATIENT_STATUS } from '@/constants'
 import PatientWaiting from '@/components/patient/PatientWaiting.vue'
 import PatientOngoing from '@/components/patient/PatientOngoing.vue'
@@ -278,6 +279,10 @@ export default {
     if (this.patientSubscription) this.patientSubscription() // Unsubscribes
   },
   methods: {
+    ...mapActions('chat', {
+      informPatientReceivedKit: 'informPatientReceivedKit',
+      informPatientSentKitBack: 'informPatientSentKitBack'
+    }),
     handleUpdates() {
       if (this.patientSubscription) this.patientSubscription()
       this.patientSubscription = this.$fireStore
@@ -337,6 +342,13 @@ export default {
       this.isLoading = true
       return this.$api
         .setWaitingKitReceived(this.patient.ticket)
+        .then(() =>
+          this.informPatientReceivedKit({
+            originCep: this.patient.originCep,
+            doctorUsername: this.currentStatus.doctorUsername,
+            patientTicket: this.patient.ticket
+          })
+        )
         .finally(() => (this.isLoading = false))
     },
     async sendKit() {
@@ -349,6 +361,13 @@ export default {
       this.isLoading = true
       return this.$api
         .setWaitingKitSent(this.patient.ticket)
+        .then(() =>
+          this.informPatientSentKitBack({
+            originCep: this.patient.originCep,
+            doctorUsername: this.currentStatus.doctorUsername,
+            patientTicket: this.patient.ticket
+          })
+        )
         .finally(() => (this.isLoading = false))
     }
   }

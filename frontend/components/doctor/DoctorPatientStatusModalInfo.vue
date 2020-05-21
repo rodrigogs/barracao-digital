@@ -295,6 +295,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 import { required } from 'vuelidate/lib/validators'
 import format from 'date-fns/format'
 import { PATIENT_STATUS, PATIENT_OUTCOMES } from '~/constants'
@@ -460,6 +461,7 @@ export default {
       this.patient[`${PATIENT_STATUS.FINISHED}Status`].patientOutcome
   },
   methods: {
+    ...mapActions('chat', ['informDoctorSentKit']),
     formatTime(timestamp) {
       return format(timestamp, 'h:mm a')
     },
@@ -497,17 +499,20 @@ export default {
       )
         return
 
-      this.$v.onGoing.$touch()
-      if (this.$v.onGoing.$invalid) {
-        return this.$toast.error(
-          'O médico deve deixar instruções para o paciente ao trocar o status para "Aguardando kit"'
-        )
-      }
+      window.open('https://airtable.com/shrGTP8pBOYCeY7Kd', '_blank')
 
       this.isLoading = true
       return await this._changeStatus(PATIENT_STATUS.WAITING_KIT, {
         ...this.waitingKit
-      }).finally(() => (this.isLoading = false))
+      })
+        .then(() =>
+          this.informDoctorSentKit({
+            originCep: this.$auth.user.cep,
+            doctorUsername: this.$auth.user.username,
+            patientTicket: this.patient.ticket
+          })
+        )
+        .finally(() => (this.isLoading = false))
     },
     _changeStatus(status = PATIENT_STATUS.ONGOING, form = {}) {
       return this.save({

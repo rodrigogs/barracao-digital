@@ -9,8 +9,23 @@
           :class="messageStyle"
         >
           <div class="message-box__content">
-            <v-avatar :class="avatarClass" size="30" color="grey lighten-3">
+            <v-avatar
+              v-if="message.type === 'default'"
+              :class="avatarClass"
+              size="30"
+              color="grey lighten-3"
+            >
               <v-img :src="avatar"></v-img>
+            </v-avatar>
+            <v-avatar
+              v-else-if="message.type === 'info'"
+              :class="avatarClass"
+              size="30"
+              color="grey lighten-3"
+            >
+              <v-icon color="blue">{{
+                message.icon || 'mdi-information'
+              }}</v-icon>
             </v-avatar>
             <small class="message-boc__footer"></small>
             <span v-linkified>

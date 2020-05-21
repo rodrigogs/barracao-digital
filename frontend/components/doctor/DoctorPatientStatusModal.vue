@@ -160,7 +160,8 @@ export default {
     ...mapActions('chat', [
       'readMessages',
       'startConversation',
-      'deleteConversation'
+      'deleteConversation',
+      'informDoctorCanceledVideo'
     ]),
     openConversationTab() {
       return Promise.resolve()
@@ -202,7 +203,15 @@ export default {
         doctorUsername: this.$auth.user.username,
         patientTicket: this.patient.ticket,
         video: true
-      }).finally(() => (this.videoLoading = false))
+      })
+        .then(() =>
+          this.informDoctorCanceledVideo({
+            originCep: this.patient.originCep,
+            doctorUsername: this.$auth.user.username,
+            patientTicket: this.patient.ticket
+          })
+        )
+        .finally(() => (this.videoLoading = false))
     }
   }
 }

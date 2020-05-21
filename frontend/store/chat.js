@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import { removeUndefinedProps } from '../utils/objectUtils'
 
 const getMessagesQuery = (app) => (originCep, doctorUsername, patientTicket) =>
   app.$fireStore
@@ -88,9 +89,19 @@ export const actions = {
   },
   sendMessage(
     { commit },
-    { from, originCep, doctorUsername, patientTicket, text }
+    {
+      type = 'default',
+      icon,
+      from,
+      originCep,
+      doctorUsername,
+      patientTicket,
+      text
+    }
   ) {
     const message = {
+      type,
+      icon,
       from,
       patient: patientTicket,
       doctor: doctorUsername,
@@ -99,7 +110,77 @@ export const actions = {
     }
     return getMessagesQuery(this)(originCep, doctorUsername, patientTicket)
       .doc(String(message.timestamp))
-      .set(message)
+      .set(removeUndefinedProps(message))
+  },
+  informPatientCanceledVideo(
+    { dispatch },
+    { originCep, doctorUsername, patientTicket }
+  ) {
+    return dispatch('sendMessage', {
+      type: 'info',
+      icon: 'mdi-video-off',
+      from: 'patient',
+      originCep,
+      doctorUsername,
+      patientTicket,
+      text: 'O paciente cancelou a chamada de vídeo'
+    })
+  },
+  informDoctorCanceledVideo(
+    { dispatch },
+    { originCep, doctorUsername, patientTicket }
+  ) {
+    return dispatch('sendMessage', {
+      type: 'info',
+      icon: 'mdi-video-off',
+      from: 'doctor',
+      originCep,
+      doctorUsername,
+      patientTicket,
+      text: 'O médico cancelou a chamada de vídeo'
+    })
+  },
+  informDoctorSentKit(
+    { dispatch },
+    { originCep, doctorUsername, patientTicket }
+  ) {
+    return dispatch('sendMessage', {
+      type: 'info',
+      icon: 'mdi-moped',
+      from: 'doctor',
+      originCep,
+      doctorUsername,
+      patientTicket,
+      text: 'O médico enviou um kit'
+    })
+  },
+  informPatientReceivedKit(
+    { dispatch },
+    { originCep, doctorUsername, patientTicket }
+  ) {
+    return dispatch('sendMessage', {
+      type: 'info',
+      icon: 'mdi-cube-send',
+      from: 'patient',
+      originCep,
+      doctorUsername,
+      patientTicket,
+      text: 'O paciente recebeu o kit'
+    })
+  },
+  informPatientSentKitBack(
+    { dispatch },
+    { originCep, doctorUsername, patientTicket }
+  ) {
+    return dispatch('sendMessage', {
+      type: 'info',
+      icon: 'mdi-moped mdi-flip-h',
+      from: 'patient',
+      originCep,
+      doctorUsername,
+      patientTicket,
+      text: 'O paciente enviou o kit de volta'
+    })
   }
 }
 
