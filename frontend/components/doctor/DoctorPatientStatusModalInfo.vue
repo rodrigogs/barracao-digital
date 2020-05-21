@@ -461,7 +461,7 @@ export default {
       this.patient[`${PATIENT_STATUS.FINISHED}Status`].patientOutcome
   },
   methods: {
-    ...mapActions('chat', ['informDoctorSentKit']),
+    ...mapActions('chat', ['informDoctorSentKit', 'deleteConversation']),
     formatTime(timestamp) {
       return format(timestamp, 'h:mm a')
     },
@@ -489,6 +489,13 @@ export default {
       }
 
       this.isLoading = true
+
+      await this.deleteConversation({
+        originCep: this.$auth.user.cep,
+        doctorUsername: this.$auth.user.username,
+        patientTicket: this.patient.ticket
+      })
+
       return await this._changeStatus(PATIENT_STATUS.FINISHED, {
         ...this.finished
       }).finally(() => (this.isLoading = false))

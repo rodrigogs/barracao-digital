@@ -7,7 +7,7 @@
       >
         <ConversationVideo
           v-if="videoSession && (isDoctor || isVideoAuthorized)"
-          :key="NaN"
+          :key="videoKey"
           ref="video"
           :session-id="videoSession.sessionId"
           :token="videoSession.token"
@@ -71,7 +71,8 @@ export default {
     doctor: null,
     doctorSubscription: null,
     patientSubscription: null,
-    isVideoAuthorized: false
+    isVideoAuthorized: false,
+    videoKey: Math.random()
   }),
   computed: {
     videoSession() {
@@ -99,6 +100,12 @@ export default {
     }
   },
   watch: {
+    videoSession(newVideoSession, oldVideoSession) {
+      if (!newVideoSession) this.isVideoAuthorized = false
+      if (!newVideoSession || !oldVideoSession) return
+      if (oldVideoSession.sessionId === newVideoSession.sessionId) return
+      this.videoKey = Math.random()
+    },
     async patientVideoSession(hasSession, hadSession) {
       const wasSessionCreated = !hadSession && hasSession
       await promiseDelay(2000)

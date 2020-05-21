@@ -86,7 +86,8 @@ export default {
     },
     doctorMessage: {
       type: String,
-      required: true
+      required: false,
+      default: () => ''
     },
     facilityName: {
       type: String,
