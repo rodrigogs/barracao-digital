@@ -1,5 +1,5 @@
-const { patientsService } = require('barracao-digital/services');
-const { PATIENT_STATUSES } = require('barracao-digital/enums');
+const { patientsService } = require('../../../lib/services');
+const { PATIENT_STATUSES } = require('../../../lib/enums');
 const { getRequestContext, responseBuilder } = require('../../helpers');
 
 const updatePatient = async (patient, _user, body) => {

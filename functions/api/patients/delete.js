@@ -1,5 +1,5 @@
-const patientsService = require('barracao-digital/services/patients.service');
-const conversationService = require('barracao-digital/services/conversation.service');
+const patientsService = require('../../../lib/services/patients.service');
+const conversationService = require('../../../lib/services/conversation.service');
 const { getRequestContext, responseBuilder } = require('../../helpers');
 
 module.exports.handler = async (event) => {

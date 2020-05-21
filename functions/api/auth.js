@@ -1,4 +1,4 @@
-const { authService } = require('barracao-digital/services');
+const { authService } = require('../../lib/services');
 const { getRequestContext, responseBuilder } = require('../helpers');
 
 const methods = {

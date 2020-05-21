@@ -7,7 +7,7 @@ const {
   NotFoundError,
   NotImplementedError,
   UnauthorizedError,
-} = require('barracao-digital/errors/api');
+} = require('../../lib/errors/api');
 
 const defaultHeaders = {
   'Content-Type': 'application/json',

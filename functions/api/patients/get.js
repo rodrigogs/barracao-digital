@@ -1,4 +1,4 @@
-const { patientsService } = require('barracao-digital/services');
+const { patientsService } = require('../../../lib/services');
 const { getRequestContext, responseBuilder } = require('../../helpers');
 
 const getPatientByTicket = async (user, ticket) => {

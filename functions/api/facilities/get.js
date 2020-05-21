@@ -1,4 +1,4 @@
-const facilitiesService = require('barracao-digital/services/facilities.service');
+const facilitiesService = require('../../../lib/services/facilities.service');
 const { getRequestContext, responseBuilder } = require('../../helpers');
 
 module.exports.handler = async (event) => {

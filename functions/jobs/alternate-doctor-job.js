@@ -1,4 +1,4 @@
-const { jobsService, doctorsService } = require('barracao-digital/services');
+const { jobsService, doctorsService } = require('../../lib/services');
 
 module.exports.handler = async (user) => {
   const currentUser = await doctorsService.getOneByUsername(user.username);

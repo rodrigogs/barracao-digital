@@ -1,4 +1,4 @@
-const { authService, jobsService } = require('barracao-digital/services');
+const { authService, jobsService } = require('../../lib/services');
 
 const createAccessPoliciy = (user, key, methodArn) => ({
   principalId: key,
