@@ -46,6 +46,13 @@
   rm -rf package-lock.json
 ) &
 (
+  # Processors
+  cd functions/processors || exit
+  rm -rf node_modules
+  rm -rf package-lock.json
+  rm -rf .serverless
+) &
+(
   # Frontend
   cd frontend || exit
   rm -rf node_modules

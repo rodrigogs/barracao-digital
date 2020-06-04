@@ -28,10 +28,12 @@ custom:
     stage: ${self:provider.stage}
     certificateName: '*.barracaodigital.com'
     createRoute53Record: true
-  configsTableName: ${self:service}-${self:provider.stage}-configs
-  doctorsTableName: ${self:service}-${self:provider.stage}-doctors
-  patientsTableName: ${self:service}-${self:provider.stage}-patients
-  facilitiesTableName: ${self:service}-${self:provider.stage}-facilities
+  # Tables
+  configsTableName: ${self:service}-${self:provider.stage}-configs-table
+  doctorsTableName: ${self:service}-${self:provider.stage}-doctors-table
+  patientsTableName: ${self:service}-${self:provider.stage}-patients-table
+  facilitiesTableName: ${self:service}-${self:provider.stage}-facilities-table
+  reportsTableName: ${self:service}-${self:provider.stage}-reports-table
 
 provider:
   name: aws
@@ -53,15 +55,15 @@ provider:
     - Effect: Allow
       Action:
         - 'dynamodb:*'
-      Resource: '*'
+      Resource: 'arn:aws:dynamodb:${self:custom.region}:${file(./serverless.js):getAccountId}:table/${self:service}-${self:custom.stage}-*'
     - Effect: Allow
       Action:
         - 'events:*'
-      Resource: 'arn:aws:events:*:*:rule/*'
+      Resource: 'arn:aws:events:${self:custom.region}:${file(./serverless.js):getAccountId}:rule/*'
     - Effect: Allow
       Action:
         - 'lambda:*'
-      Resource: '*'
+      Resource: 'arn:aws:lambda:${self:custom.region}:${file(./serverless.js):getAccountId}:function:${self:service}-${self:custom.stage}-*'
   deploymentBucket:
     name: ${self:service}-deploys
     maxPreviousDeploymentArtifacts: 10 # On every deployment the framework prunes the bucket to remove artifacts older than this limit. The default is 5
@@ -70,17 +72,25 @@ provider:
     AWS_ACCOUNT_ID: ${file(./serverless.js):getAccountId}
     STACK_NAME: ${self:service}
     STAGE: ${self:custom.stage}
-    CONFIGS_TABLE: ${self:custom.configsTableName}
-    DOCTORS_TABLE: ${self:custom.doctorsTableName}
-    PATIENTS_TABLE: ${self:custom.patientsTableName}
-    FACILITIES_TABLE: ${self:custom.facilitiesTableName}
     APP_URL: ${env:APP_URL}
     GOOGLE_APPLICATION_CREDENTIALS: ${env:GOOGLE_APPLICATION_CREDENTIALS}
     OPENTOK_API_KEY: ${env:OPENTOK_API_KEY}
     OPENTOK_API_SECRET: ${env:OPENTOK_API_SECRET}
     DOCTOR_INACTIVITY_TIMEOUT_IN_MINUTES: ${env:DOCTOR_INACTIVITY_TIMEOUT_IN_MINUTES, '35'}
+    CONFIGS_TABLE: ${self:custom.configsTableName}
+    DOCTORS_TABLE: ${self:custom.doctorsTableName}
+    PATIENTS_TABLE: ${self:custom.patientsTableName}
+    FACILITIES_TABLE: ${self:custom.facilitiesTableName}
+    REPORTS_TABLE: ${self:custom.reportsTableName}
 
 functions:
+  # Jobs
+  alternate-doctor-job:
+    handler: functions/jobs/alternate-doctor-job.handler
+    memorySize: 1024
+    timeout: 30
+
+  # Authorizers
   doctorAuthorizer:
     handler: functions/api/doctor-authorizer.handler
 
@@ -90,6 +100,7 @@ functions:
   masterAuthorizer:
     handler: functions/api/master-authorizer.handler
 
+  # API
   healthcheck:
     handler: functions/api/healthcheck.handler
     events:
@@ -97,12 +108,6 @@ functions:
           method: GET
           path: /
           cors: true
-
-  # Jobs
-  alternate-doctor-job:
-    handler: functions/jobs/alternate-doctor-job.handler
-    memorySize: 1024
-    timeout: 30
 
   # Auth
   auth:
@@ -329,247 +334,19 @@ functions:
           cors: true
           authorizer: masterAuthorizer
 
+  # Reports
+  reports-post:
+    handler: functions/api/reports/post.handler
+    memorySize: 1024
+    timeout: 30
+    events:
+      - http:
+          method: POST
+          path: /reports/facility/{origin}
+          cors: true
+          authorizer: doctorAuthorizer
+
 resources:
-  Resources:
-    # This response is needed for custom authorizer failures cors support ¯\_(ツ)_/¯
-    GatewayResponseDefault4XX:
-      Type: AWS::ApiGateway::GatewayResponse
-      Properties:
-        ResponseParameters:
-          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
-          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
-        ResponseType: DEFAULT_4XX
-        RestApiId:
-          Ref: ApiGatewayRestApi
-    GatewayResponse:
-      Type: AWS::ApiGateway::GatewayResponse
-      Properties:
-        ResponseParameters:
-          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
-          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
-        ResponseType: EXPIRED_TOKEN
-        RestApiId:
-          Ref: ApiGatewayRestApi
-        StatusCode: '401'
-    AuthFailureGatewayResponse:
-      Type: AWS::ApiGateway::GatewayResponse
-      Properties:
-        ResponseParameters:
-          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
-          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
-        ResponseType: UNAUTHORIZED
-        RestApiId:
-          Ref: ApiGatewayRestApi
-        StatusCode: '401'
-    ## Specifying the CloudFront Distribution to server your Web Application
-    # WebAppCloudFrontDistribution:
-    #   Type: AWS::CloudFront::Distribution
-    #   Properties:
-    #     DistributionConfig:
-    #       Origins:
-    #         - DomainName: ${self:custom.client.bucketName}.s3.amazonaws.com
-    #           ## An identifier for the origin which must be unique within the distribution
-    #           Id: S3-barracao-digital-development-webapp
-    #           # CustomOriginConfig:
-    #             # HTTPPort: 80
-    #             # HTTPSPort: 443
-    #             # OriginProtocolPolicy: https-only
-    #           ## In case you want to restrict the bucket access use S3OriginConfig and remove CustomOriginConfig
-    #           S3OriginConfig:
-    #             OriginAccessIdentity: origin-access-identity/cloudfront/E3EBCGY6G6EE1K
-    #       Enabled: 'true'
-    #       ## Uncomment the following section in case you are using a custom domain
-    #       Aliases:
-    #         - www.barracaodigital.com
-    #         - web.barracaodigital.com
-    #         - dev.barracaodigital.com
-    #       DefaultRootObject: index.html
-    #       ## Since the Single Page App is taking care of the routing we need to make sure ever path is served with index.html
-    #       ## The only exception are files that actually exist e.h. app.js, reset.css
-    #       CustomErrorResponses:
-    #         - ErrorCode: 404
-    #           ResponseCode: 200
-    #           ResponsePagePath: /index.html
-    #       DefaultCacheBehavior:
-    #         AllowedMethods:
-    #           - GET
-    #           - HEAD
-    #         ## The origin id defined above
-    #         TargetOriginId: WebApp
-    #         ## Defining if and how the QueryString and Cookies are forwarded to the origin which in this case is S3
-    #         ForwardedValues:
-    #           QueryString: 'false'
-    #           Cookies:
-    #             Forward: none
-    #         ## The protocol that users can use to access the files in the origin. To allow HTTP use `allow-all`
-    #         ViewerProtocolPolicy: redirect-to-https
-    #       ## The certificate to use when viewers use HTTPS to request objects.
-    #       ViewerCertificate:
-    #         AcmCertificateArn: arn:aws:acm:us-east-1:201373306222:certificate/a8852000-db78-4d56-82e5-857a5ba58469
-    #         SslSupportMethod: sni-only
-    #       #  CloudFrontDefaultCertificate: 'true'
-    #       ## Uncomment the following section in case you want to enable logging for CloudFront requests
-    #       # Logging:
-    #       #   IncludeCookies: 'false'
-    #       #   Bucket: mylogs.s3.amazonaws.com
-    #       #   Prefix: myprefix
-    # DynamoDB Tables
-    ConfigsTable:
-      Type: AWS::DynamoDB::Table
-      Properties:
-        TableName: ${self:custom.configsTableName}
-        AttributeDefinitions:
-          - AttributeName: partition
-            AttributeType: S
-          - AttributeName: sort
-            AttributeType: S
-        KeySchema:
-          - AttributeName: partition
-            KeyType: HASH
-          - AttributeName: sort
-            KeyType: RANGE
-        ProvisionedThroughput:
-          ReadCapacityUnits: 2
-          WriteCapacityUnits: 2
-        Tags:
-          -
-            Key: NAME
-            Value: ${self:custom.configsTableName}
-          -
-            Key: STACK
-            Value: ${self:service}
-          -
-            Key: STAGE
-            Value: ${self:custom.stage}
-          -
-            Key: REGION
-            Value: ${self:custom.region}
-    DoctorsTable:
-      Type: AWS::DynamoDB::Table
-      Properties:
-        TableName: ${self:custom.doctorsTableName}
-        AttributeDefinitions:
-          - AttributeName: username
-            AttributeType: S
-          - AttributeName: sort
-            AttributeType: S
-          - AttributeName: cep
-            AttributeType: S
-        KeySchema:
-          - AttributeName: username
-            KeyType: HASH
-        ProvisionedThroughput:
-          ReadCapacityUnits: 2
-          WriteCapacityUnits: 2
-        GlobalSecondaryIndexes:
-          - IndexName: cep
-            KeySchema:
-              - AttributeName: cep
-                KeyType: HASH
-              - AttributeName: sort
-                KeyType: RANGE
-            Projection:
-              ProjectionType: ALL
-            ProvisionedThroughput:
-              ReadCapacityUnits: 2
-              WriteCapacityUnits: 2
-        Tags:
-          -
-            Key: NAME
-            Value: ${self:custom.doctorsTableName}
-          -
-            Key: STACK
-            Value: ${self:service}
-          -
-            Key: STAGE
-            Value: ${self:custom.stage}
-          -
-            Key: REGION
-            Value: ${self:custom.region}
-    PatientsTable:
-      Type: AWS::DynamoDB::Table
-      Properties:
-        TableName: ${self:custom.patientsTableName}
-        AttributeDefinitions:
-          - AttributeName: ticket
-            AttributeType: S
-          - AttributeName: originCep
-            AttributeType: S
-          - AttributeName: sort
-            AttributeType: S
-        KeySchema:
-          - AttributeName: ticket
-            KeyType: HASH
-        ProvisionedThroughput:
-          ReadCapacityUnits: 2
-          WriteCapacityUnits: 2
-        GlobalSecondaryIndexes:
-          - IndexName: originCep
-            KeySchema:
-              - AttributeName: originCep
-                KeyType: HASH
-              - AttributeName: sort
-                KeyType: RANGE
-            Projection:
-              ProjectionType: ALL
-            ProvisionedThroughput:
-              ReadCapacityUnits: 2
-              WriteCapacityUnits: 2
-        Tags:
-          -
-            Key: NAME
-            Value: ${self:custom.patientsTableName}
-          -
-            Key: STACK
-            Value: ${self:service}
-          -
-            Key: STAGE
-            Value: ${self:custom.stage}
-          -
-            Key: REGION
-            Value: ${self:custom.region}
-    FacilitiesTable:
-      Type: AWS::DynamoDB::Table
-      Properties:
-        TableName: ${self:custom.facilitiesTableName}
-        BillingMode: PAY_PER_REQUEST
-        AttributeDefinitions:
-          - AttributeName: origin
-            AttributeType: S
-          - AttributeName: destination
-            AttributeType: S
-          - AttributeName: type
-            AttributeType: S
-        KeySchema:
-          - AttributeName: origin
-            KeyType: HASH
-          - AttributeName: destination
-            KeyType: RANGE
-        GlobalSecondaryIndexes:
-          - IndexName: destinationOrigin
-            KeySchema:
-              - AttributeName: destination
-                KeyType: HASH
-              - AttributeName: origin
-                KeyType: RANGE
-            Projection:
-              ProjectionType: ALL
-          - IndexName: type
-            KeySchema:
-              - AttributeName: type
-                KeyType: HASH
-            Projection:
-              ProjectionType: ALL
-        Tags:
-          -
-            Key: NAME
-            Value: ${self:custom.facilitiesTableName}
-          -
-            Key: STACK
-            Value: ${self:service}
-          -
-            Key: STAGE
-            Value: ${self:custom.stage}
-          -
-            Key: REGION
-            Value: ${self:custom.region}
+  - ${file(resources/api-gateway-cf-resources.yml)}
+  - ${file(resources/cloudfront-cf-resources.yml)}
+  - ${file(resources/dynamodb-cf-resources.yml)}

@@ -42,6 +42,7 @@ const apiFactory = (axios) => ({
     }),
   alternateDoctorStatus: () => axios.$post('doctors/alternate'),
   // Facilities
+  getFacilityByOrigin: (origin) => axios.$get(`facilities/origin/${origin}`),
   getAllFacilities: (lastEvaluatedKey = '') =>
     axios.$get('facilities', {
       params: {
