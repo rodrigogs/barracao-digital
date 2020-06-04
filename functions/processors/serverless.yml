@@ -1,0 +1,136 @@
+service: barracao-digital-proc
+app: barracao-digital
+org: rodrigogs
+
+plugins:
+  - serverless-bundle
+
+package:
+  individually: true
+
+custom:
+  bundle:
+    externals:
+      - aws-sdk
+    linting: false
+  stage: ${opt:stage, 'development'}
+  region: ${opt:region, 'sa-east-1'}
+  configsDeliveryStreamName: ${self:app}-${self:provider.stage}-configs-delivery-stream
+  doctorsDeliveryStreamName: ${self:app}-${self:provider.stage}-doctors-delivery-stream
+  patientsDeliveryStreamName: ${self:app}-${self:provider.stage}-patients-delivery-stream
+  facilitiesDeliveryStreamName: ${self:app}-${self:provider.stage}-facilities-delivery-stream
+  eventsDatalakeBucketName: ${self:app}-${self:provider.stage}-events-datalake-bucket
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  memorySize: 256
+  stage: ${self:custom.stage}
+  region: ${self:custom.region}
+  versionFunctions: false
+  logRetentionInDays: 5
+  stackTags:
+    STACK: ${self:service}
+    STAGE: ${self:custom.stage}
+    REGION: ${self:custom.region}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - 'logs:*'
+      Resource: '*'
+    - Effect: Allow
+      Action:
+        - 's3:*'
+      Resource: '*'
+    - Effect: Allow
+      Action:
+        - 'kinesis:*'
+      Resource: 'arn:aws:kinesis:${self:custom.region}:${file(../../serverless.js):getAccountId}:stream/*'
+    - Effect: Allow
+      Action:
+        - 'firehose:*'
+      Resource: 'arn:aws:firehose:${self:custom.region}:${file(../../serverless.js):getAccountId}:deliverystream/*'
+    - Effect: Allow
+      Action:
+        - 'athena:*'
+      Resource: 'arn:aws:athena:${self:custom.region}:${file(../../serverless.js):getAccountId}:workgroup/*'
+    - Effect: Allow
+      Action:
+        - 'glue:*'
+      Resource: '*'
+  deploymentBucket:
+    name: ${self:app}-deploys
+    maxPreviousDeploymentArtifacts: 10 # On every deployment the framework prunes the bucket to remove artifacts older than this limit. The default is 5
+    blockPublicAccess: true # Prevents public access via ACLs or bucket policies. Default is false
+  environment:
+    STAGE: ${env:NODE_ENV}
+    CONFIGS_DELIVERY_STREAM: ${self:custom.configsDeliveryStreamName}
+    DOCTORS_DELIVERY_STREAM: ${self:custom.doctorsDeliveryStreamName}
+    PATIENTS_DELIVERY_STREAM: ${self:custom.patientsDeliveryStreamName}
+    FACILITIES_DELIVERY_STREAM: ${self:custom.facilitiesDeliveryStreamName}
+
+functions:
+  msck-repair-on-athena-tables:
+    handler: msck-repair-on-athena-tables.handler
+    memorySize: 512
+    timeout: 60
+    events:
+      - s3:
+          bucket: ${self:custom.eventsDatalakeBucketName}
+          event: s3:ObjectCreated:*
+          existing: true
+
+  configs-lake-proc:
+    handler: configs-datalake-processor.handler
+    memorySize: 512
+    timeout: 60
+    events:
+      - stream:
+          type: dynamodb
+          arn:
+            Fn::ImportValue: ConfigsTableStreamArn
+          batchSize: 100
+          bisectBatchOnFunctionError: true
+          startingPosition: LATEST
+
+  doctors-lake-proc:
+    handler: doctors-datalake-processor.handler
+    memorySize: 512
+    timeout: 60
+    events:
+      - stream:
+          type: dynamodb
+          arn:
+            Fn::ImportValue: DoctorsTableStreamArn
+          batchSize: 100
+          bisectBatchOnFunctionError: true
+          startingPosition: LATEST
+
+  facilities-lake-proc:
+    handler: facilities-datalake-processor.handler
+    memorySize: 512
+    timeout: 60
+    events:
+      - stream:
+          type: dynamodb
+          arn:
+            Fn::ImportValue: FacilitiesTableStreamArn
+          batchSize: 100
+          bisectBatchOnFunctionError: true
+          startingPosition: LATEST
+
+  patients-lake-processor:
+    handler: patients-datalake-processor.handler
+    memorySize: 512
+    timeout: 60
+    events:
+      - stream:
+          type: dynamodb
+          arn:
+            Fn::ImportValue: PatientsTableStreamArn
+          batchSize: 100
+          bisectBatchOnFunctionError: true
+          startingPosition: LATEST
+
+resources:
+  - ${file(../../resources/events-datalake-cf-resources.yml)}

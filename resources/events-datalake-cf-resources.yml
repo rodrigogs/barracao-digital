@@ -1,0 +1,653 @@
+Resources:
+  EventsDatalakeBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: ${self:custom.eventsDatalakeBucketName}
+      Tags:
+        - Key: NAME
+          Value: ${self:custom.eventsDatalakeBucketName}
+        - Key: STACK
+          Value: ${self:service}
+        - Key: STAGE
+          Value: ${self:custom.stage}
+        - Key: REGION
+          Value: ${self:custom.region}
+
+  QueryResultsBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: ${self:app}-${self:custom.stage}-query-results-bucket
+      Tags:
+        - Key: NAME
+          Value: ${self:app}-${self:custom.stage}-query-results-bucket
+        - Key: STACK
+          Value: ${self:service}
+        - Key: STAGE
+          Value: ${self:custom.stage}
+        - Key: REGION
+          Value: ${self:custom.region}
+
+  EventsGlueDatabase:
+    Type: AWS::Glue::Database
+    Properties:
+      CatalogId: !Ref AWS::AccountId
+      DatabaseInput:
+        Name: barracao_digital_${self:custom.stage}_events_lake_glue_database
+        LocationUri: !Join
+          - ''
+          - - 's3://'
+            - !Ref EventsDatalakeBucket
+            - '/lake'
+
+  ConfigsGlueTable:
+    DependsOn:
+      - EventsGlueDatabase
+      - EventsDatalakeBucket
+    Type: AWS::Glue::Table
+    Properties:
+      CatalogId: !Ref AWS::AccountId
+      DatabaseName: !Ref EventsGlueDatabase
+      TableInput:
+        Name: configs
+        Owner: owner
+        Retention: 0
+        StorageDescriptor:
+          Location: !Join
+            - ''
+            - - 's3://'
+              - !Ref EventsDatalakeBucket
+              - '/lake'
+              - '/configs'
+          Columns:
+            - Name: partition
+              Type: string
+            - Name: sort
+              Type: string
+            - Name: lastTicket
+              Type: string
+            - Name: version
+              Type: bigint
+            - Name: eventName
+              Type: string
+            - Name: approximateCreationDateTime
+              Type: bigint
+            - Name: sequenceNumber
+              Type: string
+            - Name: sizeInBytes
+              Type: bigint
+            - Name: ingestedAt
+              Type: bigint
+          StoredAsSubDirectories: True
+          SerdeInfo:
+            SerializationLibrary: 'org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe'
+          InputFormat: 'org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat'
+          OutputFormat: 'org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat'
+        PartitionKeys:
+          - Name: year
+            Type: string
+          - Name: month
+            Type: string
+          - Name: day
+            Type: string
+          - Name: hour
+            Type: string
+        TableType: EXTERNAL_TABLE
+        Parameters:
+          classification: parquet
+
+  DoctorsGlueTable:
+    DependsOn:
+      - EventsGlueDatabase
+      - EventsDatalakeBucket
+    Type: AWS::Glue::Table
+    Properties:
+      CatalogId: !Ref AWS::AccountId
+      DatabaseName: !Ref EventsGlueDatabase
+      TableInput:
+        Name: doctors
+        Owner: owner
+        Retention: 0
+        StorageDescriptor:
+          Location: !Join
+            - ''
+            - - 's3://'
+              - !Ref EventsDatalakeBucket
+              - '/lake'
+              - '/doctors'
+          Columns:
+            - Name: id
+              Type: string
+            - Name: username
+              Type: string
+            - Name: name
+              Type: string
+            - Name: sort
+              Type: string
+            - Name: specialty
+              Type: string
+            - Name: active
+              Type: boolean
+            - Name: admin
+              Type: boolean
+            - Name: master
+              Type: boolean
+            - Name: cep
+              Type: string
+            - Name: crm
+              Type: string
+            - Name: email
+              Type: string
+            - Name: fu
+              Type: string
+            - Name: textSessions
+              Type: string
+            - Name: videoSessions
+              Type: string
+            - Name: createdAt
+              Type: bigint
+            - Name: updatedAt
+              Type: bigint
+            - Name: eventName
+              Type: string
+            - Name: approximateCreationDateTime
+              Type: bigint
+            - Name: sequenceNumber
+              Type: string
+            - Name: sizeInBytes
+              Type: bigint
+            - Name: ingestedAt
+              Type: bigint
+          StoredAsSubDirectories: True
+          SerdeInfo:
+            SerializationLibrary: 'org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe'
+          InputFormat: 'org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat'
+          OutputFormat: 'org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat'
+        PartitionKeys:
+          - Name: year
+            Type: string
+          - Name: month
+            Type: string
+          - Name: day
+            Type: string
+          - Name: hour
+            Type: string
+        TableType: EXTERNAL_TABLE
+        Parameters:
+          classification: parquet
+
+  PatientsGlueTable:
+    DependsOn:
+      - EventsGlueDatabase
+      - EventsDatalakeBucket
+    Type: AWS::Glue::Table
+    Properties:
+      CatalogId: !Ref AWS::AccountId
+      DatabaseName: !Ref EventsGlueDatabase
+      TableInput:
+        Name: patients
+        Owner: owner
+        Retention: 0
+        StorageDescriptor:
+          Location: !Join
+            - ''
+            - - 's3://'
+              - !Ref EventsDatalakeBucket
+              - '/lake'
+              - '/patients'
+          Columns:
+            - Name: id
+              Type: string
+            - Name: age
+              Type: bigint
+            - Name: name
+              Type: string
+            - Name: sort
+              Type: string
+            - Name: cep
+              Type: string
+            - Name: cpf
+              Type: string
+            - Name: email
+              Type: string
+            - Name: meds
+              Type: string
+            - Name: phone
+              Type: string
+            - Name: allergies
+              Type: string
+            - Name: covenant
+              Type: string
+            - Name: hasBeenAssisted
+              Type: boolean
+            - Name: status
+              Type: string
+            - Name: lastStatus
+              Type: string
+            - Name: ticket
+              Type: string
+            - Name: textSession
+              Type: string
+            - Name: videoSession
+              Type: string
+            - Name: gave_upStatus_timestamp
+              Type: bigint
+            - Name: cantBeAssistedStatus_timestamp
+              Type: bigint
+            - Name: waitingStatus_timestamp
+              Type: bigint
+            - Name: ongoingStatus_doctorUsername
+              Type: string
+            - Name: ongoingStatus_doctorName
+              Type: string
+            - Name: ongoingStatus_doctorCrm
+              Type: string
+            - Name: ongoingStatus_doctorState
+              Type: string
+            - Name: ongoingStatus_doctorMessage
+              Type: string
+            - Name: ongoingStatus_facilityName
+              Type: string
+            - Name: ongoingStatus_timestamp
+              Type: bigint
+            - Name: waiting_kitStatus_doctorUsername
+              Type: string
+            - Name: waiting_kitStatus_doctorName
+              Type: string
+            - Name: waiting_kitStatus_doctorCrm
+              Type: string
+            - Name: waiting_kitStatus_doctorState
+              Type: string
+            - Name: waiting_kitStatus_doctorMessage
+              Type: string
+            - Name: waiting_kitStatus_facilityName
+              Type: string
+            - Name: waiting_kitStatus_receivedAt
+              Type: bigint
+            - Name: waiting_kitStatus_receivedMessage
+              Type: string
+            - Name: waiting_kitStatus_sentAt
+              Type: bigint
+            - Name: waiting_kitStatus_sentMessage
+              Type: string
+            - Name: waiting_kitStatus_timestamp
+              Type: bigint
+            - Name: finishedStatus_doctorUsername
+              Type: string
+            - Name: finishedStatus_doctorName
+              Type: string
+            - Name: finishedStatus_doctorCrm
+              Type: string
+            - Name: finishedStatus_doctorState
+              Type: string
+            - Name: finishedStatus_doctorMessage
+              Type: string
+            - Name: finishedStatus_facilityName
+              Type: string
+            - Name: finishedStatus_patientOutcome
+              Type: string
+            - Name: finishedStatus_patientFeedback
+              Type: bigint
+            - Name: finishedStatus_timestamp
+              Type: bigint
+            - Name: createdAt
+              Type: bigint
+            - Name: updatedAt
+              Type: bigint
+            - Name: version
+              Type: bigint
+            - Name: eventName
+              Type: string
+            - Name: approximateCreationDateTime
+              Type: bigint
+            - Name: sequenceNumber
+              Type: string
+            - Name: sizeInBytes
+              Type: bigint
+            - Name: ingestedAt
+              Type: bigint
+          StoredAsSubDirectories: True
+          SerdeInfo:
+            SerializationLibrary: 'org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe'
+          InputFormat: 'org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat'
+          OutputFormat: 'org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat'
+        PartitionKeys:
+          - Name: year
+            Type: string
+          - Name: month
+            Type: string
+          - Name: day
+            Type: string
+          - Name: hour
+            Type: string
+        TableType: EXTERNAL_TABLE
+        Parameters:
+          classification: parquet
+
+  FacilitiesGlueTable:
+    DependsOn:
+      - EventsGlueDatabase
+      - EventsDatalakeBucket
+    Type: AWS::Glue::Table
+    Properties:
+      CatalogId: !Ref AWS::AccountId
+      DatabaseName: !Ref EventsGlueDatabase
+      TableInput:
+        Name: facilities
+        Owner: owner
+        Retention: 0
+        StorageDescriptor:
+          Location: !Join
+            - ''
+            - - 's3://'
+              - !Ref EventsDatalakeBucket
+              - '/lake'
+              - '/facilities'
+          Columns:
+            - Name: name
+              Type: string
+            - Name: origin
+              Type: string
+            - Name: destination
+              Type: string
+            - Name: techDirector
+              Type: string
+            - Name: type
+              Type: string
+            - Name: active
+              Type: boolean
+            - Name: contact
+              Type: string
+            - Name: createdAt
+              Type: bigint
+            - Name: updatedAt
+              Type: bigint
+            - Name: version
+              Type: bigint
+            - Name: eventName
+              Type: string
+            - Name: approximateCreationDateTime
+              Type: bigint
+            - Name: sequenceNumber
+              Type: string
+            - Name: sizeInBytes
+              Type: bigint
+            - Name: ingestedAt
+              Type: bigint
+          StoredAsSubDirectories: True
+          SerdeInfo:
+            SerializationLibrary: 'org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe'
+          InputFormat: 'org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat'
+          OutputFormat: 'org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat'
+        PartitionKeys:
+          - Name: year
+            Type: string
+          - Name: month
+            Type: string
+          - Name: day
+            Type: string
+          - Name: hour
+            Type: string
+        TableType: EXTERNAL_TABLE
+        Parameters:
+          classification: parquet
+
+  # Kinesis Firehose Delivery Streams
+  ConfigsDeliveryStream:
+    DependsOn:
+      - ConfigsGlueTable
+    Type: AWS::KinesisFirehose::DeliveryStream
+    Properties:
+      DeliveryStreamName: ${self:custom.configsDeliveryStreamName}
+      DeliveryStreamType: DirectPut
+      ExtendedS3DestinationConfiguration:
+        RoleARN: !GetAtt DeliveryRole.Arn
+        BucketARN: !Join
+          - ''
+          - - 'arn:aws:s3:::'
+            - !Ref EventsDatalakeBucket
+        Prefix: 'lake/configs/year=!{timestamp:YYYY}/month=!{timestamp:MM}/day=!{timestamp:dd}/hour=!{timestamp:HH}/'
+        ErrorOutputPrefix: 'error/configs/!{firehose:error-output-type}/year=!{timestamp:YYYY}/month=!{timestamp:MM}/day=!{timestamp:dd}/hour=!{timestamp:HH}/'
+        BufferingHints:
+          SizeInMBs: 64
+          IntervalInSeconds: 60
+        CloudWatchLoggingOptions:
+          Enabled: True
+          LogGroupName: !Join
+            - ''
+            - - !Ref ConfigsGlueTable
+          LogStreamName: ${self:custom.eventsDatalakeBucketName}_configs
+        CompressionFormat: UNCOMPRESSED
+        S3BackupMode: Disabled
+        EncryptionConfiguration:
+          NoEncryptionConfig: NoEncryption
+        DataFormatConversionConfiguration:
+          Enabled: True
+          SchemaConfiguration:
+            CatalogId: !Ref AWS::AccountId
+            RoleARN: !GetAtt DeliveryRole.Arn
+            DatabaseName: !Ref EventsGlueDatabase
+            TableName: !Ref ConfigsGlueTable
+            Region: !Ref AWS::Region
+            VersionId: LATEST
+          InputFormatConfiguration:
+            Deserializer:
+              OpenXJsonSerDe:
+                ConvertDotsInJsonKeysToUnderscores: True
+          OutputFormatConfiguration:
+            Serializer:
+              ParquetSerDe: {}
+
+  DoctorsDeliveryStream:
+    DependsOn:
+      - DoctorsGlueTable
+    Type: AWS::KinesisFirehose::DeliveryStream
+    Properties:
+      DeliveryStreamName: ${self:custom.doctorsDeliveryStreamName}
+      DeliveryStreamType: DirectPut
+      ExtendedS3DestinationConfiguration:
+        RoleARN: !GetAtt DeliveryRole.Arn
+        BucketARN: !Join
+          - ''
+          - - 'arn:aws:s3:::'
+            - !Ref EventsDatalakeBucket
+        Prefix: 'lake/doctors/year=!{timestamp:YYYY}/month=!{timestamp:MM}/day=!{timestamp:dd}/hour=!{timestamp:HH}/'
+        ErrorOutputPrefix: 'error/doctors/!{firehose:error-output-type}/year=!{timestamp:YYYY}/month=!{timestamp:MM}/day=!{timestamp:dd}/hour=!{timestamp:HH}/'
+        BufferingHints:
+          SizeInMBs: 64
+          IntervalInSeconds: 60
+        CloudWatchLoggingOptions:
+          Enabled: True
+          LogGroupName: !Join
+            - ''
+            - - !Ref DoctorsGlueTable
+          LogStreamName: ${self:custom.eventsDatalakeBucketName}_doctors
+        CompressionFormat: UNCOMPRESSED
+        S3BackupMode: Disabled
+        EncryptionConfiguration:
+          NoEncryptionConfig: NoEncryption
+        DataFormatConversionConfiguration:
+          Enabled: True
+          SchemaConfiguration:
+            CatalogId: !Ref AWS::AccountId
+            RoleARN: !GetAtt DeliveryRole.Arn
+            DatabaseName: !Ref EventsGlueDatabase
+            TableName: !Ref DoctorsGlueTable
+            Region: !Ref AWS::Region
+            VersionId: LATEST
+          InputFormatConfiguration:
+            Deserializer:
+              OpenXJsonSerDe:
+                ConvertDotsInJsonKeysToUnderscores: True
+          OutputFormatConfiguration:
+            Serializer:
+              ParquetSerDe: {}
+
+  PatientsDeliveryStream:
+    DependsOn:
+      - PatientsGlueTable
+    Type: AWS::KinesisFirehose::DeliveryStream
+    Properties:
+      DeliveryStreamName: ${self:custom.patientsDeliveryStreamName}
+      DeliveryStreamType: DirectPut
+      ExtendedS3DestinationConfiguration:
+        RoleARN: !GetAtt DeliveryRole.Arn
+        BucketARN: !Join
+          - ''
+          - - 'arn:aws:s3:::'
+            - !Ref EventsDatalakeBucket
+        Prefix: 'lake/patients/year=!{timestamp:YYYY}/month=!{timestamp:MM}/day=!{timestamp:dd}/hour=!{timestamp:HH}/'
+        ErrorOutputPrefix: 'error/patients/!{firehose:error-output-type}/year=!{timestamp:YYYY}/month=!{timestamp:MM}/day=!{timestamp:dd}/hour=!{timestamp:HH}/'
+        BufferingHints:
+          SizeInMBs: 64
+          IntervalInSeconds: 60
+        CloudWatchLoggingOptions:
+          Enabled: True
+          LogGroupName: !Join
+            - ''
+            - - !Ref PatientsGlueTable
+          LogStreamName: ${self:custom.eventsDatalakeBucketName}_patients
+        CompressionFormat: UNCOMPRESSED
+        S3BackupMode: Disabled
+        EncryptionConfiguration:
+          NoEncryptionConfig: NoEncryption
+        DataFormatConversionConfiguration:
+          Enabled: True
+          SchemaConfiguration:
+            CatalogId: !Ref AWS::AccountId
+            RoleARN: !GetAtt DeliveryRole.Arn
+            DatabaseName: !Ref EventsGlueDatabase
+            TableName: !Ref PatientsGlueTable
+            Region: !Ref AWS::Region
+            VersionId: LATEST
+          InputFormatConfiguration:
+            Deserializer:
+              OpenXJsonSerDe:
+                ConvertDotsInJsonKeysToUnderscores: True
+          OutputFormatConfiguration:
+            Serializer:
+              ParquetSerDe: {}
+
+  FacilitiesDeliveryStream:
+    DependsOn:
+      - FacilitiesGlueTable
+    Type: AWS::KinesisFirehose::DeliveryStream
+    Properties:
+      DeliveryStreamName: ${self:custom.facilitiesDeliveryStreamName}
+      DeliveryStreamType: DirectPut
+      ExtendedS3DestinationConfiguration:
+        RoleARN: !GetAtt DeliveryRole.Arn
+        BucketARN: !Join
+          - ''
+          - - 'arn:aws:s3:::'
+            - !Ref EventsDatalakeBucket
+        Prefix: 'lake/facilities/year=!{timestamp:YYYY}/month=!{timestamp:MM}/day=!{timestamp:dd}/hour=!{timestamp:HH}/'
+        ErrorOutputPrefix: 'error/facilities/!{firehose:error-output-type}/year=!{timestamp:YYYY}/month=!{timestamp:MM}/day=!{timestamp:dd}/hour=!{timestamp:HH}/'
+        BufferingHints:
+          SizeInMBs: 64
+          IntervalInSeconds: 60
+        CloudWatchLoggingOptions:
+          Enabled: True
+          LogGroupName: !Join
+            - ''
+            - - !Ref FacilitiesGlueTable
+          LogStreamName: ${self:custom.eventsDatalakeBucketName}_facilities
+        CompressionFormat: UNCOMPRESSED
+        S3BackupMode: Disabled
+        EncryptionConfiguration:
+          NoEncryptionConfig: NoEncryption
+        DataFormatConversionConfiguration:
+          Enabled: True
+          SchemaConfiguration:
+            CatalogId: !Ref AWS::AccountId
+            RoleARN: !GetAtt DeliveryRole.Arn
+            DatabaseName: !Ref EventsGlueDatabase
+            TableName: !Ref FacilitiesGlueTable
+            Region: !Ref AWS::Region
+            VersionId: LATEST
+          InputFormatConfiguration:
+            Deserializer:
+              OpenXJsonSerDe:
+                ConvertDotsInJsonKeysToUnderscores: True
+          OutputFormatConfiguration:
+            Serializer:
+              ParquetSerDe: {}
+
+  # Roles
+  DeliveryRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: ''
+            Effect: Allow
+            Principal:
+              Service: firehose.amazonaws.com
+            Action: 'sts:AssumeRole'
+            Condition:
+              StringEquals:
+                'sts:ExternalId': !Ref 'AWS::AccountId'
+      Path: '/'
+      Policies:
+        - PolicyName: firehose_delivery_policy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 's3:AbortMultipartUpload'
+                  - 's3:GetBucketLocation'
+                  - 's3:GetObject'
+                  - 's3:ListBucket'
+                  - 's3:ListBucketMultipartUploads'
+                  - 's3:PutObject'
+                Resource:
+                  - !Join
+                    - ''
+                    - - 'arn:aws:s3:::'
+                      - '${self:custom.eventsDatalakeBucketName}'
+                  - !Join
+                    - ''
+                    - - 'arn:aws:s3:::'
+                      - '${self:custom.eventsDatalakeBucketName}'
+                      - '*'
+              - Effect: Allow
+                Action: 'glue:GetTableVersions'
+                Resource: '*'
+              - Effect: Allow
+                Action: 'logs:PutLogEvents'
+                Resource:
+                  - !Join
+                    - ''
+                    - - 'arn:aws:logs:'
+                      - !Ref 'AWS::Region'
+                      - ':'
+                      - !Ref 'AWS::AccountId'
+                      - 'log-group:/aws/kinesisfirehose/'
+                      - '*'
+                      - ':log-stream:*'
+
+Outputs:
+  ConfigsDeliveryStreamArn:
+    Description: The ARN of the firehose delivery stream for Configs
+    Value: !GetAtt ConfigsDeliveryStream.Arn
+    Export:
+      Name: !Sub ConfigsDeliveryStreamArn
+
+  DoctorsDeliveryStreamArn:
+    Description: The ARN of the firehose delivery stream for Doctors
+    Value: !GetAtt DoctorsDeliveryStream.Arn
+    Export:
+      Name: !Sub DoctorsDeliveryStreamArn
+
+  PatientsDeliveryStreamArn:
+    Description: The ARN of the firehose delivery stream for Patients
+    Value: !GetAtt PatientsDeliveryStream.Arn
+    Export:
+      Name: !Sub PatientsDeliveryStreamArn
+
+  FacilitiesDeliveryStreamArn:
+    Description: The ARN of the firehose delivery stream for Facilities
+    Value: !GetAtt FacilitiesDeliveryStream.Arn
+    Export:
+      Name: !Sub FacilitiesDeliveryStreamArn
