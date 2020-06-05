@@ -293,18 +293,16 @@ export default {
       ).finally(() => (this.isCheckingFacility = false))
 
       if (!this.checkedFacilities[cep])
-        this.$toast.error(
+        this.$noty.error(
           'Não existe uma instalação ativa para o CEP informado.'
         )
       else
-        this.$toast.success(
-          'O CEP informado dispõe de uma unidade de atendimento.'
-        )
+        this.$noty.info('O CEP informado dispõe de uma unidade de atendimento.')
     }, 500),
     validateMyDataSection() {
       this.$v.myData.$touch()
       if (this.$v.myData.$invalid) {
-        return this.$toast.error(
+        return this.$noty.error(
           'Existem erros no formulário, revise-os antes de seguir.'
         )
       }
@@ -314,7 +312,7 @@ export default {
     validateContactSection() {
       this.$v.contact.$touch()
       if (this.$v.contact.$invalid) {
-        return this.$toast.error(
+        return this.$noty.error(
           'Existem erros no formulário, revise-os antes de seguir.'
         )
       }
@@ -344,7 +342,7 @@ export default {
         (error) => {
           const message =
             R.path(['response', 'data', 'message'], error) || error
-          this.$toast.error(message)
+          this.$noty.error(message)
           this.isSaving = false
         }
       )

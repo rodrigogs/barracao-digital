@@ -217,7 +217,7 @@ export default {
     validateAndSubmitProfile() {
       this.$v.profile.$touch()
       if (this.$v.profile.$invalid) {
-        return this.$toast.error(
+        return this.$noty.error(
           'Existem erros no formulário, revise-os antes de seguir.'
         )
       }
@@ -227,9 +227,9 @@ export default {
       this.$api
         .updateDoctor(this.user.username, this.profile)
         .then(
-          () => this.$toast.success('Perfil atualizado com sucesso!'),
+          () => this.$noty.success('Perfil atualizado com sucesso!'),
           () =>
-            this.$toast.error(
+            this.$noty.error(
               'Ocorreu um erro ao tentar atualizar o seu perfil, tente novamente mais tarde'
             )
         )
@@ -240,7 +240,7 @@ export default {
     validateAndSubmitPassword() {
       this.$v.password.$touch()
       if (this.$v.password.$invalid) {
-        return this.$toast.error(
+        return this.$noty.error(
           'Existem erros no formulário, revise-os antes de seguir.'
         )
       }
@@ -253,7 +253,7 @@ export default {
         })
         .then(
           () => {
-            this.$toast.success('Senha atualizada com sucesso!')
+            this.$noty.success('Senha atualizada com sucesso!')
             this.$v.password.$reset()
             this.password = {
               password: '',
@@ -261,7 +261,7 @@ export default {
             }
           },
           () =>
-            this.$toast.error(
+            this.$noty.error(
               'Ocorreu um erro ao tentar atualizar a sua senha, tente novamente mais tarde'
             )
         )
