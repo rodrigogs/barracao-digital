@@ -38,7 +38,7 @@ export default {
       return this.$api
         .alternateDoctorStatus()
         .catch(() =>
-          this.$toast.error(
+          this.$noty.error(
             'Não foi possivel alterar o status de atendimento, tente novamente mais tarde.'
           )
         )

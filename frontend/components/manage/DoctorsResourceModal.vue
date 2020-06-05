@@ -354,7 +354,7 @@ export default {
           err instanceof InvalidCrmError
             ? err.message
             : 'Ocorreu um erro ao verificar o CRM do médico, tente novamente mais tarde.'
-        this.$toast.error(message)
+        this.$noty.error(message)
       } finally {
         this.checkingCrm = false
       }
@@ -363,7 +363,7 @@ export default {
     validateAndSubmit() {
       this.$v.form.$touch()
       if (this.$v.form.$invalid) {
-        return this.$toast.error(
+        return this.$noty.error(
           'Existem erros no formulário, revise-os antes de seguir.'
         )
       }

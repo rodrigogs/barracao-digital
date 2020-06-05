@@ -147,7 +147,7 @@ export default {
             this.isPaginationFinished = isPaginationFinished
           },
           () => {
-            this.$toast.error(
+            this.$noty.error(
               'Ocorreu um erro ao tentar consultar os cadastros de médicos, tente novamente mais tarde'
             )
           }
@@ -166,7 +166,7 @@ export default {
           updatedDoctor = await this.$api.createDoctor(doctor)
           this.lastEvaluatedKey = ''
           await this.handleNextPageRequest()
-          this.$toast.success('Médico salvo com sucesso')
+          this.$noty.success('Médico salvo com sucesso')
         } else {
           updatedDoctor = await this.$api.updateDoctor(
             this.selectedDoctor.username,
@@ -174,7 +174,7 @@ export default {
           )
           const index = this._findDoctorIndex(this.selectedDoctor.username)
           this.$set(this.doctors, index, doctor)
-          this.$toast.success('Médico atualizado com sucesso')
+          this.$noty.success('Médico atualizado com sucesso')
         }
 
         const index = this._findDoctorIndex(updatedDoctor.username)
@@ -185,7 +185,7 @@ export default {
         }
       } catch (error) {
         const message = R.path(['response', 'data', 'message'], error) || error
-        this.$toast.error(message)
+        this.$noty.error(message)
         return Promise.reject(error)
       }
     },
@@ -219,7 +219,7 @@ export default {
       const index = this._findDoctorIndex(username)
 
       if (index === -1) {
-        this.$toast.error('Você não pode deletar este médico')
+        this.$noty.error('Você não pode deletar este médico')
         return
       }
 
@@ -228,10 +228,10 @@ export default {
         .then(
           () => {
             this.$delete(this.doctors, index)
-            this.$toast.success('Médico removido com sucesso')
+            this.$noty.success('Médico removido com sucesso')
           },
           () =>
-            this.$toast.error(
+            this.$noty.error(
               'Ocorreu um erro ao tentar deletar este médico, tente novamente mais tarde'
             )
         )

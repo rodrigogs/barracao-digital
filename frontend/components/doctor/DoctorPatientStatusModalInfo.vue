@@ -468,7 +468,7 @@ export default {
     async validateOnGoingSection() {
       this.$v.onGoing.$touch()
       if (this.$v.onGoing.$invalid) {
-        return this.$toast.error(
+        return this.$noty.error(
           'Existem erros no formulário, revise-os antes de seguir.'
         )
       }
@@ -483,7 +483,7 @@ export default {
     async validateFinishedSection() {
       this.$v.finished.$touch()
       if (this.$v.finished.$invalid) {
-        return this.$toast.error(
+        return this.$noty.error(
           'Existem erros no formulário, revise-os antes de seguir.'
         )
       }
@@ -526,7 +526,7 @@ export default {
         status,
         form
       }).catch((error) => {
-        this.$toast.error(error.response.data.message)
+        this.$noty.error(error.response.data.message)
       })
     }
   }

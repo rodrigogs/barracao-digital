@@ -268,7 +268,7 @@ export default {
     validateAndSubmit() {
       this.$v.form.$touch()
       if (this.$v.form.$invalid) {
-        return this.$toast.error(
+        return this.$noty.error(
           'Existem erros no formulário, revise-os antes de seguir.'
         )
       }
