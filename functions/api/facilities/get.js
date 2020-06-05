@@ -1,8 +1,6 @@
 const Router = require('@everestate/serverless-router');
 const { HTTP } = require('@everestate/serverless-router-aws');
 const facilitiesService = require('barracao-digital/services/facilities.service');
-const reportsService = require('barracao-digital/services/reports.service');
-const reportDimensions = require('barracao-digital/enums/reportDimensions.enum');
 const { getRequestContext, responseBuilder } = require('../../helpers');
 
 const ENV = process.env.NODE_ENV;
@@ -39,13 +37,7 @@ const dispatch = async (event) => {
       .getOneByDestination(pathParameters.origin)
       .then((facility) => (!facility
         ? responseBuilder.errors.notFound()
-        : responseBuilder.success.noContent()))
-      .finally(() => reportsService.feedMetric(
-        reportDimensions.FACILITY_PATIENTS_CEP_CHECKS_NUMBER_BY_CEP_MAP,
-        pathParameters.origin,
-      )))
-
-    .get(`/${ENV}/facilities/origin/:origin/analytics`, () => facilitiesService.getAnalytics().then());
+        : responseBuilder.success.noContent())));
 
   router.mismatch(() => {
     const { path, httpMethod } = event;
