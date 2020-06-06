@@ -4,11 +4,11 @@
   "description": "",
   "devDependencies": {
     "@zeit/webpack-asset-relocator-loader": "^0.7.2",
-    "aws-sdk": "^2.686.0",
-    "serverless": "^1.71.3",
+    "aws-sdk": "^2.691.0",
+    "serverless": "^1.72.0",
     "serverless-domain-manager": "^4.1.1",
     "serverless-finch": "^2.5.2",
-    "serverless-offline": "^6.3.0",
+    "serverless-offline": "^6.4.0",
     "serverless-webpack": "^5.3.2",
     "webpack": "^4.43.0"
   },
