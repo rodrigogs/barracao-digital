@@ -19,27 +19,27 @@ import DoctorWorklistFiltersOptions from './DoctorWorklistFiltersOptions'
 export default {
   components: {
     DoctorWorklistFiltersSearchBar,
-    DoctorWorklistFiltersOptions
+    DoctorWorklistFiltersOptions,
   },
   props: {
     value: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
       search: '',
-      options: {}
+      options: {},
     }
   },
   methods: {
     updated() {
       this.$emit('input', {
         search: this.search,
-        options: this.options
+        options: this.options,
       })
-    }
-  }
+    },
+  },
 }
 </script>

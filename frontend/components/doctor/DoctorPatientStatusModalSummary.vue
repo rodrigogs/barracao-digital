@@ -185,8 +185,8 @@ export default {
   props: {
     patient: {
       type: Object,
-      required: true
-    }
-  }
+      required: true,
+    },
+  },
 }
 </script>

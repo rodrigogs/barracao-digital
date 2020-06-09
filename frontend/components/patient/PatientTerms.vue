@@ -464,12 +464,12 @@
 export default {
   name: 'PatientTerms',
   data: () => ({
-    scrollPosition: window.scrollY
+    scrollPosition: window.scrollY,
   }),
   computed: {
     shouldDisplayGoToEndButton() {
       return this.scrollPosition < 300
-    }
+    },
   },
   created() {
     // eslint-disable-next-line nuxt/no-globals-in-created
@@ -486,8 +486,8 @@ export default {
 
     handleScroll() {
       this.scrollPosition = window.scrollY
-    }
-  }
+    },
+  },
 }
 </script>
 

@@ -131,14 +131,17 @@ const THIRTY_MINUTES = ONE_MINUTE * 30
 export default {
   components: {
     Logo,
-    ReportIssueDialog
+    ReportIssueDialog,
   },
   data: () => ({
     idle: null,
     timeoutAfterInactiveModalDisplayed: null,
-    reportingIssue: false
+    reportingIssue: false,
   }),
   computed: {
+    isDoctorActive() {
+      return this.$auth.loggedIn && this.$auth.user.active
+    },
     isLoggedIn() {
       return this.$auth.loggedIn
     },
@@ -150,25 +153,13 @@ export default {
     },
     version() {
       return version
-    }
+    },
   },
-  mounted() {
-    this.idle = new IdleJs({
-      idle: THIRTY_MINUTES,
-      onIdle: () => {
-        if (!this.$auth.user.active) return
-
-        this.timeoutAfterInactiveModalDisplayed = setTimeout(() => {
-          this.toggleStatus()
-          this.timeoutAfterInactiveModalDisplayed = null
-        }, ONE_MINUTE)
-      },
-      onActive: () => {
-        if (this.timeoutAfterInactiveModalDisplayed)
-          clearTimeout(this.timeoutAfterInactiveModalDisplayed)
-        this.timeoutAfterInactiveModalDisplayed = null
-      }
-    }).start()
+  watch: {
+    isDoctorActive(isActive) {
+      if (isActive) return this.startIdle()
+      return this.stopIdle()
+    },
   },
   beforeDestroy() {
     this.idle && this.idle.stop()
@@ -179,7 +170,27 @@ export default {
         () => this.$router.push({ name: 'login' }),
         () => {}
       )
-    }
-  }
+    },
+    startIdle() {
+      if (!this.$auth.loggedIn) return
+      this.idle = new IdleJs({
+        idle: THIRTY_MINUTES,
+        onIdle: () => {
+          this.timeoutAfterInactiveModalDisplayed = setTimeout(() => {
+            if (this.isDoctorActive) this.$api.alternateDoctorStatus()
+            this.timeoutAfterInactiveModalDisplayed = null
+          }, ONE_MINUTE)
+        },
+        onActive: () => {
+          if (this.timeoutAfterInactiveModalDisplayed)
+            clearTimeout(this.timeoutAfterInactiveModalDisplayed)
+          this.timeoutAfterInactiveModalDisplayed = null
+        },
+      }).start()
+    },
+    stopIdle() {
+      this.idle && this.idle.stop()
+    },
+  },
 }
 </script>

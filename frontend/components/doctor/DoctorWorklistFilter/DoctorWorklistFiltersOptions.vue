@@ -85,40 +85,40 @@ import { PATIENT_STATUS } from '~/constants'
 const statuses = [
   {
     text: patientStatusToText(PATIENT_STATUS.WAITING).text,
-    value: PATIENT_STATUS.WAITING
+    value: PATIENT_STATUS.WAITING,
   },
   {
     text: patientStatusToText(PATIENT_STATUS.ONGOING).text,
-    value: PATIENT_STATUS.ONGOING
+    value: PATIENT_STATUS.ONGOING,
   },
   {
     text: patientStatusToText(PATIENT_STATUS.WAITING_KIT).text,
-    value: PATIENT_STATUS.WAITING_KIT
+    value: PATIENT_STATUS.WAITING_KIT,
   },
   {
     text: patientStatusToText(PATIENT_STATUS.FINISHED).text,
-    value: PATIENT_STATUS.FINISHED
+    value: PATIENT_STATUS.FINISHED,
   },
   {
     text: patientStatusToText(PATIENT_STATUS.GAVE_UP).text,
-    value: PATIENT_STATUS.GAVE_UP
+    value: PATIENT_STATUS.GAVE_UP,
   },
   {
     text: patientStatusToText(PATIENT_STATUS.CANT_BE_ASSISTED).text,
-    value: PATIENT_STATUS.CANT_BE_ASSISTED
-  }
+    value: PATIENT_STATUS.CANT_BE_ASSISTED,
+  },
 ]
 
 export default {
   name: 'DoctorWorklistFiltersOptions',
   components: {
-    StatusBadge
+    StatusBadge,
   },
   props: {
     value: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
@@ -126,14 +126,14 @@ export default {
       filtersApplied: 0,
       options: {
         statuses: this.value.statuses || [],
-        hoursWaiting: this.value.hoursWaiting || 24
-      }
+        hoursWaiting: this.value.hoursWaiting || 24,
+      },
     }
   },
   computed: {
     statuses() {
       return statuses
-    }
+    },
   },
   mounted() {
     this.update()
@@ -151,7 +151,7 @@ export default {
         ({ value }) => status.value === value
       )
       if (index >= 0) this.options.statuses.splice(index, 1)
-    }
-  }
+    },
+  },
 }
 </script>

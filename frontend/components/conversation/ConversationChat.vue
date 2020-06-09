@@ -23,39 +23,39 @@ export default {
   name: 'ConversationChat',
   components: {
     ConversationChatActions,
-    ConversationChatHistory
+    ConversationChatHistory,
   },
   props: {
     doctor: {
       type: Object,
-      required: true
+      required: true,
     },
     patient: {
       type: Object,
-      required: true
+      required: true,
     },
     isDoctor: {
       type: Boolean,
-      required: true
-    }
+      required: true,
+    },
   },
   computed: {
     ...mapGetters('chat', {
       isReady: 'isReady',
-      messages: 'getMessages'
-    })
+      messages: 'getMessages',
+    }),
   },
   watch: {
     isReady() {
       if (this.isReady && this.isDoctor && !this.messages.length)
         this.sendHintMessages()
-    }
+    },
   },
   mounted() {
     this.subscribeToMessages({
       originCep: this.patient.originCep,
       doctorUsername: this.doctor.username,
-      patientTicket: this.patient.ticket
+      patientTicket: this.patient.ticket,
     })
   },
   methods: {
@@ -73,10 +73,10 @@ export default {
         originCep: this.patient.originCep,
         patientTicket: this.patient.ticket,
         doctorUsername: this.doctor.username,
-        text
+        text,
       })
-    }
-  }
+    },
+  },
 }
 </script>
 

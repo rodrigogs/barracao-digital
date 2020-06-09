@@ -114,13 +114,13 @@ export default {
   name: 'DoctorWorklistTable',
   components: {
     StatusBadge,
-    DoctorWorklistFilter
+    DoctorWorklistFilter,
   },
   data() {
     return {
       filter: {
         search: '',
-        options: {}
+        options: {},
       },
       headers: [
         { text: 'Senha', value: 'createdAt', align: 'start' },
@@ -128,10 +128,10 @@ export default {
         { value: 'interactions', sortable: false },
         { value: 'kitStatus', sortable: false },
         { text: 'Tempo de espera', value: 'waitingTime', align: 'center' },
-        { text: 'Status', value: 'status' }
+        { text: 'Status', value: 'status' },
       ],
       patientsSubscription: null,
-      patients: []
+      patients: [],
     }
   },
   computed: {
@@ -142,17 +142,17 @@ export default {
         )
         .map((patient) => ({
           ...patient,
-          waitingTime: this.calculateTimeWaiting(patient)
+          waitingTime: this.calculateTimeWaiting(patient),
         }))
     },
     hasSelectedPatient() {
       return !!this.$route.params.ticket
-    }
+    },
   },
   watch: {
     'filter.options'() {
       this.updatePatientsQuerySubscription()
-    }
+    },
   },
   methods: {
     async updatePatientsQuerySubscription() {
@@ -216,7 +216,7 @@ export default {
       const finishedStatuses = [
         PATIENT_STATUS.FINISHED,
         PATIENT_STATUS.FACILITY_NOT_AVAILABLE,
-        PATIENT_STATUS.GAVE_UP
+        PATIENT_STATUS.GAVE_UP,
       ]
 
       if (finishedStatuses.includes(patient.status)) {
@@ -242,8 +242,8 @@ export default {
       return [PATIENT_STATUS.WAITING_KIT, PATIENT_STATUS.FINISHED].includes(
         patient.status
       )
-    }
-  }
+    },
+  },
 }
 </script>
 

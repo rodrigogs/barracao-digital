@@ -8,7 +8,7 @@ const apiFactory = (axios) => ({
     axios.$put(`patients/${ticket}/feedback`, { value }),
   searchPatients: (cep, { filters, lastEvaluatedKey }) =>
     axios.$get(`patients/cep/${cep}`, {
-      params: { ...filters, lastEvaluatedKey, pageSize: 20 }
+      params: { ...filters, lastEvaluatedKey, pageSize: 20 },
     }),
   setPatientMessagingToken: (ticket, { token } = {}) =>
     axios.$put(`patients/${ticket}/messaging/token`, { token }),
@@ -30,15 +30,15 @@ const apiFactory = (axios) => ({
     axios.$get('doctors', {
       params: {
         lastEvaluatedKey,
-        pageSize: 20
-      }
+        pageSize: 20,
+      },
     }),
   getDoctorsByCep: (cep, { lastEvaluatedKey = '' } = {}) =>
     axios.$get(`doctors/cep/${cep}`, {
       params: {
         lastEvaluatedKey,
-        pageSize: 20
-      }
+        pageSize: 20,
+      },
     }),
   alternateDoctorStatus: () => axios.$post('doctors/alternate'),
   // Facilities
@@ -47,8 +47,8 @@ const apiFactory = (axios) => ({
     axios.$get('facilities', {
       params: {
         lastEvaluatedKey,
-        pageSize: 20
-      }
+        pageSize: 20,
+      },
     }),
   createFacility: (facility) => axios.$post('facilities', facility),
   updateFacility: (origin, facility) =>
@@ -56,12 +56,12 @@ const apiFactory = (axios) => ({
   deleteFacility: (origin) => axios.$delete(`facilities/${origin}`),
   deleteFacilityDestinations: (origin, { destinations }) =>
     axios.$delete(`facilities/${origin}/destinations`, {
-      data: { destinations }
+      data: { destinations },
     }),
   getAllDestinationsByOrigin: (origin) =>
     axios.$get(`facilities/origin/${origin}/destinations`),
   checkFacilityAvailability: (origin) =>
-    axios.$get(`facilities/origin/${origin}/check`)
+    axios.$get(`facilities/origin/${origin}/check`),
 })
 
 /*

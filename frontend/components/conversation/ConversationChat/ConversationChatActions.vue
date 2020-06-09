@@ -26,19 +26,19 @@ export default {
   props: {
     loading: {
       type: Boolean,
-      default: () => false
-    }
+      default: () => false,
+    },
   },
   data: () => ({
-    text: ''
+    text: '',
   }),
   methods: {
     send() {
       if (this.text === '') return
       this.$emit('send', this.text)
       this.text = ''
-    }
-  }
+    },
+  },
 }
 </script>
 
