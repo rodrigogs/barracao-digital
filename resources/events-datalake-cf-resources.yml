@@ -205,6 +205,8 @@ Resources:
               Type: string
             - Name: cep
               Type: string
+            - Name: originCep
+              Type: string
             - Name: cpf
               Type: string
             - Name: email
