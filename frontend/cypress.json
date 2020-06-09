@@ -8,7 +8,7 @@
   "videosFolder": "test/e2e/videos",
   "env": {
     "username": "e2e",
-    "password": "e2e",
+    "password": "e2e123",
     "cep": "00000000",
     "apiUrl": "https://api.barracaodigital.com/development"
   }
