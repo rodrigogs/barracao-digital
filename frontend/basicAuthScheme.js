@@ -92,8 +92,8 @@ export default class BasicAuthScheme {
     const { data } = await this.$auth.loginWith(this.name, {
       data: {
         username,
-        password
-      }
+        password,
+      },
     })
 
     this.$auth.setUser(data)
@@ -129,5 +129,5 @@ const DEFAULTS = {
   tokenType: 'Basic',
   globalToken: true,
   tokenName: 'Authorization',
-  autoFetchUser: true
+  autoFetchUser: true,
 }

@@ -63,7 +63,7 @@ const getAllFacilities = ($api, lastEvaluatedKey = '') =>
     ({ items = [], lastEvaluatedKey = '' }) => ({
       facilities: items,
       lastEvaluatedKey: lastEvaluatedKey || '',
-      isPaginationFinished: !lastEvaluatedKey
+      isPaginationFinished: !lastEvaluatedKey,
     }),
     (error) => Promise.reject(error)
   )
@@ -71,7 +71,7 @@ const getAllFacilities = ($api, lastEvaluatedKey = '') =>
 export default {
   middleware: ['auth', 'isAdminOrMaster'],
   components: {
-    FacilitiesResourceModal
+    FacilitiesResourceModal,
   },
   asyncData({ app, error }) {
     return getAllFacilities(app.$api).then(
@@ -94,8 +94,8 @@ export default {
       { text: 'Diretor técnico', value: 'techDirector' },
       { text: 'Contato', value: 'contact' },
       { text: 'Ativa?', value: 'active' },
-      { text: '', value: 'actions', sortable: false }
-    ]
+      { text: '', value: 'actions', sortable: false },
+    ],
   }),
   methods: {
     handleNextPageRequest($loadingState) {
@@ -108,7 +108,7 @@ export default {
           ({
             facilities = [],
             lastEvaluatedKey = '',
-            isPaginationFinished = true
+            isPaginationFinished = true,
           }) => {
             this.facilities = R.uniq([...this.facilities, ...facilities])
             this.lastEvaluatedKey = lastEvaluatedKey
@@ -139,7 +139,7 @@ export default {
 
       const opFunction = {
         add: this.$api.updateFacility,
-        remove: this.$api.deleteFacilityDestinations
+        remove: this.$api.deleteFacilityDestinations,
       }[operation]
 
       const processor = (destinations) =>
@@ -148,7 +148,7 @@ export default {
       await promisePool({
         generator: generator(),
         processor,
-        concurrency: 3
+        concurrency: 3,
       })
     },
     async facilitySave(
@@ -206,7 +206,7 @@ export default {
         origin: '',
         contact: '',
         contactType: '',
-        destination: []
+        destination: [],
       }
     },
     edit(item) {
@@ -215,7 +215,7 @@ export default {
     async remove({ origin }) {
       if (
         !(await this.$dialog.confirm({
-          text: `Deletar a instalação ${origin}?`
+          text: `Deletar a instalação ${origin}?`,
         }))
       )
         return
@@ -245,7 +245,7 @@ export default {
     },
     _findFacilityIndex(origin) {
       return this.facilities.findIndex((facility) => facility.origin === origin)
-    }
-  }
+    },
+  },
 }
 </script>

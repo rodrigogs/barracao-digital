@@ -122,7 +122,7 @@ const searchPatientByTicket = async (api, ticket) => {
     waiting_kitStatus,
     finishedStatus,
     textSession,
-    videoSession
+    videoSession,
   } = await api.searchPatientByTicket(ticket)
   return {
     patient: {
@@ -135,8 +135,8 @@ const searchPatientByTicket = async (api, ticket) => {
       waiting_kitStatus,
       finishedStatus,
       textSession,
-      videoSession
-    }
+      videoSession,
+    },
   }
 }
 
@@ -146,7 +146,7 @@ export default {
     return !isNaN(Number(params.ticket))
   },
   components: {
-    ConversationSession
+    ConversationSession,
   },
   async asyncData({ app, params, error }) {
     try {
@@ -174,7 +174,7 @@ export default {
         doctorState: null,
         doctorMessage: null,
         facilityName: null,
-        timestamp: null
+        timestamp: null,
       },
       [`${PATIENT_STATUS.WAITING_KIT}Status`]: {
         doctorName: null,
@@ -186,7 +186,7 @@ export default {
         receivedMessage: null,
         sentAt: null,
         sentMessage: null,
-        timestamp: null
+        timestamp: null,
       },
       [`${PATIENT_STATUS.FINISHED}Status`]: {
         doctorName: null,
@@ -196,9 +196,9 @@ export default {
         facilityName: null,
         patientOutcome: null,
         patientFeedback: null,
-        timestamp: null
-      }
-    }
+        timestamp: null,
+      },
+    },
   }),
   computed: {
     currentStatus() {
@@ -210,7 +210,7 @@ export default {
         PATIENT_STATUS.GAVE_UP,
         PATIENT_STATUS.FINISHED,
         PATIENT_STATUS.CANT_BE_ASSISTED,
-        PATIENT_STATUS.FACILITY_NOT_AVAILABLE
+        PATIENT_STATUS.FACILITY_NOT_AVAILABLE,
       ].includes(this.patient.status)
     },
     isWaitingKit() {
@@ -232,44 +232,44 @@ export default {
           component: PatientWaiting,
           props: {
             createdAt: this.patient.createdAt,
-            ticket: this.$route.params.ticket
-          }
+            ticket: this.$route.params.ticket,
+          },
         }),
         [PATIENT_STATUS.ONGOING]: () => ({
           component: PatientOngoing,
           props: {
             ...this.patient[`${PATIENT_STATUS.ONGOING}Status`],
-            patient: this.patient
-          }
+            patient: this.patient,
+          },
         }),
         [PATIENT_STATUS.WAITING_KIT]: () => ({
           component: PatientWaitingKit,
           props: {
-            patient: this.patient
-          }
+            patient: this.patient,
+          },
         }),
         [PATIENT_STATUS.FINISHED]: () => ({
           component: PatientFinished,
           props: {
             ...this.patient[`${PATIENT_STATUS.FINISHED}Status`],
-            clicked: this.ratingClicked
-          }
+            clicked: this.ratingClicked,
+          },
         }),
         [PATIENT_STATUS.CANT_BE_ASSISTED]: () => ({
           component: PatientCantBeAssisted,
           props: {
             name: this.patient.name,
-            ticket: this.$route.params.ticket
-          }
+            ticket: this.$route.params.ticket,
+          },
         }),
         [PATIENT_STATUS.FACILITY_NOT_AVAILABLE]: () => ({
-          component: PatientFacilityNotAvailable
+          component: PatientFacilityNotAvailable,
         }),
         [PATIENT_STATUS.GAVE_UP]: () => ({
-          component: PatientGaveUp
-        })
+          component: PatientGaveUp,
+        }),
       }[this.patient.status]()
-    }
+    },
   },
   mounted() {
     this.handleMessaging()
@@ -281,7 +281,7 @@ export default {
   methods: {
     ...mapActions('chat', {
       informPatientReceivedKit: 'informPatientReceivedKit',
-      informPatientSentKitBack: 'informPatientSentKitBack'
+      informPatientSentKitBack: 'informPatientSentKitBack',
     }),
     handleUpdates() {
       if (this.patientSubscription) this.patientSubscription()
@@ -329,13 +329,13 @@ export default {
     _updatePatientMessagingToken(token) {
       if (!token) return Promise.reject(new Error('Invalid token!'))
       return this.$api.setPatientMessagingToken(this.$route.params.ticket, {
-        token
+        token,
       })
     },
     async receiveKit() {
       if (
         !(await this.$dialog.confirm({
-          text: 'Você confirma que já recebeu o kit médico?'
+          text: 'Você confirma que já recebeu o kit médico?',
         }))
       )
         return
@@ -346,7 +346,7 @@ export default {
           this.informPatientReceivedKit({
             originCep: this.patient.originCep,
             doctorUsername: this.currentStatus.doctorUsername,
-            patientTicket: this.patient.ticket
+            patientTicket: this.patient.ticket,
           })
         )
         .finally(() => (this.isLoading = false))
@@ -354,7 +354,7 @@ export default {
     async sendKit() {
       if (
         !(await this.$dialog.confirm({
-          text: 'Você confirma que já devolveu o kit médico?'
+          text: 'Você confirma que já devolveu o kit médico?',
         }))
       )
         return
@@ -365,11 +365,11 @@ export default {
           this.informPatientSentKitBack({
             originCep: this.patient.originCep,
             doctorUsername: this.currentStatus.doctorUsername,
-            patientTicket: this.patient.ticket
+            patientTicket: this.patient.ticket,
           })
         )
         .finally(() => (this.isLoading = false))
-    }
-  }
+    },
+  },
 }
 </script>

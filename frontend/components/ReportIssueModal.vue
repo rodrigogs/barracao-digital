@@ -41,25 +41,25 @@ export default {
   props: {
     open: {
       type: Boolean,
-      required: false
+      required: false,
     },
     hidden: {
       type: Boolean,
-      required: false
-    }
+      required: false,
+    },
   },
   data() {
     return {
       dialog: !!this.open,
       interval: null,
       modalWidth: 0,
-      modalHeight: 0
+      modalHeight: 0,
     }
   },
   computed: {
     isOpen() {
       return this.open || this.dialog
-    }
+    },
   },
   watch: {
     isOpen() {
@@ -68,7 +68,7 @@ export default {
       } else {
         this.stopUpdatingModalSize()
       }
-    }
+    },
   },
   destroyed() {
     this.stopUpdatingModalSize()
@@ -87,7 +87,7 @@ export default {
     updateModalSize() {
       this.modalHeight = this.$refs.modal.$el.clientHeight
       this.modalWidth = this.$refs.modal.$el.clientWidth
-    }
-  }
+    },
+  },
 }
 </script>

@@ -124,45 +124,45 @@ import debounce from '~/utils/debounce'
 export default {
   name: 'PatientOngoing',
   components: {
-    ConversationSession
+    ConversationSession,
   },
   directives: {
-    linkified: linkify
+    linkified: linkify,
   },
   props: {
     patient: {
       type: Object,
-      required: true
+      required: true,
     },
     doctorUsername: {
       type: String,
-      required: true
+      required: true,
     },
     doctorName: {
       type: String,
-      required: true
+      required: true,
     },
     doctorCrm: {
       type: String,
-      required: true
+      required: true,
     },
     doctorState: {
       type: String,
-      required: true
+      required: true,
     },
     doctorMessage: {
       type: String,
-      required: true
+      required: true,
     },
     facilityName: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
   data: () => ({
     isConversationOpen: false,
     isAlertDialogOpen: false,
-    isVideoAllowed: false
+    isVideoAllowed: false,
   }),
   computed: {
     hasActiveConversation() {
@@ -173,12 +173,12 @@ export default {
     },
     videoSession() {
       return this.patient.videoSession
-    }
+    },
   },
   watch: {
     hasActiveConversation() {
       this.updateSmoothly()
-    }
+    },
   },
   methods: {
     openChatOnly() {
@@ -191,10 +191,10 @@ export default {
       this.isAlertDialogOpen = false
       this.isVideoAllowed = true
     },
-    updateSmoothly: debounce(function() {
+    updateSmoothly: debounce(function () {
       this.isAlertDialogOpen = this.hasActiveConversation
       if (!this.hasActiveConversation) this.isConversationOpen = false
-    }, 1500)
-  }
+    }, 1500),
+  },
 }
 </script>

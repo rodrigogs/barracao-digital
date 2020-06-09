@@ -8,7 +8,7 @@ describe('Login screen', () => {
     patientsFixture.items.forEach((patient) => {
       cy.callFirestore('add', docPath, {
         ...patient,
-        createdAt: Date.now()
+        createdAt: Date.now(),
       })
     })
 

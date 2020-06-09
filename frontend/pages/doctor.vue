@@ -23,14 +23,14 @@ export default {
   middleware: 'auth',
   components: {
     DoctorStatus,
-    DoctorWorklistTable
+    DoctorWorklistTable,
   },
   data: () => ({
     showTeamStatus: false,
     doctorSubscription: null,
     patientsSubscription: null,
     togglingStatus: false,
-    patients: []
+    patients: [],
   }),
   methods: {
     toggleStatus() {
@@ -47,9 +47,9 @@ export default {
     patientSelected(patient) {
       this.$router.push({
         name: 'doctor-ticket',
-        params: { ticket: patient.ticket }
+        params: { ticket: patient.ticket },
       })
-    }
-  }
+    },
+  },
 }
 </script>

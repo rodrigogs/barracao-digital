@@ -17,13 +17,13 @@ export default {
   props: {
     status: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
   computed: {
     data() {
       return patientStatusToText(this.status)
-    }
-  }
+    },
+  },
 }
 </script>

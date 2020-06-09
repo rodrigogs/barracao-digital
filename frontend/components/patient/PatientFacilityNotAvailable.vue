@@ -192,6 +192,6 @@
 
 <script>
 export default {
-  name: 'PatientFacilityNotAvailable'
+  name: 'PatientFacilityNotAvailable',
 }
 </script>

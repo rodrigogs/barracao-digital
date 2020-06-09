@@ -3,7 +3,7 @@ import InvalidCrmError from '~/errors/InvalidCrmError'
 const API_URLS = {
   SC:
     'https://api.cremesc.org.br/crvirtual-general/consultapf?especialidade=&municipio=&delegacia=&situacao=Todas&nomeCrm=',
-  RS: 'https://servicos.cremers.org.br/crvirtual-general/consultapf?nomeCrm='
+  RS: 'https://servicos.cremers.org.br/crvirtual-general/consultapf?nomeCrm=',
 }
 
 const getUrl = (fu, code) => `${API_URLS[fu]}${code}`
@@ -16,7 +16,7 @@ const normalize = (result, fu) => {
       return {
         nome: result.nome,
         situacao: result.situacao,
-        especialidade: result.especialidade
+        especialidade: result.especialidade,
       }
     default:
       return null
@@ -39,7 +39,7 @@ const crmFactory = (axios) => ({
     if (validatedData) return Promise.reject(new InvalidCrmError(validatedData))
 
     return Promise.resolve(normalizedData)
-  }
+  },
 })
 
 export default ({ $axios }, inject) => {

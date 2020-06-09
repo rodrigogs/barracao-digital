@@ -122,16 +122,16 @@ export default {
   props: {
     createdAt: {
       type: Number,
-      required: true
+      required: true,
     },
     ticket: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
   data: () => ({
     timeInQueue: null,
-    timeInterval: null
+    timeInterval: null,
   }),
   mounted() {
     this.timeInterval = setInterval(this.setUpTimer.bind(this), ONE_SECOND)
@@ -144,7 +144,7 @@ export default {
     setUpTimer() {
       const timeWaiting = Date.now() - this.createdAt
       this.timeInQueue = Kairos.new(timeWaiting).toString('hh:mm:ss', true)
-    }
-  }
+    },
+  },
 }
 </script>
