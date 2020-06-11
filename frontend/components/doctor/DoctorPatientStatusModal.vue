@@ -90,7 +90,10 @@
                   ></DoctorPatientStatusModalInfo>
                 </v-tab-item>
 
-                <v-tab-item v-if="patient" value="conversation">
+                <v-tab-item
+                  v-if="patient && patient.textSession"
+                  value="conversation"
+                >
                   <ConversationSession
                     :origin-cep="patient.originCep"
                     :doctor-username="$auth.user.username"

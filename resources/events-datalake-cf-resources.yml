@@ -63,6 +63,8 @@ Resources:
               Type: string
             - Name: sort
               Type: string
+            - Name: cep
+              Type: string
             - Name: lastTicket
               Type: string
             - Name: version
