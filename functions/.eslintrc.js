@@ -1,12 +1,23 @@
+// eslint-disable-next-line import/no-commonjs
 module.exports = {
-  extends: 'airbnb-base',
-  plugins: [
-    'import',
-  ],
+  root: true,
+  env: {
+    browser: true,
+    node: true,
+  },
+  parserOptions: {
+    parser: 'babel-eslint',
+    ecmaVersion: 9,
+    sourceType: 'module',
+    ecmaFeatures: {
+      impliedStrict: true,
+    },
+  },
+  extends: ['prettier', 'plugin:prettier/recommended'],
+  plugins: ['import', 'prettier'],
   rules: {
-    'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
-    'import/prefer-default-export': 'off',
+    'import/no-unresolved': [2, { commonjs: true, amd: true }],
+    'import/no-commonjs': ['error'],
   },
   globals: {
     expect: true,
@@ -19,4 +30,4 @@ module.exports = {
     test: true,
     it: true,
   },
-};
+}

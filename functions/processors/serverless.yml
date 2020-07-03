@@ -12,7 +12,11 @@ custom:
   bundle:
     externals:
       - aws-sdk
+    forceExclude:
+      - '@firebase/app'
+      - firebase-admin
     linting: false
+    sourcemaps: false
   stage: ${opt:stage, env:NODE_ENV, 'development'}
   region: ${opt:region, 'sa-east-1'}
   configsDeliveryStreamName: ${self:app}-${self:provider.stage}-configs-delivery-stream

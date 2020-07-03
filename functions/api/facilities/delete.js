@@ -1,33 +1,25 @@
-const facilitiesService = require('barracao-digital/services/facilities.service');
-const { getRequestContext, responseBuilder } = require('../../helpers');
+import facilitiesService from 'barracao-digital/services/facilities.service'
+import { getRequestContext, responseBuilder } from '../../helpers'
 
-module.exports.handler = async (event) => {
+export const handler = async (event) => {
   try {
-    const requestContext = await getRequestContext(event);
+    const requestContext = await getRequestContext(event)
 
-    const {
-      path,
-      pathParameters,
-      body,
-    } = requestContext;
+    const { path, pathParameters, body } = requestContext
 
-    const {
-      origin,
-    } = pathParameters;
+    const { origin } = pathParameters
 
-    const {
-      destinations,
-    } = body || {};
+    const { destinations } = body || {}
 
-    const isRemovingDestinations = path.endsWith('/destinations');
+    const isRemovingDestinations = path.endsWith('/destinations')
     if (isRemovingDestinations) {
-      await facilitiesService.removeOriginDestinations(origin, destinations);
-      return responseBuilder.success.noContent();
+      await facilitiesService.removeOriginDestinations(origin, destinations)
+      return responseBuilder.success.noContent()
     }
 
-    await facilitiesService.delete(origin);
-    return responseBuilder.success.noContent();
+    await facilitiesService.delete(origin)
+    return responseBuilder.success.noContent()
   } catch (err) {
-    return responseBuilder.genericError(err);
+    return responseBuilder.genericError(err)
   }
-};
+}

@@ -1,7 +1,4 @@
-const getRequestContext = require('./get-request-contex');
-const responseBuilder = require('./response-builder');
+import getRequestContext from './get-request-contex'
+import responseBuilder from './response-builder'
 
-module.exports = {
-  getRequestContext,
-  responseBuilder,
-};
+export { getRequestContext, responseBuilder }
