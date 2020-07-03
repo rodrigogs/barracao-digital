@@ -3,7 +3,7 @@ app: barracao-digital
 org: rodrigogs
 
 plugins:
-  - serverless-webpack
+  - serverless-bundle
   - serverless-offline
   - serverless-finch
   - serverless-domain-manager
@@ -14,11 +14,14 @@ package:
 custom:
   stage: ${opt:stage, env:NODE_ENV, 'development'}
   region: ${opt:region, 'sa-east-1'}
-  webpack:
-    webpackConfig: webpack.config.js
-    includeModules:
-      forceExclude:
-        - aws-sdk
+  bundle:
+    externals:
+      - aws-sdk
+    forceExclude:
+      - '@firebase/app'
+      - firebase-admin
+    linting: false
+    sourcemaps: false
   client:
     bucketName: ${self:service}-${self:provider.stage}-webapp
     distributionFolder: frontend/dist
@@ -81,26 +84,40 @@ provider:
     PATIENTS_TABLE: ${self:custom.patientsTableName}
     FACILITIES_TABLE: ${self:custom.facilitiesTableName}
 
+layers:
+  common:
+    path: layers/common
+
 functions:
   # Jobs
   alternate-doctor-job:
     handler: functions/jobs/alternate-doctor-job.handler
     memorySize: 1024
     timeout: 30
+    layers:
+      - {Ref: CommonLambdaLayer}
 
   # Authorizers
   doctorAuthorizer:
     handler: functions/api/doctor-authorizer.handler
+    layers:
+      - {Ref: CommonLambdaLayer}
 
   adminAuthorizer:
     handler: functions/api/admin-authorizer.handler
+    layers:
+      - {Ref: CommonLambdaLayer}
 
   masterAuthorizer:
     handler: functions/api/master-authorizer.handler
+    layers:
+      - {Ref: CommonLambdaLayer}
 
   # API
   healthcheck:
     handler: functions/api/healthcheck.handler
+    layers:
+      - {Ref: CommonLambdaLayer}
     events:
       - http:
           method: GET
@@ -110,6 +127,8 @@ functions:
   # Auth
   auth:
     handler: functions/api/auth.handler
+    layers:
+      - {Ref: CommonLambdaLayer}
     events:
       - http:
           method: POST
@@ -119,6 +138,8 @@ functions:
   # Doctors
   doctors-get:
     handler: functions/api/doctors/get.handler
+    layers:
+      - {Ref: CommonLambdaLayer}
     events:
       - http:
           method: GET
@@ -140,6 +161,8 @@ functions:
 
   doctors-post:
     handler: functions/api/doctors/post.handler
+    layers:
+      - {Ref: CommonLambdaLayer}
     memorySize: 512
     timeout: 30
     events:
@@ -163,6 +186,8 @@ functions:
 
   doctors-put:
     handler: functions/api/doctors/put.handler
+    layers:
+      - {Ref: CommonLambdaLayer}
     events:
       - http:
           method: PUT
@@ -172,6 +197,8 @@ functions:
 
   doctors-delete:
     handler: functions/api/doctors/delete.handler
+    layers:
+      - {Ref: CommonLambdaLayer}
     events:
       - http:
           method: DELETE
@@ -188,6 +215,8 @@ functions:
   # Patients
   patients-get:
     handler: functions/api/patients/get.handler
+    layers:
+      - {Ref: CommonLambdaLayer}
     events:
       - http:
           method: GET
@@ -202,6 +231,8 @@ functions:
 
   patients-post:
     handler: functions/api/patients/post.handler
+    layers:
+      - {Ref: CommonLambdaLayer}
     events:
       - http:
           method: POST
@@ -210,6 +241,8 @@ functions:
 
   patients-put:
     handler: functions/api/patients/put.handler
+    layers:
+      - {Ref: CommonLambdaLayer}
     events:
       - http:
           method: PUT
@@ -262,6 +295,8 @@ functions:
 
   patients-delete:
     handler: functions/api/patients/delete.handler
+    layers:
+      - {Ref: CommonLambdaLayer}
     events:
       - http:
           method: DELETE
@@ -271,6 +306,8 @@ functions:
   # Facilities
   facilities-get:
     handler: functions/api/facilities/get.handler
+    layers:
+      - {Ref: CommonLambdaLayer}
     memorySize: 1024
     timeout: 30
     events:
@@ -299,6 +336,8 @@ functions:
 
   facilities-post:
     handler: functions/api/facilities/post.handler
+    layers:
+      - {Ref: CommonLambdaLayer}
     events:
       - http:
           method: POST
@@ -308,6 +347,8 @@ functions:
 
   facilities-put:
     handler: functions/api/facilities/put.handler
+    layers:
+      - {Ref: CommonLambdaLayer}
     memorySize: 1024
     timeout: 30
     events:
@@ -319,6 +360,8 @@ functions:
 
   facilities-delete:
     handler: functions/api/facilities/delete.handler
+    layers:
+      - {Ref: CommonLambdaLayer}
     events:
       - http:
           method: DELETE

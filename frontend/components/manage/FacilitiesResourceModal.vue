@@ -198,8 +198,8 @@ export default {
       if (!this.$v.form.destinations.$dirty) return errors
       !this.$v.form.destinations.onlyNumbers &&
         errors.push('Por favor, digite apenas números.')
-      !this.$v.form.destinations.validZips &&
-        errors.push('Um ou mais CPFs digitados são inválidos.')
+      // !this.$v.form.destinations.validZips &&
+      //   errors.push('Um ou mais CPFs digitados são inválidos.')
       return errors
     },
   },

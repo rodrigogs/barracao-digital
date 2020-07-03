@@ -1,6 +1,6 @@
-const { responseBuilder } = require('../helpers');
+import { responseBuilder } from '../helpers'
 
-const pkg = require('../../package.json');
+import pkg from '../../package.json'
 
 /**
  * @api {get} / Health check
@@ -9,14 +9,14 @@ const pkg = require('../../package.json');
  *
  * @apiSuccess {String} message Project name and version.
  */
-module.exports.handler = async () => {
+export const handler = async () => {
   try {
     return responseBuilder.success.ok({
       body: {
         message: `${pkg.name}: ${pkg.version}`,
       },
-    });
+    })
   } catch (err) {
-    return responseBuilder.genericError(err);
+    return responseBuilder.genericError(err)
   }
-};
+}
