@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-const promisePool = require('@rodrigogs/promise-pool');
-const barracaoDigital = require('../lib');
+import promisePool from '@rodrigogs/promise-pool'
+import * as barracaoDigital from '../lib'
 
 async function* doctorsGenerator() {
   let items = [];
