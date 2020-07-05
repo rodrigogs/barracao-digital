@@ -123,7 +123,7 @@ export const actions = {
       originCep,
       doctorUsername,
       patientTicket,
-      text: 'O paciente cancelou a chamada de vídeo',
+      text: 'O paciente encerrou a chamada de vídeo',
     })
   },
   informDoctorCanceledVideo(
@@ -137,7 +137,7 @@ export const actions = {
       originCep,
       doctorUsername,
       patientTicket,
-      text: 'O médico cancelou a chamada de vídeo',
+      text: 'O médico encerrou a chamada de vídeo',
     })
   },
   informDoctorSentKit(

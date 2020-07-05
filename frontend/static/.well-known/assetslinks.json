@@ -1,0 +1,5 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target" : { "namespace": "android_app", "package_name": "com.barracaodigital.app",
+    "sha256_cert_fingerprints": ["15:01:4B:04:47:37:88:79:AC:45:30:D8:9D:C4:37:DB:CE:F7:70:91:BC:FA:ED:A6:2C:D0:F3:9F:B6:DD:E6:E7"] }
+}]
