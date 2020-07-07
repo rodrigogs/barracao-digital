@@ -1,4 +1,4 @@
-import { patientsService } from 'barracao-digital/services'
+import patientsService from 'barracao-digital/services/patients.service'
 import { PATIENT_STATUSES } from 'barracao-digital/enums'
 import { getRequestContext, responseBuilder } from '../../helpers'
 
