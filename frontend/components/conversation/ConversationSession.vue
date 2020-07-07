@@ -162,7 +162,7 @@ export default {
           this.patientSubscription = patientRef.onSnapshot((doc) => {
             const patient = doc.data()
             if (patient.canceledVideo && this.isDoctor) {
-              this.$noty.info('O paciente cancelou a chamada de vídeo')
+              this.$noty.info('O paciente encerrou a chamada de vídeo')
             }
             this.patient = patient
             resolve()
