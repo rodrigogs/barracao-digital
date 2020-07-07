@@ -1,31 +1,31 @@
 Resources:
-  EventsDatalakeBucket:
-    Type: AWS::S3::Bucket
-    Properties:
-      BucketName: ${self:custom.eventsDatalakeBucketName}
-      Tags:
-        - Key: NAME
-          Value: ${self:custom.eventsDatalakeBucketName}
-        - Key: STACK
-          Value: ${self:service}
-        - Key: STAGE
-          Value: ${self:custom.stage}
-        - Key: REGION
-          Value: ${self:custom.region}
+#  EventsDatalakeBucket:
+#    Type: AWS::S3::Bucket
+#    Properties:
+#      BucketName: ${self:custom.eventsDatalakeBucketName}
+#      Tags:
+#        - Key: NAME
+#          Value: ${self:custom.eventsDatalakeBucketName}
+#        - Key: STACK
+#          Value: ${self:service}
+#        - Key: STAGE
+#          Value: ${self:custom.stage}
+#        - Key: REGION
+#          Value: ${self:custom.region}
 
-  QueryResultsBucket:
-    Type: AWS::S3::Bucket
-    Properties:
-      BucketName: ${self:app}-${self:custom.stage}-query-results-bucket
-      Tags:
-        - Key: NAME
-          Value: ${self:app}-${self:custom.stage}-query-results-bucket
-        - Key: STACK
-          Value: ${self:service}
-        - Key: STAGE
-          Value: ${self:custom.stage}
-        - Key: REGION
-          Value: ${self:custom.region}
+#  QueryResultsBucket:
+#    Type: AWS::S3::Bucket
+#    Properties:
+#      BucketName: ${self:app}-${self:custom.stage}-query-results-bucket
+#      Tags:
+#        - Key: NAME
+#          Value: ${self:app}-${self:custom.stage}-query-results-bucket
+#        - Key: STACK
+#          Value: ${self:service}
+#        - Key: STAGE
+#          Value: ${self:custom.stage}
+#        - Key: REGION
+#          Value: ${self:custom.region}
 
   EventsGlueDatabase:
     Type: AWS::Glue::Database
@@ -36,13 +36,12 @@ Resources:
         LocationUri: !Join
           - ''
           - - 's3://'
-            - !Ref EventsDatalakeBucket
+            - ${self:custom.eventsDatalakeBucketName}
             - '/lake'
 
   ConfigsGlueTable:
     DependsOn:
       - EventsGlueDatabase
-      - EventsDatalakeBucket
     Type: AWS::Glue::Table
     Properties:
       CatalogId: !Ref AWS::AccountId
@@ -55,7 +54,7 @@ Resources:
           Location: !Join
             - ''
             - - 's3://'
-              - !Ref EventsDatalakeBucket
+              - ${self:custom.eventsDatalakeBucketName}
               - '/lake'
               - '/configs'
           Columns:
@@ -100,7 +99,6 @@ Resources:
   DoctorsGlueTable:
     DependsOn:
       - EventsGlueDatabase
-      - EventsDatalakeBucket
     Type: AWS::Glue::Table
     Properties:
       CatalogId: !Ref AWS::AccountId
@@ -113,7 +111,7 @@ Resources:
           Location: !Join
             - ''
             - - 's3://'
-              - !Ref EventsDatalakeBucket
+              - ${self:custom.eventsDatalakeBucketName}
               - '/lake'
               - '/doctors'
           Columns:
@@ -180,7 +178,6 @@ Resources:
   PatientsGlueTable:
     DependsOn:
       - EventsGlueDatabase
-      - EventsDatalakeBucket
     Type: AWS::Glue::Table
     Properties:
       CatalogId: !Ref AWS::AccountId
@@ -193,7 +190,7 @@ Resources:
           Location: !Join
             - ''
             - - 's3://'
-              - !Ref EventsDatalakeBucket
+              - ${self:custom.eventsDatalakeBucketName}
               - '/lake'
               - '/patients'
           Columns:
@@ -330,7 +327,6 @@ Resources:
   FacilitiesGlueTable:
     DependsOn:
       - EventsGlueDatabase
-      - EventsDatalakeBucket
     Type: AWS::Glue::Table
     Properties:
       CatalogId: !Ref AWS::AccountId
@@ -343,7 +339,7 @@ Resources:
           Location: !Join
             - ''
             - - 's3://'
-              - !Ref EventsDatalakeBucket
+              - ${self:custom.eventsDatalakeBucketName}
               - '/lake'
               - '/facilities'
           Columns:
@@ -408,7 +404,7 @@ Resources:
         BucketARN: !Join
           - ''
           - - 'arn:aws:s3:::'
-            - !Ref EventsDatalakeBucket
+            - ${self:custom.eventsDatalakeBucketName}
         Prefix: 'lake/configs/year=!{timestamp:YYYY}/month=!{timestamp:MM}/day=!{timestamp:dd}/hour=!{timestamp:HH}/'
         ErrorOutputPrefix: 'error/configs/!{firehose:error-output-type}/year=!{timestamp:YYYY}/month=!{timestamp:MM}/day=!{timestamp:dd}/hour=!{timestamp:HH}/'
         BufferingHints:
@@ -453,7 +449,7 @@ Resources:
         BucketARN: !Join
           - ''
           - - 'arn:aws:s3:::'
-            - !Ref EventsDatalakeBucket
+            - ${self:custom.eventsDatalakeBucketName}
         Prefix: 'lake/doctors/year=!{timestamp:YYYY}/month=!{timestamp:MM}/day=!{timestamp:dd}/hour=!{timestamp:HH}/'
         ErrorOutputPrefix: 'error/doctors/!{firehose:error-output-type}/year=!{timestamp:YYYY}/month=!{timestamp:MM}/day=!{timestamp:dd}/hour=!{timestamp:HH}/'
         BufferingHints:
@@ -498,7 +494,7 @@ Resources:
         BucketARN: !Join
           - ''
           - - 'arn:aws:s3:::'
-            - !Ref EventsDatalakeBucket
+            - ${self:custom.eventsDatalakeBucketName}
         Prefix: 'lake/patients/year=!{timestamp:YYYY}/month=!{timestamp:MM}/day=!{timestamp:dd}/hour=!{timestamp:HH}/'
         ErrorOutputPrefix: 'error/patients/!{firehose:error-output-type}/year=!{timestamp:YYYY}/month=!{timestamp:MM}/day=!{timestamp:dd}/hour=!{timestamp:HH}/'
         BufferingHints:
@@ -543,7 +539,7 @@ Resources:
         BucketARN: !Join
           - ''
           - - 'arn:aws:s3:::'
-            - !Ref EventsDatalakeBucket
+            - ${self:custom.eventsDatalakeBucketName}
         Prefix: 'lake/facilities/year=!{timestamp:YYYY}/month=!{timestamp:MM}/day=!{timestamp:dd}/hour=!{timestamp:HH}/'
         ErrorOutputPrefix: 'error/facilities/!{firehose:error-output-type}/year=!{timestamp:YYYY}/month=!{timestamp:MM}/day=!{timestamp:dd}/hour=!{timestamp:HH}/'
         BufferingHints:

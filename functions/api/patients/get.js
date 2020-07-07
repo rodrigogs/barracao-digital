@@ -1,4 +1,4 @@
-import { patientsService } from 'barracao-digital/services'
+import patientsService from 'barracao-digital/services/patients.service'
 import { getRequestContext, responseBuilder } from '../../helpers'
 
 const getPatientByTicket = async (user, ticket) => {
