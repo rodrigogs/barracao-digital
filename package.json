@@ -3,9 +3,21 @@
   "version": "0.0.0",
   "description": "",
   "devDependencies": {
-    "@zeit/webpack-asset-relocator-loader": "^0.7.2",
+    "@babel/core": "^7.10.4",
+    "@babel/preset-env": "^7.10.4",
     "aws-sdk": "^2.691.0",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.3.1",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "husky": "^4.2.5",
+    "jest": "^26.1.0",
+    "lint-staged": "^10.2.11",
+    "prettier": "^2.0.5",
     "serverless": "^1.72.0",
+    "serverless-bundle": "^1.9.0",
     "serverless-domain-manager": "^4.1.1",
     "serverless-finch": "^2.5.2",
     "serverless-layers": "^2.2.4",
@@ -35,7 +47,14 @@
   },
   "license": "BSD-3-Clause",
   "dependencies": {
-    "@rodrigogs/promise-pool": "^1.0.3",
-    "serverless-bundle": "^1.7.0"
+    "@rodrigogs/promise-pool": "^1.0.3"
+  },
+  "lint-staged": {
+    "*.{js}": "npm run lint"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   }
 }
