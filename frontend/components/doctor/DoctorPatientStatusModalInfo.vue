@@ -29,7 +29,7 @@
       <DoctorPatientStatusModalSummary :patient="patient" />
 
       <v-stepper
-        v-if="!isUnassisted && !isFinishedStatus"
+        v-if="(!isUnassisted && !isFinishedStatus && (patient.textSession === this.$auth.user.username || !patient.textSession))"
         v-model="step"
         vertical
       >
