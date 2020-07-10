@@ -1,5 +1,5 @@
 #!/bin/bash
-
+set -e
 
 # Global
 script_dir=$(dirname "$0")
