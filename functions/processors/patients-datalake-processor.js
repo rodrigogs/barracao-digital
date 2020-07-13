@@ -27,7 +27,6 @@ export const handler = (event, context, callback) => {
         hasBeenAssisted: ensureBoolean(record.dynamodb.NewImage, 'hasBeenAssisted'),
         covenant: ensureString(record.dynamodb.NewImage, 'coventant'),
         cep: ensureString(record.dynamodb.NewImage, 'cep'),
-        originCep: ensureString(record.dynamodb.NewImage, 'originCep'),
         meds: ensureString(record.dynamodb.NewImage, 'meds'),
         allergies: ensureString(record.dynamodb.NewImage, 'allergies'),
         ticket: ensureString(record.dynamodb.NewImage, 'ticket'),
