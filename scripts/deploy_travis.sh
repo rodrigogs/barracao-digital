@@ -26,11 +26,12 @@ if [[ $DEPLOY_FRONTEND == "true" ]]; then
   npm run install:frontend
   echo -e "${BOLD}${YELLOW}Building frontend...${RESET}"
   npm run build:frontend
-  echo -e "${BOLD}${YELLOW}Testing frontend...${RESET}"
-  npm run test:frontend
+#  echo -e "${BOLD}${YELLOW}Testing frontend...${RESET}"
+  echo -e "${BOLD}${RED}***WARNING*** ${RESET}frontend tests are disabled"
+#  npm run test:frontend
   echo -e "${BOLD}${YELLOW}Deploying frontend...${RESET}"
   npm run deploy:frontend
-  echo -e "${BOLD}${YELLOW}Crlearing frontend cache...${RESET}"
+  echo -e "${BOLD}${YELLOW}Clearing frontend cache...${RESET}"
   nodejs || node ./scripts/invalidate-cloudfront-cache.js web.barracaodigital.com dev.barracaodigital.com
 fi
 
