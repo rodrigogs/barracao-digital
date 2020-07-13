@@ -1,6 +1,6 @@
 <template>
   <v-card elevation="0">
-    <v-card-title class="text-body-2">
+    <v-card-title>
       Um médico está entrando em contato com você
     </v-card-title>
 
@@ -50,7 +50,7 @@
       @click:outside="isAlertDialogOpen = false"
     >
       <v-card>
-        <v-card-title class="headline text-body-2">
+        <v-card-title class="headline">
           O médico irá atendê-lo agora
         </v-card-title>
 

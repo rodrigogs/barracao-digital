@@ -26,7 +26,7 @@
       </v-list>
 
       <v-card v-if="doctorMessage" class="my-4">
-        <v-card-title class="text-body-2">
+        <v-card-title>
           Confira o feedback do seu atendimento:
         </v-card-title>
         <v-card-text class="text-left subtitle-1">
