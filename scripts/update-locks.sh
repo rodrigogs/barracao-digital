@@ -1,5 +1,4 @@
 #!/bin/bash
-set -e
 
 # Global
 npm install yarn -g

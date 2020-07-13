@@ -1,5 +1,4 @@
 #!/bin/bash
-set -e
 
 # Global
 processors=$(ps aux --no-heading | wc -l)

@@ -1,5 +1,4 @@
 #!/bin/bash
-set -e
 
 ## Text Tools
 RESET="\e[0m"
