@@ -68,19 +68,19 @@ const getAllDoctors = ($api) => ({ lastEvaluatedKey = '' } = {}) =>
     ({ items = [], lastEvaluatedKey = '' }) => ({
       doctors: items,
       lastEvaluatedKey: lastEvaluatedKey || '',
-      isPaginationFinished: !lastEvaluatedKey,
+      isPaginationFinished: !lastEvaluatedKey
     }),
     (error) => Promise.reject(error)
   )
 
 const getDoctorsLoggedUserCep = ($api, cep) => ({
-  lastEvaluatedKey = '',
+  lastEvaluatedKey = ''
 } = {}) =>
   $api.getDoctorsByCep(cep, { lastEvaluatedKey }).then(
     ({ items = [], lastEvaluatedKey = '' }) => ({
       doctors: items,
       lastEvaluatedKey: lastEvaluatedKey || '',
-      isPaginationFinished: !lastEvaluatedKey,
+      isPaginationFinished: !lastEvaluatedKey
     }),
     (error) => Promise.reject(error)
   )
@@ -88,7 +88,7 @@ const getDoctorsLoggedUserCep = ($api, cep) => ({
 export default {
   middleware: ['auth', 'isAdminOrMaster'],
   components: {
-    DoctorsResourceModal,
+    DoctorsResourceModal
   },
   asyncData({ app, error }) {
     const listFunction = app.$auth.user.master
@@ -116,8 +116,8 @@ export default {
       { text: 'Admin?', value: 'admin' },
       { text: 'Master?', value: 'master' },
       { text: 'Ativo?', value: 'active' },
-      { text: '', value: 'actions', sortable: false },
-    ],
+      { text: '', value: 'actions', sortable: false }
+    ]
   }),
   methods: {
     handleNextPageRequest($loadingState) {
@@ -134,13 +134,13 @@ export default {
         this.$api,
         this.$auth.user.cep
       )({
-        lastEvaluatedKey: this.lastEvaluatedKey,
+        lastEvaluatedKey: this.lastEvaluatedKey
       })
         .then(
           ({
             doctors = [],
             lastEvaluatedKey = '',
-            isPaginationFinished = true,
+            isPaginationFinished = true
           }) => {
             this.doctors = R.uniq([...this.doctors, ...doctors])
             this.lastEvaluatedKey = lastEvaluatedKey
@@ -204,7 +204,7 @@ export default {
         master: null,
         admin: null,
         createdAt: null,
-        updatedAt: null,
+        updatedAt: null
       }
     },
     edit(item) {
@@ -241,7 +241,7 @@ export default {
     },
     _findDoctorIndex(username) {
       return this.doctors.findIndex((doctor) => doctor.username === username)
-    },
-  },
+    }
+  }
 }
 </script>

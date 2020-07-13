@@ -46,15 +46,15 @@ export default {
   data: () => ({
     username: '',
     password: '',
-    isLoading: false,
+    isLoading: false
   }),
   validations: {
     username: {
-      required,
+      required
     },
     password: {
-      required,
-    },
+      required
+    }
   },
   computed: {
     usernameErrors() {
@@ -70,7 +70,7 @@ export default {
       !this.$v.password.required &&
         errors.push('Por favor, digite a sua senha.')
       return errors
-    },
+    }
   },
   methods: {
     validateForm() {
@@ -86,14 +86,14 @@ export default {
         .loginWith('local', {
           data: {
             username: this.username,
-            password: this.password,
-          },
+            password: this.password
+          }
         })
         .then(
           () => {
             this.$noty.success('Login efetuado com sucesso')
             return this.$router.push({
-              name: 'doctor',
+              name: 'doctor'
             })
           },
           (error) => {
@@ -110,7 +110,7 @@ export default {
         .finally(() => {
           this.isLoading = false
         })
-    },
-  },
+    }
+  }
 }
 </script>

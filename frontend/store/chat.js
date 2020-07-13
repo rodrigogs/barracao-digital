@@ -13,7 +13,7 @@ export const state = () => ({
   ready: false,
   messages: [],
   subscription: null,
-  receivedMessages: 0,
+  receivedMessages: 0
 })
 
 export const getters = {
@@ -23,7 +23,7 @@ export const getters = {
     messages.sort((a, b) => (a.timestamp > b.timestamp ? 1 : -1))
     return messages
   },
-  getReceivedMessages: (state) => state.receivedMessages,
+  getReceivedMessages: (state) => state.receivedMessages
 }
 
 export const actions = {
@@ -42,7 +42,7 @@ export const actions = {
           dispatch('subscribeToMessages', {
             originCep,
             doctorUsername,
-            patientTicket,
+            patientTicket
           })
       )
   },
@@ -96,7 +96,7 @@ export const actions = {
       originCep,
       doctorUsername,
       patientTicket,
-      text,
+      text
     }
   ) {
     const message = {
@@ -106,7 +106,7 @@ export const actions = {
       patient: patientTicket,
       doctor: doctorUsername,
       timestamp: Date.now(),
-      text,
+      text
     }
     return getMessagesQuery(this)(originCep, doctorUsername, patientTicket)
       .doc(String(message.timestamp))
@@ -123,7 +123,7 @@ export const actions = {
       originCep,
       doctorUsername,
       patientTicket,
-      text: 'O paciente cancelou a chamada de vídeo',
+      text: 'O paciente cancelou a chamada de vídeo'
     })
   },
   informDoctorCanceledVideo(
@@ -137,7 +137,7 @@ export const actions = {
       originCep,
       doctorUsername,
       patientTicket,
-      text: 'O médico cancelou a chamada de vídeo',
+      text: 'O médico cancelou a chamada de vídeo'
     })
   },
   informDoctorSentKit(
@@ -151,7 +151,7 @@ export const actions = {
       originCep,
       doctorUsername,
       patientTicket,
-      text: 'O médico enviou um kit',
+      text: 'O médico enviou um kit'
     })
   },
   informPatientReceivedKit(
@@ -165,7 +165,7 @@ export const actions = {
       originCep,
       doctorUsername,
       patientTicket,
-      text: 'O paciente recebeu o kit',
+      text: 'O paciente recebeu o kit'
     })
   },
   informPatientSentKitBack(
@@ -179,9 +179,9 @@ export const actions = {
       originCep,
       doctorUsername,
       patientTicket,
-      text: 'O paciente enviou o kit de volta',
+      text: 'O paciente enviou o kit de volta'
     })
-  },
+  }
 }
 
 export const mutations = {
@@ -210,5 +210,5 @@ export const mutations = {
   },
   resetReceivedMessages(state) {
     Vue.set(state, 'receivedMessages', 0)
-  },
+  }
 }

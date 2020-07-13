@@ -50,7 +50,7 @@ export default {
     dialog: false,
     facility: {},
     doctors: [],
-    doctorsSubscription: null,
+    doctorsSubscription: null
   }),
   watch: {
     dialog() {
@@ -86,7 +86,7 @@ export default {
       } else {
         this.doctorsSubscription && this.doctorsSubscription()
       }
-    },
+    }
   },
   destroyed() {
     this.doctorsSubscription && this.doctorsSubscription()
@@ -94,7 +94,7 @@ export default {
   methods: {
     getDoctorStatus(doctorActive) {
       return (doctorActive && 'Ativo') || 'Inativo'
-    },
-  },
+    }
+  }
 }
 </script>

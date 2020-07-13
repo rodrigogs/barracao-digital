@@ -176,20 +176,20 @@ import StatesAutocomplete from '~/components/StatesAutocomplete'
 export default {
   name: 'DoctorsResourceModal',
   components: {
-    StatesAutocomplete,
+    StatesAutocomplete
   },
   directives: {
-    linkified: linkify,
+    linkified: linkify
   },
   props: {
     doctor: {
       type: Object,
-      required: true,
+      required: true
     },
     submit: {
       type: Function,
-      required: true,
-    },
+      required: true
+    }
   },
   data: () => ({
     isCreating: false,
@@ -209,8 +209,8 @@ export default {
       crm: null,
       master: false,
       admin: false,
-      active: false,
-    },
+      active: false
+    }
   }),
   computed: {
     fuErrors() {
@@ -267,7 +267,7 @@ export default {
         errors.push('Por favor, digite o CEP da instalação.')
       !this.$v.form.cep.zip && errors.push('O CEP informado é inválido.')
       return errors
-    },
+    }
   },
   watch: {
     'form.fu'() {
@@ -275,33 +275,33 @@ export default {
     },
     'form.crm'() {
       this.checkCrm()
-    },
+    }
   },
   mounted() {
     if (!this.doctor.username) this.isCreating = true
     this.pupulateFormInfo({
       ...this.doctor,
-      cep: this.doctor.cep || this.$auth.user.cep,
+      cep: this.doctor.cep || this.$auth.user.cep
     })
   },
   validations: {
     form: {
       fu: {
-        required,
+        required
       },
       crm: {
         required,
         invalid() {
           return this.validCrm
-        },
+        }
       },
       name: {
-        required,
+        required
       },
       specialty: {},
       username: {
         required,
-        minLength: minLength(3),
+        minLength: minLength(3)
       },
       password: {
         required() {
@@ -311,17 +311,17 @@ export default {
           if (!this.isCreating || this.form.password.length)
             return minLength(5)(this.form.password)
           return true
-        },
+        }
       },
       email: {
         required,
-        email,
+        email
       },
       cep: {
         required,
-        zip,
-      },
-    },
+        zip
+      }
+    }
   },
   methods: {
     pupulateFormInfo(newInfo) {
@@ -343,7 +343,7 @@ export default {
 
         this.pupulateFormInfo({
           name: crmInfo.nome,
-          specialty: crmInfo.especialidade,
+          specialty: crmInfo.especialidade
         })
 
         this.$refs.usernameInput.focus()
@@ -379,7 +379,7 @@ export default {
 
       const doctor = removeEmptyStringProps({
         ...this.form,
-        cep: unmaskText(this.form.cep),
+        cep: unmaskText(this.form.cep)
       })
 
       return this.submit(this.isCreating, doctor)
@@ -390,7 +390,7 @@ export default {
         .finally(() => {
           this.isLoading = false
         })
-    },
-  },
+    }
+  }
 }
 </script>

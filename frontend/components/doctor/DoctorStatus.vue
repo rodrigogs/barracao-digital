@@ -32,36 +32,36 @@ import avatarUtil from '@/utils/avatar'
 export default {
   name: 'DoctorStatus',
   components: {
-    DoctorTeamStatusModal,
+    DoctorTeamStatusModal
   },
   props: {
     active: {
       type: Boolean,
       default: false,
-      required: true,
+      required: true
     },
     username: {
       type: String,
-      required: true,
+      required: true
     },
     facilityCep: {
       type: String,
-      required: true,
+      required: true
     },
     startService: {
       type: Function,
-      required: true,
+      required: true
     },
     stopService: {
       type: Function,
-      required: true,
-    },
+      required: true
+    }
   },
   data: () => ({
     avatar: '',
     isLoading: false,
     isLoggingOut: false,
-    emailTooltip: false,
+    emailTooltip: false
   }),
   computed: {
     statusBarColor() {
@@ -69,7 +69,7 @@ export default {
     },
     buttonText() {
       return this.active ? 'Ficar offline' : 'Ficar online'
-    },
+    }
   },
   mounted() {
     avatarUtil(this.$auth.user.email || this.$auth.user.username).then(
@@ -85,7 +85,7 @@ export default {
       promise().finally(() => {
         this.isLoading = false
       })
-    },
-  },
+    }
+  }
 }
 </script>

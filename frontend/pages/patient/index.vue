@@ -40,12 +40,12 @@ export default {
   directives: { mask },
   data: () => ({
     ticket: '',
-    isLoading: false,
+    isLoading: false
   }),
   validations: {
     ticket: {
-      required,
-    },
+      required
+    }
   },
   computed: {
     ticketErrors() {
@@ -54,7 +54,7 @@ export default {
       !this.$v.ticket.required &&
         errors.push('Por favor, digite a sua senha de retorno.')
       return errors
-    },
+    }
   },
   methods: {
     async checkPatient() {
@@ -87,13 +87,13 @@ export default {
       this.$router.push(
         {
           name: 'patient-ticket',
-          params: { ticket: this.ticket },
+          params: { ticket: this.ticket }
         },
         () => {
           this.isLoading = false
         }
       )
-    },
-  },
+    }
+  }
 }
 </script>

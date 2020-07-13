@@ -22,7 +22,7 @@ const heartbeat = ($auth) =>
       .then(() => heartbeat($auth))
   }, HALF_AN_HOUR)
 
-export default function ({ $auth }) {
+export default function({ $auth }) {
   heartbeat($auth)
 
   let userSubscription = null

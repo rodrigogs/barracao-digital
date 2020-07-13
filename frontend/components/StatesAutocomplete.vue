@@ -41,40 +41,40 @@ export default {
     value: {
       type: String,
       default: '',
-      required: false,
+      required: false
     },
     errorMessages: {
       type: Array,
       default() {
         return []
       },
-      required: false,
+      required: false
     },
     name: {
       type: String,
       default: '',
-      required: false,
+      required: false
     },
     id: {
       type: String,
       default: '',
-      required: false,
+      required: false
     },
     label: {
       type: String,
       default: '',
-      required: false,
-    },
+      required: false
+    }
   },
   computed: {
     brazillianStates() {
       return states.brazil
-    },
+    }
   },
   methods: {
     updateValue(...args) {
       this.$emit('input', ...args)
-    },
-  },
+    }
+  }
 }
 </script>

@@ -13,6 +13,6 @@
 
 <script>
 export default {
-  name: 'PatientGaveUp',
+  name: 'PatientGaveUp'
 }
 </script>

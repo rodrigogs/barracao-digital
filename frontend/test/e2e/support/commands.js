@@ -3,7 +3,10 @@ import cpf from 'cpf'
 import unmaskText from '../../../utils/unmaskText'
 
 Cypress.Commands.add('createPatient', ({ cep = '55555550' } = {}) => {
-  const randomWords = faker.random.words(3).split(' ').join(', ')
+  const randomWords = faker.random
+    .words(3)
+    .split(' ')
+    .join(', ')
 
   const patient = {
     name: faker.name.findName(),
@@ -14,7 +17,7 @@ Cypress.Commands.add('createPatient', ({ cep = '55555550' } = {}) => {
     allergies: randomWords,
     covenant: 'UNIMED',
     phone: faker.phone.phoneNumber('(##) ####-####'),
-    email: faker.internet.email(),
+    email: faker.internet.email()
   }
 
   const URL = `${Cypress.env('apiUrl')}/patients`
@@ -22,7 +25,10 @@ Cypress.Commands.add('createPatient', ({ cep = '55555550' } = {}) => {
 })
 
 Cypress.Commands.add('registerPatient', ({ cep = '55555-550' } = {}) => {
-  const randomWords = faker.random.words(3).split(' ').join(', ')
+  const randomWords = faker.random
+    .words(3)
+    .split(' ')
+    .join(', ')
   const phone = faker.phone.phoneNumber('(##) ####-####')
 
   cy.visit('/screening-room')

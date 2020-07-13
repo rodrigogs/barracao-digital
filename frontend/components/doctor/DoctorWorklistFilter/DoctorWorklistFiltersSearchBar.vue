@@ -12,13 +12,13 @@ export default {
   props: {
     value: {
       type: String,
-      required: true,
-    },
+      required: true
+    }
   },
   methods: {
     onInput(value) {
       this.$emit('input', value)
-    },
-  },
+    }
+  }
 }
 </script>

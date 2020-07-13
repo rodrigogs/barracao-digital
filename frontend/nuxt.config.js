@@ -9,7 +9,7 @@ const config = normalizeEnv()
 export default {
   mode: 'spa',
   env: {
-    ...config,
+    ...config
   },
   /*
    ** Headers of the page
@@ -22,72 +22,72 @@ export default {
       {
         name: 'viewport',
         content:
-          'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui',
+          'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui'
       },
       {
         hid: 'description',
         name: 'description',
         content:
-          'Estruturação rápida de “postos de triagem” virtuais descentralizados para redução de visitas desnecessárias às emergências',
+          'Estruturação rápida de “postos de triagem” virtuais descentralizados para redução de visitas desnecessárias às emergências'
       },
       // OpenGraph
       {
         name: 'og:title',
-        content: 'Barracão Digital',
+        content: 'Barracão Digital'
       },
       {
         name: 'og:site_name',
-        content: 'Barracão Digital',
+        content: 'Barracão Digital'
       },
       {
         name: 'og:url',
-        content: '//www.barracaodigital.com',
+        content: '//www.barracaodigital.com'
       },
       {
         name: 'og:description',
         content:
-          'Estruturação rápida de “postos de triagem” virtuais descentralizados para redução de visitas desnecessárias às emergências',
+          'Estruturação rápida de “postos de triagem” virtuais descentralizados para redução de visitas desnecessárias às emergências'
       },
       {
         name: 'og:image',
         content:
-          '//raw.githubusercontent.com/rodrigogs/barracao-digital/master/media/barracaodigital-logo.png',
+          '//raw.githubusercontent.com/rodrigogs/barracao-digital/master/media/barracaodigital-logo.png'
       },
       {
         name: 'og:image:type',
-        content: 'image/png',
+        content: 'image/png'
       },
       {
         name: 'og:image:width',
-        content: '514',
+        content: '514'
       },
       {
         name: 'og:image:height',
-        content: '514',
+        content: '514'
       },
       {
         name: 'og:type',
-        content: 'website',
+        content: 'website'
       },
       {
         name: 'og:locale',
-        content: 'pt_BR',
+        content: 'pt_BR'
       },
       // Twitter
       {
         name: 'twitter:card',
-        content: 'summary',
+        content: 'summary'
       },
       {
         name: 'twitter:site',
-        content: '@barracaodigital',
+        content: '@barracaodigital'
       },
       {
         name: 'twitter:creator',
-        content: '@barracaodigital',
-      },
+        content: '@barracaodigital'
+      }
     ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
   },
   /*
    ** Customize the progress-bar color
@@ -108,7 +108,7 @@ export default {
     '~/plugins/vue-cookie',
     '~/plugins/vue-infinite-loading',
     '~/plugins/api',
-    '~/plugins/crm',
+    '~/plugins/crm'
   ],
   /*
    ** Nuxt.js dev-modules
@@ -118,7 +118,7 @@ export default {
     '@nuxtjs/eslint-module',
     // Doc: https://github.com/nuxt-community/stylelint-module
     '@nuxtjs/stylelint-module',
-    '@nuxtjs/vuetify',
+    '@nuxtjs/vuetify'
   ],
   /*
    ** Nuxt.js modules
@@ -132,7 +132,7 @@ export default {
     '@nuxtjs/auth',
     '@nuxtjs/firebase',
     '@nuxtjs/sentry',
-    'vuetify-dialog/nuxt',
+    'vuetify-dialog/nuxt'
   ],
   /*
    ** Axios module configuration
@@ -142,12 +142,12 @@ export default {
     baseURL: config.API_URL || '',
     paramsSerializer: function paramsSerializer(params) {
       return qs.stringify(params, { arrayFormat: 'brackets' })
-    },
+    }
   },
   auth: {
     plugins: ['~/plugins/auth.js'],
     redirect: {
-      home: '/doctor',
+      home: '/doctor'
     },
     strategies: {
       local: {
@@ -155,37 +155,37 @@ export default {
         endpoints: {
           login: {
             url: '/auth/login',
-            method: 'post',
+            method: 'post'
           },
           logout: false,
           user: {
             url: '/auth/login',
-            method: 'post',
-          },
-        },
-      },
-    },
+            method: 'post'
+          }
+        }
+      }
+    }
   },
   firebase: {
     config: config.FIREBASE_CONFIG, // this is a BASE64 env var, that must be converted to a object
     services: {
       messaging: {
-        createServiceWorker: true,
+        createServiceWorker: true
       },
-      firestore: true,
-    },
+      firestore: true
+    }
   },
   pwa: {
     meta: {
       name: 'Barracão Digital',
       description:
         'Estruturação rápida de “postos de triagem” virtuais descentralizados para redução de visitas desnecessárias às emergências',
-      lang: 'pt-BR',
+      lang: 'pt-BR'
     },
     manifest: {
       name: 'Barracão Digital',
-      lang: 'pt-BR',
-    },
+      lang: 'pt-BR'
+    }
   },
   /*
    ** vuetify module configuration
@@ -194,13 +194,13 @@ export default {
   vuetify: {
     customVariables: ['~/assets/variables.scss'],
     theme: {},
-    optionsPath: './vuetify.options.js',
+    optionsPath: './vuetify.options.js'
   },
   vue: {
     config: {
       productionTip: config.NODE_ENV === 'development',
-      devtools: config.NODE_ENV === 'development',
-    },
+      devtools: config.NODE_ENV === 'development'
+    }
   },
   /*
    ** Build configuration
@@ -213,16 +213,16 @@ export default {
           opentok: {
             test: /@opentok\/client/,
             name: 'opentok',
-            chunks: 'all',
+            chunks: 'all'
           },
           vuetify: {
             test: /vuetify/,
             name: 'vuetify',
-            chunks: 'all',
-          },
-        },
-      },
+            chunks: 'all'
+          }
+        }
+      }
     },
-    extend(config, ctx) {},
-  },
+    extend(config, ctx) {}
+  }
 }

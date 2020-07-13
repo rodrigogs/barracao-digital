@@ -43,29 +43,29 @@ export default {
   props: {
     name: {
       type: String,
-      required: true,
+      required: true
     },
     ticket: {
       type: String,
-      required: true,
-    },
+      required: true
+    }
   },
   data: () => ({
     dialog: false,
-    isLoading: false,
+    isLoading: false
   }),
   methods: {
     giveUp() {
       this.isLoading = true
       this.$api
         .setPatientStatus(this.ticket, {
-          status: PATIENT_STATUS.GAVE_UP,
+          status: PATIENT_STATUS.GAVE_UP
         })
         .finally(() => {
           this.isLoading = false
           this.dialog = false
         })
-    },
-  },
+    }
+  }
 }
 </script>

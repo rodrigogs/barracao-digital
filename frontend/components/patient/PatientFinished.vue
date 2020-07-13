@@ -69,50 +69,50 @@ import linkify from 'vue-linkify'
 export default {
   name: 'PatientFinished',
   directives: {
-    linkified: linkify,
+    linkified: linkify
   },
   props: {
     doctorName: {
       type: String,
-      required: true,
+      required: true
     },
     doctorCrm: {
       type: String,
-      required: true,
+      required: true
     },
     doctorState: {
       type: String,
-      required: true,
+      required: true
     },
     doctorMessage: {
       type: String,
       required: false,
-      default: () => '',
+      default: () => ''
     },
     facilityName: {
       type: String,
-      required: true,
+      required: true
     },
     patientFeedback: {
       type: Number,
       required: false,
-      default: 0,
+      default: 0
     },
     clicked: {
       type: Function,
-      required: true,
-    },
+      required: true
+    }
   },
   data: () => ({
     isLoading: false,
-    rating: 0,
+    rating: 0
   }),
   computed: {
     ratingTitle() {
       return this.patientFeedback
         ? 'Você avaliou seu atendimento como:'
         : 'Avalie o seu atendimento:'
-    },
+    }
   },
   mounted() {
     this.rating = this.patientFeedback
@@ -123,7 +123,7 @@ export default {
       this.clicked(this.rating).finally(() => {
         this.isLoading = false
       })
-    },
-  },
+    }
+  }
 }
 </script>

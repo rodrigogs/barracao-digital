@@ -137,12 +137,12 @@ export default {
   props: {
     facility: {
       type: Object,
-      required: true,
+      required: true
     },
     submit: {
       type: Function,
-      required: true,
-    },
+      required: true
+    }
   },
   data: () => ({
     isCreating: false,
@@ -157,8 +157,8 @@ export default {
       name: null,
       techDirector: null,
       contact: null,
-      destinations: null,
-    },
+      destinations: null
+    }
   }),
   computed: {
     originErrors() {
@@ -201,12 +201,12 @@ export default {
       !this.$v.form.destinations.validZips &&
         errors.push('Um ou mais CPFs digitados são inválidos.')
       return errors
-    },
+    }
   },
   watch: {
     insertZipsInBulk(trueOrFalse) {
       if (trueOrFalse) this.zipsBulk = this.form.destinations.join(',')
-    },
+    }
   },
   mounted() {
     this.isLoadingDestinations = true
@@ -235,16 +235,16 @@ export default {
     form: {
       origin: {
         required,
-        zip,
+        zip
       },
       name: {
-        required,
+        required
       },
       techDirector: {
-        required,
+        required
       },
       contact: {
-        required,
+        required
       },
       destinations: {
         onlyNumbers: (values) => {
@@ -252,9 +252,9 @@ export default {
         },
         validZips: (values) => {
           return values.every(zip)
-        },
-      },
-    },
+        }
+      }
+    }
   },
   methods: {
     edit() {
@@ -290,7 +290,7 @@ export default {
       const facility = {
         ...this.form,
         origin: unmaskText(this.form.origin),
-        destinations: [],
+        destinations: []
       }
 
       return this.submit(
@@ -306,7 +306,7 @@ export default {
         .finally(() => {
           this.isLoading = false
         })
-    },
-  },
+    }
+  }
 }
 </script>

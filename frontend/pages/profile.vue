@@ -127,7 +127,7 @@ import avatarUtil from '~/utils/avatar'
 export default {
   middleware: 'auth',
   directives: {
-    linkified: linkify,
+    linkified: linkify
   },
   data: () => ({
     avatar: '',
@@ -135,17 +135,17 @@ export default {
     isLoadingPassword: false,
     profile: {
       username: '',
-      email: '',
+      email: ''
     },
     password: {
       password: '',
-      repeatedPassword: '',
-    },
+      repeatedPassword: ''
+    }
   }),
   computed: {
     user() {
       return {
-        ...this.$auth.user,
+        ...this.$auth.user
       }
     },
     usernameErrors() {
@@ -181,28 +181,28 @@ export default {
       !this.$v.password.repeatedPassword.sameAsPassword &&
         errors.push('A senha digitada está diferente.')
       return errors
-    },
+    }
   },
   validations: {
     profile: {
       username: {
         required,
-        minLength: minLength(3),
+        minLength: minLength(3)
       },
       email: {
         required,
-        email,
-      },
+        email
+      }
     },
     password: {
       password: {
         required,
-        minLength: minLength(5),
+        minLength: minLength(5)
       },
       repeatedPassword: {
-        sameAsPassword: sameAs('password'),
-      },
-    },
+        sameAsPassword: sameAs('password')
+      }
+    }
   },
   mounted() {
     const { name, username, email } = this.user
@@ -249,7 +249,7 @@ export default {
 
       this.$api
         .updateDoctor(this.user.username, {
-          password: this.password.password,
+          password: this.password.password
         })
         .then(
           () => {
@@ -257,7 +257,7 @@ export default {
             this.$v.password.$reset()
             this.password = {
               password: '',
-              repeatedPassword: '',
+              repeatedPassword: ''
             }
           },
           () =>
@@ -268,7 +268,7 @@ export default {
         .finally(() => {
           this.isLoadingPassword = false
         })
-    },
-  },
+    }
+  }
 }
 </script>

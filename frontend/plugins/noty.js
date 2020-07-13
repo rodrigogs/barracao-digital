@@ -7,6 +7,6 @@ export default () => {
     timeout: 2500,
     theme: 'metroui',
     layout: 'bottomCenter',
-    progressBar: true,
+    progressBar: true
   })
 }

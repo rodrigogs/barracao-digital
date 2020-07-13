@@ -14,7 +14,7 @@ export default {
     return !isNaN(Number(params.ticket))
   },
   components: {
-    DoctorPatientStatusModal,
+    DoctorPatientStatusModal
   },
   asyncData({ app, params, error }) {
     return app.$api.searchPatientByTicket(params.ticket).then(
@@ -23,7 +23,7 @@ export default {
     )
   },
   data: () => ({
-    patientSubscription: null,
+    patientSubscription: null
   }),
   mounted() {
     this.patientSubscription = this.$fireStore
@@ -43,7 +43,7 @@ export default {
       return this.$api
         .setPatientStatus(this.patient.ticket, {
           status,
-          form,
+          form
         })
         .then(
           (patient) => {
@@ -60,7 +60,7 @@ export default {
     },
     modalClosed() {
       this.$router.push({ name: 'doctor' })
-    },
-  },
+    }
+  }
 }
 </script>
