@@ -40,22 +40,22 @@ export default {
   props: {
     error: {
       type: Object,
-      default: null,
-    },
+      default: null
+    }
   },
   data() {
     return {
       pageNotFound: '404 ',
-      otherError: 'Oops, ocorreu um erro',
+      otherError: 'Oops, ocorreu um erro'
     }
   },
   head() {
     const title =
       this.error.statusCode === 404 ? this.pageNotFound : this.otherError
     return {
-      title,
+      title
     }
-  },
+  }
 }
 </script>
 

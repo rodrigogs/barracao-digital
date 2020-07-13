@@ -41,7 +41,7 @@ import ReportIssueDialog from '~/components/ReportIssueModal'
 export default {
   components: {
     Logo,
-    ReportIssueDialog,
-  },
+    ReportIssueDialog
+  }
 }
 </script>

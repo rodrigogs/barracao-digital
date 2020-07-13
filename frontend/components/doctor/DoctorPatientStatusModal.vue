@@ -62,10 +62,7 @@
               <v-icon right>mdi-file-document-edit</v-icon>
             </v-tab>
 
-            <v-tab
-              v-if="(patient.textSession && (patient.textSession === $auth.user.username))"
-              href="#conversation"
-            >
+            <v-tab v-if="patient.textSession" href="#conversation">
               Conversa
               <v-badge
                 v-if="getReceivedMessages > 0 && tab !== 'conversation'"
@@ -93,10 +90,7 @@
                   ></DoctorPatientStatusModalInfo>
                 </v-tab-item>
 
-                <v-tab-item
-                  v-if="patient && patient.textSession"
-                  value="conversation"
-                >
+                <v-tab-item v-if="patient" value="conversation">
                   <ConversationSession
                     :origin-cep="patient.originCep"
                     :doctor-username="$auth.user.username"
@@ -122,25 +116,25 @@ export default {
   name: 'DoctorPatientStatusModal',
   components: {
     DoctorPatientStatusModalInfo,
-    ConversationSession,
+    ConversationSession
   },
   props: {
     patient: {
       type: Object,
-      required: true,
+      required: true
     },
     save: {
       type: Function,
-      required: true,
-    },
+      required: true
+    }
   },
   data: () => ({
     tab: null,
-    videoLoading: false,
+    videoLoading: false
   }),
   computed: {
     ...mapGetters('chat', {
-      getReceivedMessages: 'getReceivedMessages',
+      getReceivedMessages: 'getReceivedMessages'
     }),
     hasActiveConversation() {
       return !!this.videoSession || !!this.textSession
@@ -154,20 +148,20 @@ export default {
         this.$auth.user.videoSessions &&
         this.$auth.user.videoSessions[this.patient.ticket]
       )
-    },
+    }
   },
   watch: {
     tab(newTab, oldTab) {
       if (newTab === 'conversation' || oldTab === 'conversation')
         this.readMessages()
-    },
+    }
   },
   methods: {
     ...mapActions('chat', [
       'readMessages',
       'startConversation',
       'deleteConversation',
-      'informDoctorCanceledVideo',
+      'informDoctorCanceledVideo'
     ]),
     openConversationTab() {
       return Promise.resolve()
@@ -181,7 +175,7 @@ export default {
         originCep: this.patient.originCep,
         doctorUsername: this.$auth.user.username,
         patientTicket: this.patient.ticket,
-        text: true,
+        text: true
       })
     },
     finishTextSession() {
@@ -190,7 +184,7 @@ export default {
         originCep: this.patient.originCep,
         doctorUsername: this.$auth.user.username,
         patientTicket: this.patient.ticket,
-        text: true,
+        text: true
       }).finally(() => (this.videoLoading = false))
     },
     startVideoSession() {
@@ -199,7 +193,7 @@ export default {
         originCep: this.patient.originCep,
         doctorUsername: this.$auth.user.username,
         patientTicket: this.patient.ticket,
-        video: true,
+        video: true
       }).finally(() => (this.videoLoading = false))
     },
     finishVideoSession() {
@@ -208,17 +202,17 @@ export default {
         originCep: this.patient.originCep,
         doctorUsername: this.$auth.user.username,
         patientTicket: this.patient.ticket,
-        video: true,
+        video: true
       })
         .then(() =>
           this.informDoctorCanceledVideo({
             originCep: this.patient.originCep,
             doctorUsername: this.$auth.user.username,
-            patientTicket: this.patient.ticket,
+            patientTicket: this.patient.ticket
           })
         )
         .finally(() => (this.videoLoading = false))
-    },
-  },
+    }
+  }
 }
 </script>

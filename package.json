@@ -3,25 +3,12 @@
   "version": "0.0.0",
   "description": "",
   "devDependencies": {
-    "@babel/core": "^7.10.4",
-    "@babel/preset-env": "^7.10.4",
-    "aws-sdk": "^2.691.0",
-    "babel-eslint": "^10.1.0",
-    "eslint": "^7.3.1",
-    "eslint-config-airbnb-base": "^14.2.0",
-    "eslint-config-prettier": "^6.11.0",
-    "eslint-plugin-import": "^2.22.0",
-    "eslint-plugin-prettier": "^3.1.4",
-    "husky": "^4.2.5",
-    "jest": "^26.1.0",
-    "lint-staged": "^10.2.11",
-    "prettier": "^2.0.5",
-    "serverless": "^1.72.0",
-    "serverless-bundle": "^1.9.0",
-    "serverless-domain-manager": "^4.1.1",
+    "@zeit/webpack-asset-relocator-loader": "^0.7.2",
+    "aws-sdk": "^2.679.0",
+    "serverless": "^1.71.1",
+    "serverless-domain-manager": "^4.1.0",
     "serverless-finch": "^2.5.2",
-    "serverless-layers": "^2.2.4",
-    "serverless-offline": "^6.4.0",
+    "serverless-offline": "^6.1.5",
     "serverless-webpack": "^5.3.2",
     "webpack": "^4.43.0"
   },
@@ -41,20 +28,12 @@
     "deploy:development": "NODE_ENV=development (npm run deploy:backend && npm run deploy:frontend)",
     "deploy:production": "NODE_ENV=production (npm run deploy:backend && npm run deploy:frontend)",
     "deploy:travis": "DEPLOY_FRONTEND=true DEPLOY_BACKEND=true ./scripts/deploy_travis.sh",
-    "deploy:after": "npx -p @babel/core -p @babel/node babel-node --presets @babel/preset-env ./scripts/after_deploy.js",
+    "deploy:after": "node ./scripts/after_deploy.js",
     "invalidate-cloudfront-cache": "node ./scripts/invalidate-cloudfront-cache.js web.barracaodigital.com dev.barracaodigital.com",
     "test:frontend": "(cd frontend && yarn test:e2e:ci)"
   },
   "license": "BSD-3-Clause",
   "dependencies": {
     "@rodrigogs/promise-pool": "^1.0.3"
-  },
-  "lint-staged": {
-    "*.{js}": "npm run lint"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
   }
 }

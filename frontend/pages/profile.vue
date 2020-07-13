@@ -127,7 +127,7 @@ import avatarUtil from '~/utils/avatar'
 export default {
   middleware: 'auth',
   directives: {
-    linkified: linkify,
+    linkified: linkify
   },
   data: () => ({
     avatar: '',
@@ -135,17 +135,17 @@ export default {
     isLoadingPassword: false,
     profile: {
       username: '',
-      email: '',
+      email: ''
     },
     password: {
       password: '',
-      repeatedPassword: '',
-    },
+      repeatedPassword: ''
+    }
   }),
   computed: {
     user() {
       return {
-        ...this.$auth.user,
+        ...this.$auth.user
       }
     },
     usernameErrors() {
@@ -181,28 +181,28 @@ export default {
       !this.$v.password.repeatedPassword.sameAsPassword &&
         errors.push('A senha digitada está diferente.')
       return errors
-    },
+    }
   },
   validations: {
     profile: {
       username: {
         required,
-        minLength: minLength(3),
+        minLength: minLength(3)
       },
       email: {
         required,
-        email,
-      },
+        email
+      }
     },
     password: {
       password: {
         required,
-        minLength: minLength(5),
+        minLength: minLength(5)
       },
       repeatedPassword: {
-        sameAsPassword: sameAs('password'),
-      },
-    },
+        sameAsPassword: sameAs('password')
+      }
+    }
   },
   mounted() {
     const { name, username, email } = this.user
@@ -217,7 +217,7 @@ export default {
     validateAndSubmitProfile() {
       this.$v.profile.$touch()
       if (this.$v.profile.$invalid) {
-        return this.$noty.error(
+        return this.$toast.error(
           'Existem erros no formulário, revise-os antes de seguir.'
         )
       }
@@ -227,9 +227,9 @@ export default {
       this.$api
         .updateDoctor(this.user.username, this.profile)
         .then(
-          () => this.$noty.success('Perfil atualizado com sucesso!'),
+          () => this.$toast.success('Perfil atualizado com sucesso!'),
           () =>
-            this.$noty.error(
+            this.$toast.error(
               'Ocorreu um erro ao tentar atualizar o seu perfil, tente novamente mais tarde'
             )
         )
@@ -240,7 +240,7 @@ export default {
     validateAndSubmitPassword() {
       this.$v.password.$touch()
       if (this.$v.password.$invalid) {
-        return this.$noty.error(
+        return this.$toast.error(
           'Existem erros no formulário, revise-os antes de seguir.'
         )
       }
@@ -249,26 +249,26 @@ export default {
 
       this.$api
         .updateDoctor(this.user.username, {
-          password: this.password.password,
+          password: this.password.password
         })
         .then(
           () => {
-            this.$noty.success('Senha atualizada com sucesso!')
+            this.$toast.success('Senha atualizada com sucesso!')
             this.$v.password.$reset()
             this.password = {
               password: '',
-              repeatedPassword: '',
+              repeatedPassword: ''
             }
           },
           () =>
-            this.$noty.error(
+            this.$toast.error(
               'Ocorreu um erro ao tentar atualizar a sua senha, tente novamente mais tarde'
             )
         )
         .finally(() => {
           this.isLoadingPassword = false
         })
-    },
-  },
+    }
+  }
 }
 </script>

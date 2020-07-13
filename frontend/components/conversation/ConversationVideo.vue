@@ -26,16 +26,16 @@ export default {
   props: {
     sessionId: {
       type: String,
-      required: true,
+      required: true
     },
     token: {
       type: String,
-      required: true,
+      required: true
     },
     isPublisher: {
       type: Boolean,
-      default: () => false,
-    },
+      default: () => false
+    }
   },
   data: () => ({
     isLoading: true,
@@ -44,19 +44,19 @@ export default {
     publisher: null,
     published: false,
     subscribed: false,
-    streams: [],
+    streams: []
   }),
   computed: {
     isVideoReady() {
       return (
         this.session && this.streams.length && this.published && this.subscribed
       )
-    },
+    }
   },
   watch: {
     isVideoReady() {
       this.$emit('video-ready', this.isVideoReady)
-    },
+    }
   },
   mounted() {
     this.openStream()
@@ -67,7 +67,7 @@ export default {
   methods: {
     errorHandler(err) {
       this.$sentry.captureException(err)
-      this.$noty.error(
+      this.$toast.error(
         'Ocorreu um erro ao tentar iniciar chat por video, por favor tente recarregar a página.'
       )
     },
@@ -159,8 +159,8 @@ export default {
       do {
         await delay(1000)
       } while (!this.streams.length)
-    },
-  },
+    }
+  }
 }
 </script>
 

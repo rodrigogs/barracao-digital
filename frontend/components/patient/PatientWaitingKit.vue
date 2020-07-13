@@ -134,17 +134,17 @@ export default {
   props: {
     patient: {
       type: Object,
-      required: true,
-    },
+      required: true
+    }
   },
   data: () => ({
     isLoading: false,
-    message: '',
+    message: ''
   }),
   computed: {
     status() {
       return this.patient[`${PATIENT_STATUS.WAITING_KIT}Status`]
-    },
+    }
   },
   methods: {
     formatTime(timestamp) {
@@ -161,7 +161,7 @@ export default {
       return this.$api
         .setWaitingKitSent(this.patient.ticket)
         .finally(() => (this.isLoading = false))
-    },
-  },
+    }
+  }
 }
 </script>

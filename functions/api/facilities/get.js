@@ -1,65 +1,49 @@
-import Router from '@everestate/serverless-router'
-import { HTTP } from '@everestate/serverless-router-aws'
-import facilitiesService from 'barracao-digital/services/facilities.service'
-import configsService from 'barracao-digital/services/configs.service'
-import { getRequestContext, responseBuilder } from '../../helpers'
+const facilitiesService = require('barracao-digital/services/facilities.service');
+const { getRequestContext, responseBuilder } = require('../../helpers');
 
-const STAGE = process.env.STAGE
-
-const dispatch = async (event) => {
-  const router = new Router([HTTP])
-  const requestContext = await getRequestContext(event)
-  const { pathParameters, queryStringParameters } = requestContext
-  const query = queryStringParameters || {}
-
-  router.http
-
-    .get(`/${STAGE}/facilities`, () =>
-      facilitiesService
-        .getAll(query.type, {
-          lastEvaluatedKey: query.lastEvaluatedKey ? JSON.parse(query.lastEvaluatedKey) : undefined,
-          pageSize: query.pageSize,
-        })
-        .then((facilities) => responseBuilder.success.ok({ body: facilities }))
-    )
-
-    .get(`/${STAGE}/facilities/origin/:origin`, () =>
-      facilitiesService
-        .getOneByOrigin(pathParameters.origin)
-        .then((facility) =>
-          !facility
-            ? responseBuilder.errors.notFound('Facility not found')
-            : responseBuilder.success.ok({ body: facility })
-        )
-    )
-
-    .get(`/${STAGE}/facilities/origin/:origin/destinations`, () =>
-      facilitiesService
-        .getAllDestinationsByOrigin(pathParameters.origin)
-        .then((destinations) => responseBuilder.success.ok({ body: destinations }))
-    )
-
-    .get(`/${STAGE}/facilities/origin/:origin/check`, () =>
-      configsService
-        .addCepVerified(pathParameters.origin)
-        .then(() => facilitiesService.getOneByDestination(pathParameters.origin))
-        .then((facility) =>
-          !facility ? responseBuilder.errors.notFound() : responseBuilder.success.noContent()
-        )
-    )
-
-  router.mismatch(() => {
-    const { path, httpMethod } = event
-    return Promise.reject(new Error(`Unknown route: ${httpMethod} ${path}`))
-  })
-
-  return router.dispatch(event)
-}
-
-export const handler = async (event) => {
+module.exports.handler = async (event) => {
   try {
-    return await dispatch(event)
+    const requestContext = await getRequestContext(event);
+
+    const {
+      pathParameters,
+      path,
+      queryStringParameters,
+    } = requestContext;
+
+    if (!pathParameters) {
+      const { type, lastEvaluatedKey, pageSize } = queryStringParameters || {};
+      const parsedLastKey = lastEvaluatedKey ? JSON.parse(lastEvaluatedKey) : undefined;
+
+      return responseBuilder.success.ok({
+        body: await facilitiesService.getAll(type, { lastEvaluatedKey: parsedLastKey, pageSize }),
+      });
+    }
+
+    const { origin } = pathParameters;
+    const listDestinations = path.endsWith('destinations');
+    const checkAvailability = path.endsWith('check');
+
+    if (listDestinations) {
+      const destinations = await facilitiesService.getAllDestinationsByOrigin(origin);
+      return responseBuilder.success.ok({ body: destinations });
+    }
+
+    if (checkAvailability) {
+      const facility = await facilitiesService.getOneByDestination(origin);
+      if (!facility) return responseBuilder.errors.notFound();
+      return responseBuilder.success.noContent();
+    }
+
+    const facility = await facilitiesService.getOneByOrigin(origin);
+    if (!facility) {
+      return responseBuilder.errors.notFound('Facility not found');
+    }
+
+    return responseBuilder.success.ok({
+      body: facility,
+    });
   } catch (err) {
-    return responseBuilder.genericError(err)
+    return responseBuilder.genericError(err);
   }
-}
+};

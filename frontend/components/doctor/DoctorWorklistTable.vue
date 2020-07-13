@@ -17,11 +17,6 @@
         <DoctorWorklistFilter v-model="filter" />
       </template>
 
-      <template v-slot:item.isOnline="{ item }">
-        <v-badge v-if="item.isOnline" color="green" title="Online" />
-        <v-badge v-else color="red" title="Offline" />
-      </template>
-
       <template v-slot:item.createdAt="{ item }">
         <span class="subtitle-2">{{ item.ticket }}</span>
         <v-spacer />
@@ -119,27 +114,24 @@ export default {
   name: 'DoctorWorklistTable',
   components: {
     StatusBadge,
-    DoctorWorklistFilter,
+    DoctorWorklistFilter
   },
   data() {
     return {
-      changeEach20Seconds: Date.now(),
-      changeEach20SecondsInterval: null,
       filter: {
         search: '',
-        options: {},
+        options: {}
       },
       headers: [
-        { value: 'isOnline', sortable: false },
         { text: 'Senha', value: 'createdAt', align: 'start' },
         { text: 'Nome', value: 'name', align: 'start', width: '60%' },
         { value: 'interactions', sortable: false },
         { value: 'kitStatus', sortable: false },
         { text: 'Tempo de espera', value: 'waitingTime', align: 'center' },
-        { text: 'Status', value: 'status' },
+        { text: 'Status', value: 'status' }
       ],
       patientsSubscription: null,
-      patients: [],
+      patients: []
     }
   },
   computed: {
@@ -150,28 +142,17 @@ export default {
         )
         .map((patient) => ({
           ...patient,
-          isOnline: patient.keepAlive && patient.keepAlive > Date.now() - 22000,
-          waitingTime: this.calculateTimeWaiting(patient),
+          waitingTime: this.calculateTimeWaiting(patient)
         }))
     },
     hasSelectedPatient() {
       return !!this.$route.params.ticket
-    },
+    }
   },
   watch: {
     'filter.options'() {
       this.updatePatientsQuerySubscription()
-    },
-  },
-  mounted() {
-    this.changeEach20SecondsInterval = setInterval(
-      () => (this.changeEach20Seconds = Date.now()),
-      20000
-    )
-  },
-  beforeDestroy() {
-    this.changeEach20SecondsInterval &&
-      clearInterval(this.changeEach20SecondsInterval)
+    }
   },
   methods: {
     async updatePatientsQuerySubscription() {
@@ -235,7 +216,7 @@ export default {
       const finishedStatuses = [
         PATIENT_STATUS.FINISHED,
         PATIENT_STATUS.FACILITY_NOT_AVAILABLE,
-        PATIENT_STATUS.GAVE_UP,
+        PATIENT_STATUS.GAVE_UP
       ]
 
       if (finishedStatuses.includes(patient.status)) {
@@ -261,8 +242,8 @@ export default {
       return [PATIENT_STATUS.WAITING_KIT, PATIENT_STATUS.FINISHED].includes(
         patient.status
       )
-    },
-  },
+    }
+  }
 }
 </script>
 

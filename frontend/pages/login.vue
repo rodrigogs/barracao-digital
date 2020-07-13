@@ -46,15 +46,15 @@ export default {
   data: () => ({
     username: '',
     password: '',
-    isLoading: false,
+    isLoading: false
   }),
   validations: {
     username: {
-      required,
+      required
     },
     password: {
-      required,
-    },
+      required
+    }
   },
   computed: {
     usernameErrors() {
@@ -70,13 +70,13 @@ export default {
       !this.$v.password.required &&
         errors.push('Por favor, digite a sua senha.')
       return errors
-    },
+    }
   },
   methods: {
     validateForm() {
       this.$v.$touch()
       if (this.$v.$invalid) {
-        return this.$noty.error(
+        return this.$toast.error(
           'Existem erros no formulário, revise-os antes de seguir.'
         )
       }
@@ -86,23 +86,23 @@ export default {
         .loginWith('local', {
           data: {
             username: this.username,
-            password: this.password,
-          },
+            password: this.password
+          }
         })
         .then(
           () => {
-            this.$noty.success('Login efetuado com sucesso')
+            this.$toast.success('Login efetuado com sucesso')
             return this.$router.push({
-              name: 'doctor',
+              name: 'doctor'
             })
           },
           (error) => {
             const status = R.path(['response', 'status'], error)
 
             if (status && status === 401)
-              this.$noty.error('Usuário ou senha incorretos.')
+              this.$toast.error('Usuário ou senha incorretos.')
             else
-              this.$noty.error(
+              this.$toast.error(
                 'Ocorreu um erro durante a autenticação, tente novamente mais tarde'
               )
           }
@@ -110,7 +110,7 @@ export default {
         .finally(() => {
           this.isLoading = false
         })
-    },
-  },
+    }
+  }
 }
 </script>

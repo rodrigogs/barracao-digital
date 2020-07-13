@@ -30,7 +30,7 @@ export const normalizeEnv = (ignoreErrors) => {
         : JSON.parse(
             Buffer.from(process.env.FIREBASE_CONFIG, 'base64').toString('utf8')
           ) // Use node buffer
-    },
+    }
   }
 }
 

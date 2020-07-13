@@ -171,7 +171,7 @@ import PatientTerms from '~/components/patient/PatientTerms'
 export default {
   layout: 'patients',
   components: {
-    PatientTerms,
+    PatientTerms
   },
   data: () => ({
     step: 1,
@@ -184,44 +184,44 @@ export default {
       name: '',
       age: '',
       cpf: '',
-      cep: '',
+      cep: ''
     },
     medicalInformations: {
       meds: '',
       allergies: '',
       covenant: '',
-      hasBeenAssisted: false,
+      hasBeenAssisted: false
     },
     contact: {
       phone: '',
-      email: '',
-    },
+      email: ''
+    }
   }),
   validations: {
     myData: {
       name: {
-        required,
+        required
       },
       age: {
         integer,
         required,
-        maxValue: maxValue(125),
+        maxValue: maxValue(125)
       },
       cpf: {
         required,
-        cpf,
+        cpf
       },
       cep: {
         required,
-        zip,
-      },
+        zip
+      }
     },
     contact: {
       phone: {
         required,
-        phone,
-      },
-    },
+        phone
+      }
+    }
   },
 
   computed: {
@@ -270,13 +270,13 @@ export default {
       !this.$v.contact.phone.phone &&
         errors.push('Por favor, digite o seu telefone.')
       return errors
-    },
+    }
   },
 
   watch: {
     'myData.cep'(newCep) {
       newCep && zip(newCep) && this.checkFacility()
-    },
+    }
   },
   methods: {
     checkFacility: debounce(async function check() {
@@ -293,16 +293,18 @@ export default {
       ).finally(() => (this.isCheckingFacility = false))
 
       if (!this.checkedFacilities[cep])
-        this.$noty.error(
+        this.$toast.error(
           'Não existe uma instalação ativa para o CEP informado.'
         )
       else
-        this.$noty.info('O CEP informado dispõe de uma unidade de atendimento.')
+        this.$toast.success(
+          'O CEP informado dispõe de uma unidade de atendimento.'
+        )
     }, 500),
     validateMyDataSection() {
       this.$v.myData.$touch()
       if (this.$v.myData.$invalid) {
-        return this.$noty.error(
+        return this.$toast.error(
           'Existem erros no formulário, revise-os antes de seguir.'
         )
       }
@@ -312,7 +314,7 @@ export default {
     validateContactSection() {
       this.$v.contact.$touch()
       if (this.$v.contact.$invalid) {
-        return this.$noty.error(
+        return this.$toast.error(
           'Existem erros no formulário, revise-os antes de seguir.'
         )
       }
@@ -322,11 +324,11 @@ export default {
         cep: unmaskText(this.myData.cep),
         cpf: unmaskText(this.myData.cpf),
         ...this.medicalInformations,
-        ...this.contact,
+        ...this.contact
       }).reduce(
         (acc, [key, value]) => ({
           ...acc,
-          [key]: value || null,
+          [key]: value || null
         }),
         {}
       )
@@ -337,16 +339,16 @@ export default {
         ({ ticket }) =>
           this.$router.push({
             name: 'patient-ticket',
-            params: { ticket },
+            params: { ticket }
           }),
         (error) => {
           const message =
             R.path(['response', 'data', 'message'], error) || error
-          this.$noty.error(message)
+          this.$toast.error(message)
           this.isSaving = false
         }
       )
-    },
-  },
+    }
+  }
 }
 </script>

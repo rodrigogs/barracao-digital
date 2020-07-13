@@ -5,7 +5,8 @@
     </p>
 
     <p class="subtitle-1">
-      {{ message }}
+      Mantenha o navegador aberto para ser notificado quando o atendimento
+      normalizar.
     </p>
 
     <v-dialog v-model="dialog" persistent max-width="290">
@@ -42,35 +43,29 @@ export default {
   props: {
     name: {
       type: String,
-      required: true,
+      required: true
     },
     ticket: {
       type: String,
-      required: true,
-    },
-    message: {
-      type: String,
-      required: false,
-      default: () =>
-        'Por favor, anote sua senha de retorno e retorne aqui no site ou aplicativo entre 18 e 21h, que é quando temos um maior número de médicos voluntários on-line. Obrigado pela paciência!',
-    },
+      required: true
+    }
   },
   data: () => ({
     dialog: false,
-    isLoading: false,
+    isLoading: false
   }),
   methods: {
     giveUp() {
       this.isLoading = true
       this.$api
         .setPatientStatus(this.ticket, {
-          status: PATIENT_STATUS.GAVE_UP,
+          status: PATIENT_STATUS.GAVE_UP
         })
         .finally(() => {
           this.isLoading = false
           this.dialog = false
         })
-    },
-  },
+    }
+  }
 }
 </script>

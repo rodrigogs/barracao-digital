@@ -29,7 +29,7 @@
       <DoctorPatientStatusModalSummary :patient="patient" />
 
       <v-stepper
-        v-if="(!isUnassisted && !isFinishedStatus && (patient.textSession === this.$auth.user.username || !patient.textSession))"
+        v-if="!isUnassisted && !isFinishedStatus"
         v-model="step"
         vertical
       >
@@ -59,7 +59,7 @@
             () =>
               step !== statusesIndex[PATIENT_STATUS.ONGOING] ||
               !!patient[`${PATIENT_STATUS.ONGOING}Status`] ||
-              ($v.onGoing.$touch() && !$v.onGoing.$invalid),
+              ($v.onGoing.$touch() && !$v.onGoing.$invalid)
           ]"
         >
           <span class="title">Em andamento</span>
@@ -114,7 +114,7 @@
             () =>
               step !== statusesIndex[PATIENT_STATUS.WAITING_KIT] ||
               !patient[`${PATIENT_STATUS.WAITING_KIT}Status`] ||
-              isPatientKitComingBack,
+              isPatientKitComingBack
           ]"
         >
           <span class="title">Kit médico</span>
@@ -246,8 +246,8 @@
           :complete="statusIndex === statusesIndex[PATIENT_STATUS.FINISHED]"
           :editable="
             !!patient[`${PATIENT_STATUS.ONGOING}Status`] &&
-            (patient.status !== PATIENT_STATUS.WAITING_KIT ||
-              isPatientKitComingBack)
+              (patient.status !== PATIENT_STATUS.WAITING_KIT ||
+                isPatientKitComingBack)
           "
         >
           <span class="title">Finalizado</span>
@@ -307,21 +307,21 @@ export default {
   name: 'DoctorPatientStatusModalInfo',
   components: {
     DoctorPatientStatusModalSummary,
-    StatusBadge,
+    StatusBadge
   },
   props: {
     patient: {
       type: Object,
-      required: true,
+      required: true
     },
     save: {
       type: Function,
-      required: true,
+      required: true
     },
     openConversation: {
       type: Function,
-      required: true,
-    },
+      required: true
+    }
   },
   data: () => ({
     step: 1,
@@ -329,25 +329,25 @@ export default {
     isLoading: false,
     isLoadingConversation: false,
     onGoing: {
-      message: '',
+      message: ''
     },
     waitingKit: {
       message:
-        'Um kit médico com instruções de uso está sendo enviado para a sua localização. Por favor, certifique-se de que ele será recebido ao chegar no local.',
+        'Um kit médico com instruções de uso está sendo enviado para a sua localização. Por favor, certifique-se de que ele será recebido ao chegar no local.'
     },
     finished: {
       message: '',
-      outcome: '',
-    },
+      outcome: ''
+    }
   }),
   validations: {
     onGoing: {},
     waitingKit: {},
     finished: {
       outcome: {
-        required,
-      },
-    },
+        required
+      }
+    }
   },
   computed: {
     PATIENT_STATUS() {
@@ -363,7 +363,7 @@ export default {
       const finishedStatuses = [
         PATIENT_STATUS.FINISHED,
         PATIENT_STATUS.FACILITY_NOT_AVAILABLE,
-        PATIENT_STATUS.GAVE_UP,
+        PATIENT_STATUS.GAVE_UP
       ]
       return finishedStatuses.includes(this.patient.status)
     },
@@ -372,31 +372,31 @@ export default {
         [PATIENT_STATUS.WAITING]: 1,
         [PATIENT_STATUS.ONGOING]: 2,
         [PATIENT_STATUS.WAITING_KIT]: 3,
-        [PATIENT_STATUS.FINISHED]: 4,
+        [PATIENT_STATUS.FINISHED]: 4
       }
     },
     patientOutcomeItems() {
       return [
         {
           text: 'Caso suspeito isolamento domiciliar',
-          value: PATIENT_OUTCOMES.SUSPECT_CASE_HOME_ISOLATION,
+          value: PATIENT_OUTCOMES.SUSPECT_CASE_HOME_ISOLATION
         },
         {
           text: 'Caso suspeito referenciado',
-          value: PATIENT_OUTCOMES.SUSPECT_CASE_REFERENCED,
+          value: PATIENT_OUTCOMES.SUSPECT_CASE_REFERENCED
         },
         {
           text: 'Caso sem suspeita',
-          value: PATIENT_OUTCOMES.NON_SUSPECT_CASE,
+          value: PATIENT_OUTCOMES.NON_SUSPECT_CASE
         },
         {
           text: 'Caso sem suspeita referenciado',
-          value: PATIENT_OUTCOMES.NON_SUSPECT_CASE_REFERENCED,
+          value: PATIENT_OUTCOMES.NON_SUSPECT_CASE_REFERENCED
         },
         {
           text: 'Não atendido',
-          value: PATIENT_OUTCOMES.NOT_ATTENDED,
-        },
+          value: PATIENT_OUTCOMES.NOT_ATTENDED
+        }
       ]
     },
     timeWaiting() {
@@ -442,7 +442,7 @@ export default {
       !this.$v.finished.outcome.required &&
         errors.push('Por favor, seleciome um desfecho para o paciente.')
       return errors
-    },
+    }
   },
   mounted() {
     this.step = this.statusesIndex[this.patient.status]
@@ -468,14 +468,14 @@ export default {
     async validateOnGoingSection() {
       this.$v.onGoing.$touch()
       if (this.$v.onGoing.$invalid) {
-        return this.$noty.error(
+        return this.$toast.error(
           'Existem erros no formulário, revise-os antes de seguir.'
         )
       }
 
       this.isLoading = true
       await this._changeStatus(PATIENT_STATUS.ONGOING, {
-        ...this.onGoing,
+        ...this.onGoing
       })
         .then(() => this.openConversation())
         .finally(() => (this.isLoading = false))
@@ -483,7 +483,7 @@ export default {
     async validateFinishedSection() {
       this.$v.finished.$touch()
       if (this.$v.finished.$invalid) {
-        return this.$noty.error(
+        return this.$toast.error(
           'Existem erros no formulário, revise-os antes de seguir.'
         )
       }
@@ -493,11 +493,11 @@ export default {
       await this.deleteConversation({
         originCep: this.$auth.user.cep,
         doctorUsername: this.$auth.user.username,
-        patientTicket: this.patient.ticket,
+        patientTicket: this.patient.ticket
       })
 
       return await this._changeStatus(PATIENT_STATUS.FINISHED, {
-        ...this.finished,
+        ...this.finished
       }).finally(() => (this.isLoading = false))
     },
     async validateWaitingKitSection() {
@@ -510,13 +510,13 @@ export default {
 
       this.isLoading = true
       return await this._changeStatus(PATIENT_STATUS.WAITING_KIT, {
-        ...this.waitingKit,
+        ...this.waitingKit
       })
         .then(() =>
           this.informDoctorSentKit({
             originCep: this.$auth.user.cep,
             doctorUsername: this.$auth.user.username,
-            patientTicket: this.patient.ticket,
+            patientTicket: this.patient.ticket
           })
         )
         .finally(() => (this.isLoading = false))
@@ -524,11 +524,11 @@ export default {
     _changeStatus(status = PATIENT_STATUS.ONGOING, form = {}) {
       return this.save({
         status,
-        form,
+        form
       }).catch((error) => {
-        this.$noty.error(error.response.data.message)
+        this.$toast.error(error.response.data.message)
       })
-    },
-  },
+    }
+  }
 }
 </script>

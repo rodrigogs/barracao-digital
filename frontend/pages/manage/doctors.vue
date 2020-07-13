@@ -68,19 +68,19 @@ const getAllDoctors = ($api) => ({ lastEvaluatedKey = '' } = {}) =>
     ({ items = [], lastEvaluatedKey = '' }) => ({
       doctors: items,
       lastEvaluatedKey: lastEvaluatedKey || '',
-      isPaginationFinished: !lastEvaluatedKey,
+      isPaginationFinished: !lastEvaluatedKey
     }),
     (error) => Promise.reject(error)
   )
 
 const getDoctorsLoggedUserCep = ($api, cep) => ({
-  lastEvaluatedKey = '',
+  lastEvaluatedKey = ''
 } = {}) =>
   $api.getDoctorsByCep(cep, { lastEvaluatedKey }).then(
     ({ items = [], lastEvaluatedKey = '' }) => ({
       doctors: items,
       lastEvaluatedKey: lastEvaluatedKey || '',
-      isPaginationFinished: !lastEvaluatedKey,
+      isPaginationFinished: !lastEvaluatedKey
     }),
     (error) => Promise.reject(error)
   )
@@ -88,7 +88,7 @@ const getDoctorsLoggedUserCep = ($api, cep) => ({
 export default {
   middleware: ['auth', 'isAdminOrMaster'],
   components: {
-    DoctorsResourceModal,
+    DoctorsResourceModal
   },
   asyncData({ app, error }) {
     const listFunction = app.$auth.user.master
@@ -116,8 +116,8 @@ export default {
       { text: 'Admin?', value: 'admin' },
       { text: 'Master?', value: 'master' },
       { text: 'Ativo?', value: 'active' },
-      { text: '', value: 'actions', sortable: false },
-    ],
+      { text: '', value: 'actions', sortable: false }
+    ]
   }),
   methods: {
     handleNextPageRequest($loadingState) {
@@ -134,20 +134,20 @@ export default {
         this.$api,
         this.$auth.user.cep
       )({
-        lastEvaluatedKey: this.lastEvaluatedKey,
+        lastEvaluatedKey: this.lastEvaluatedKey
       })
         .then(
           ({
             doctors = [],
             lastEvaluatedKey = '',
-            isPaginationFinished = true,
+            isPaginationFinished = true
           }) => {
             this.doctors = R.uniq([...this.doctors, ...doctors])
             this.lastEvaluatedKey = lastEvaluatedKey
             this.isPaginationFinished = isPaginationFinished
           },
           () => {
-            this.$noty.error(
+            this.$toast.error(
               'Ocorreu um erro ao tentar consultar os cadastros de médicos, tente novamente mais tarde'
             )
           }
@@ -166,7 +166,7 @@ export default {
           updatedDoctor = await this.$api.createDoctor(doctor)
           this.lastEvaluatedKey = ''
           await this.handleNextPageRequest()
-          this.$noty.success('Médico salvo com sucesso')
+          this.$toast.success('Médico salvo com sucesso')
         } else {
           updatedDoctor = await this.$api.updateDoctor(
             this.selectedDoctor.username,
@@ -174,7 +174,7 @@ export default {
           )
           const index = this._findDoctorIndex(this.selectedDoctor.username)
           this.$set(this.doctors, index, doctor)
-          this.$noty.success('Médico atualizado com sucesso')
+          this.$toast.success('Médico atualizado com sucesso')
         }
 
         const index = this._findDoctorIndex(updatedDoctor.username)
@@ -185,7 +185,7 @@ export default {
         }
       } catch (error) {
         const message = R.path(['response', 'data', 'message'], error) || error
-        this.$noty.error(message)
+        this.$toast.error(message)
         return Promise.reject(error)
       }
     },
@@ -204,7 +204,7 @@ export default {
         master: null,
         admin: null,
         createdAt: null,
-        updatedAt: null,
+        updatedAt: null
       }
     },
     edit(item) {
@@ -219,7 +219,7 @@ export default {
       const index = this._findDoctorIndex(username)
 
       if (index === -1) {
-        this.$noty.error('Você não pode deletar este médico')
+        this.$toast.error('Você não pode deletar este médico')
         return
       }
 
@@ -228,10 +228,10 @@ export default {
         .then(
           () => {
             this.$delete(this.doctors, index)
-            this.$noty.success('Médico removido com sucesso')
+            this.$toast.success('Médico removido com sucesso')
           },
           () =>
-            this.$noty.error(
+            this.$toast.error(
               'Ocorreu um erro ao tentar deletar este médico, tente novamente mais tarde'
             )
         )
@@ -241,7 +241,7 @@ export default {
     },
     _findDoctorIndex(username) {
       return this.doctors.findIndex((doctor) => doctor.username === username)
-    },
-  },
+    }
+  }
 }
 </script>

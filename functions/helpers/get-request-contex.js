@@ -10,7 +10,7 @@
  *  consumer,
  * }
  */
-export default async (event) => {
+module.exports = async (event) => {
   const {
     requestContext,
     httpMethod,
@@ -22,19 +22,19 @@ export default async (event) => {
     pathParameters,
     path,
     resource,
-  } = event
+  } = event;
 
-  const { authorizer } = requestContext || {}
-  const { consumer } = authorizer || {}
+  const { authorizer } = (requestContext || {});
+  const { consumer } = (authorizer || {});
 
-  let parsedBody
-  let parsedConsumer
+  let parsedBody;
+  let parsedConsumer;
 
   try {
-    parsedBody = typeof body === 'string' ? JSON.parse(body) : undefined
-    parsedConsumer = typeof consumer === 'string' ? JSON.parse(consumer) : undefined
+    parsedBody = (typeof body === 'string') ? JSON.parse(body) : undefined;
+    parsedConsumer = (typeof consumer === 'string') ? JSON.parse(consumer) : undefined;
   } catch (err) {
-    console.error('Error parsing body or consumer', err)
+    console.error('Error parsing body or consumer', err);
   }
 
   return {
@@ -48,5 +48,5 @@ export default async (event) => {
     resource,
     body: parsedBody,
     consumer: parsedConsumer,
-  }
-}
+  };
+};
