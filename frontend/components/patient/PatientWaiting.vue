@@ -128,10 +128,6 @@ export default {
       type: String,
       required: true,
     },
-    originCep: {
-      type: String,
-      required: true,
-    },
   },
   data: () => ({
     timeInQueue: null,
@@ -139,7 +135,6 @@ export default {
   }),
   mounted() {
     this.timeInterval = setInterval(this.setUpTimer.bind(this), ONE_SECOND)
-    this.keepAlive()
   },
   beforeDestroy() {
     clearInterval(this.timeInterval)
@@ -149,18 +144,6 @@ export default {
     setUpTimer() {
       const timeWaiting = Date.now() - this.createdAt
       this.timeInQueue = Kairos.new(timeWaiting).toString('hh:mm:ss', true)
-    },
-    async keepAlive() {
-      try {
-        await this.$fireStore
-          .collection('facilities')
-          .doc(this.originCep)
-          .collection('patients')
-          .doc(this.ticket)
-          .set({ keepAlive: Date.now() }, { merge: true })
-      } finally {
-        setTimeout(() => this.keepAlive(), 20000)
-      }
     },
   },
 }

@@ -240,7 +240,6 @@ export default {
           props: {
             createdAt: this.patient.createdAt,
             ticket: this.$route.params.ticket,
-            originCep: this.patient.originCep,
           },
         }),
         [PATIENT_STATUS.ONGOING]: () => ({
