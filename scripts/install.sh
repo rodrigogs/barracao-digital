@@ -2,7 +2,6 @@
 
 # Global
 processors=$(ps aux --no-heading | wc -l)
-sudo apt install -y libgtk-3-0 libxss1 libgconf-2-4 libasound2 libnss3
 npm install -g concurrently
 
 concurrently\

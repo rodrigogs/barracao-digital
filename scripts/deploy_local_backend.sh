@@ -1,17 +1,20 @@
 #!/bin/bash
 
-# Global
-script_dir=$(dirname "$0")
-processors=$(ps aux --no-heading | wc -l)
-npm install -g concurrently
+## Text Tools
+RESET="\e[0m"
+BOLD="\e[1m"
+YELLOW="\e[33m"
+RED="\e[91m"
+GREEN="\e[32m"
 
 if [ -z $NODE_ENV ]; then
   echo -e "${BOLD}${RED}Missing environment variable NODE_ENV${RESET}"
   exit 1
 fi
 
-concurrently\
-  --max-processes "$processors"\
-  --kill-others-on-fail\
-  "$script_dir/deploy_backend.sh"\
-  "$script_dir/deploy_processors.sh"\
+echo -e "${BOLD}${YELLOW}Installing backend dependencies...${RESET}"
+npm run install:backend
+echo -e "${BOLD}${YELLOW}Deploying backend...${RESET}"
+npm run deploy:backend
+
+echo -e "${BOLD}${GREEN}Done!${RESET}"
