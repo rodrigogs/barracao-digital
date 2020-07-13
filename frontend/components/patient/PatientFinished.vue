@@ -58,6 +58,16 @@
             Enviar
           </v-btn>
         </v-card-text>
+        <v-card-subtitle>
+          Quer ajudar a entender como o COVID-19 afeta as pessoas, como diminuir
+          os riscos e maximizar as chances de recuperação? O Barracão Digital é
+          parceiro da pesquisa online Beat19, um movimento mundial para combater
+          o coronavírus. Clique na imagem abaixo para acessar o site e
+          participar.
+          <a href="https://brasil.beat19.org/" target="_blank">
+            <img src="~/assets/beat19.png" width="100%" alt="Beat19.org" />
+          </a>
+        </v-card-subtitle>
       </v-card>
     </v-card-text>
   </v-card>
