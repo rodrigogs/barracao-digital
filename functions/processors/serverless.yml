@@ -62,10 +62,6 @@ provider:
       Action:
         - 'glue:*'
       Resource: '*'
-    - Effect: Allow
-      Action:
-        - 'lambda:*'
-      Resource: '*'
   deploymentBucket:
     name: ${self:app}-deploys
     maxPreviousDeploymentArtifacts: 10 # On every deployment the framework prunes the bucket to remove artifacts older than this limit. The default is 5
@@ -78,7 +74,7 @@ provider:
     FACILITIES_DELIVERY_STREAM: ${self:custom.facilitiesDeliveryStreamName}
 
 functions:
-  msckRepairOnAthenaTables:
+  msck-repair-on-athena-tables:
     handler: msck-repair-on-athena-tables.handler
     memorySize: 512
     timeout: 60
@@ -88,7 +84,7 @@ functions:
           event: s3:ObjectCreated:*
           existing: true
 
-  configsLakeProc:
+  configs-lake-proc:
     handler: configs-datalake-processor.handler
     memorySize: 512
     timeout: 60
@@ -101,7 +97,7 @@ functions:
           bisectBatchOnFunctionError: true
           startingPosition: LATEST
 
-  doctorsLakeProc:
+  doctors-lake-proc:
     handler: doctors-datalake-processor.handler
     memorySize: 512
     timeout: 60
@@ -114,7 +110,7 @@ functions:
           bisectBatchOnFunctionError: true
           startingPosition: LATEST
 
-  facilitiesLakeProc:
+  facilities-lake-proc:
     handler: facilities-datalake-processor.handler
     memorySize: 512
     timeout: 60
@@ -127,7 +123,7 @@ functions:
           bisectBatchOnFunctionError: true
           startingPosition: LATEST
 
-  patientsLakeProcessor:
+  patients-lake-processor:
     handler: patients-datalake-processor.handler
     memorySize: 512
     timeout: 60

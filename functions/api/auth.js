@@ -1,4 +1,4 @@
-import authService from 'barracao-digital/services/auth.service'
+import { authService } from 'barracao-digital/services'
 import { getRequestContext, responseBuilder } from '../helpers'
 
 const methods = {
@@ -14,12 +14,7 @@ const methods = {
     if (!loggedUser) return responseBuilder.errors.unauthorized()
 
     return responseBuilder.success.ok({
-      body: {
-        ...loggedUser,
-        videoSessions: undefined,
-        textSessions: undefined,
-        password: undefined,
-      },
+      body: loggedUser,
       password: undefined,
     })
   },

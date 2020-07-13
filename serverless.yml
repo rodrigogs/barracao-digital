@@ -65,7 +65,7 @@ provider:
     - Effect: Allow
       Action:
         - 'lambda:*'
-      Resource: '*'
+      Resource: 'arn:aws:lambda:${self:custom.region}:${file(./serverless.js):getAccountId}:function:${self:service}-${self:custom.stage}-*'
   deploymentBucket:
     name: ${self:service}-deploys
     maxPreviousDeploymentArtifacts: 10 # On every deployment the framework prunes the bucket to remove artifacts older than this limit. The default is 5
@@ -75,7 +75,6 @@ provider:
     STACK_NAME: ${self:service}
     STAGE: ${self:custom.stage}
     APP_URL: ${env:APP_URL}
-    TELEGRAM_TOKEN: ${env:TELEGRAM_TOKEN}
     GOOGLE_APPLICATION_CREDENTIALS: ${env:GOOGLE_APPLICATION_CREDENTIALS}
     OPENTOK_API_KEY: ${env:OPENTOK_API_KEY}
     OPENTOK_API_SECRET: ${env:OPENTOK_API_SECRET}
@@ -137,7 +136,7 @@ functions:
           cors: true
 
   # Doctors
-  doctorsGet:
+  doctors-get:
     handler: functions/api/doctors/get.handler
     layers:
       - {Ref: CommonLambdaLayer}
@@ -160,7 +159,7 @@ functions:
           cors: true
           authorizer: doctorAuthorizer
 
-  doctorsPost:
+  doctors-post:
     handler: functions/api/doctors/post.handler
     layers:
       - {Ref: CommonLambdaLayer}
@@ -185,7 +184,7 @@ functions:
           cors: true
           authorizer: doctorAuthorizer
 
-  doctorsPut:
+  doctors-put:
     handler: functions/api/doctors/put.handler
     layers:
       - {Ref: CommonLambdaLayer}
@@ -196,7 +195,7 @@ functions:
           cors: true
           authorizer: doctorAuthorizer
 
-  doctorsDelete:
+  doctors-delete:
     handler: functions/api/doctors/delete.handler
     layers:
       - {Ref: CommonLambdaLayer}
@@ -214,7 +213,7 @@ functions:
           authorizer: doctorAuthorizer
 
   # Patients
-  patientsGet:
+  patients-get:
     handler: functions/api/patients/get.handler
     layers:
       - {Ref: CommonLambdaLayer}
@@ -230,7 +229,7 @@ functions:
           path: /patients/ticket/{ticket}
           cors: true
 
-  patientsPost:
+  patients-post:
     handler: functions/api/patients/post.handler
     layers:
       - {Ref: CommonLambdaLayer}
@@ -240,7 +239,7 @@ functions:
           path: /patients
           cors: true
 
-  patientsPut:
+  patients-put:
     handler: functions/api/patients/put.handler
     layers:
       - {Ref: CommonLambdaLayer}
@@ -294,7 +293,7 @@ functions:
           path: /patients/{ticket}/messaging/token
           cors: true
 
-  patientsDelete:
+  patients-delete:
     handler: functions/api/patients/delete.handler
     layers:
       - {Ref: CommonLambdaLayer}
@@ -305,7 +304,7 @@ functions:
           cors: true
 
   # Facilities
-  facilitiesGet:
+  facilities-get:
     handler: functions/api/facilities/get.handler
     layers:
       - {Ref: CommonLambdaLayer}
@@ -335,7 +334,7 @@ functions:
           path: /facilities/origin/{origin}/check
           cors: true
 
-  facilitiesPost:
+  facilities-post:
     handler: functions/api/facilities/post.handler
     layers:
       - {Ref: CommonLambdaLayer}
@@ -346,7 +345,7 @@ functions:
           cors: true
           authorizer: masterAuthorizer
 
-  facilitiesPut:
+  facilities-put:
     handler: functions/api/facilities/put.handler
     layers:
       - {Ref: CommonLambdaLayer}
@@ -359,7 +358,7 @@ functions:
           cors: true
           authorizer: masterAuthorizer
 
-  facilitiesDelete:
+  facilities-delete:
     handler: functions/api/facilities/delete.handler
     layers:
       - {Ref: CommonLambdaLayer}
@@ -380,7 +379,3 @@ resources:
   - ${file(resources/api-gateway-cf-resources.yml)}
   - ${file(resources/cloudfront-cf-resources.yml)}
   - ${file(resources/dynamodb-cf-resources.yml)}
-  - Outputs:
-      FacilitiesDeleteLambdaFunctionQualifiedArn:
-        Description: ARN of the FacilitiesDelete lambda function
-        Value: !GetAtt FacilitiesDeleteLambdaFunction.Arn

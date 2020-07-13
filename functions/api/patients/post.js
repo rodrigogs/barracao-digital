@@ -1,4 +1,4 @@
-import patientsService from 'barracao-digital/services/patients.service'
+import { patientsService } from 'barracao-digital/services'
 import { getRequestContext, responseBuilder } from '../../helpers'
 
 export const handler = async (event) => {

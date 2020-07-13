@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 # Global
 script_dir=$(dirname "$0")
 processors=$(ps aux --no-heading | wc -l)

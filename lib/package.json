@@ -37,7 +37,6 @@
     "providers/aws",
     "providers/firebase",
     "providers/gmaps",
-    "providers/opentok",
-    "providers/telegram"
+    "providers/opentok"
   ]
 }
