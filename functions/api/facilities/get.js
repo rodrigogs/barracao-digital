@@ -1,7 +1,6 @@
 const Router = require('@everestate/serverless-router');
 const { HTTP } = require('@everestate/serverless-router-aws');
 const facilitiesService = require('barracao-digital/services/facilities.service');
-const configsService = require('barracao-digital/services/configs.service');
 const { getRequestContext, responseBuilder } = require('../../helpers');
 
 const ENV = process.env.NODE_ENV;
@@ -34,8 +33,8 @@ const dispatch = async (event) => {
       .getAllDestinationsByOrigin(pathParameters.origin)
       .then((destinations) => responseBuilder.success.ok({ body: destinations })))
 
-    .get(`/${ENV}/facilities/origin/:origin/check`, () => configsService.addCepVerified(pathParameters.origin)
-      .then(() => facilitiesService.getOneByDestination(pathParameters.origin))
+    .get(`/${ENV}/facilities/origin/:origin/check`, () => facilitiesService
+      .getOneByDestination(pathParameters.origin)
       .then((facility) => (!facility
         ? responseBuilder.errors.notFound()
         : responseBuilder.success.noContent())));

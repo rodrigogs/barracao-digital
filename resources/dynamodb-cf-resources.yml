@@ -17,7 +17,7 @@ Resources:
         ReadCapacityUnits: 2
         WriteCapacityUnits: 2
       StreamSpecification:
-        StreamViewType: NEW_AND_OLD_IMAGES
+        StreamViewType: NEW_IMAGE
       Tags:
         - Key: NAME
           Value: ${self:custom.configsTableName}
@@ -46,7 +46,7 @@ Resources:
         ReadCapacityUnits: 2
         WriteCapacityUnits: 2
       StreamSpecification:
-        StreamViewType: NEW_AND_OLD_IMAGES
+        StreamViewType: NEW_IMAGE
       GlobalSecondaryIndexes:
         - IndexName: cep
           KeySchema:
@@ -87,7 +87,7 @@ Resources:
         ReadCapacityUnits: 2
         WriteCapacityUnits: 2
       StreamSpecification:
-        StreamViewType: NEW_AND_OLD_IMAGES
+        StreamViewType: NEW_IMAGE
       GlobalSecondaryIndexes:
         - IndexName: originCep
           KeySchema:
@@ -128,7 +128,7 @@ Resources:
         - AttributeName: destination
           KeyType: RANGE
       StreamSpecification:
-        StreamViewType: NEW_AND_OLD_IMAGES
+        StreamViewType: NEW_IMAGE
       GlobalSecondaryIndexes:
         - IndexName: destinationOrigin
           KeySchema:
