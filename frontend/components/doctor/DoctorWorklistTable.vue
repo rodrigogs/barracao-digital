@@ -17,6 +17,11 @@
         <DoctorWorklistFilter v-model="filter" />
       </template>
 
+      <template v-slot:item.isOnline="{ item }">
+        <v-badge v-if="item.isOnline" color="green" title="Online" />
+        <v-badge v-else color="red" title="Offline" />
+      </template>
+
       <template v-slot:item.createdAt="{ item }">
         <span class="subtitle-2">{{ item.ticket }}</span>
         <v-spacer />
@@ -118,11 +123,14 @@ export default {
   },
   data() {
     return {
+      changeEach20Seconds: Date.now(),
+      changeEach20SecondsInterval: null,
       filter: {
         search: '',
         options: {},
       },
       headers: [
+        { value: 'isOnline', sortable: false },
         { text: 'Senha', value: 'createdAt', align: 'start' },
         { text: 'Nome', value: 'name', align: 'start', width: '60%' },
         { value: 'interactions', sortable: false },
@@ -142,6 +150,7 @@ export default {
         )
         .map((patient) => ({
           ...patient,
+          isOnline: patient.keepAlive && patient.keepAlive > Date.now() - 22000,
           waitingTime: this.calculateTimeWaiting(patient),
         }))
     },
@@ -153,6 +162,16 @@ export default {
     'filter.options'() {
       this.updatePatientsQuerySubscription()
     },
+  },
+  mounted() {
+    this.changeEach20SecondsInterval = setInterval(
+      () => (this.changeEach20Seconds = Date.now()),
+      20000
+    )
+  },
+  beforeDestroy() {
+    this.changeEach20SecondsInterval &&
+      clearInterval(this.changeEach20SecondsInterval)
   },
   methods: {
     async updatePatientsQuerySubscription() {
