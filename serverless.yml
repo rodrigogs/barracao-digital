@@ -33,6 +33,7 @@ custom:
   doctorsTableName: ${self:service}-${self:provider.stage}-doctors-table
   patientsTableName: ${self:service}-${self:provider.stage}-patients-table
   facilitiesTableName: ${self:service}-${self:provider.stage}-facilities-table
+  reportsTableName: ${self:service}-${self:provider.stage}-reports-table
 
 provider:
   name: aws
@@ -80,6 +81,7 @@ provider:
     DOCTORS_TABLE: ${self:custom.doctorsTableName}
     PATIENTS_TABLE: ${self:custom.patientsTableName}
     FACILITIES_TABLE: ${self:custom.facilitiesTableName}
+    REPORTS_TABLE: ${self:custom.reportsTableName}
 
 functions:
   # Jobs
@@ -331,6 +333,18 @@ functions:
           path: /facilities/{origin}/destinations
           cors: true
           authorizer: masterAuthorizer
+
+  # Reports
+  reports-post:
+    handler: functions/api/reports/post.handler
+    memorySize: 1024
+    timeout: 30
+    events:
+      - http:
+          method: POST
+          path: /reports/facility/{origin}
+          cors: true
+          authorizer: doctorAuthorizer
 
 resources:
   - ${file(resources/api-gateway-cf-resources.yml)}

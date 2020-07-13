@@ -632,22 +632,22 @@ Outputs:
     Description: The ARN of the firehose delivery stream for Configs
     Value: !GetAtt ConfigsDeliveryStream.Arn
     Export:
-      Name: ${self:custom.stage}-configs-delivery-stream-arn
+      Name: !Sub ConfigsDeliveryStreamArn
 
   DoctorsDeliveryStreamArn:
     Description: The ARN of the firehose delivery stream for Doctors
     Value: !GetAtt DoctorsDeliveryStream.Arn
     Export:
-      Name: ${self:custom.stage}-doctors-delivery-stream-arn
+      Name: !Sub DoctorsDeliveryStreamArn
 
   PatientsDeliveryStreamArn:
     Description: The ARN of the firehose delivery stream for Patients
     Value: !GetAtt PatientsDeliveryStream.Arn
     Export:
-      Name: ${self:custom.stage}-patients-delivery-stream-arn
+      Name: !Sub PatientsDeliveryStreamArn
 
   FacilitiesDeliveryStreamArn:
     Description: The ARN of the firehose delivery stream for Facilities
     Value: !GetAtt FacilitiesDeliveryStream.Arn
     Export:
-      Name: ${self:custom.stage}-facilities-delivery-stream-arn
+      Name: !Sub FacilitiesDeliveryStreamArn

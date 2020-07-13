@@ -158,39 +158,39 @@ Outputs:
   ConfigsTableArn:
     Value: !GetAtt ConfigsTable.Arn
     Export:
-      Name: ${self:custom.stage}-configs-table-arn
+      Name: !Sub ConfigsTableArn
 
   ConfigsTableStreamArn:
     Value: !GetAtt ConfigsTable.StreamArn
     Export:
-      Name: ${self:custom.stage}-configs-table-stream-arn
+      Name: !Sub ConfigsTableStreamArn
 
   DoctorsTableArn:
     Value: !GetAtt DoctorsTable.Arn
     Export:
-      Name: ${self:custom.stage}-doctors-table-arn
+      Name: !Sub DoctorsTableArn
 
   DoctorsTableStreamArn:
     Value: !GetAtt DoctorsTable.StreamArn
     Export:
-      Name: ${self:custom.stage}-doctors-table-stream-arn
+      Name: !Sub DoctorsTableStreamArn
 
   PatientsTableArn:
     Value: !GetAtt PatientsTable.Arn
     Export:
-      Name: ${self:custom.stage}-patients-table-arn
+      Name: !Sub PatientsTableArn
 
   PatientsTableStreamArn:
     Value: !GetAtt PatientsTable.StreamArn
     Export:
-      Name: ${self:custom.stage}-patients-table-stream-arn
+      Name: !Sub PatientsTableStreamArn
 
   FacilitiesTableArn:
     Value: !GetAtt FacilitiesTable.Arn
     Export:
-      Name: ${self:custom.stage}-facilities-table-arn
+      Name: !Sub FacilitiesTableArn
 
   FacilitiesTableStreamArn:
     Value: !GetAtt FacilitiesTable.StreamArn
     Export:
-      Name: ${self:custom.stage}-facilities-table-stream-arn
+      Name: !Sub FacilitiesTableStreamArn

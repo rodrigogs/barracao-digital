@@ -88,7 +88,7 @@ functions:
       - stream:
           type: dynamodb
           arn:
-            Fn::ImportValue: ${self:custom.stage}-configs-table-stream-arn
+            Fn::ImportValue: ConfigsTableStreamArn
           batchSize: 100
           bisectBatchOnFunctionError: true
           startingPosition: LATEST
@@ -101,7 +101,7 @@ functions:
       - stream:
           type: dynamodb
           arn:
-            Fn::ImportValue: ${self:custom.stage}-doctors-table-stream-arn
+            Fn::ImportValue: DoctorsTableStreamArn
           batchSize: 100
           bisectBatchOnFunctionError: true
           startingPosition: LATEST
@@ -114,7 +114,7 @@ functions:
       - stream:
           type: dynamodb
           arn:
-            Fn::ImportValue: ${self:custom.stage}-facilities-table-stream-arn
+            Fn::ImportValue: FacilitiesTableStreamArn
           batchSize: 100
           bisectBatchOnFunctionError: true
           startingPosition: LATEST
@@ -127,7 +127,7 @@ functions:
       - stream:
           type: dynamodb
           arn:
-            Fn::ImportValue: ${self:custom.stage}-patients-table-stream-arn
+            Fn::ImportValue: PatientsTableStreamArn
           batchSize: 100
           bisectBatchOnFunctionError: true
           startingPosition: LATEST
