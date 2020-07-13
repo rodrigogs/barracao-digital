@@ -125,23 +125,18 @@ const searchPatientByTicket = async (api, ticket) => {
     videoSession,
   } = await api.searchPatientByTicket(ticket)
   return {
-    ticket,
-    originCep,
-    name,
-    createdAt,
-    status,
-    ongoingStatus,
-    waiting_kitStatus,
-    finishedStatus,
-    textSession,
-    videoSession,
-  }
-}
-
-const searchFacilityByOrigin = async (api, origin) => {
-  const { cantBeAssistedMessage } = await api.getFacilityByOrigin(origin)
-  return {
-    cantBeAssistedMessage,
+    patient: {
+      ticket,
+      originCep,
+      name,
+      createdAt,
+      status,
+      ongoingStatus,
+      waiting_kitStatus,
+      finishedStatus,
+      textSession,
+      videoSession,
+    },
   }
 }
 
@@ -155,9 +150,7 @@ export default {
   },
   async asyncData({ app, params, error }) {
     try {
-      const patient = await searchPatientByTicket(app.$api, params.ticket)
-      const facility = await searchFacilityByOrigin(app.$api, patient.originCep)
-      return { patient, facility }
+      return await searchPatientByTicket(app.$api, params.ticket)
     } catch (e) {
       error({ message: 'Usuário Inexistente', statusCode: 404 })
     }
@@ -266,8 +259,7 @@ export default {
           component: PatientCantBeAssisted,
           props: {
             name: this.patient.name,
-            ticket: this.patient.ticket,
-            message: this.facility.cantBeAssistedMessage,
+            ticket: this.$route.params.ticket,
           },
         }),
         [PATIENT_STATUS.FACILITY_NOT_AVAILABLE]: () => ({

@@ -251,7 +251,7 @@ export default {
     this.form.contact = this.facility.contact
     this.form.cantBeAssistedMessage =
       this.facility.cantBeAssistedMessage ||
-      'Por favor, anote sua senha de retorno e retorne aqui no site ou aplicativo entre 18 e 21h, que é quando temos um maior número de médicos voluntários on-line. Obrigado pela paciência!'
+      'Anotar sua senha de retorno e voltar aqui no site ou aplicativo entre 18 e 21h, que é quando temos um maior número de médicos voluntários on-line. Obrigado pela paciência!'
   },
   validations: {
     form: {

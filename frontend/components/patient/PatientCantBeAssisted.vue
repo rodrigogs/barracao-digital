@@ -5,7 +5,8 @@
     </p>
 
     <p class="subtitle-1">
-      {{ message }}
+      Mantenha o navegador aberto para ser notificado quando o atendimento
+      normalizar.
     </p>
 
     <v-dialog v-model="dialog" persistent max-width="290">
@@ -47,12 +48,6 @@ export default {
     ticket: {
       type: String,
       required: true,
-    },
-    message: {
-      type: String,
-      required: false,
-      default: () =>
-        'Por favor, anote sua senha de retorno e retorne aqui no site ou aplicativo entre 18 e 21h, que é quando temos um maior número de médicos voluntários on-line. Obrigado pela paciência!',
     },
   },
   data: () => ({
