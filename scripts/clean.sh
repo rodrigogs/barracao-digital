@@ -1,40 +1,63 @@
 #!/bin/bash
 
-# Global
-script_dir=$(dirname "$0")
-processors=$(ps aux --no-heading | wc -l)
-npm install -g concurrently
-
-concurrently\
-  --max-processes "$processors"\
-  --kill-others-on-fail\
-  "cd $script_dir/.. && rm -rf node_modules"\
-  "cd $script_dir/.. && rm -rf package-lock.json"\
-  "cd $script_dir/.. && rm -rf .serverless"\
-  "cd $script_dir/.. && rm -rf dist"\
-  "cd $script_dir/../cep-crawler && rm -rf node_modules"\
-  "cd $script_dir/../cep-crawler && rm -rf package-lock.json"\
-  "cd $script_dir/../lib && rm -rf node_modules"\
-  "cd $script_dir/../lib && rm -rf package-lock.json"\
-  "cd $script_dir/../lib && rm -rf package-lock.json"\
-  "cd $script_dir/../lib/providers/aws && rm -rf node_modules"\
-  "cd $script_dir/../lib/providers/aws && rm -rf package-lock.json"\
-  "cd $script_dir/../lib/providers/aws && rm -rf package-lock.json"\
-  "cd $script_dir/../lib/providers/firebase && rm -rf node_modules"\
-  "cd $script_dir/../lib/providers/firebase && rm -rf package-lock.json"\
-  "cd $script_dir/../lib/providers/gmaps && rm -rf node_modules"\
-  "cd $script_dir/../lib/providers/gmaps && rm -rf package-lock.json"\
-  "cd $script_dir/../lib/providers/opentok && rm -rf node_modules"\
-  "cd $script_dir/../lib/providers/opentok && rm -rf package-lock.json"\
-  "cd $script_dir/../functions && rm -rf node_modules"\
-  "cd $script_dir/../functions && rm -rf package-lock.json"\
-  "cd $script_dir/../functions/processors && rm -rf node_modules"\
-  "cd $script_dir/../functions/processors && rm -rf package-lock.json"\
-  "cd $script_dir/../functions/processors && rm -rf .serverless"\
-  "cd $script_dir/../frontend && rm -rf node_modules"\
-  "cd $script_dir/../frontend && rm -rf package-lock.json"\
-  "cd $script_dir/../frontend && rm -rf yarn.lock"\
-  "cd $script_dir/../frontend && rm -rf dist"\
-  "cd $script_dir/../frontend && rm -rf .nuxt"\
-  "cd $script_dir/../layers/common/nodejs && rm -rf node_modules"\
-  "cd $script_dir/../layers/common/nodejs && rm -rf package-lock-json"
+(
+  # Root
+  rm -rf node_modules
+  rm -rf package-lock.json
+  rm -rf .serverless
+  rm -rf dist
+) &
+(
+  #cep-crawler
+  cd cep-crawler || exit
+  rm -rf node_modules
+  rm -rf package-lock.json
+) &
+(
+  # Lib
+  cd lib || exit
+  rm -rf node_modules
+  rm -rf package-lock.json
+  (
+    cd providers/aws || exit
+    rm -rf node_modules
+    rm -rf package-lock.json
+  ) &
+  (
+    cd providers/firebase || exit
+    rm -rf node_modules
+    rm -rf package-lock.json
+  ) &
+  (
+    cd providers/gmaps || exit
+    rm -rf node_modules
+    rm -rf package-lock.json
+  ) &
+  (
+    cd providers/opentok || exit
+    rm -rf node_modules
+    rm -rf package-lock.json
+  )
+) &
+(
+  # Functions
+  cd functions || exit
+  rm -rf node_modules
+  rm -rf package-lock.json
+) &
+(
+  # Processors
+  cd functions/processors || exit
+  rm -rf node_modules
+  rm -rf package-lock.json
+  rm -rf .serverless
+) &
+(
+  # Frontend
+  cd frontend || exit
+  rm -rf node_modules
+  rm -rf package-lock.json
+  rm -rf yarn.lock
+  rm -rf dist
+  rm -rf .nuxt
+)

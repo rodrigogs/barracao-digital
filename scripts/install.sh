@@ -19,5 +19,4 @@ concurrently\
   "(cd cep-crawler || exit && npm install --production=false)"\
   "(cd lib || exit && npm install --production=false)"\
   "(cd functions || exit && npm install --production=false)"\
-  "(cd frontend || exit && yarn install --production=false)"\
-  "(cd layers/common/nodejs || exit && npm install --production=false)"
+  "(cd frontend || exit && yarn install --production=false)"
