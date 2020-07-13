@@ -53,15 +53,6 @@
             required
           />
 
-          <v-textarea
-            id="cantBeAssistedMessage"
-            v-model="$v.form.cantBeAssistedMessage.$model"
-            :error-messages="cantBeAssistedMessageErrors"
-            label="Mensagem de Barracão fechado*"
-            outlined
-            required
-          />
-
           <v-combobox
             v-if="!insertZipsInBulk"
             v-model="$v.form.destinations.$model"
@@ -166,7 +157,6 @@ export default {
       name: null,
       techDirector: null,
       contact: null,
-      cantBeAssistedMessage: null,
       destinations: null,
     },
   }),
@@ -201,15 +191,6 @@ export default {
       if (!this.$v.form.contact.$dirty) return errors
       !this.$v.form.contact.required &&
         errors.push('Por favor, digite o contato da instalação.')
-      return errors
-    },
-    cantBeAssistedMessageErrors() {
-      const errors = []
-      if (!this.$v.form.cantBeAssistedMessage.$dirty) return errors
-      !this.$v.form.cantBeAssistedMessage.required &&
-        errors.push(
-          'Por favor, digite uma mensagem para ser exibida ao paciente se o Barracão estiver fechado.'
-        )
       return errors
     },
     destinationsErrors() {
@@ -249,9 +230,6 @@ export default {
     this.form.name = this.facility.name
     this.form.techDirector = this.facility.techDirector
     this.form.contact = this.facility.contact
-    this.form.cantBeAssistedMessage =
-      this.facility.cantBeAssistedMessage ||
-      'Anotar sua senha de retorno e voltar aqui no site ou aplicativo entre 18 e 21h, que é quando temos um maior número de médicos voluntários on-line. Obrigado pela paciência!'
   },
   validations: {
     form: {
@@ -266,9 +244,6 @@ export default {
         required,
       },
       contact: {
-        required,
-      },
-      cantBeAssistedMessage: {
         required,
       },
       destinations: {
