@@ -1,6 +1,6 @@
 <template>
   <v-card elevation="0">
-    <v-card-title>
+    <v-card-title class="text-body-2">
       Um médico está entrando em contato com você
     </v-card-title>
 
@@ -50,7 +50,7 @@
       @click:outside="isAlertDialogOpen = false"
     >
       <v-card>
-        <v-card-title class="headline">
+        <v-card-title class="headline text-body-2">
           O médico irá atendê-lo agora
         </v-card-title>
 
@@ -124,45 +124,45 @@ import debounce from '~/utils/debounce'
 export default {
   name: 'PatientOngoing',
   components: {
-    ConversationSession
+    ConversationSession,
   },
   directives: {
-    linkified: linkify
+    linkified: linkify,
   },
   props: {
     patient: {
       type: Object,
-      required: true
+      required: true,
     },
     doctorUsername: {
       type: String,
-      required: true
+      required: true,
     },
     doctorName: {
       type: String,
-      required: true
+      required: true,
     },
     doctorCrm: {
       type: String,
-      required: true
+      required: true,
     },
     doctorState: {
       type: String,
-      required: true
+      required: true,
     },
     doctorMessage: {
       type: String,
-      required: true
+      required: true,
     },
     facilityName: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
   data: () => ({
     isConversationOpen: false,
     isAlertDialogOpen: false,
-    isVideoAllowed: false
+    isVideoAllowed: false,
   }),
   computed: {
     hasActiveConversation() {
@@ -173,12 +173,12 @@ export default {
     },
     videoSession() {
       return this.patient.videoSession
-    }
+    },
   },
   watch: {
     hasActiveConversation() {
       this.updateSmoothly()
-    }
+    },
   },
   methods: {
     openChatOnly() {
@@ -191,10 +191,10 @@ export default {
       this.isAlertDialogOpen = false
       this.isVideoAllowed = true
     },
-    updateSmoothly: debounce(function() {
+    updateSmoothly: debounce(function () {
       this.isAlertDialogOpen = this.hasActiveConversation
       if (!this.hasActiveConversation) this.isConversationOpen = false
-    }, 1500)
-  }
+    }, 1500),
+  },
 }
 </script>

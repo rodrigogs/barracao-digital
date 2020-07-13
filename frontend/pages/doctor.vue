@@ -23,14 +23,14 @@ export default {
   middleware: 'auth',
   components: {
     DoctorStatus,
-    DoctorWorklistTable
+    DoctorWorklistTable,
   },
   data: () => ({
     showTeamStatus: false,
     doctorSubscription: null,
     patientsSubscription: null,
     togglingStatus: false,
-    patients: []
+    patients: [],
   }),
   methods: {
     toggleStatus() {
@@ -38,7 +38,7 @@ export default {
       return this.$api
         .alternateDoctorStatus()
         .catch(() =>
-          this.$toast.error(
+          this.$noty.error(
             'Não foi possivel alterar o status de atendimento, tente novamente mais tarde.'
           )
         )
@@ -47,9 +47,9 @@ export default {
     patientSelected(patient) {
       this.$router.push({
         name: 'doctor-ticket',
-        params: { ticket: patient.ticket }
+        params: { ticket: patient.ticket },
       })
-    }
-  }
+    },
+  },
 }
 </script>

@@ -44,25 +44,25 @@ export default {
   name: 'ConversationSession',
   components: {
     ConversationVideo,
-    ConversationChat
+    ConversationChat,
   },
   props: {
     originCep: {
       type: String,
-      required: true
+      required: true,
     },
     doctorUsername: {
       type: String,
-      required: true
+      required: true,
     },
     patientTicket: {
       type: String,
-      required: true
+      required: true,
     },
     isDoctor: {
       type: Boolean,
-      default: () => false
-    }
+      default: () => false,
+    },
   },
   data: () => ({
     isVideoReady: false,
@@ -72,7 +72,7 @@ export default {
     doctorSubscription: null,
     patientSubscription: null,
     isVideoAuthorized: false,
-    videoKey: Math.random()
+    videoKey: Math.random(),
   }),
   computed: {
     videoSession() {
@@ -97,7 +97,7 @@ export default {
       return this.isDoctor
         ? this.patient && this.patient.name
         : this.doctor && this.doctor.name
-    }
+    },
   },
   watch: {
     videoSession(newVideoSession, oldVideoSession) {
@@ -116,7 +116,7 @@ export default {
         this.isVideoAuthorized = false
         return this.confirmVideoChat()
       }
-    }
+    },
   },
   async mounted() {
     try {
@@ -136,7 +136,7 @@ export default {
   methods: {
     ...mapActions('chat', {
       sendChatMessage: 'sendMessage',
-      informPatientCanceledVideo: 'informPatientCanceledVideo'
+      informPatientCanceledVideo: 'informPatientCanceledVideo',
     }),
     async syncData() {
       const facilityRef = this.$fireStore
@@ -162,12 +162,12 @@ export default {
           this.patientSubscription = patientRef.onSnapshot((doc) => {
             const patient = doc.data()
             if (patient.canceledVideo && this.isDoctor) {
-              this.$toast.info('O paciente cancelou a chamada de vídeo')
+              this.$noty.info('O paciente encerrou a chamada de vídeo')
             }
             this.patient = patient
             resolve()
           }, reject)
-        })
+        }),
       ])
     },
     setVideoReady(ready) {
@@ -177,7 +177,7 @@ export default {
       return Promise.resolve().then(() => {
         if (this.isDoctor) {
           return this.$api.deleteConversationSession(this.patient.ticket, {
-            video: true
+            video: true,
           })
         }
         return this.$api.deleteVideoSession(this.patient.ticket).then(() => {
@@ -185,7 +185,7 @@ export default {
           return this.informPatientCanceledVideo({
             originCep: this.patient.originCep,
             doctorUsername: this.doctorUsername,
-            patientTicket: this.patientTicket
+            patientTicket: this.patientTicket,
           })
         })
       })
@@ -195,11 +195,11 @@ export default {
     },
     async confirmVideoChat() {
       this.isVideoAuthorized = await this.$dialog.confirm({
-        text: 'O médico deseja iniciar uma chamada de vídeo. Você autoriza?'
+        text: 'O médico deseja iniciar uma chamada de vídeo. Você autoriza?',
       })
       if (!this.isVideoAuthorized) await this.deleteVideoSession()
-    }
-  }
+    },
+  },
 }
 </script>
 

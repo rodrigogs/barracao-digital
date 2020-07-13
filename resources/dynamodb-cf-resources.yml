@@ -1,0 +1,196 @@
+Resources:
+  ConfigsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: ${self:custom.configsTableName}
+      AttributeDefinitions:
+        - AttributeName: partition
+          AttributeType: S
+        - AttributeName: sort
+          AttributeType: S
+      KeySchema:
+        - AttributeName: partition
+          KeyType: HASH
+        - AttributeName: sort
+          KeyType: RANGE
+      ProvisionedThroughput:
+        ReadCapacityUnits: 2
+        WriteCapacityUnits: 2
+      StreamSpecification:
+        StreamViewType: NEW_AND_OLD_IMAGES
+      Tags:
+        - Key: NAME
+          Value: ${self:custom.configsTableName}
+        - Key: STACK
+          Value: ${self:service}
+        - Key: STAGE
+          Value: ${self:custom.stage}
+        - Key: REGION
+          Value: ${self:custom.region}
+
+  DoctorsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: ${self:custom.doctorsTableName}
+      AttributeDefinitions:
+        - AttributeName: username
+          AttributeType: S
+        - AttributeName: sort
+          AttributeType: S
+        - AttributeName: cep
+          AttributeType: S
+      KeySchema:
+        - AttributeName: username
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 2
+        WriteCapacityUnits: 2
+      StreamSpecification:
+        StreamViewType: NEW_AND_OLD_IMAGES
+      GlobalSecondaryIndexes:
+        - IndexName: cep
+          KeySchema:
+            - AttributeName: cep
+              KeyType: HASH
+            - AttributeName: sort
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+          ProvisionedThroughput:
+            ReadCapacityUnits: 2
+            WriteCapacityUnits: 2
+      Tags:
+        - Key: NAME
+          Value: ${self:custom.doctorsTableName}
+        - Key: STACK
+          Value: ${self:service}
+        - Key: STAGE
+          Value: ${self:custom.stage}
+        - Key: REGION
+          Value: ${self:custom.region}
+
+  PatientsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: ${self:custom.patientsTableName}
+      AttributeDefinitions:
+        - AttributeName: ticket
+          AttributeType: S
+        - AttributeName: originCep
+          AttributeType: S
+        - AttributeName: sort
+          AttributeType: S
+      KeySchema:
+        - AttributeName: ticket
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 2
+        WriteCapacityUnits: 2
+      StreamSpecification:
+        StreamViewType: NEW_AND_OLD_IMAGES
+      GlobalSecondaryIndexes:
+        - IndexName: originCep
+          KeySchema:
+            - AttributeName: originCep
+              KeyType: HASH
+            - AttributeName: sort
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+          ProvisionedThroughput:
+            ReadCapacityUnits: 2
+            WriteCapacityUnits: 2
+      Tags:
+        - Key: NAME
+          Value: ${self:custom.patientsTableName}
+        - Key: STACK
+          Value: ${self:service}
+        - Key: STAGE
+          Value: ${self:custom.stage}
+        - Key: REGION
+          Value: ${self:custom.region}
+
+  FacilitiesTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: ${self:custom.facilitiesTableName}
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: origin
+          AttributeType: S
+        - AttributeName: destination
+          AttributeType: S
+        - AttributeName: type
+          AttributeType: S
+      KeySchema:
+        - AttributeName: origin
+          KeyType: HASH
+        - AttributeName: destination
+          KeyType: RANGE
+      StreamSpecification:
+        StreamViewType: NEW_AND_OLD_IMAGES
+      GlobalSecondaryIndexes:
+        - IndexName: destinationOrigin
+          KeySchema:
+            - AttributeName: destination
+              KeyType: HASH
+            - AttributeName: origin
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+        - IndexName: type
+          KeySchema:
+            - AttributeName: type
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+      Tags:
+        - Key: NAME
+          Value: ${self:custom.facilitiesTableName}
+        - Key: STACK
+          Value: ${self:service}
+        - Key: STAGE
+          Value: ${self:custom.stage}
+        - Key: REGION
+          Value: ${self:custom.region}
+
+Outputs:
+  ConfigsTableArn:
+    Value: !GetAtt ConfigsTable.Arn
+    Export:
+      Name: ${self:custom.stage}-configs-table-arn
+
+  ConfigsTableStreamArn:
+    Value: !GetAtt ConfigsTable.StreamArn
+    Export:
+      Name: ${self:custom.stage}-configs-table-stream-arn
+
+  DoctorsTableArn:
+    Value: !GetAtt DoctorsTable.Arn
+    Export:
+      Name: ${self:custom.stage}-doctors-table-arn
+
+  DoctorsTableStreamArn:
+    Value: !GetAtt DoctorsTable.StreamArn
+    Export:
+      Name: ${self:custom.stage}-doctors-table-stream-arn
+
+  PatientsTableArn:
+    Value: !GetAtt PatientsTable.Arn
+    Export:
+      Name: ${self:custom.stage}-patients-table-arn
+
+  PatientsTableStreamArn:
+    Value: !GetAtt PatientsTable.StreamArn
+    Export:
+      Name: ${self:custom.stage}-patients-table-stream-arn
+
+  FacilitiesTableArn:
+    Value: !GetAtt FacilitiesTable.Arn
+    Export:
+      Name: ${self:custom.stage}-facilities-table-arn
+
+  FacilitiesTableStreamArn:
+    Value: !GetAtt FacilitiesTable.StreamArn
+    Export:
+      Name: ${self:custom.stage}-facilities-table-stream-arn

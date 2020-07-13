@@ -18,38 +18,38 @@ import ConversationChatHistoryMessage from '~/components/conversation/Conversati
 export default {
   name: 'ConversationChatHistory',
   components: {
-    ConversationChatHistoryMessage
+    ConversationChatHistoryMessage,
   },
   props: {
     doctor: {
       type: Object,
-      required: true
+      required: true,
     },
     patient: {
       type: Object,
-      required: true
+      required: true,
     },
     isDoctor: {
       type: Boolean,
-      required: true
+      required: true,
     },
     messages: {
       type: Array,
-      required: true
-    }
+      required: true,
+    },
   },
   data: () => ({
-    scrollDownTimeout: null
+    scrollDownTimeout: null,
   }),
   computed: {
     noMessages() {
       return !this.messages || !this.messages.length
-    }
+    },
   },
   watch: {
     messages() {
       this.scrollDown()
-    }
+    },
   },
   mounted() {
     if (this.messages.length) this.scrollDown()
@@ -67,8 +67,8 @@ export default {
           this.$refs.history.scrollTop = this.$refs.history.scrollHeight
         clearTimeout(this.scrollDownTimeout)
       }, 400)
-    }
-  }
+    },
+  },
 }
 </script>
 

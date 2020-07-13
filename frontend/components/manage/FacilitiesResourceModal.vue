@@ -53,6 +53,15 @@
             required
           />
 
+          <v-textarea
+            id="cantBeAssistedMessage"
+            v-model="$v.form.cantBeAssistedMessage.$model"
+            :error-messages="cantBeAssistedMessageErrors"
+            label="Mensagem de Barracão fechado*"
+            outlined
+            required
+          />
+
           <v-combobox
             v-if="!insertZipsInBulk"
             v-model="$v.form.destinations.$model"
@@ -137,12 +146,12 @@ export default {
   props: {
     facility: {
       type: Object,
-      required: true
+      required: true,
     },
     submit: {
       type: Function,
-      required: true
-    }
+      required: true,
+    },
   },
   data: () => ({
     isCreating: false,
@@ -157,8 +166,9 @@ export default {
       name: null,
       techDirector: null,
       contact: null,
-      destinations: null
-    }
+      cantBeAssistedMessage: null,
+      destinations: null,
+    },
   }),
   computed: {
     originErrors() {
@@ -193,20 +203,29 @@ export default {
         errors.push('Por favor, digite o contato da instalação.')
       return errors
     },
+    cantBeAssistedMessageErrors() {
+      const errors = []
+      if (!this.$v.form.cantBeAssistedMessage.$dirty) return errors
+      !this.$v.form.cantBeAssistedMessage.required &&
+        errors.push(
+          'Por favor, digite uma mensagem para ser exibida ao paciente se o Barracão estiver fechado.'
+        )
+      return errors
+    },
     destinationsErrors() {
       const errors = []
       if (!this.$v.form.destinations.$dirty) return errors
       !this.$v.form.destinations.onlyNumbers &&
         errors.push('Por favor, digite apenas números.')
-      !this.$v.form.destinations.validZips &&
-        errors.push('Um ou mais CPFs digitados são inválidos.')
+      // !this.$v.form.destinations.validZips &&
+      //   errors.push('Um ou mais CPFs digitados são inválidos.')
       return errors
-    }
+    },
   },
   watch: {
     insertZipsInBulk(trueOrFalse) {
       if (trueOrFalse) this.zipsBulk = this.form.destinations.join(',')
-    }
+    },
   },
   mounted() {
     this.isLoadingDestinations = true
@@ -230,21 +249,27 @@ export default {
     this.form.name = this.facility.name
     this.form.techDirector = this.facility.techDirector
     this.form.contact = this.facility.contact
+    this.form.cantBeAssistedMessage =
+      this.facility.cantBeAssistedMessage ||
+      'Por favor, anote sua senha de retorno e retorne aqui no site ou aplicativo entre 18 e 21h, que é quando temos um maior número de médicos voluntários on-line. Obrigado pela paciência!'
   },
   validations: {
     form: {
       origin: {
         required,
-        zip
+        zip,
       },
       name: {
-        required
+        required,
       },
       techDirector: {
-        required
+        required,
       },
       contact: {
-        required
+        required,
+      },
+      cantBeAssistedMessage: {
+        required,
       },
       destinations: {
         onlyNumbers: (values) => {
@@ -252,9 +277,9 @@ export default {
         },
         validZips: (values) => {
           return values.every(zip)
-        }
-      }
-    }
+        },
+      },
+    },
   },
   methods: {
     edit() {
@@ -268,7 +293,7 @@ export default {
     validateAndSubmit() {
       this.$v.form.$touch()
       if (this.$v.form.$invalid) {
-        return this.$toast.error(
+        return this.$noty.error(
           'Existem erros no formulário, revise-os antes de seguir.'
         )
       }
@@ -290,7 +315,7 @@ export default {
       const facility = {
         ...this.form,
         origin: unmaskText(this.form.origin),
-        destinations: []
+        destinations: [],
       }
 
       return this.submit(
@@ -306,7 +331,7 @@ export default {
         .finally(() => {
           this.isLoading = false
         })
-    }
-  }
+    },
+  },
 }
 </script>

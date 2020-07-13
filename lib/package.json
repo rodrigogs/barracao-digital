@@ -11,18 +11,14 @@
   },
   "dependencies": {
     "axios": "^0.19.2",
-    "uuid": "^8.0.0"
-  },
-  "devDependencies": {
-    "eslint": "^7.0.0",
-    "eslint-config-airbnb-base": "^14.1.0",
-    "eslint-plugin-import": "^2.20.2",
-    "jest": "^26.0.1"
+    "node-emoji": "^1.10.0",
+    "uuid": "^8.2.0"
   },
   "submodules": [
     "providers/aws",
     "providers/firebase",
     "providers/gmaps",
-    "providers/opentok"
+    "providers/opentok",
+    "providers/telegram"
   ]
 }

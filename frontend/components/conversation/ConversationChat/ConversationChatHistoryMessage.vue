@@ -46,29 +46,29 @@ import avatarUtil from '@/utils/avatar'
 export default {
   name: 'ConversationChatHistoryMessage',
   directives: {
-    linkified: linkify
+    linkified: linkify,
   },
   props: {
     doctor: {
       type: Object,
-      required: true
+      required: true,
     },
     patient: {
       type: Object,
-      required: true
+      required: true,
     },
     isDoctor: {
       type: Boolean,
-      required: true
+      required: true,
     },
     message: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
   data: () => ({
     avatar: '',
-    show: false
+    show: false,
   }),
   computed: {
     isMessageFromMe() {
@@ -86,7 +86,7 @@ export default {
     },
     colStyle() {
       return this.isMessageFromMe ? 'd-flex justify-end' : ''
-    }
+    },
   },
   async mounted() {
     if (
@@ -112,8 +112,8 @@ export default {
     formatDate(timestamp) {
       if (!timestamp) return
       return format(timestamp, 'dd/MM/y hh:mm')
-    }
-  }
+    },
+  },
 }
 </script>
 

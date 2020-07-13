@@ -40,12 +40,12 @@ export default {
   directives: { mask },
   data: () => ({
     ticket: '',
-    isLoading: false
+    isLoading: false,
   }),
   validations: {
     ticket: {
-      required
-    }
+      required,
+    },
   },
   computed: {
     ticketErrors() {
@@ -54,7 +54,7 @@ export default {
       !this.$v.ticket.required &&
         errors.push('Por favor, digite a sua senha de retorno.')
       return errors
-    }
+    },
   },
   methods: {
     async checkPatient() {
@@ -63,7 +63,7 @@ export default {
         return true
       } catch (err) {
         if (err.response && err.response.status === 404) {
-          this.$toast.error('Não existe um paciente cadastrado para esta senha')
+          this.$noty.error('Não existe um paciente cadastrado para esta senha')
         }
         return false
       }
@@ -72,7 +72,7 @@ export default {
     async validateForm() {
       this.$v.$touch()
       if (this.$v.$invalid) {
-        return this.$toast.error(
+        return this.$noty.error(
           'Existem erros no formulário, revise-os antes de seguir.'
         )
       }
@@ -87,13 +87,13 @@ export default {
       this.$router.push(
         {
           name: 'patient-ticket',
-          params: { ticket: this.ticket }
+          params: { ticket: this.ticket },
         },
         () => {
           this.isLoading = false
         }
       )
-    }
-  }
+    },
+  },
 }
 </script>

@@ -63,7 +63,7 @@ const getAllFacilities = ($api, lastEvaluatedKey = '') =>
     ({ items = [], lastEvaluatedKey = '' }) => ({
       facilities: items,
       lastEvaluatedKey: lastEvaluatedKey || '',
-      isPaginationFinished: !lastEvaluatedKey
+      isPaginationFinished: !lastEvaluatedKey,
     }),
     (error) => Promise.reject(error)
   )
@@ -71,7 +71,7 @@ const getAllFacilities = ($api, lastEvaluatedKey = '') =>
 export default {
   middleware: ['auth', 'isAdminOrMaster'],
   components: {
-    FacilitiesResourceModal
+    FacilitiesResourceModal,
   },
   asyncData({ app, error }) {
     return getAllFacilities(app.$api).then(
@@ -94,8 +94,8 @@ export default {
       { text: 'Diretor técnico', value: 'techDirector' },
       { text: 'Contato', value: 'contact' },
       { text: 'Ativa?', value: 'active' },
-      { text: '', value: 'actions', sortable: false }
-    ]
+      { text: '', value: 'actions', sortable: false },
+    ],
   }),
   methods: {
     handleNextPageRequest($loadingState) {
@@ -108,14 +108,14 @@ export default {
           ({
             facilities = [],
             lastEvaluatedKey = '',
-            isPaginationFinished = true
+            isPaginationFinished = true,
           }) => {
             this.facilities = R.uniq([...this.facilities, ...facilities])
             this.lastEvaluatedKey = lastEvaluatedKey
             this.isPaginationFinished = isPaginationFinished
           },
           () => {
-            this.$toast.error(
+            this.$noty.error(
               'Ocorreu um erro ao tentar consultar as instalações, tente novamente mais tarde'
             )
           }
@@ -139,7 +139,7 @@ export default {
 
       const opFunction = {
         add: this.$api.updateFacility,
-        remove: this.$api.deleteFacilityDestinations
+        remove: this.$api.deleteFacilityDestinations,
       }[operation]
 
       const processor = (destinations) =>
@@ -148,7 +148,7 @@ export default {
       await promisePool({
         generator: generator(),
         processor,
-        concurrency: 3
+        concurrency: 3,
       })
     },
     async facilitySave(
@@ -163,7 +163,7 @@ export default {
           updatedFacility = await this.$api.createFacility(facility)
           this.lastEvaluatedKey = ''
           await this.handleNextPageRequest()
-          this.$toast.success('Instalação salva com sucesso')
+          this.$noty.success('Instalação salva com sucesso')
         } else {
           updatedFacility = await this.$api.updateFacility(
             this.selectedFacility.origin,
@@ -171,10 +171,10 @@ export default {
           )
           const index = this._findFacilityIndex(this.selectedFacility.origin)
           this.$set(this.facilities, index, facility)
-          this.$toast.success('Instalação atualizada com sucesso')
+          this.$noty.success('Instalação atualizada com sucesso')
         }
 
-        this.$toast.info('Atualizando CEPs de destino...')
+        this.$noty.info('Atualizando CEPs de destino...')
 
         await this.updateDestinations(
           updatedFacility.origin,
@@ -187,7 +187,7 @@ export default {
           'remove'
         )
 
-        this.$toast.success('CEPs de destino atualizados com sucesso')
+        this.$noty.success('CEPs de destino atualizados com sucesso')
 
         const index = this._findFacilityIndex(updatedFacility.origin)
         if (index !== -1) {
@@ -197,7 +197,7 @@ export default {
         }
       } catch (error) {
         const message = R.path(['response', 'data', 'message'], error) || error
-        this.$toast.error(message)
+        this.$noty.error(message)
         return Promise.reject(error)
       }
     },
@@ -206,7 +206,7 @@ export default {
         origin: '',
         contact: '',
         contactType: '',
-        destination: []
+        destination: [],
       }
     },
     edit(item) {
@@ -215,7 +215,7 @@ export default {
     async remove({ origin }) {
       if (
         !(await this.$dialog.confirm({
-          text: `Deletar a instalação ${origin}?`
+          text: `Deletar a instalação ${origin}?`,
         }))
       )
         return
@@ -223,7 +223,7 @@ export default {
       const index = this._findFacilityIndex(origin)
 
       if (index === -1) {
-        this.$toast.error('Você não pode deletar esta instalação')
+        this.$noty.error('Você não pode deletar esta instalação')
         return
       }
 
@@ -232,10 +232,10 @@ export default {
         .then(
           () => {
             this.$delete(this.facilities, index)
-            this.$toast.success('Instalação removida com sucesso')
+            this.$noty.success('Instalação removida com sucesso')
           },
           () =>
-            this.$toast.error(
+            this.$noty.error(
               'Ocorreu um erro ao tentar deletar esta instalação, tente novamente mais tarde'
             )
         )
@@ -245,7 +245,7 @@ export default {
     },
     _findFacilityIndex(origin) {
       return this.facilities.findIndex((facility) => facility.origin === origin)
-    }
-  }
+    },
+  },
 }
 </script>
