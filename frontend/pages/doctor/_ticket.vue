@@ -47,11 +47,11 @@ export default {
         })
         .then(
           (patient) => {
-            this.$noty.success('Status do paciente alterado com sucesso.')
+            this.$toast.success('Status do paciente alterado com sucesso.')
             this.patient = patient
           },
           (error) => {
-            this.$noty.error(
+            this.$toast.error(
               'Não foi possível alterar o status do paciente, tente novamente mais tarde.'
             )
             return Promise.reject(error)

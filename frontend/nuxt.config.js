@@ -102,7 +102,7 @@ export default {
    ** Plugins to load before mounting the App
    */
   plugins: [
-    '~/plugins/noty',
+    '~/plugins/vuetify-toast',
     '~/plugins/vuelidate',
     '~/plugins/vue-the-mask',
     '~/plugins/vue-cookie',

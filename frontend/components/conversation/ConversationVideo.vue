@@ -67,7 +67,7 @@ export default {
   methods: {
     errorHandler(err) {
       this.$sentry.captureException(err)
-      this.$noty.error(
+      this.$toast.error(
         'Ocorreu um erro ao tentar iniciar chat por video, por favor tente recarregar a página.'
       )
     },

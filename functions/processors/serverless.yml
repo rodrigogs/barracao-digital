@@ -13,7 +13,7 @@ custom:
     externals:
       - aws-sdk
     linting: false
-  stage: ${opt:stage, env:NODE_ENV, 'development'}
+  stage: ${opt:stage, 'development'}
   region: ${opt:region, 'sa-east-1'}
   configsDeliveryStreamName: ${self:app}-${self:provider.stage}-configs-delivery-stream
   doctorsDeliveryStreamName: ${self:app}-${self:provider.stage}-doctors-delivery-stream

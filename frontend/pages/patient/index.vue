@@ -63,7 +63,7 @@ export default {
         return true
       } catch (err) {
         if (err.response && err.response.status === 404) {
-          this.$noty.error('Não existe um paciente cadastrado para esta senha')
+          this.$toast.error('Não existe um paciente cadastrado para esta senha')
         }
         return false
       }
@@ -72,7 +72,7 @@ export default {
     async validateForm() {
       this.$v.$touch()
       if (this.$v.$invalid) {
-        return this.$noty.error(
+        return this.$toast.error(
           'Existem erros no formulário, revise-os antes de seguir.'
         )
       }

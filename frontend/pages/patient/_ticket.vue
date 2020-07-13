@@ -315,11 +315,11 @@ export default {
         .savePatientFeedback(this.$route.params.ticket, rating)
         .then(
           (patient) => {
-            this.$noty.success('Sua avaliação foi enviada com sucesso.')
+            this.$toast.success('Sua avaliação foi enviada com sucesso.')
             this.patient = patient
           },
           (error) => {
-            this.$noty.error(
+            this.$toast.error(
               'Desculpe, ocorreu um erro, tente avaliar novamente mais tarde.'
             )
             return Promise.reject(error)

@@ -76,7 +76,7 @@ export default {
     validateForm() {
       this.$v.$touch()
       if (this.$v.$invalid) {
-        return this.$noty.error(
+        return this.$toast.error(
           'Existem erros no formulário, revise-os antes de seguir.'
         )
       }
@@ -91,7 +91,7 @@ export default {
         })
         .then(
           () => {
-            this.$noty.success('Login efetuado com sucesso')
+            this.$toast.success('Login efetuado com sucesso')
             return this.$router.push({
               name: 'doctor'
             })
@@ -100,9 +100,9 @@ export default {
             const status = R.path(['response', 'status'], error)
 
             if (status && status === 401)
-              this.$noty.error('Usuário ou senha incorretos.')
+              this.$toast.error('Usuário ou senha incorretos.')
             else
-              this.$noty.error(
+              this.$toast.error(
                 'Ocorreu um erro durante a autenticação, tente novamente mais tarde'
               )
           }

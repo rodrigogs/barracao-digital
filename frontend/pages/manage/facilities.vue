@@ -115,7 +115,7 @@ export default {
             this.isPaginationFinished = isPaginationFinished
           },
           () => {
-            this.$noty.error(
+            this.$toast.error(
               'Ocorreu um erro ao tentar consultar as instalações, tente novamente mais tarde'
             )
           }
@@ -163,7 +163,7 @@ export default {
           updatedFacility = await this.$api.createFacility(facility)
           this.lastEvaluatedKey = ''
           await this.handleNextPageRequest()
-          this.$noty.success('Instalação salva com sucesso')
+          this.$toast.success('Instalação salva com sucesso')
         } else {
           updatedFacility = await this.$api.updateFacility(
             this.selectedFacility.origin,
@@ -171,10 +171,10 @@ export default {
           )
           const index = this._findFacilityIndex(this.selectedFacility.origin)
           this.$set(this.facilities, index, facility)
-          this.$noty.success('Instalação atualizada com sucesso')
+          this.$toast.success('Instalação atualizada com sucesso')
         }
 
-        this.$noty.info('Atualizando CEPs de destino...')
+        this.$toast.info('Atualizando CEPs de destino...')
 
         await this.updateDestinations(
           updatedFacility.origin,
@@ -187,7 +187,7 @@ export default {
           'remove'
         )
 
-        this.$noty.success('CEPs de destino atualizados com sucesso')
+        this.$toast.success('CEPs de destino atualizados com sucesso')
 
         const index = this._findFacilityIndex(updatedFacility.origin)
         if (index !== -1) {
@@ -197,7 +197,7 @@ export default {
         }
       } catch (error) {
         const message = R.path(['response', 'data', 'message'], error) || error
-        this.$noty.error(message)
+        this.$toast.error(message)
         return Promise.reject(error)
       }
     },
@@ -223,7 +223,7 @@ export default {
       const index = this._findFacilityIndex(origin)
 
       if (index === -1) {
-        this.$noty.error('Você não pode deletar esta instalação')
+        this.$toast.error('Você não pode deletar esta instalação')
         return
       }
 
@@ -232,10 +232,10 @@ export default {
         .then(
           () => {
             this.$delete(this.facilities, index)
-            this.$noty.success('Instalação removida com sucesso')
+            this.$toast.success('Instalação removida com sucesso')
           },
           () =>
-            this.$noty.error(
+            this.$toast.error(
               'Ocorreu um erro ao tentar deletar esta instalação, tente novamente mais tarde'
             )
         )

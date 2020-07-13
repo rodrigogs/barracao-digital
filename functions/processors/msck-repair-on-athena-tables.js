@@ -4,7 +4,7 @@ import { Athena } from 'aws-sdk';
 const athena = new Athena();
 
 const loadPartitions = (entity) => athena.startQueryExecution({
-  QueryString: `MSCK REPAIR TABLE barracao_digital_${process.env.STAGE}_events_lake_glue_database.${entity}`,
+  QueryString: `MSCK REPAIR TABLE barracao_digital_development_events_lake_glue_database.${entity}`,
   ResultConfiguration: {
     OutputLocation: `s3://barracao-digital-${process.env.STAGE}-query-results-bucket`,
   },
