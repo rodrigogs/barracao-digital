@@ -267,6 +267,8 @@ export default {
           component: PatientCantBeAssisted,
           props: {
             name: this.patient.name,
+            createdAt: this.patient.createdAt,
+            originCep: this.patient.originCep,
             ticket: this.patient.ticket,
             message: this.facility.cantBeAssistedMessage,
           },
