@@ -322,7 +322,6 @@ functions:
           method: GET
           path: /facilities/origin/{origin}
           cors: true
-          authorizer: doctorAuthorizer
 
       - http:
           method: GET
