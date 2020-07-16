@@ -1,8 +1,7 @@
 {
   "name": "barracao-digital",
   "version": "1.2.6",
-  "description": "My splendid Nuxt.js project",
-  "author": "Daniel Kuroski",
+  "description": "Estruturação rápida de “postos de triagem” virtuais descentralizados para redução de visitas desnecessárias às emergências",
   "private": true,
   "scripts": {
     "dev": "nuxt",
