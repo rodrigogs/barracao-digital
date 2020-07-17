@@ -323,6 +323,7 @@ functions:
           method: PUT
           path: /patients/{ticket}/messaging/sms
           cors: true
+          authorizer: doctorAuthorizer
 
   patientsDelete:
     handler: functions/api/patients/delete.handler
