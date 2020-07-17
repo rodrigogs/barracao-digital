@@ -66,6 +66,10 @@ provider:
       Action:
         - 'lambda:*'
       Resource: '*'
+    - Effect: Allow
+      Action:
+        - 'sns:*'
+      Resource: '*'
   deploymentBucket:
     name: ${self:service}-deploys
     maxPreviousDeploymentArtifacts: 10 # On every deployment the framework prunes the bucket to remove artifacts older than this limit. The default is 5
@@ -292,6 +296,11 @@ functions:
       - http:
           method: PUT
           path: /patients/{ticket}/messaging/token
+          cors: true
+
+      - http:
+          method: PUT
+          path: /patients/{ticket}/messaging/sms
           cors: true
 
   patientsDelete:
