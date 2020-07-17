@@ -5,16 +5,7 @@
         v-if="patientVideoSession"
         class="conversation__video grey lighten-3"
       >
-        <ConversationVideo
-          v-if="videoSession && (isDoctor || isVideoAuthorized)"
-          :key="videoKey"
-          ref="video"
-          :session-id="videoSession.sessionId"
-          :token="videoSession.token"
-          :is-publisher="isDoctor"
-          @video-ready="setVideoReady"
-          @disconnection="deleteVideoSession"
-        />
+        <ConversationWebRTC ref="webrtc" :ticket="patientTicket" />
       </div>
 
       <ConversationChat
@@ -35,16 +26,21 @@
 </template>
 
 <script>
+import * as io from 'socket.io-client'
 import { mapActions } from 'vuex'
 import promiseDelay from '~/utils/promiseDelay'
-import ConversationVideo from '~/components/conversation/ConversationVideo'
+// import ConversationVideo from '~/components/conversation/ConversationVideo'
 import ConversationChat from '~/components/conversation/ConversationChat'
+import ConversationWebRTC from '~/components/conversation/ConversationWebRTC'
+
+window.io = io // FIXME https://github.com/westonsoftware/vue-webrtc/issues/5
 
 export default {
   name: 'ConversationSession',
   components: {
-    ConversationVideo,
+    // ConversationVideo,
     ConversationChat,
+    ConversationWebRTC,
   },
   props: {
     originCep: {
