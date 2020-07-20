@@ -51,90 +51,22 @@
       class="mt-1 mb-12"
     ></v-progress-linear>
 
-    <v-card>
-      <v-card-title>
-        Enquanto espera, informe-se
-      </v-card-title>
-      <v-card-subtitle>
-        Mantenha-se atualizado sobre o COVID-19 por fontes confiáveis.
-      </v-card-subtitle>
-      <v-card-text>
-        <v-row>
-          <v-col cols="6">
-            <ul>
-              <li>
-                <a
-                  href="https://www.gov.br/pt-br/noticias/saude-e-vigilancia-sanitaria/2020/03/coronavirus-brasil-fortalece-rede-de-diagnostico-da-doenca/app-coronavirus.png/image_view_fullscreen"
-                  target="_blank"
-                  data-content="https://www.gov.br/pt-br/noticias/saude-e-vigilancia-sanitaria/2020/03/coronavirus-brasil-fortalece-rede-de-diagnostico-da-doenca/app-coronavirus.png/image_view_fullscreen"
-                  data-type="external"
-                  rel="noopener"
-                  >Aplicativo Coronavírus-SUS para celular</a
-                >
-              </li>
-              <li>
-                <span>Website da</span>
-                <a
-                  href="https://www.paho.org/bra/index.php?option=com_content&amp;view=article&amp;id=6101:folha-informativa-novo-coronavirus-2019-ncov&amp;Itemid=875"
-                  target="_blank"
-                  data-content="https://www.paho.org/bra/index.php?option=com_content&amp;view=article&amp;id=6101:folha-informativa-novo-coronavirus-2019-ncov&amp;Itemid=875"
-                  data-type="external"
-                  rel="noopener"
-                >
-                  Organização Panamericana da Saúde/Organização Mundial da Saúde
-                </a>
-              </li>
-              <li>
-                <span>Website do</span>
-                <a
-                  href="https://coronavirus.saude.gov.br/"
-                  target="_blank"
-                  data-content="https://coronavirus.saude.gov.br/"
-                  data-type="external"
-                  rel="noopener"
-                >
-                  Ministério da Saúde
-                </a>
-              </li>
-              <li>
-                <span>Website da</span>
-                <a
-                  href="https://www.infectologia.org.br/pg/1567/comunicados-e-notas-da-sbi-referente-ao-novo-coronavrus"
-                  target="_blank"
-                  data-content="https://www.infectologia.org.br/pg/1567/comunicados-e-notas-da-sbi-referente-ao-novo-coronavrus"
-                  data-type="external"
-                  rel="noopener"
-                >
-                  Sociedade Brasileira de Infectologia
-                </a>
-              </li>
-            </ul>
-          </v-col>
-
-          <v-col cols="6">
-            <iframe
-              width="510"
-              height="265"
-              src="https://www.youtube-nocookie.com/embed/rvbKRtzpAcg"
-              frameborder="0"
-              allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen
-            ></iframe>
-          </v-col>
-        </v-row>
-      </v-card-text>
-    </v-card>
+    <WhileWaitingInfo />
   </div>
 </template>
 
 <script>
 import Kairos from 'kairos'
+import WhileWaitingInfo from './WhileWaitingInfo'
 import { PATIENT_STATUS } from '~/constants'
 
 const ONE_SECOND = 1000
 
 export default {
   name: 'PatientCantBeAssisted',
+  components: {
+    WhileWaitingInfo,
+  },
   props: {
     name: {
       type: String,

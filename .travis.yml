@@ -11,10 +11,10 @@ install:
   - chmod +x ./scripts/after_deploy.js
 
 script:
-  - npm run deploy:travis
+#  - npm run deploy:travis
 
 after_success:
-  - npm run deploy:after
+#  - npm run deploy:after
 
 branches:
   only:
