@@ -15,11 +15,13 @@ fi
 
 echo -e "${BOLD}${YELLOW}Installing frontend dependencies...${RESET}"
 npm run install:frontend
+script_dir=$(dirname "$0")
+echo $ANDROID_DIGITAL_ASSET_LINKS | base64 --decode >> "$script_dir/../frontend/static/.well-known/assetlinks.json"
 echo -e "${BOLD}${YELLOW}Building frontend...${RESET}"
 npm run build:frontend
 echo -e "${BOLD}${YELLOW}Deploying frontend...${RESET}"
 npm run deploy:frontend
-echo -e "${BOLD}${YELLOW}Crlearing frontend cache...${RESET}"
+echo -e "${BOLD}${YELLOW}Clearing frontend cache...${RESET}"
 npm run invalidate-cloudfront-cache
 
 echo -e "${BOLD}${GREEN}Done!${RESET}"
