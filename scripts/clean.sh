@@ -29,6 +29,8 @@ concurrently\
   "cd $script_dir/../lib/providers/opentok && rm -rf package-lock.json"\
   "cd $script_dir/../lib/providers/telegram && rm -rf node_modules"\
   "cd $script_dir/../lib/providers/telegram && rm -rf package-lock.json"\
+  "cd $script_dir/../lib/providers/sms && rm -rf node_modules"\
+  "cd $script_dir/../lib/providers/sms && rm -rf package-lock.json"\
   "cd $script_dir/../functions && rm -rf node_modules"\
   "cd $script_dir/../functions && rm -rf package-lock.json"\
   "cd $script_dir/../functions/processors && rm -rf node_modules"\
