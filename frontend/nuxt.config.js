@@ -133,6 +133,25 @@ export default {
     '@nuxtjs/firebase',
     '@nuxtjs/sentry',
     'vuetify-dialog/nuxt',
+    [
+      'nuxt-twa-module',
+      {
+        /* module options */
+        defaultUrl: 'https://web.barracaodigital.com',
+        hostName: 'web.barracaodigital.com',
+        sha256Fingerprints: [config.ANDROID_ASSET_LINKS_SIGNATURE],
+        applicationId: 'app.barracaodigital.com',
+        launcherName: 'Barracão Digital',
+        versionCode: 4,
+        versionName: '1.2.6',
+        statusBarColor: '#3060CF',
+        /* optional */
+        /* overwrite default location for icon */
+        iconPath: '/static/icon.png',
+        /* Overwrite folder where to put .wellknown */
+        distFolder: '/dist',
+      },
+    ],
   ],
   /*
    ** Axios module configuration
