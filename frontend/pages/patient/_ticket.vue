@@ -139,9 +139,15 @@ const searchPatientByTicket = async (api, ticket) => {
 }
 
 const searchFacilityByOrigin = async (api, origin) => {
-  const { cantBeAssistedMessage } = await api.getFacilityByOrigin(origin)
-  return {
-    cantBeAssistedMessage,
+  try {
+    const { cantBeAssistedMessage } = await api.getFacilityByOrigin(origin)
+    return {
+      cantBeAssistedMessage,
+    }
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error(err)
+    return {}
   }
 }
 
@@ -295,6 +301,7 @@ export default {
       informPatientSentKitBack: 'informPatientSentKitBack',
     }),
     handleUpdates() {
+      if (!this.patient.originCep) return
       if (this.patientSubscription) this.patientSubscription()
       this.patientSubscription = this.$fireStore
         .collection('facilities')

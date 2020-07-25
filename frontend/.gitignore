@@ -93,3 +93,6 @@ sw.*
 
 # Vim swap files
 *.swp
+
+# Assetlinks
+/frontend/static/.well-known/assetlinks.json

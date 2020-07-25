@@ -474,6 +474,16 @@ export default {
       }
 
       this.isLoading = true
+
+      if (
+        !(this.patient.keepAlive && this.patient.keepAlive > Date.now() - 22000)
+      ) {
+        await this.$api.sendSmsMessageToPatient(
+          this.patient.ticket,
+          this.patient
+        )
+      }
+
       await this._changeStatus(PATIENT_STATUS.ONGOING, {
         ...this.onGoing,
       })

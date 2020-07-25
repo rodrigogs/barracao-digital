@@ -73,6 +73,11 @@ export const handler = async (event) => {
       await patientsService.setPatientMessagingToken(patient, user, body)
       return responseBuilder.success.noContent()
     }
+    // /patients/{ticket}/messaging/sms
+    if (resource.endsWith('messaging/sms')) {
+      await patientsService.sendSmsMessageToPatient(patient)
+      return responseBuilder.success.noContent()
+    }
     // /patients/{ticket}
     if (body) {
       return responseBuilder.success.ok({

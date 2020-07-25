@@ -16,6 +16,7 @@ export const normalizeEnv = (ignoreErrors) => {
       String(process.env.SENTRY_DISABLE_SERVER_RELEASE) === 'true',
     OPENTOK_API_KEY: process.env.OPENTOK_API_KEY,
     OPENTOK_API_SECRET: process.env.OPENTOK_API_SECRET,
+    ANDROID_ASSET_LINKS_SIGNATURE: process.env.ANDROID_ASSET_LINKS_SIGNATURE,
     get FIREBASE_CONFIG() {
       if (!process.env.FIREBASE_CONFIG) {
         if (ignoreErrors) return
