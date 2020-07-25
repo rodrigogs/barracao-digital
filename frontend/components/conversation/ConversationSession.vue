@@ -219,7 +219,6 @@ export default {
   min-height: calc(50vh - var(--header-height));
   max-height: calc(50vh - var(--header-height));
   min-width: 50vh;
-  max-width: 50vh;
   margin: 0 auto;
 }
 
