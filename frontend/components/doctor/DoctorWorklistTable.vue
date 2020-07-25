@@ -2,7 +2,6 @@
   <div>
     <v-data-table
       v-if="!hasSelectedPatient"
-      :key="changeEach20Seconds"
       :headers="headers"
       :items="filteredPatients"
       sort-by="createdAt"
