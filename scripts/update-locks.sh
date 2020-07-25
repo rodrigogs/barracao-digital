@@ -10,6 +10,11 @@ npm install serverless -g
   npm install --production=false --save
 ) &
 (
+ # Layers
+ cd layers/common/nodejs || exit
+ npm install --production=false --save
+) &
+(
   # cep-crawler
   cd cep-crawler || exit
   npm install --production=false --save
