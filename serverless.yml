@@ -20,8 +20,8 @@ custom:
     forceExclude:
       - '@firebase/app'
       - firebase-admin
-    linting: false
-    sourcemaps: false
+    linting: true
+    sourcemaps: true
   client:
     bucketName: ${self:service}-${self:provider.stage}-webapp
     distributionFolder: frontend/dist
@@ -69,6 +69,27 @@ provider:
     - Effect: Allow
       Action:
         - 'sns:*'
+      Resource: '*'
+    # serverless_domain_manager pemissions
+    - Effect: Allow
+      Action:
+        - 'acm:ListCertificates'
+      Resource: '*'
+    - Effect: Allow
+      Action:
+        - 'apigateway:*'
+      Resource: '*'
+    - Effect: Allow
+      Action:
+        - 'cloudformation:*'
+      Resource: '*'
+    - Effect: Allow
+      Action:
+        - 'route53:*'
+      Resource: '*'
+    - Effect: Allow
+      Action:
+        - 'iam:CreateServiceLinkedRole'
       Resource: '*'
   deploymentBucket:
     name: ${self:service}-deploys
