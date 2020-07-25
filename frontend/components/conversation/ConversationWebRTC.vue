@@ -1,5 +1,5 @@
 <template>
-  <vue-webrtc
+  <WebRTCSession
     ref="webrtc"
     camera-height="364"
     :room-id="ticket"
@@ -15,13 +15,13 @@
 </template>
 
 <script>
-import Vue from 'vue'
-import { WebRTC } from 'vue-webrtc'
-
-Vue.component(WebRTC.name, WebRTC)
+import WebRTCSession from './WebRTCSession'
 
 export default {
   name: 'ConversationWebRTC',
+  components: {
+    WebRTCSession,
+  },
   props: {
     ticket: {
       type: String,
