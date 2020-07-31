@@ -17,7 +17,7 @@ custom:
       - firebase-admin
     linting: false
     sourcemaps: false
-  stage: ${opt:stage, env:STAGE, env:NODE_ENV, 'development'}
+  stage: ${opt:stage, env:NODE_ENV, 'development'}
   region: ${opt:region, 'sa-east-1'}
   configsDeliveryStreamName: ${self:app}-${self:provider.stage}-configs-delivery-stream
   doctorsDeliveryStreamName: ${self:app}-${self:provider.stage}-doctors-delivery-stream
@@ -71,7 +71,7 @@ provider:
     maxPreviousDeploymentArtifacts: 10 # On every deployment the framework prunes the bucket to remove artifacts older than this limit. The default is 5
     blockPublicAccess: true # Prevents public access via ACLs or bucket policies. Default is false
   environment:
-    STAGE: ${self:custom.stage}
+    STAGE: ${env:NODE_ENV}
     CONFIGS_DELIVERY_STREAM: ${self:custom.configsDeliveryStreamName}
     DOCTORS_DELIVERY_STREAM: ${self:custom.doctorsDeliveryStreamName}
     PATIENTS_DELIVERY_STREAM: ${self:custom.patientsDeliveryStreamName}
