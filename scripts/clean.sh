@@ -3,8 +3,8 @@ set -e
 
 # Global
 script_dir=$(dirname "$0")
+"./${script_dir}/install_globals.sh"
 processors=$(ps aux --no-heading | wc -l)
-npm install -g concurrently
 
 concurrently\
   --max-processes "$processors"\
@@ -23,10 +23,6 @@ concurrently\
   "cd $script_dir/../lib/providers/aws && rm -rf package-lock.json"\
   "cd $script_dir/../lib/providers/firebase && rm -rf node_modules"\
   "cd $script_dir/../lib/providers/firebase && rm -rf package-lock.json"\
-  "cd $script_dir/../lib/providers/gmaps && rm -rf node_modules"\
-  "cd $script_dir/../lib/providers/gmaps && rm -rf package-lock.json"\
-  "cd $script_dir/../lib/providers/opentok && rm -rf node_modules"\
-  "cd $script_dir/../lib/providers/opentok && rm -rf package-lock.json"\
   "cd $script_dir/../lib/providers/telegram && rm -rf node_modules"\
   "cd $script_dir/../lib/providers/telegram && rm -rf package-lock.json"\
   "cd $script_dir/../functions && rm -rf node_modules"\
