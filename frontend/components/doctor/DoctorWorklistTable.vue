@@ -2,7 +2,6 @@
   <div>
     <v-data-table
       v-if="!hasSelectedPatient"
-      :key="changeEach20Seconds"
       :headers="headers"
       :items="filteredPatients"
       sort-by="createdAt"
@@ -124,7 +123,6 @@ export default {
   },
   data() {
     return {
-      changeEach20Seconds: Date.now(),
       changeEach20SecondsInterval: null,
       filter: {
         search: '',
@@ -166,7 +164,7 @@ export default {
   },
   mounted() {
     this.changeEach20SecondsInterval = setInterval(
-      () => (this.changeEach20Seconds = Date.now()),
+      () => (this.patients = [...this.patients]),
       20000
     )
   },
@@ -221,7 +219,7 @@ export default {
     },
     formatDate(timestamp) {
       if (!timestamp) return
-      return format(timestamp, 'dd/MM/y hh:mm')
+      return format(timestamp, 'dd/MM/y HH:mm')
     },
     calculateTimeWaiting(patient) {
       const ongoingStatus = patient[`${PATIENT_STATUS.ONGOING}Status`]
