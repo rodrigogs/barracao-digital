@@ -6,7 +6,6 @@ export const normalizeEnv = (ignoreErrors) => {
   const NODE_ENV = process.env.NODE_ENV || 'development'
   return {
     NODE_ENV,
-    STAGE: process.env.STAGE,
     BASE_URL: process.env.BASE_URL || 'http://localhost:3000',
     API_URL:
       process.env.API_URL || `https://api.barracaodigital.com/${NODE_ENV}`,
@@ -15,6 +14,8 @@ export const normalizeEnv = (ignoreErrors) => {
       String(process.env.SENTRY_DISABLE_SERVER_SIDE) === 'true',
     SENTRY_DISABLE_SERVER_RELEASE:
       String(process.env.SENTRY_DISABLE_SERVER_RELEASE) === 'true',
+    OPENTOK_API_KEY: process.env.OPENTOK_API_KEY,
+    OPENTOK_API_SECRET: process.env.OPENTOK_API_SECRET,
     ANDROID_ASSET_LINKS_SIGNATURE: process.env.ANDROID_ASSET_LINKS_SIGNATURE,
     get FIREBASE_CONFIG() {
       if (!process.env.FIREBASE_CONFIG) {
@@ -44,4 +45,6 @@ export const API_URL = defaultConfig.API_URL
 export const SENTRY_DSN = defaultConfig.SENTRY_DSN
 export const SENTRY_DISABLE_SERVER_RELEASE =
   defaultConfig.SENTRY_DISABLE_SERVER_RELEASE
+export const OPENTOK_API_KEY = defaultConfig.OPENTOK_API_KEY
+export const OPENTOK_API_SECRET = defaultConfig.OPENTOK_API_SECRET
 export const FIREBASE_CONFIG = defaultConfig.FIREBASE_CONFIG

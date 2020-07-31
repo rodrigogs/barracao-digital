@@ -217,8 +217,8 @@ export default {
   },
   vue: {
     config: {
-      productionTip: config.NODE_ENV !== 'production',
-      devtools: config.NODE_ENV !== 'production',
+      productionTip: config.NODE_ENV === 'development',
+      devtools: config.NODE_ENV === 'development',
     },
   },
   /*
@@ -229,6 +229,11 @@ export default {
     optimization: {
       splitChunks: {
         cacheGroups: {
+          opentok: {
+            test: /@opentok\/client/,
+            name: 'opentok',
+            chunks: 'all',
+          },
           vuetify: {
             test: /vuetify/,
             name: 'vuetify',

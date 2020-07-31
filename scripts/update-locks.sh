@@ -2,17 +2,35 @@
 set -e
 
 # Global
-script_dir=$(dirname "$0")
-"./${script_dir}/install_globals.sh"
-processors=$(ps aux --no-heading | wc -l)
+npm install yarn -g
+npm install serverless -g
 
-# Tasks
-concurrently\
-  --max-processes "$processors"\
-  --kill-others-on-fail\
-  "(npm install --production=false --save)"\
-  "(cd cep-crawler || exit && npm install --production=false --save)"\
-  "(cd lib || exit && npm install --production=false --save)"\
-  "(cd functions || exit && npm install --production=false --save)"\
-  "(cd frontend || exit && yarn install --production=false --save)"\
-  "(cd layers/common/nodejs || exit && npm install --production=false --save)"
+(
+  # Root
+  npm install --production=false --save
+) &
+(
+ # Layers
+ cd layers/common/nodejs || exit
+ npm install --production=false --save
+) &
+(
+  # cep-crawler
+  cd cep-crawler || exit
+  npm install --production=false --save
+) &
+(
+  # Lib
+  cd lib || exit
+  npm install --production=false --save
+) &
+(
+  # Functions
+  cd functions || exit
+  npm install --production=false --save
+) &
+(
+  # Frontend
+  cd frontend || exit
+  yarn install --production=false --update-checksums
+)

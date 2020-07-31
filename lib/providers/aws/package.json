@@ -3,6 +3,6 @@
   "main": "index.js",
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^1.0.0-beta.3",
-    "aws-sdk": "^2.724.0"
+    "aws-sdk": "^2.679.0"
   }
 }

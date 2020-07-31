@@ -137,7 +137,6 @@ export default {
   data: () => ({
     tab: null,
     videoLoading: false,
-    isScreenSharing: false,
   }),
   computed: {
     ...mapGetters('chat', {

@@ -12,11 +12,13 @@
   "dependencies": {
     "axios": "^0.19.2",
     "node-emoji": "^1.10.0",
-    "uuid": "^8.3.0"
+    "uuid": "^8.2.0"
   },
   "submodules": [
     "providers/aws",
     "providers/firebase",
+    "providers/gmaps",
+    "providers/opentok",
     "providers/telegram"
   ]
 }

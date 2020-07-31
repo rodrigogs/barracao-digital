@@ -2,9 +2,15 @@
 set -e
 
 # Global
-script_dir=$(dirname "$0")
-"./${script_dir}/install_globals.sh"
 processors=$(ps aux --no-heading | wc -l)
+#sudo apt install -y libgtk-3-0 libxss1 libgconf-2-4 libasound2 libnss3
+npm install -g concurrently
+
+concurrently\
+  --max-processes "$processors"\
+  --kill-others-on-fail\
+  "npm install yarn -g"\
+  "npm install serverless -g"
 
 # Tasks
 concurrently\
