@@ -18,13 +18,13 @@ $ npm install
 
 ### Deploying a new stage
 *DANGER* you must know exactly what you are doing here!
-- Log into your [Serverless Dashboard](https://dashboard.serverless.com/) and create a new app reflecting serlverless.yml "service" field
+- Log into your [Serverless Dashboard](https://dashboard.serverless.com/) and create a new app reflecting serverless.yml "service" field
 - Deplot the frontend, it's needed to create the CloudFront distribution
 ```bash
 $ NODE_ENV={stage_name} npm run deploy:frontend
 ```
 - [Create a distribution](https://console.aws.amazon.com/cloudfront/home?region=sa-east-1#create-distribution) pointing to the frontend bucket
-  - Don't forget to create a custom error responses for 404 and other errors
+  - Don't forget to create a custom error response for 404 and other errors
 - Create a Route53 Hosted Zone with the api host
 - Create the APIGateway domain
 ```bash
