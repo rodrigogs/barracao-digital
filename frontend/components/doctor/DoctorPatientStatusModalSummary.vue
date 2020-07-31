@@ -14,7 +14,7 @@
         </v-list>
       </v-col>
 
-      <!--<v-col>
+      <v-col>
         <v-list dense>
           <v-subheader></v-subheader>
 
@@ -25,7 +25,7 @@
             </v-list-item-content>
           </v-list-item>
         </v-list>
-      </v-col>-->
+      </v-col>
     </v-row>
 
     <v-row>

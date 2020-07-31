@@ -2,7 +2,9 @@
   <v-card tile flat width="100%">
     <div v-if="isFullyLoaded" class="conversation">
       <div
-        v-if="patientVideoSession"
+        v-if="
+          (isDoctor && patientVideoSession) || (!isDoctor && isVideoAuthorized)
+        "
         class="conversation__video grey lighten-3"
       >
         <ConversationWebRTC ref="webrtc" :ticket="patientTicket" />
@@ -29,7 +31,6 @@
 import * as io from 'socket.io-client'
 import { mapActions } from 'vuex'
 import promiseDelay from '~/utils/promiseDelay'
-// import ConversationVideo from '~/components/conversation/ConversationVideo'
 import ConversationChat from '~/components/conversation/ConversationChat'
 import ConversationWebRTC from '~/components/conversation/ConversationWebRTC'
 
@@ -38,7 +39,6 @@ window.io = io // FIXME https://github.com/westonsoftware/vue-webrtc/issues/5
 export default {
   name: 'ConversationSession',
   components: {
-    // ConversationVideo,
     ConversationChat,
     ConversationWebRTC,
   },

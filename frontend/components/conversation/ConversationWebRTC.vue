@@ -51,9 +51,11 @@ export default {
       this.img = this.$refs.webrtc.shareScreen()
     },
     errorHandler(error, stream) {
+      // eslint-disable-next-line no-console
       console.log('On Error Event', error, stream)
     },
     logEvent(event) {
+      // eslint-disable-next-line no-console
       console.log('Event : ', event)
     },
   },
