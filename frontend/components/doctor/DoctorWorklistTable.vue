@@ -219,7 +219,7 @@ export default {
     },
     formatDate(timestamp) {
       if (!timestamp) return
-      return format(timestamp, 'dd/MM/y hh:mm')
+      return format(timestamp, 'dd/MM/y HH:mm')
     },
     calculateTimeWaiting(patient) {
       const ongoingStatus = patient[`${PATIENT_STATUS.ONGOING}Status`]

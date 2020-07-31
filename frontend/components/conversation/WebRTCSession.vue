@@ -1,32 +1,28 @@
 <template>
-  <v-container class="pa-0" width="100%">
-    <v-row no-gutters>
-      <v-col cols="12" md="6">
-        <video
-          v-if="localVideo"
-          :id="localVideo.id"
-          ref="localVideo"
-          controls
-          autoplay
-          playsinline
-          :height="cameraHeight"
-          :muted="localVideo.muted"
-        />
-      </v-col>
-      <v-col cols="12" md="6">
-        <video
-          v-for="item in remoteVideos"
-          :id="item.id"
-          :key="item.id"
-          ref="remoteVideos"
-          controls
-          autoplay
-          playsinline
-          :height="cameraHeight"
-          :muted="item.muted"
-        />
-      </v-col>
-    </v-row>
+  <v-container class="pa-0 ma-0">
+    <video
+      v-for="item in remoteVideos"
+      :id="item.id"
+      :key="item.id"
+      ref="remoteVideos"
+      class="remote-video"
+      controls
+      autoplay
+      playsinline
+      :height="cameraHeight"
+      :muted="item.muted"
+    />
+    <video
+      v-if="localVideo"
+      :id="localVideo.id"
+      ref="localVideo"
+      class="local-video"
+      controls
+      autoplay
+      playsinline
+      :height="cameraHeight"
+      :muted="localVideo.muted"
+    />
   </v-container>
 </template>
 
@@ -108,6 +104,7 @@ export default {
       audioInputDevices: [],
       videoInputDevices: [],
       videoList: [],
+      streams: [],
       canvas: null,
       ctx: null,
     }
@@ -118,6 +115,20 @@ export default {
     },
     remoteVideos() {
       return this.videoList.filter((video) => video.type === 'remote')
+    },
+    isBigScreen() {
+      switch (this.$vuetify.breakpoint.name) {
+        case 'xs':
+        case 'sm':
+          return false
+        default:
+          return true
+      }
+    },
+  },
+  watch: {
+    isBigScreen() {
+      Vue.nextTick(() => this.refreshStreams())
     },
   },
   mounted() {
@@ -158,6 +169,7 @@ export default {
         })
       }
       this.rtcmConnection.onstream = (stream) => {
+        this.streams.push(stream)
         const existing = this.videoList.find(
           (video) => video.id === stream.streamid
         )
@@ -168,29 +180,31 @@ export default {
             type: stream.type,
           })
         }
-        Vue.nextTick(() => {
-          if (this.$refs.localVideo.id === stream.streamid) {
-            this.$refs.localVideo.srcObject = stream.stream
-          } else {
-            for (
-              let i = 0, len = this.$refs.remoteVideos.length;
-              i < len;
-              i++
-            ) {
-              if (this.$refs.remoteVideos[i].id === stream.streamid) {
-                this.$refs.remoteVideos[i].srcObject = stream.stream
-                break
-              }
-            }
-          }
-        })
+        Vue.nextTick(() => this.refreshStreams())
         this.$emit('joined-room', stream.streamid)
       }
       this.rtcmConnection.onstreamended = (stream) => {
+        const streamIndex = this.streams.findIndex(
+          ({ streamid }) => stream.streamid === streamid
+        )
+        if (streamIndex > -1) this.streams.splice(streamIndex, 1)
         this.videoList = this.videoList.filter(
           (video) => video.id !== stream.streamid
         )
+        Vue.nextTick(() => this.refreshStreams())
         this.$emit('left-room', stream.streamid)
+      }
+    },
+    refreshStreams() {
+      const videoElements = [
+        this.$refs.localVideo,
+        ...(this.$refs.remoteVideos || []),
+      ].filter((item) => !!item)
+      for (const stream of this.streams) {
+        const videoElement = videoElements.find(
+          (el) => el.id === stream.streamid
+        )
+        if (videoElement) videoElement.srcObject = stream.stream
       }
     },
     scanDevices() {
@@ -271,7 +285,28 @@ export default {
 </script>
 
 <style scoped>
-video {
-  width: 100% !important;
+.container {
+  min-width: 100%;
+  max-width: 100%;
+  min-height: 100%;
+  max-height: 100%;
+}
+
+video.remote-video {
+  min-width: 100%;
+  max-width: 100%;
+  min-height: 100%;
+  max-height: 100%;
+  position: absolute;
+}
+
+video.local-video {
+  height: 5em !important;
+  width: auto !important;
+  z-index: 9052151380 !important;
+  display: block;
+  position: absolute;
+  top: 0.5em;
+  right: 0.5em;
 }
 </style>
