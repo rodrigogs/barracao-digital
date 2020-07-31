@@ -12,7 +12,7 @@ package:
   individually: true
 
 custom:
-  stage: ${opt:stage, env:STAGE, env:NODE_ENV, 'development'}
+  stage: ${opt:stage, env:NODE_ENV, 'development'}
   region: ${opt:region, 'sa-east-1'}
   bundle:
     externals:
@@ -102,6 +102,8 @@ provider:
     APP_URL: ${env:APP_URL}
     TELEGRAM_TOKEN: ${env:TELEGRAM_TOKEN}
     GOOGLE_APPLICATION_CREDENTIALS: ${env:GOOGLE_APPLICATION_CREDENTIALS}
+    OPENTOK_API_KEY: ${env:OPENTOK_API_KEY}
+    OPENTOK_API_SECRET: ${env:OPENTOK_API_SECRET}
     DOCTOR_INACTIVITY_TIMEOUT_IN_MINUTES: ${env:DOCTOR_INACTIVITY_TIMEOUT_IN_MINUTES, '35'}
     CONFIGS_TABLE: ${self:custom.configsTableName}
     DOCTORS_TABLE: ${self:custom.doctorsTableName}
@@ -321,7 +323,6 @@ functions:
           method: PUT
           path: /patients/{ticket}/messaging/sms
           cors: true
-          authorizer: doctorAuthorizer
 
   patientsDelete:
     handler: functions/api/patients/delete.handler

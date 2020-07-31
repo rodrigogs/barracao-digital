@@ -3,8 +3,8 @@ set -e
 
 # Global
 script_dir=$(dirname "$0")
-"./${script_dir}/install_globals.sh"
 processors=$(ps aux --no-heading | wc -l)
+npm install -g concurrently
 
 if [ -z $NODE_ENV ]; then
   echo -e "${BOLD}${RED}Missing environment variable NODE_ENV${RESET}"
