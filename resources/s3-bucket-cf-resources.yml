@@ -17,6 +17,7 @@ Resources:
               - "*"
       LifecycleConfiguration:
         Rules:
+          -
             ExpirationInDays: 2
             Prefix: '/'
             Status: Enabled

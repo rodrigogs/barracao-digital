@@ -14,10 +14,20 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="primary" icon @click="show = false">
+          <v-btn
+            color="primary"
+            icon
+            :loading="fileLoading"
+            @click="show = false"
+          >
             <v-icon>mdi-close</v-icon>
           </v-btn>
-          <v-btn color="primary" icon @click="fileUpload">
+          <v-btn
+            color="primary"
+            icon
+            :loading="fileLoading"
+            @click="fileUpload"
+          >
             <v-icon>mdi-send</v-icon>
           </v-btn>
         </v-card-actions>
@@ -32,17 +42,14 @@ import { mapActions } from 'vuex'
 export default {
   name: 'ConversationFileUpload',
   props: {
+    patientTicket: {
+      type: String,
+    },
     originCep: {
       type: String,
-      required: true,
     },
     doctorUsername: {
       type: String,
-      required: true,
-    },
-    patientTicket: {
-      type: String,
-      required: true,
     },
     isDoctor: {
       type: Boolean,
