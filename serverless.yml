@@ -91,6 +91,10 @@ provider:
       Action:
         - 'iam:CreateServiceLinkedRole'
       Resource: '*'
+    - Effect: 'Allow'
+      Action:
+        - 's3:*'
+      Resource: 'arn:aws:s3:::barracao-digital-${self:custom.stage}-conversation-files-bucket/*'
   deploymentBucket:
     name: ${self:service}-deploys
     maxPreviousDeploymentArtifacts: 10 # On every deployment the framework prunes the bucket to remove artifacts older than this limit. The default is 5
@@ -324,6 +328,11 @@ functions:
           path: /patients/{ticket}/messaging/sms
           cors: true
 
+      - http:
+          method: PUT
+          path: /patients/{ticket}/upload/file
+          cors: true
+
   patientsDelete:
     handler: functions/api/patients/delete.handler
     layers:
@@ -409,6 +418,7 @@ resources:
   - ${file(resources/api-gateway-cf-resources.yml)}
   - ${file(resources/cloudfront-cf-resources.yml)}
   - ${file(resources/dynamodb-cf-resources.yml)}
+  - ${file(resources/s3-bucket-cf-resources.yml)}
   - Outputs:
       FacilitiesDeleteLambdaFunctionQualifiedArn:
         Description: ARN of the FacilitiesDelete lambda function

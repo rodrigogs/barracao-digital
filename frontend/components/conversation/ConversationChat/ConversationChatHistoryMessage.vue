@@ -27,8 +27,19 @@
                 message.icon || 'mdi-information'
               }}</v-icon>
             </v-avatar>
-            <small class="message-boc__footer"></small>
-            <span v-linkified>
+            <div v-if="message.type === 'file'">
+              <v-chip>
+                <v-icon>mdi-file</v-icon>
+                <a :href="message.text" target="_blank">
+                  {{ message.text.split('/')[3] }}
+                </a>
+              </v-chip>
+            </div>
+            <small class="message-box__footer"></small>
+            <span
+              v-if="((message.type == 'default') || (message.type == 'info'))"
+              v-linkified
+            >
               {{ message.text }}
             </span>
           </div>

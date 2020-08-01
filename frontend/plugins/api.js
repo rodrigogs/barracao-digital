@@ -14,6 +14,8 @@ const apiFactory = (axios) => ({
     axios.$put(`patients/${ticket}/messaging/token`, { token }),
   sendSmsMessageToPatient: (ticket, { patient }) =>
     axios.$put(`patients/${ticket}/messaging/sms`, patient),
+  requestUploadUrl: (ticket, file) =>
+    axios.$put(`patients/${ticket}/upload/file`, file),
   setWaitingKitReceived: (ticket, { message } = {}) =>
     axios.$put(`patients/${ticket}/status/received_kit`, { message }),
   setWaitingKitSent: (ticket, { message } = {}) =>

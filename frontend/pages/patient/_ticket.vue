@@ -67,6 +67,15 @@
                   </template>
                   <span>Encerrar a sessão de vídeo</span>
                 </v-tooltip>
+
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on }">
+                    <v-btn icon dark @click="fileDialog = true" v-on="on">
+                      <v-icon>mdi-clippy</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>Enviar arquivo</span>
+                </v-tooltip>
               </v-toolbar-items>
 
               <v-spacer></v-spacer>
@@ -89,6 +98,13 @@
                     <p>Seu atendimento iniciará em um instante</p>
                     <v-icon>mdi-loading mdi-spin</v-icon>
                   </v-overlay>
+                  <ConversationFileUpload
+                    v-model="fileDialog"
+                    :origin-cep="patient.originCep"
+                    :patient-ticket="patient.ticket"
+                    :doctor-username="currentStatus.doctorUsername"
+                    :is-doctor="false"
+                  />
                 </v-card>
               </v-col>
             </v-row>
@@ -101,6 +117,7 @@
 
 <script>
 import { mapActions } from 'vuex'
+import ConversationFileUpload from '../../components/conversation/ConversationFileUpload'
 import { PATIENT_STATUS } from '@/constants'
 import PatientWaiting from '@/components/patient/PatientWaiting.vue'
 import PatientOngoing from '@/components/patient/PatientOngoing.vue'
@@ -157,6 +174,7 @@ export default {
     return !isNaN(Number(params.ticket))
   },
   components: {
+    ConversationFileUpload,
     ConversationSession,
   },
   async asyncData({ app, params, error }) {
@@ -169,6 +187,7 @@ export default {
     }
   },
   data: () => ({
+    fileDialog: false,
     isLoading: false,
     isVideoLoading: false,
     tab: null,

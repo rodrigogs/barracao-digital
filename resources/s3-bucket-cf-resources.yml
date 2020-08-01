@@ -1,0 +1,22 @@
+Resources:
+  UploadBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: 'barracao-digital-${self:custom.stage}-conversation-files-bucket'
+      AccessControl: PublicRead
+      CorsConfiguration:
+        CorsRules:
+          - AllowedMethods:
+              - GET
+              - PUT
+              - POST
+              - HEAD
+            AllowedOrigins:
+              - "*"
+            AllowedHeaders:
+              - "*"
+      LifecycleConfiguration:
+        Rules:
+            ExpirationInDays: 2
+            Prefix: '/'
+            Status: Enabled
