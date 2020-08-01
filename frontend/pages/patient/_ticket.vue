@@ -100,9 +100,11 @@
                   </v-overlay>
                   <ConversationFileUpload
                     v-model="fileDialog"
-                    :origin-cep="patient.originCep"
                     :patient-ticket="patient.ticket"
-                    :doctor-username="currentStatus.doctorUsername"
+                    :origin-cep="patient.originCep"
+                    :doctor-username="
+                      currentStatus ? currentStatus.doctorUsername : ''
+                    "
                     :is-doctor="false"
                   />
                 </v-card>

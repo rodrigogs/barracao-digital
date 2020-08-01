@@ -130,9 +130,9 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import ConversationFileUpload from '../conversation/ConversationFileUpload'
-import DoctorPatientStatusModalInfo from './DoctorPatientStatusModalInfo'
 import ConversationSession from '~/components/conversation/ConversationSession'
+import DoctorPatientStatusModalInfo from '~/components/doctor/DoctorPatientStatusModalInfo'
+import ConversationFileUpload from '~/components/conversation/ConversationFileUpload'
 
 export default {
   name: 'DoctorPatientStatusModal',
