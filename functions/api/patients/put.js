@@ -78,6 +78,12 @@ export const handler = async (event) => {
       await patientsService.sendSmsMessageToPatient(patient)
       return responseBuilder.success.noContent()
     }
+    // /patients/{ticket}/upload/file
+    if (resource.endsWith('upload/file')) {
+      return responseBuilder.success.ok({
+        body: await patientsService.requestUploadUrl(body),
+      })
+    }
     // /patients/{ticket}
     if (body) {
       return responseBuilder.success.ok({

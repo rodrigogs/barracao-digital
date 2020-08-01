@@ -9,6 +9,14 @@
         <v-spacer></v-spacer>
 
         <v-toolbar-items>
+          <v-tooltip v-if="tab === 'conversation'" bottom>
+            <template v-slot:activator="{ on }">
+              <v-btn icon dark @click="fileDialog = true" v-on="on">
+                <v-icon>mdi-clippy</v-icon>
+              </v-btn>
+            </template>
+            <span>Enviar arquivo</span>
+          </v-tooltip>
           <v-tooltip
             v-if="tab === 'conversation' && !patient.videoSession"
             bottom
@@ -103,6 +111,13 @@
                     :patient-ticket="patient.ticket"
                     :is-doctor="true"
                   />
+                  <ConversationFileUpload
+                    v-model="fileDialog"
+                    :origin-cep="patient.originCep"
+                    :doctor-username="$auth.user.username"
+                    :patient-ticket="patient.ticket"
+                    :is-doctor="true"
+                  />
                 </v-tab-item>
               </v-tabs-items>
             </v-card>
@@ -115,12 +130,14 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import ConversationFileUpload from '../conversation/ConversationFileUpload'
 import DoctorPatientStatusModalInfo from './DoctorPatientStatusModalInfo'
 import ConversationSession from '~/components/conversation/ConversationSession'
 
 export default {
   name: 'DoctorPatientStatusModal',
   components: {
+    ConversationFileUpload,
     DoctorPatientStatusModalInfo,
     ConversationSession,
   },
@@ -135,6 +152,7 @@ export default {
     },
   },
   data: () => ({
+    fileDialog: false,
     tab: null,
     videoLoading: false,
     isScreenSharing: false,
