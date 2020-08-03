@@ -106,12 +106,6 @@
                   value="conversation"
                 >
                   <ConversationSession
-                    :origin-cep="patient.originCep"
-                    :doctor-username="$auth.user.username"
-                    :patient-ticket="patient.ticket"
-                    :is-doctor="true"
-                  />
-                  <ConversationFileUpload
                     v-model="fileDialog"
                     :origin-cep="patient.originCep"
                     :doctor-username="$auth.user.username"
@@ -132,12 +126,10 @@
 import { mapActions, mapGetters } from 'vuex'
 import ConversationSession from '~/components/conversation/ConversationSession'
 import DoctorPatientStatusModalInfo from '~/components/doctor/DoctorPatientStatusModalInfo'
-import ConversationFileUpload from '~/components/conversation/ConversationFileUpload'
 
 export default {
   name: 'DoctorPatientStatusModal',
   components: {
-    ConversationFileUpload,
     DoctorPatientStatusModalInfo,
     ConversationSession,
   },

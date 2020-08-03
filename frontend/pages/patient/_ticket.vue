@@ -88,6 +88,7 @@
                   <ConversationSession
                     v-if="patient.textSession"
                     ref="conversationSession"
+                    v-model="fileDialog"
                     :origin-cep="patient.originCep"
                     :doctor-username="currentStatus.doctorUsername"
                     :patient-ticket="patient.ticket"
@@ -98,15 +99,6 @@
                     <p>Seu atendimento iniciará em um instante</p>
                     <v-icon>mdi-loading mdi-spin</v-icon>
                   </v-overlay>
-                  <ConversationFileUpload
-                    v-model="fileDialog"
-                    :patient-ticket="patient.ticket"
-                    :origin-cep="patient.originCep"
-                    :doctor-username="
-                      currentStatus ? currentStatus.doctorUsername : ''
-                    "
-                    :is-doctor="false"
-                  />
                 </v-card>
               </v-col>
             </v-row>
@@ -119,7 +111,6 @@
 
 <script>
 import { mapActions } from 'vuex'
-import ConversationFileUpload from '../../components/conversation/ConversationFileUpload'
 import { PATIENT_STATUS } from '@/constants'
 import PatientWaiting from '@/components/patient/PatientWaiting.vue'
 import PatientOngoing from '@/components/patient/PatientOngoing.vue'
@@ -176,7 +167,6 @@ export default {
     return !isNaN(Number(params.ticket))
   },
   components: {
-    ConversationFileUpload,
     ConversationSession,
   },
   async asyncData({ app, params, error }) {

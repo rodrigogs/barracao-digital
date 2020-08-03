@@ -26,6 +26,7 @@
             color="primary"
             icon
             :loading="fileLoading"
+            :disabled="!files"
             @click="fileUpload"
           >
             <v-icon>mdi-send</v-icon>
@@ -42,14 +43,20 @@ import { mapActions } from 'vuex'
 export default {
   name: 'ConversationFileUpload',
   props: {
-    patientTicket: {
-      type: String,
-    },
     originCep: {
       type: String,
+      required: true,
+      default: () => '',
     },
     doctorUsername: {
       type: String,
+      required: true,
+      default: () => '',
+    },
+    patientTicket: {
+      type: String,
+      required: true,
+      default: () => '',
     },
     isDoctor: {
       type: Boolean,

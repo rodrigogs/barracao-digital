@@ -16,6 +16,13 @@
         :patient="patient"
         :is-doctor="isDoctor"
       />
+      <ConversationFileUpload
+        v-model="fileDialog"
+        :origin-cep="patient.originCep"
+        :doctor-username="$auth.user.username"
+        :patient-ticket="patient.ticket"
+        :is-doctor="true"
+      />
     </div>
     <div v-else>
       <v-overlay absolute :opacity="0.5">
@@ -33,12 +40,14 @@ import { mapActions } from 'vuex'
 import promiseDelay from '~/utils/promiseDelay'
 import ConversationChat from '~/components/conversation/ConversationChat'
 import ConversationWebRTC from '~/components/conversation/ConversationWebRTC'
+import ConversationFileUpload from '~/components/conversation/ConversationFileUpload'
 
 window.io = io // FIXME https://github.com/westonsoftware/vue-webrtc/issues/5
 
 export default {
   name: 'ConversationSession',
   components: {
+    ConversationFileUpload,
     ConversationChat,
     ConversationWebRTC,
   },
@@ -59,6 +68,7 @@ export default {
       type: Boolean,
       default: () => false,
     },
+    value: Boolean,
   },
   data: () => ({
     isVideoReady: false,
@@ -93,6 +103,14 @@ export default {
       return this.isDoctor
         ? this.patient && this.patient.name
         : this.doctor && this.doctor.name
+    },
+    fileDialog: {
+      get() {
+        return this.value
+      },
+      set(value) {
+        this.$emit('input', value)
+      },
     },
   },
   watch: {
