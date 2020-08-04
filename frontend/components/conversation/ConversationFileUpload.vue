@@ -1,44 +1,43 @@
 <template>
-  <v-container>
-    <v-dialog v-model="show" max-width="500">
-      <v-card max-width="500" :loading="fileLoading">
-        <img
-          src="~/assets/file-upload.png"
-          width="100%"
-          alt="Selecionar Arquivo"
-        />
-        <v-card-text>
-          <v-row>
-            <v-file-input id="file-selector" v-model="files" show-size />
-          </v-row>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-            color="primary"
-            icon
-            :loading="fileLoading"
-            @click="show = false"
-          >
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
-          <v-btn
-            color="primary"
-            icon
-            :loading="fileLoading"
-            :disabled="!files"
-            @click="fileUpload"
-          >
-            <v-icon>mdi-send</v-icon>
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-  </v-container>
+  <v-dialog v-model="show" max-width="500">
+    <v-card max-width="500" :loading="fileLoading">
+      <img
+        src="~/assets/file-upload.png"
+        width="100%"
+        alt="Selecionar Arquivo"
+      />
+      <v-card-text>
+        <v-row>
+          <v-file-input id="file-selector" v-model="files" show-size />
+        </v-row>
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn
+          color="primary"
+          icon
+          :loading="fileLoading"
+          @click="show = false"
+        >
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+        <v-btn
+          color="primary"
+          icon
+          :loading="fileLoading"
+          :disabled="!files"
+          @click="fileUpload"
+        >
+          <v-icon>mdi-send</v-icon>
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script>
 import { mapActions } from 'vuex'
+import { STAGE } from '~/config'
 
 export default {
   name: 'ConversationFileUpload',
@@ -109,8 +108,7 @@ export default {
             originCep: this.originCep,
             patientTicket: this.patientTicket,
             doctorUsername: this.doctorUsername,
-            // eslint-disable-next-line node/no-process-env
-            text: `https://barracao-digital-${process.env.NODE_ENV}-conversation-files-bucket.s3.sa-east-1.amazonaws.com/${file.name}`,
+            text: `https://barracao-digital-${STAGE}-conversation-files-bucket.s3.sa-east-1.amazonaws.com/${file.name}`,
           })
           this.fileLoading = false
           this.show = false

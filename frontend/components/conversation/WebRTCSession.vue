@@ -30,6 +30,9 @@
 import 'adapterjs'
 import Vue from 'vue'
 import RTCMultiConnection from 'rtcmulticonnection'
+import * as io from 'socket.io-client'
+
+window.io = io // FIXME https://github.com/westonsoftware/vue-webrtc/issues/5
 
 const addStreamStopListener = (stream, callback) => {
   let streamEndedEvent = 'ended'
@@ -50,8 +53,9 @@ const onGettingSteam = (that) => (stream) => {
 }
 
 const getDisplayMediaError = (error) => {
-  // eslint-disable-next-line no-console
-  console.log('Media error: ' + JSON.stringify(error))
+  this.$noty.error(`Ocorreu um erro ao tentar compartilhar sua tela.
+${error.message}`)
+  throw error
 }
 
 export default {
@@ -105,6 +109,7 @@ export default {
       videoInputDevices: [],
       videoList: [],
       streams: [],
+      players: {},
       canvas: null,
       ctx: null,
     }
@@ -116,24 +121,14 @@ export default {
     remoteVideos() {
       return this.videoList.filter((video) => video.type === 'remote')
     },
-    isBigScreen() {
-      switch (this.$vuetify.breakpoint.name) {
-        case 'xs':
-        case 'sm':
-          return false
-        default:
-          return true
-      }
-    },
   },
-  watch: {
-    isBigScreen() {
-      Vue.nextTick(() => this.refreshStreams())
-    },
-  },
-  mounted() {
+  async mounted() {
     this.configure()
-    this.scanDevices()
+    await this.scanDevices()
+    this.join()
+  },
+  beforeDestroy() {
+    this.leave()
   },
   methods: {
     configure() {
@@ -200,15 +195,15 @@ export default {
         this.$refs.localVideo,
         ...(this.$refs.remoteVideos || []),
       ].filter((item) => !!item)
-      for (const stream of this.streams) {
-        const videoElement = videoElements.find(
-          (el) => el.id === stream.streamid
-        )
-        if (videoElement) videoElement.srcObject = stream.stream
+      for (const videoElement of videoElements) {
+        const stream = this.streams.find((s) => s.streamid === videoElement.id)
+        if (stream && !this.players[videoElement.id]) {
+          videoElement.srcObject = stream.stream
+        }
       }
     },
     scanDevices() {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         this.rtcmConnection.DetectRTC.load(() => {
           const devices = {
             audioInputDevices: [
@@ -226,6 +221,12 @@ export default {
       })
     },
     join() {
+      if (!this.videoInputDevices.length) {
+        return this.$emit('video-not-available')
+      }
+      if (!this.audioInputDevices.length) {
+        return this.$emit('audio-not-available')
+      }
       this.rtcmConnection.openOrJoin(this.roomId, (isRoomExist, roomid) => {
         if (isRoomExist === false && this.rtcmConnection.isInitiator === true) {
           this.$emit('opened-room', roomid)
@@ -277,6 +278,10 @@ export default {
               onGettingSteam(that, stream)
             }, getDisplayMediaError)
             .catch(getDisplayMediaError)
+        } else {
+          this.$noty.error(
+            'O seu navegador não disponibiliza este recurso. Tente utilizar um navegador atualizado.'
+          )
         }
       }
     },
@@ -308,5 +313,29 @@ video.local-video {
   position: absolute;
   top: 0.5em;
   right: 0.5em;
+}
+
+video::-webkit-media-controls-fullscreen-button {
+}
+video::-webkit-media-controls-play-button {
+  display: none;
+}
+video::-webkit-media-controls-play-button {
+  display: none;
+}
+video::-webkit-media-controls-timeline {
+  display: none;
+}
+video::-webkit-media-controls-current-time-display {
+}
+video::-webkit-media-controls-time-remaining-display {
+}
+video::-webkit-media-controls-time-remaining-display {
+}
+video::-webkit-media-controls-mute-button {
+}
+video::-webkit-media-controls-toggle-closed-captions-button {
+}
+video::-webkit-media-controls-volume-slider {
 }
 </style>

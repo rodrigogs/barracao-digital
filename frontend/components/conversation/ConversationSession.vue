@@ -1,13 +1,34 @@
 <template>
   <v-card tile flat width="100%">
     <div v-if="isFullyLoaded" class="conversation">
-      <div
-        v-if="
-          (isDoctor && patientVideoSession) || (!isDoctor && isVideoAuthorized)
-        "
-        class="conversation__video grey lighten-3"
-      >
-        <ConversationWebRTC ref="webrtc" :ticket="patientTicket" />
+      <div v-if="videoSession" class="conversation__video grey lighten-3">
+        <WebRTCSession
+          v-if="
+            (!isDoctor && isVideoAuthorized) || (isDoctor && doctorVideoSession)
+          "
+          ref="webrtc"
+          camera-height="364"
+          :room-id="patientTicket"
+          enable-audio
+          enable-video
+          @joined-room="logEvent"
+          @left-room="logEvent"
+          @opened-room="logEvent"
+          @share-started="logEvent"
+          @share-stopped="logEvent"
+          @error="errorHandler"
+          @video-not-available="videoNotAvailableHandler"
+          @audio-not-available="audioNotAvailableHandler"
+        />
+        <v-overlay
+          v-else-if="doctorVideoSession"
+          absolute
+          opacity="0.8"
+          class="text-center"
+        >
+          <p>Iniciando a vídeo chamada</p>
+          <v-icon>mdi-loading mdi-spin</v-icon>
+        </v-overlay>
       </div>
 
       <ConversationChat
@@ -24,6 +45,7 @@
         :is-doctor="true"
       />
     </div>
+
     <div v-else>
       <v-overlay absolute :opacity="0.5">
         <v-icon color="orange lighten-2">
@@ -35,21 +57,18 @@
 </template>
 
 <script>
-import * as io from 'socket.io-client'
 import { mapActions } from 'vuex'
 import promiseDelay from '~/utils/promiseDelay'
 import ConversationChat from '~/components/conversation/ConversationChat'
-import ConversationWebRTC from '~/components/conversation/ConversationWebRTC'
+import WebRTCSession from '~/components/conversation/WebRTCSession'
 import ConversationFileUpload from '~/components/conversation/ConversationFileUpload'
-
-window.io = io // FIXME https://github.com/westonsoftware/vue-webrtc/issues/5
 
 export default {
   name: 'ConversationSession',
   components: {
     ConversationFileUpload,
     ConversationChat,
-    ConversationWebRTC,
+    WebRTCSession,
   },
   props: {
     originCep: {
@@ -115,9 +134,13 @@ export default {
   },
   watch: {
     videoSession(newVideoSession, oldVideoSession) {
-      if (!newVideoSession) this.isVideoAuthorized = false
-      if (!newVideoSession || !oldVideoSession) return
-      if (oldVideoSession.sessionId === newVideoSession.sessionId) return
+      if (!newVideoSession) return (this.isVideoAuthorized = false)
+      if (
+        oldVideoSession &&
+        newVideoSession &&
+        oldVideoSession.sessionId === newVideoSession.sessionId
+      )
+        return
       this.videoKey = Math.random()
     },
     async patientVideoSession(hasSession, hadSession) {
@@ -184,9 +207,6 @@ export default {
         }),
       ])
     },
-    setVideoReady(ready) {
-      this.isVideoReady = ready
-    },
     deleteVideoSession(inform = true) {
       return Promise.resolve().then(() => {
         if (this.isDoctor) {
@@ -204,14 +224,43 @@ export default {
         })
       })
     },
-    yesOrNo(bool) {
-      return bool ? 'Sim' : 'Não'
-    },
     async confirmVideoChat() {
       this.isVideoAuthorized = await this.$dialog.confirm({
         text: 'O médico deseja iniciar uma chamada de vídeo. Você autoriza?',
       })
       if (!this.isVideoAuthorized) await this.deleteVideoSession()
+    },
+    // WebRTC handlers
+    joinRoom() {
+      this.$refs.webrtc.join()
+    },
+    leaveRoom() {
+      this.$refs.webrtc.leave()
+    },
+    shareScreen() {
+      this.img = this.$refs.webrtc.shareScreen()
+    },
+    errorHandler(error, stream) {
+      this.$noty.error(`Ocorreu um erro na sessão de vídeo:
+${error.message}`)
+      // eslint-disable-next-line no-console
+      console.log('On Error Event', error, stream)
+    },
+    logEvent(event) {
+      // eslint-disable-next-line no-console
+      console.log('Event : ', event)
+    },
+    audioNotAvailableHandler() {
+      this.$noty.error(
+        'Conecte um dispositivo de áudio para entrar na chamada.'
+      )
+      this.deleteVideoSession()
+    },
+    videoNotAvailableHandler() {
+      this.$noty.error(
+        'Conecte um dispositivo de vídeo para entrar na chamada.'
+      )
+      this.deleteVideoSession()
     },
   },
 }
@@ -219,7 +268,7 @@ export default {
 
 <style scoped>
 .conversation {
-  --header-height: 120px;
+  --header-height: 96px;
   display: flex;
   flex-direction: column;
   height: calc(100vh - var(--header-height));

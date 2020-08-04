@@ -45,7 +45,8 @@
   },
   "license": "BSD-3-Clause",
   "dependencies": {
-    "@rodrigogs/promise-pool": "^1.0.3"
+    "@rodrigogs/promise-pool": "^1.0.3",
+    "video.js": "^7.8.4"
   },
   "lint-staged": {
     "*.{js}": "npm run lint"

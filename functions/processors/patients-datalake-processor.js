@@ -30,6 +30,7 @@ export const handler = (event, context, callback) => {
             covenant: ensureString(image, 'coventant'),
             cep: ensureString(image, 'cep'),
             originCep: ensureString(image, 'originCep'),
+            cpf: ensureString(image, 'cpf'),
             meds: ensureString(image, 'meds'),
             allergies: ensureString(image, 'allergies'),
             ticket: ensureString(image, 'ticket'),
