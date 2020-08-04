@@ -313,6 +313,9 @@ video.local-video {
   position: absolute;
   top: 0.5em;
   right: 0.5em;
+  transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg); /* Safari and Chrome */
+  -moz-transform: rotateY(180deg); /* Firefox */
 }
 
 video::-webkit-media-controls-fullscreen-button {
