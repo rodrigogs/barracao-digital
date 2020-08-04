@@ -23,6 +23,45 @@
       :height="cameraHeight"
       :muted="localVideo.muted"
     />
+    <!--    <v-menu
+      v-model="inputConfigsMenu"
+      :close-on-content-click="false"
+      :nudge-width="200"
+      offset-x
+    >
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn icon v-bind="attrs" v-on="on">
+          <v-icon>mdi-cog</v-icon>
+        </v-btn>
+      </template>
+
+      <v-card>
+        <v-list>
+          <v-list-item>
+            <v-list-item-action>
+              <v-combobox
+                v-model="selectedVideoInputDevice"
+                :items="videoInputDevices"
+                item-text="label"
+                label="Entradas de vídeo"
+              />
+            </v-list-item-action>
+          </v-list-item>
+
+          <v-list-item>
+            <v-list-item-action>
+              <v-combobox
+                v-model="selectedAudioInputDevice"
+                :items="audioInputDevices"
+                item-text="label"
+                item-value="id"
+                label="Entradas de áudio"
+              />
+            </v-list-item-action>
+          </v-list-item>
+        </v-list>
+      </v-card>
+    </v-menu>-->
   </v-container>
 </template>
 
@@ -42,7 +81,7 @@ const addStreamStopListener = (stream, callback) => {
   stream.addEventListener(streamEndedEvent, callback, false)
 }
 
-const onGettingSteam = (that) => (stream) => {
+const onGettingSteam = (that) => (stream) => () => {
   that.rtcmConnection.addStream(stream)
   that.$emit('share-started', stream.streamid)
 
@@ -93,14 +132,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    stunServer: {
-      type: String,
-      default: null,
-    },
-    turnServer: {
-      type: String,
-      default: null,
-    },
   },
   data() {
     return {
@@ -112,6 +143,9 @@ export default {
       players: {},
       canvas: null,
       ctx: null,
+      inputConfigsMenu: null,
+      selectedVideoInputDevice: null,
+      selectedAudioInputDevice: null,
     }
   },
   computed: {
@@ -122,9 +156,26 @@ export default {
       return this.videoList.filter((video) => video.type === 'remote')
     },
   },
+  watch: {
+    selectedVideoInputDevice() {
+      this.rtcmConnection.applyConstraints({
+        video: { deviceId: this.selectedVideoInputDevice.deviceId },
+      })
+    },
+    selectedAudioInputDevice() {
+      this.rtcmConnection.applyConstraints({
+        audio: { deviceId: this.selectedAudioInputDevice.deviceId },
+      })
+    },
+  },
   async mounted() {
     this.configure()
     await this.scanDevices()
+    this.selectedVideoInputDevice = this.videoInputDevices[0]
+    this.selectedAudioInputDevice =
+      this.audioInputDevices.find(
+        (aid) => aid.id === 'default' || aid.deviceId === 'default'
+      ) || this.audioInputDevices[0]
     this.join()
   },
   beforeDestroy() {
@@ -136,7 +187,7 @@ export default {
       this.rtcmConnection.socketURL = this.socketURL
       this.rtcmConnection.autoCreateMediaElement = false
       this.rtcmConnection.enableLogs = this.enableLogs
-      this.rtcmConnection.session = {
+      this.rtcmConnection.mediaConstraints = {
         audio: this.enableAudio,
         video: this.enableVideo,
       }
@@ -144,25 +195,16 @@ export default {
         OfferToReceiveAudio: this.enableAudio,
         OfferToReceiveVideo: this.enableVideo,
       }
-      if (this.stunServer || this.turnServer) {
-        this.rtcmConnection.iceServers = [] // clear all defaults
-      }
-      if (this.stunServer) {
-        this.rtcmConnection.iceServers.push({
-          urls: this.stunServer,
-        })
-      }
-      if (this.turnServer) {
-        const parse = this.turnServer.split('%')
-        const username = parse[0].split('@')[0]
-        const password = parse[0].split('@')[1]
-        const turn = parse[1]
-        this.rtcmConnection.iceServers.push({
-          urls: turn,
-          credential: password,
-          username,
-        })
-      }
+      this.rtcmConnection.iceServers = [
+        {
+          urls: [
+            'stun:stun.l.google.com:19302',
+            'stun:stun1.l.google.com:19302',
+            'stun:stun2.l.google.com:19302',
+            'stun:stun.l.google.com:19302?transport=udp',
+          ],
+        },
+      ]
       this.rtcmConnection.onstream = (stream) => {
         this.streams.push(stream)
         const existing = this.videoList.find(
@@ -188,6 +230,9 @@ export default {
         )
         Vue.nextTick(() => this.refreshStreams())
         this.$emit('left-room', stream.streamid)
+      }
+      this.rtcmConnection.onSettingLocalDescription = () => {
+        this.refreshStreams()
       }
     },
     refreshStreams() {
@@ -268,14 +313,14 @@ export default {
           navigator.mediaDevices
             .getDisplayMedia({ video: true, audio: false })
             .then((stream) => {
-              onGettingSteam(that, stream)
+              onGettingSteam(that, stream, this.getCurrentVideo())
             }, getDisplayMediaError)
             .catch(getDisplayMediaError)
         } else if (navigator.getDisplayMedia) {
           navigator
             .getDisplayMedia({ video: true })
             .then((stream) => {
-              onGettingSteam(that, stream)
+              onGettingSteam(that, stream, this.getCurrentVideo())
             }, getDisplayMediaError)
             .catch(getDisplayMediaError)
         } else {
