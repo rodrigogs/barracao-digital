@@ -40,7 +40,7 @@
       <ConversationFileUpload
         v-model="fileDialog"
         :origin-cep="patient.originCep"
-        :doctor-username="$auth.user.username"
+        :doctor-username="doctorUsername"
         :patient-ticket="patient.ticket"
         :is-doctor="true"
       />

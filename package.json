@@ -40,7 +40,7 @@
     "deploy:production": "NODE_ENV=production (npm run deploy:backend && npm run deploy:frontend)",
     "deploy:travis": "DEPLOY_FRONTEND=true DEPLOY_BACKEND=true ./scripts/deploy_travis.sh",
     "deploy:after": "npx -p @babel/core -p @babel/node babel-node --presets @babel/preset-env ./scripts/after_deploy.js",
-    "invalidate-cloudfront-cache": "node ./scripts/invalidate-cloudfront-cache.js web.barracaodigital.com dev.barracaodigital.com",
+    "invalidate-cloudfront-cache": "node ./scripts/invalidate-cloudfront-cache.js web.barracaodigital.com dev.barracaodigital.com test.barracaodigital.com",
     "test:frontend": "(cd frontend && yarn test:e2e:ci)"
   },
   "license": "BSD-3-Clause",
