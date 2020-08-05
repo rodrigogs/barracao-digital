@@ -7,9 +7,7 @@
         alt="Selecionar Arquivo"
       />
       <v-card-text>
-        <v-row>
-          <v-file-input id="file-selector" v-model="files" show-size />
-        </v-row>
+        <v-file-input ref="selector" v-model="files" show-size />
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
@@ -73,6 +71,9 @@ export default {
         return this.value
       },
       set(value) {
+        if (!value) {
+          this.$refs.selector.reset()
+        }
         this.$emit('input', value)
       },
     },
@@ -81,8 +82,7 @@ export default {
     ...mapActions('chat', ['sendMessage']),
     fileUpload() {
       this.fileLoading = true
-      const fileSelector = document.getElementById('file-selector')
-      const file = fileSelector.files[0]
+      const file = this.$refs.selector.value
       const reader = new FileReader()
       reader.readAsArrayBuffer(file)
       this.$api

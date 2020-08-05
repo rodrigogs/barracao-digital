@@ -9,6 +9,20 @@
           :class="messageStyle"
         >
           <div class="message-box__content">
+            <small class="user-label">{{
+              message.from === 'doctor'
+                ? `Dr. ${capitalize(message.doctor)}`
+                : `${patient.name}`
+            }}</small
+            ><br />
+            <div v-if="message.type === 'file'">
+              <v-chip>
+                <v-icon>mdi-file</v-icon>
+                <a :href="message.text" target="_blank">
+                  {{ message.text.split('/')[3] }}
+                </a>
+              </v-chip>
+            </div>
             <v-avatar
               v-if="message.type === 'default'"
               :class="avatarClass"
@@ -27,14 +41,6 @@
                 message.icon || 'mdi-information'
               }}</v-icon>
             </v-avatar>
-            <div v-if="message.type === 'file'">
-              <v-chip>
-                <v-icon>mdi-file</v-icon>
-                <a :href="message.text" target="_blank">
-                  {{ message.text.split('/')[3] }}
-                </a>
-              </v-chip>
-            </div>
             <small class="message-box__footer"></small>
             <span
               v-if="((message.type == 'default') || (message.type == 'info'))"
@@ -120,6 +126,9 @@ export default {
     }, 100)
   },
   methods: {
+    capitalize(name) {
+      return name.charAt(0).toUpperCase() + name.slice(1)
+    },
     formatDate(timestamp) {
       if (!timestamp) return
       return format(timestamp, 'dd/MM/y hh:mm')
@@ -141,7 +150,7 @@ export default {
 }
 .message-box__content {
   float: left;
-  padding: 5px 10px 5px 10px;
+  padding: 0 10px 5px 10px;
   word-wrap: break-word;
   max-width: 100%;
 }
@@ -149,17 +158,25 @@ export default {
   float: right;
   text-align: right;
 }
-.message-box__footer {
+.left-message .message-box__content {
   float: left;
-  padding: 5px 10px 5px 10px;
-  word-wrap: break-word;
-  max-width: 100%;
+  text-align: left;
 }
+/*.message-box__footer {*/
+/*  float: left;*/
+/*  padding: 5px 10px 5px 10px;*/
+/*  word-wrap: break-word;*/
+/*  max-width: 100%;*/
+/*}*/
 .right-avatar {
   float: right;
   margin: 0 0 0 10px;
 }
 .left-avatar {
+  float: left;
   margin: 0 10px 0 0;
+}
+.user-label {
+  color: gray;
 }
 </style>
