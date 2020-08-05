@@ -4,11 +4,24 @@
       <v-expand-transition>
         <div
           v-show="show"
+          :class="messageStyle"
           :title="formatDate(message.timestamp)"
           class="message-box elevation-3"
-          :class="messageStyle"
         >
+          <v-badge
+            v-if="message.from === 'doctor'"
+            :content="`Dr. ${capitalize(message.doctor)}`"
+            :left="isMessageFromMe"
+          />
           <div class="message-box__content">
+            <div v-if="message.type === 'file'">
+              <v-chip>
+                <v-icon>mdi-file</v-icon>
+                <a :href="message.text" target="_blank">
+                  {{ message.text.split('/')[3] }}
+                </a>
+              </v-chip>
+            </div>
             <v-avatar
               v-if="message.type === 'default'"
               :class="avatarClass"
@@ -27,15 +40,6 @@
                 message.icon || 'mdi-information'
               }}</v-icon>
             </v-avatar>
-            <div v-if="message.type === 'file'">
-              <v-chip>
-                <v-icon>mdi-file</v-icon>
-                <a :href="message.text" target="_blank">
-                  {{ message.text.split('/')[3] }}
-                </a>
-              </v-chip>
-            </div>
-            <small class="message-box__footer"></small>
             <span
               v-if="((message.type == 'default') || (message.type == 'info'))"
               v-linkified
@@ -120,6 +124,9 @@ export default {
     }, 100)
   },
   methods: {
+    capitalize(name) {
+      return name.charAt(0).toUpperCase() + name.slice(1)
+    },
     formatDate(timestamp) {
       if (!timestamp) return
       return format(timestamp, 'dd/MM/y hh:mm')
@@ -149,17 +156,22 @@ export default {
   float: right;
   text-align: right;
 }
-.message-box__footer {
+.left-message .message-box__content {
   float: left;
-  padding: 5px 10px 5px 10px;
-  word-wrap: break-word;
-  max-width: 100%;
+  text-align: left;
 }
+/*.message-box__footer {*/
+/*  float: left;*/
+/*  padding: 5px 10px 5px 10px;*/
+/*  word-wrap: break-word;*/
+/*  max-width: 100%;*/
+/*}*/
 .right-avatar {
   float: right;
   margin: 0 0 0 10px;
 }
 .left-avatar {
+  float: left;
   margin: 0 10px 0 0;
 }
 </style>

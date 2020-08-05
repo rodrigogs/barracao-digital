@@ -70,10 +70,7 @@
               <v-icon right>mdi-file-document-edit</v-icon>
             </v-tab>
 
-            <v-tab
-              v-if="(patient.textSession && (patient.textSession === $auth.user.username))"
-              href="#conversation"
-            >
+            <v-tab v-if="patient.textSession" href="#conversation">
               Conversa
               <v-badge
                 v-if="getReceivedMessages > 0 && tab !== 'conversation'"
