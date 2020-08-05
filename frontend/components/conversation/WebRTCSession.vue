@@ -23,6 +23,45 @@
       :height="cameraHeight"
       :muted="localVideo.muted"
     />
+    <!--    <v-menu
+      v-model="inputConfigsMenu"
+      :close-on-content-click="false"
+      :nudge-width="200"
+      offset-x
+    >
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn icon v-bind="attrs" v-on="on">
+          <v-icon>mdi-cog</v-icon>
+        </v-btn>
+      </template>
+
+      <v-card>
+        <v-list>
+          <v-list-item>
+            <v-list-item-action>
+              <v-combobox
+                v-model="selectedVideoInputDevice"
+                :items="videoInputDevices"
+                item-text="label"
+                label="Entradas de vídeo"
+              />
+            </v-list-item-action>
+          </v-list-item>
+
+          <v-list-item>
+            <v-list-item-action>
+              <v-combobox
+                v-model="selectedAudioInputDevice"
+                :items="audioInputDevices"
+                item-text="label"
+                item-value="id"
+                label="Entradas de áudio"
+              />
+            </v-list-item-action>
+          </v-list-item>
+        </v-list>
+      </v-card>
+    </v-menu>-->
   </v-container>
 </template>
 
@@ -30,6 +69,9 @@
 import 'adapterjs'
 import Vue from 'vue'
 import RTCMultiConnection from 'rtcmulticonnection'
+import * as io from 'socket.io-client'
+
+window.io = io // FIXME https://github.com/westonsoftware/vue-webrtc/issues/5
 
 const addStreamStopListener = (stream, callback) => {
   let streamEndedEvent = 'ended'
@@ -39,7 +81,7 @@ const addStreamStopListener = (stream, callback) => {
   stream.addEventListener(streamEndedEvent, callback, false)
 }
 
-const onGettingSteam = (that) => (stream) => {
+const onGettingSteam = (that) => (stream) => () => {
   that.rtcmConnection.addStream(stream)
   that.$emit('share-started', stream.streamid)
 
@@ -50,8 +92,9 @@ const onGettingSteam = (that) => (stream) => {
 }
 
 const getDisplayMediaError = (error) => {
-  // eslint-disable-next-line no-console
-  console.log('Media error: ' + JSON.stringify(error))
+  this.$noty.error(`Ocorreu um erro ao tentar compartilhar sua tela.
+${error.message}`)
+  throw error
 }
 
 export default {
@@ -89,14 +132,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    stunServer: {
-      type: String,
-      default: null,
-    },
-    turnServer: {
-      type: String,
-      default: null,
-    },
   },
   data() {
     return {
@@ -105,8 +140,12 @@ export default {
       videoInputDevices: [],
       videoList: [],
       streams: [],
+      players: {},
       canvas: null,
       ctx: null,
+      inputConfigsMenu: null,
+      selectedVideoInputDevice: null,
+      selectedAudioInputDevice: null,
     }
   },
   computed: {
@@ -116,24 +155,31 @@ export default {
     remoteVideos() {
       return this.videoList.filter((video) => video.type === 'remote')
     },
-    isBigScreen() {
-      switch (this.$vuetify.breakpoint.name) {
-        case 'xs':
-        case 'sm':
-          return false
-        default:
-          return true
-      }
-    },
   },
   watch: {
-    isBigScreen() {
-      Vue.nextTick(() => this.refreshStreams())
+    selectedVideoInputDevice() {
+      this.rtcmConnection.applyConstraints({
+        video: { deviceId: this.selectedVideoInputDevice.deviceId },
+      })
+    },
+    selectedAudioInputDevice() {
+      this.rtcmConnection.applyConstraints({
+        audio: { deviceId: this.selectedAudioInputDevice.deviceId },
+      })
     },
   },
-  mounted() {
+  async mounted() {
     this.configure()
-    this.scanDevices()
+    await this.scanDevices()
+    this.selectedVideoInputDevice = this.videoInputDevices[0]
+    this.selectedAudioInputDevice =
+      this.audioInputDevices.find(
+        (aid) => aid.id === 'default' || aid.deviceId === 'default'
+      ) || this.audioInputDevices[0]
+    this.join()
+  },
+  beforeDestroy() {
+    this.leave()
   },
   methods: {
     configure() {
@@ -141,7 +187,7 @@ export default {
       this.rtcmConnection.socketURL = this.socketURL
       this.rtcmConnection.autoCreateMediaElement = false
       this.rtcmConnection.enableLogs = this.enableLogs
-      this.rtcmConnection.session = {
+      this.rtcmConnection.mediaConstraints = {
         audio: this.enableAudio,
         video: this.enableVideo,
       }
@@ -149,25 +195,16 @@ export default {
         OfferToReceiveAudio: this.enableAudio,
         OfferToReceiveVideo: this.enableVideo,
       }
-      if (this.stunServer || this.turnServer) {
-        this.rtcmConnection.iceServers = [] // clear all defaults
-      }
-      if (this.stunServer) {
-        this.rtcmConnection.iceServers.push({
-          urls: this.stunServer,
-        })
-      }
-      if (this.turnServer) {
-        const parse = this.turnServer.split('%')
-        const username = parse[0].split('@')[0]
-        const password = parse[0].split('@')[1]
-        const turn = parse[1]
-        this.rtcmConnection.iceServers.push({
-          urls: turn,
-          credential: password,
-          username,
-        })
-      }
+      this.rtcmConnection.iceServers = [
+        {
+          urls: [
+            'stun:stun.l.google.com:19302',
+            'stun:stun1.l.google.com:19302',
+            'stun:stun2.l.google.com:19302',
+            'stun:stun.l.google.com:19302?transport=udp',
+          ],
+        },
+      ]
       this.rtcmConnection.onstream = (stream) => {
         this.streams.push(stream)
         const existing = this.videoList.find(
@@ -194,21 +231,24 @@ export default {
         Vue.nextTick(() => this.refreshStreams())
         this.$emit('left-room', stream.streamid)
       }
+      this.rtcmConnection.onSettingLocalDescription = () => {
+        this.refreshStreams()
+      }
     },
     refreshStreams() {
       const videoElements = [
         this.$refs.localVideo,
         ...(this.$refs.remoteVideos || []),
       ].filter((item) => !!item)
-      for (const stream of this.streams) {
-        const videoElement = videoElements.find(
-          (el) => el.id === stream.streamid
-        )
-        if (videoElement) videoElement.srcObject = stream.stream
+      for (const videoElement of videoElements) {
+        const stream = this.streams.find((s) => s.streamid === videoElement.id)
+        if (stream && !this.players[videoElement.id]) {
+          videoElement.srcObject = stream.stream
+        }
       }
     },
     scanDevices() {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         this.rtcmConnection.DetectRTC.load(() => {
           const devices = {
             audioInputDevices: [
@@ -226,6 +266,12 @@ export default {
       })
     },
     join() {
+      if (!this.videoInputDevices.length) {
+        return this.$emit('video-not-available')
+      }
+      if (!this.audioInputDevices.length) {
+        return this.$emit('audio-not-available')
+      }
       this.rtcmConnection.openOrJoin(this.roomId, (isRoomExist, roomid) => {
         if (isRoomExist === false && this.rtcmConnection.isInitiator === true) {
           this.$emit('opened-room', roomid)
@@ -267,16 +313,20 @@ export default {
           navigator.mediaDevices
             .getDisplayMedia({ video: true, audio: false })
             .then((stream) => {
-              onGettingSteam(that, stream)
+              onGettingSteam(that, stream, this.getCurrentVideo())
             }, getDisplayMediaError)
             .catch(getDisplayMediaError)
         } else if (navigator.getDisplayMedia) {
           navigator
             .getDisplayMedia({ video: true })
             .then((stream) => {
-              onGettingSteam(that, stream)
+              onGettingSteam(that, stream, this.getCurrentVideo())
             }, getDisplayMediaError)
             .catch(getDisplayMediaError)
+        } else {
+          this.$noty.error(
+            'O seu navegador não disponibiliza este recurso. Tente utilizar um navegador atualizado.'
+          )
         }
       }
     },
@@ -308,5 +358,32 @@ video.local-video {
   position: absolute;
   top: 0.5em;
   right: 0.5em;
+  transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg); /* Safari and Chrome */
+  -moz-transform: rotateY(180deg); /* Firefox */
+}
+
+video::-webkit-media-controls-fullscreen-button {
+}
+video::-webkit-media-controls-play-button {
+  display: none;
+}
+video::-webkit-media-controls-play-button {
+  display: none;
+}
+video::-webkit-media-controls-timeline {
+  display: none;
+}
+video::-webkit-media-controls-current-time-display {
+}
+video::-webkit-media-controls-time-remaining-display {
+}
+video::-webkit-media-controls-time-remaining-display {
+}
+video::-webkit-media-controls-mute-button {
+}
+video::-webkit-media-controls-toggle-closed-captions-button {
+}
+video::-webkit-media-controls-volume-slider {
 }
 </style>

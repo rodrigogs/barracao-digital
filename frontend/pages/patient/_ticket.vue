@@ -81,7 +81,7 @@
               <v-spacer></v-spacer>
             </template>
           </v-app-bar>
-          <v-container fluid>
+          <v-container fluid class="pa-0">
             <v-row justify="center" no-gutters>
               <v-col cols="12" md="10">
                 <v-card flat tile>

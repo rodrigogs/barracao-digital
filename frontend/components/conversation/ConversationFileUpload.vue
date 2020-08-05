@@ -37,6 +37,7 @@
 
 <script>
 import { mapActions } from 'vuex'
+import { STAGE } from '~/config'
 
 export default {
   name: 'ConversationFileUpload',
@@ -109,8 +110,7 @@ export default {
             originCep: this.originCep,
             patientTicket: this.patientTicket,
             doctorUsername: this.doctorUsername,
-            // eslint-disable-next-line node/no-process-env
-            text: `https://barracao-digital-${process.env.stage}-conversation-files-bucket.s3.sa-east-1.amazonaws.com/${file.name}`,
+            text: `https://barracao-digital-${STAGE}-conversation-files-bucket.s3.sa-east-1.amazonaws.com/${file.name}`,
           })
           this.fileLoading = false
           this.show = false

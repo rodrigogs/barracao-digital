@@ -1,6 +1,6 @@
 {
   "name": "barracao-digital",
-  "version": "1.2.6",
+  "version": "1.3.1",
   "description": "Estruturação rápida de “postos de triagem” virtuais descentralizados para redução de visitas desnecessárias às emergências",
   "private": true,
   "scripts": {

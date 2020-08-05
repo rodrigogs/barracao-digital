@@ -45,3 +45,4 @@ export const SENTRY_DSN = defaultConfig.SENTRY_DSN
 export const SENTRY_DISABLE_SERVER_RELEASE =
   defaultConfig.SENTRY_DISABLE_SERVER_RELEASE
 export const FIREBASE_CONFIG = defaultConfig.FIREBASE_CONFIG
+export const STAGE = defaultConfig.STAGE
