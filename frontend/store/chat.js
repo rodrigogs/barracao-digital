@@ -6,7 +6,7 @@ const getMessagesQuery = (app) => (originCep, doctorUsername, patientTicket) =>
     .collection('facilities')
     .doc(originCep)
     .collection('conversations')
-    .doc(`${doctorUsername}#${patientTicket}`)
+    .doc(`${patientTicket}`)
     .collection('messages')
 
 export const state = () => ({
