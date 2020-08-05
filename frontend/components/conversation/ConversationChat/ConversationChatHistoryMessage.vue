@@ -8,12 +8,13 @@
           :title="formatDate(message.timestamp)"
           class="message-box elevation-3"
         >
-          <v-badge
-            v-if="message.from === 'doctor'"
-            :content="`Dr. ${capitalize(message.doctor)}`"
-            :left="isMessageFromMe"
-          />
           <div class="message-box__content">
+            <small class="user-label">{{
+              message.from === 'doctor'
+                ? `Dr. ${capitalize(message.doctor)}`
+                : `${patient.name}`
+            }}</small
+            ><br />
             <div v-if="message.type === 'file'">
               <v-chip>
                 <v-icon>mdi-file</v-icon>
@@ -148,7 +149,7 @@ export default {
 }
 .message-box__content {
   float: left;
-  padding: 5px 10px 5px 10px;
+  padding: 0 10px 5px 10px;
   word-wrap: break-word;
   max-width: 100%;
 }
@@ -173,5 +174,8 @@ export default {
 .left-avatar {
   float: left;
   margin: 0 10px 0 0;
+}
+.user-label {
+  color: gray;
 }
 </style>
