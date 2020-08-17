@@ -397,6 +397,14 @@ export default {
           text: 'Não atendido',
           value: PATIENT_OUTCOMES.NOT_ATTENDED,
         },
+        {
+          text: 'Caso COVID confirmado com orientação de isolamento domiciliar',
+          value: PATIENT_OUTCOMES.CONFIRMED_CASE_HOME_ISOLATION,
+        },
+        {
+          text: 'Caso COVID confirmado referenciado',
+          value: PATIENT_OUTCOMES.CONFIRMED_CASE_REFERENCED,
+        },
       ]
     },
     timeWaiting() {
