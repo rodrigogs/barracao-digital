@@ -49,7 +49,7 @@
             hover
           ></v-rating>
           <v-btn
-            class="mt-4"
+            class="mt-4 mb-4"
             color="primary"
             :loading="isLoading"
             :disabled="!!patientFeedback || isLoading"
@@ -57,6 +57,20 @@
           >
             Enviar
           </v-btn>
+          <p>Compartilhe o Barracão Digital com seus amigos:</p>
+          <v-row justify="center">
+            <ShareNetwork
+              v-for="network in networks"
+              :key="network.network"
+              :network="network.network"
+              :url="sharing.url"
+              title="Na plataforma Barracão Digital médicos voluntários podem criar grupos de teleatendimento de triagem em suas cidades ou bairros."
+            >
+              <v-btn :color="network.color" fab class="ma-2 white--text">
+                <v-icon>{{ network.icon }}</v-icon>
+              </v-btn>
+            </ShareNetwork>
+          </v-row>
         </v-card-text>
         <v-card-subtitle>
           Quer ajudar a entender como o COVID-19 afeta as pessoas, como diminuir
@@ -116,6 +130,42 @@ export default {
   data: () => ({
     isLoading: false,
     rating: 0,
+    sharing: {
+      url: 'https://www.barracaodigital.com.br',
+      hashtags: 'BarracaoDigital',
+    },
+    networks: [
+      {
+        network: 'facebook',
+        name: 'Facebook',
+        icon: 'mdi-facebook',
+        color: '#3568b2',
+      },
+      {
+        network: 'instagram',
+        name: 'Instagram',
+        icon: 'mdi-instagram',
+        color: '#fa012c',
+      },
+      {
+        network: 'twitter',
+        name: 'Twitter',
+        icon: 'mdi-twitter',
+        color: '#1da1f2',
+      },
+      {
+        network: 'whatsapp',
+        name: 'Whatsapp',
+        icon: 'mdi-whatsapp',
+        color: '#25d366',
+      },
+      {
+        network: 'telegram',
+        name: 'Telegram',
+        icon: 'mdi-telegram',
+        color: '#0088cc',
+      },
+    ],
   }),
   computed: {
     ratingTitle() {
