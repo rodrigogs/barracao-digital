@@ -134,6 +134,14 @@ export default {
     '@nuxtjs/sentry',
     'vuetify-dialog/nuxt',
     [
+      'vue-social-sharing/nuxt',
+      {
+        networks: {
+          instagram: 'https://www.instagram.com/barracaodigital/',
+        },
+      },
+    ],
+    [
       'nuxt-twa-module',
       {
         /* module options */
