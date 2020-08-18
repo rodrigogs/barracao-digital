@@ -8,6 +8,7 @@
       :class="video.type"
       controls
       playsinline
+      :muted="video.type === 'local'"
     />
   </v-container>
 </template>
@@ -81,12 +82,12 @@ export default {
         audio: true,
         video: {
           mandatory: {
-            minWidth: 800,
-            maxWidth: 800,
-            minHeight: 600,
-            maxHeight: 600,
-            minFrameRate: 15,
-            maxFrameRate: 15,
+            minWidth: 640,
+            maxWidth: 640,
+            minHeight: 480,
+            maxHeight: 480,
+            // minFrameRate: 15,
+            // maxFrameRate: 15,
           },
           optional: [{ facingMode: 'user' }],
         },
@@ -95,12 +96,12 @@ export default {
         this.connection.mediaConstraints = {
           audio: true,
           video: {
-            width: 800,
-            height: 600,
-            frameRate: {
-              min: 15,
-              max: 15,
-            },
+            width: 640,
+            height: 480,
+            // frameRate: {
+            //   min: 15,
+            //   max: 15,
+            // },
             facingMode: 'user',
           },
         }
