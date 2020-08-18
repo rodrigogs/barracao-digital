@@ -29,7 +29,8 @@
               size="30"
               color="grey lighten-3"
             >
-              <v-img :src="avatar"></v-img>
+              <v-img v-if="avatar" :src="avatar"></v-img>
+              <v-icon v-else>mdi-cellphone-message</v-icon>
             </v-avatar>
             <v-avatar
               v-else-if="message.type === 'info'"
@@ -58,7 +59,7 @@
 <script>
 import linkify from 'vue-linkify'
 import { format } from 'date-fns'
-import avatarUtil from '@/utils/avatar'
+// import avatarUtil from '@/utils/avatar'
 
 export default {
   name: 'ConversationChatHistoryMessage',
@@ -105,12 +106,13 @@ export default {
       return this.isMessageFromMe ? 'd-flex justify-end' : ''
     },
   },
-  async mounted() {
+  mounted() {
     if (
       (this.isDoctor && !this.isMessageFromMe) ||
       (!this.isDoctor && this.isMessageFromMe)
     ) {
-      this.avatar = await avatarUtil(this.patient.email || this.patient.ticket)
+      // this.avatar = await avatarUtil(this.patient.email || this.patient.ticket)
+      this.avatar = undefined
     }
     if (
       (!this.isDoctor && !this.isMessageFromMe) ||

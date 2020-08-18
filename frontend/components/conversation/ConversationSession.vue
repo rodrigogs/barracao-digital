@@ -7,19 +7,16 @@
             (!isDoctor && isVideoAuthorized) || (isDoctor && doctorVideoSession)
           "
           ref="webrtc"
-          camera-height="364"
           :room-id="patientTicket"
-          enable-audio
-          enable-video
-          @joined-room="logEvent"
-          @left-room="logEvent"
-          @opened-room="logEvent"
-          @share-started="logEvent"
-          @share-stopped="logEvent"
-          @error="errorHandler"
-          @video-not-available="videoNotAvailableHandler"
-          @audio-not-available="audioNotAvailableHandler"
         />
+        <!--        @joined-room="logEvent"-->
+        <!--        @left-room="logEvent"-->
+        <!--        @opened-room="logEvent"-->
+        <!--        @share-started="logEvent"-->
+        <!--        @share-stopped="logEvent"-->
+        <!--        @error="errorHandler"-->
+        <!--        @video-not-available="videoNotAvailableHandler"-->
+        <!--        @audio-not-available="audioNotAvailableHandler"-->
         <v-overlay
           v-else-if="doctorVideoSession"
           absolute
@@ -60,7 +57,7 @@
 import { mapActions } from 'vuex'
 import promiseDelay from '~/utils/promiseDelay'
 import ConversationChat from '~/components/conversation/ConversationChat'
-import WebRTCSession from '~/components/conversation/WebRTCSession'
+import WebRTCSession from '~/components/conversation/NewWebRTCSession'
 import ConversationFileUpload from '~/components/conversation/ConversationFileUpload'
 
 export default {
