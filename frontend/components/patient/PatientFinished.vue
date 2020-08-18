@@ -64,6 +64,7 @@
               :key="network.network"
               :network="network.network"
               :url="sharing.url"
+              :hashtags="sharing.hashtags"
               title="Na plataforma Barracão Digital médicos voluntários podem criar grupos de teleatendimento de triagem em suas cidades ou bairros."
             >
               <v-btn :color="network.color" fab class="ma-2 white--text">
@@ -131,7 +132,7 @@ export default {
     isLoading: false,
     rating: 0,
     sharing: {
-      url: 'https://www.barracaodigital.com.br',
+      url: 'https://www.barracaodigital.com',
       hashtags: 'BarracaoDigital',
     },
     networks: [
