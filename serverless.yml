@@ -422,3 +422,9 @@ resources:
       FacilitiesDeleteLambdaFunctionQualifiedArn:
         Description: ARN of the FacilitiesDelete lambda function
         Value: !GetAtt FacilitiesDeleteLambdaFunction.Arn
+
+      CommonLambdaLayerArn:
+        Description: The ARN of the common lambda layer
+        Value: !Ref CommonLambdaLayer
+        Export:
+          Name: ${self:custom.stage}-common-lambda-layer-arn
