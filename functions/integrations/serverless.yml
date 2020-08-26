@@ -1,0 +1,64 @@
+service: integrations
+app: barracao-digital
+org: rodrigogs
+
+plugins:
+  - serverless-bundle
+
+package:
+  individually: true
+
+custom:
+  stage: ${opt:stage, env:STAGE, env:NODE_ENV, 'development'}
+  region: ${opt:region, 'sa-east-1'}
+  configsTableArn:
+    !ImportValue ${self:custom.stage}-configs-table-arn
+  facilitiesTableArn:
+    !ImportValue ${self:custom.stage}-facilities-table-arn
+  bundle:
+    forceExclude:
+      - '@firebase/app'
+      - firebase-admin
+
+functions:
+  webhook:
+    handler: listener.handler
+    layers:
+      - !ImportValue ${self:custom.stage}-common-lambda-layer-arn
+    events:
+      - http:
+          method: POST
+          path: /
+          cors: true
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: ${self:custom.region}
+  stage: ${self:custom.stage}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - 'logs:*'
+      Resource: '*'
+    - Effect: Allow
+      Action:
+        - 'dynamodb:GetItem'
+      Resource: ['${self:custom.configsTableArn}', '${self:custom.facilitiesTableArn}']
+    - Effect: Allow
+      Action:
+        - 's3:*'
+      Resource: '*'
+    - Effect: Allow
+      Action:
+        - 'lambda:*'
+      Resource: '*'
+  deploymentBucket:
+    name: ${self:app}-deploys
+    maxPreviousDeploymentArtifacts: 10
+    blockPublicAccess: true
+  environment:
+    STAGE: ${self:custom.stage}
+    TELEGRAM_TOKEN: ${env:TELEGRAM_TOKEN}
+    FACILITY_ORIGIN: ${env:FACILITY_ORIGIN, 55555550}
+    GOOGLE_APPLICATION_CREDENTIALS: ${env:GOOGLE_APPLICATION_CREDENTIALS}
