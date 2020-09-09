@@ -71,6 +71,7 @@ export default {
       type: Boolean,
       default: () => false,
     },
+    value: Boolean,
   },
   data: () => ({
     isVideoReady: false,
