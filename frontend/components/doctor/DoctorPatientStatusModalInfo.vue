@@ -17,9 +17,7 @@
 
           <v-list-item-content>
             <v-list-item-title>{{ timeWaiting }}</v-list-item-title>
-            <v-list-item-subtitle>
-              Tempo de espera
-            </v-list-item-subtitle>
+            <v-list-item-subtitle> Tempo de espera </v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
       </v-list>

@@ -1,8 +1,6 @@
 <template>
   <v-card-text class="text-center">
-    <p class="title red--text">
-      Você desistiu deste atendimento.
-    </p>
+    <p class="title red--text">Você desistiu deste atendimento.</p>
 
     <p class="subtitle-1">
       Para entrar novamente na fila de atentimento

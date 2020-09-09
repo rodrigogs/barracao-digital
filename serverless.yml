@@ -111,6 +111,8 @@ provider:
     DOCTORS_TABLE: ${self:custom.doctorsTableName}
     PATIENTS_TABLE: ${self:custom.patientsTableName}
     FACILITIES_TABLE: ${self:custom.facilitiesTableName}
+    OPENTOK_API_KEY: ${env:OPENTOK_API_KEY}
+    OPENTOK_API_SECRET: ${env:OPENTOK_API_SECRET}
 
 layers:
   common:

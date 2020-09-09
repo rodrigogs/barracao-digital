@@ -44,7 +44,7 @@
             </v-avatar>
             <small class="message-box__footer"></small>
             <span
-              v-if="((message.type == 'default') || (message.type == 'info'))"
+              v-if="message.type == 'default' || message.type == 'info'"
               v-linkified
             >
               {{ message.text }}

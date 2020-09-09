@@ -1,31 +1,20 @@
 <template>
   <v-card tile flat width="100%">
     <div v-if="isFullyLoaded" class="conversation">
-      <div v-if="videoSession" class="conversation__video grey lighten-3">
-        <WebRTCSession
-          v-if="
-            (!isDoctor && isVideoAuthorized) || (isDoctor && doctorVideoSession)
-          "
-          ref="webrtc"
-          :room-id="patientTicket"
+      <div
+        v-if="patientVideoSession"
+        class="conversation__video grey lighten-3"
+      >
+        <ConversationVideo
+          v-if="videoSession && (isDoctor || isVideoAuthorized)"
+          :key="videoKey"
+          ref="video"
+          :session-id="videoSession.sessionId"
+          :token="videoSession.token"
+          :is-publisher="isDoctor"
+          @video-ready="setVideoReady"
+          @disconnection="deleteVideoSession"
         />
-        <!--        @joined-room="logEvent"-->
-        <!--        @left-room="logEvent"-->
-        <!--        @opened-room="logEvent"-->
-        <!--        @share-started="logEvent"-->
-        <!--        @share-stopped="logEvent"-->
-        <!--        @error="errorHandler"-->
-        <!--        @video-not-available="videoNotAvailableHandler"-->
-        <!--        @audio-not-available="audioNotAvailableHandler"-->
-        <v-overlay
-          v-else-if="doctorVideoSession"
-          absolute
-          opacity="0.8"
-          class="text-center"
-        >
-          <p>Iniciando a vídeo chamada</p>
-          <v-icon>mdi-loading mdi-spin</v-icon>
-        </v-overlay>
       </div>
 
       <ConversationChat
@@ -34,6 +23,7 @@
         :patient="patient"
         :is-doctor="isDoctor"
       />
+
       <ConversationFileUpload
         v-model="fileDialog"
         :origin-cep="patient.originCep"
@@ -42,12 +32,9 @@
         :is-doctor="isDoctor"
       />
     </div>
-
     <div v-else>
       <v-overlay absolute :opacity="0.5">
-        <v-icon color="orange lighten-2">
-          mdi-loading
-        </v-icon>
+        <v-icon color="orange lighten-2"> mdi-loading </v-icon>
       </v-overlay>
     </div>
   </v-card>
@@ -56,16 +43,16 @@
 <script>
 import { mapActions } from 'vuex'
 import promiseDelay from '~/utils/promiseDelay'
+import ConversationVideo from '~/components/conversation/ConversationVideo'
 import ConversationChat from '~/components/conversation/ConversationChat'
-import WebRTCSession from '~/components/conversation/NewWebRTCSession'
 import ConversationFileUpload from '~/components/conversation/ConversationFileUpload'
 
 export default {
   name: 'ConversationSession',
   components: {
-    ConversationFileUpload,
+    ConversationVideo,
     ConversationChat,
-    WebRTCSession,
+    ConversationFileUpload,
   },
   props: {
     originCep: {
@@ -84,7 +71,6 @@ export default {
       type: Boolean,
       default: () => false,
     },
-    value: Boolean,
   },
   data: () => ({
     isVideoReady: false,
@@ -131,13 +117,9 @@ export default {
   },
   watch: {
     videoSession(newVideoSession, oldVideoSession) {
-      if (!newVideoSession) return (this.isVideoAuthorized = false)
-      if (
-        oldVideoSession &&
-        newVideoSession &&
-        oldVideoSession.sessionId === newVideoSession.sessionId
-      )
-        return
+      if (!newVideoSession) this.isVideoAuthorized = false
+      if (!newVideoSession || !oldVideoSession) return
+      if (oldVideoSession.sessionId === newVideoSession.sessionId) return
       this.videoKey = Math.random()
     },
     async patientVideoSession(hasSession, hadSession) {
@@ -196,13 +178,16 @@ export default {
           this.patientSubscription = patientRef.onSnapshot((doc) => {
             const patient = doc.data()
             if (patient.canceledVideo && this.isDoctor) {
-              this.$noty.info('O paciente encerrou a chamada de vídeo')
+              this.$toast.info('O paciente cancelou a chamada de vídeo')
             }
             this.patient = patient
             resolve()
           }, reject)
         }),
       ])
+    },
+    setVideoReady(ready) {
+      this.isVideoReady = ready
     },
     deleteVideoSession(inform = true) {
       return Promise.resolve().then(() => {
@@ -221,43 +206,14 @@ export default {
         })
       })
     },
+    yesOrNo(bool) {
+      return bool ? 'Sim' : 'Não'
+    },
     async confirmVideoChat() {
       this.isVideoAuthorized = await this.$dialog.confirm({
         text: 'O médico deseja iniciar uma chamada de vídeo. Você autoriza?',
       })
       if (!this.isVideoAuthorized) await this.deleteVideoSession()
-    },
-    // WebRTC handlers
-    joinRoom() {
-      this.$refs.webrtc.join()
-    },
-    leaveRoom() {
-      this.$refs.webrtc.leave()
-    },
-    shareScreen() {
-      this.img = this.$refs.webrtc.shareScreen()
-    },
-    errorHandler(error, stream) {
-      this.$noty.error(`Ocorreu um erro na sessão de vídeo:
-${error.message}`)
-      // eslint-disable-next-line no-console
-      console.log('On Error Event', error, stream)
-    },
-    logEvent(event) {
-      // eslint-disable-next-line no-console
-      console.log('Event : ', event)
-    },
-    audioNotAvailableHandler() {
-      this.$noty.error(
-        'Conecte um dispositivo de áudio para entrar na chamada.'
-      )
-      this.deleteVideoSession()
-    },
-    videoNotAvailableHandler() {
-      this.$noty.error(
-        'Conecte um dispositivo de vídeo para entrar na chamada.'
-      )
-      this.deleteVideoSession()
     },
   },
 }
@@ -265,7 +221,7 @@ ${error.message}`)
 
 <style scoped>
 .conversation {
-  --header-height: 96px;
+  --header-height: 120px;
   display: flex;
   flex-direction: column;
   height: calc(100vh - var(--header-height));
@@ -283,6 +239,7 @@ ${error.message}`)
   min-height: calc(50vh - var(--header-height));
   max-height: calc(50vh - var(--header-height));
   min-width: 50vh;
+  max-width: 50vh;
   margin: 0 auto;
 }
 

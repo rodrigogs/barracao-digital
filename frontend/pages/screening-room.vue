@@ -93,9 +93,7 @@
             hint="Cite seu convênio"
           ></v-text-field>
 
-          <p class="mt-4 mb-1">
-            Já foi atendido pelo Barracão Digital antes?
-          </p>
+          <p class="mt-4 mb-1">Já foi atendido pelo Barracão Digital antes?</p>
           <v-radio-group
             id="hasBeenAssisted"
             v-model="medicalInformations.hasBeenAssisted"

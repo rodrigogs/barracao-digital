@@ -11,9 +11,7 @@
         <v-tooltip bottom>
           <template v-slot:activator="{ on }">
             <div class="flex align-center text-right" v-on="on">
-              <v-icon class="mr-1">
-                mdi-clock-outline
-              </v-icon>
+              <v-icon class="mr-1"> mdi-clock-outline </v-icon>
               <span class="body-2">{{ timeInQueue || '-' }}</span>
             </div>
           </template>
@@ -21,13 +19,9 @@
         </v-tooltip>
       </v-toolbar>
       <v-card-text class="text-center">
-        <p class="subtitle-1 mb-1">
-          Guarde a sua senha de retorno
-        </p>
+        <p class="subtitle-1 mb-1">Guarde a sua senha de retorno</p>
         <v-chip large>
-          <v-icon class="mr-2">
-            mdi-key
-          </v-icon>
+          <v-icon class="mr-2"> mdi-key </v-icon>
           <span class="title">{{ ticket }}</span>
         </v-chip>
       </v-card-text>

@@ -1,8 +1,6 @@
 <template>
   <v-card>
-    <v-card-title>
-      Enquanto espera, informe-se
-    </v-card-title>
+    <v-card-title> Enquanto espera, informe-se </v-card-title>
     <v-card-subtitle>
       Mantenha-se atualizado sobre o COVID-19 por fontes confiáveis.
     </v-card-subtitle>
