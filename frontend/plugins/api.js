@@ -24,8 +24,11 @@ const apiFactory = (axios) => ({
   // Doctors
   createConversationSession: (ticket, { text = false, video = false }) =>
     axios.$post(`doctors/conversation/${ticket}`, { text, video }),
-  deleteConversationSession: (ticket, { text = false, video = false }) =>
-    axios.$delete(`doctors/conversation/${ticket}`, { data: { text, video } }),
+  deleteConversationSession: (ticket, { text = false, video = false }) => {
+    return axios.$delete(`doctors/conversation/${ticket}`, {
+      params: { text, video },
+    })
+  },
   createDoctor: (doctor) => axios.$post(`doctors`, doctor),
   updateDoctor: (username, doctor) => axios.$put(`doctors/${username}`, doctor),
   deleteDoctor: (username) => axios.$delete(`doctors/${username}`),

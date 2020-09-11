@@ -4,19 +4,17 @@ import { getRequestContext, responseBuilder } from '../../helpers'
 
 export const handler = async (event) => {
   try {
-    const requestContext = await getRequestContext(event)
-
-    const { consumer: user, pathParameters, body = {} } = requestContext
-
+    const { consumer: user, pathParameters, queryStringParameters } = await getRequestContext(event)
     const { master: isMaster } = user
-
     const { username, ticket } = pathParameters
 
     const isDeletingConversationSession = !!ticket
     if (isDeletingConversationSession) {
+      if (!queryStringParameters.text && !queryStringParameters.video)
+        return responseBuilder.errors.badRequest('Missing parameters')
       await conversationService.removeSession(user.cep, user.username, ticket, {
-        text: !!body.text,
-        video: !!body.video,
+        text: String(queryStringParameters.text).toUpperCase() === 'TRUE',
+        video: String(queryStringParameters.video).toUpperCase() === 'TRUE',
       })
       return responseBuilder.success.noContent()
     }
