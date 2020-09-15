@@ -3,7 +3,7 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: 'barracao-digital-${self:custom.stage}-conversation-files-bucket'
-      AccessControl: PublicRead
+      AccessControl: Private
       CorsConfiguration:
         CorsRules:
           - AllowedMethods:

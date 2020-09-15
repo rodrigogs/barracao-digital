@@ -84,6 +84,12 @@ export const handler = async (event) => {
         body: await patientsService.requestUploadUrl(body),
       })
     }
+    // /patients/{ticket}/download/file
+    if (resource.endsWith('download/file')) {
+      return responseBuilder.success.ok({
+        body: await patientsService.downloadFile(body),
+      })
+    }
     // /patients/{ticket}
     if (body) {
       return responseBuilder.success.ok({

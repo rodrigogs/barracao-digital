@@ -332,6 +332,11 @@ functions:
           path: /patients/{ticket}/upload/file
           cors: true
 
+      - http:
+          method: PUT
+          path: /patients/{ticket}/download/file
+          cors: true
+
   patientsDelete:
     handler: functions/api/patients/delete.handler
     layers:

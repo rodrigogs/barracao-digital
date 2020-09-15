@@ -18,7 +18,7 @@
             <div v-if="message.type === 'file'">
               <v-chip>
                 <v-icon>mdi-file</v-icon>
-                <a :href="message.text" target="_blank">
+                <a :href="fileUrl" target="_blank">
                   {{ message.text.split('/')[3] }}
                 </a>
               </v-chip>
@@ -87,6 +87,7 @@ export default {
   data: () => ({
     avatar: '',
     show: false,
+    fileUrl: '',
   }),
   computed: {
     isMessageFromMe() {
@@ -106,7 +107,7 @@ export default {
       return this.isMessageFromMe ? 'd-flex justify-end' : ''
     },
   },
-  mounted() {
+  async mounted() {
     if (
       (this.isDoctor && !this.isMessageFromMe) ||
       (!this.isDoctor && this.isMessageFromMe)
@@ -120,6 +121,18 @@ export default {
     ) {
       // this.avatar = await avatarUtil(this.doctor.email || this.doctor.username)
       this.avatar = '/favicon.ico'
+    }
+    if (this.message.type === 'file') {
+      this.fileUrl = await this.$api
+        .downloadFile(
+          this.patient.ticket,
+          JSON.stringify({
+            file: this.message.text.split('/')[3],
+          })
+        )
+        .then((downloadUrl) => {
+          return downloadUrl
+        })
     }
   },
   created() {
