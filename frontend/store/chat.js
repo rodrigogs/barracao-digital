@@ -20,11 +20,13 @@ export const getters = {
   isReady: (state) => state.ready,
   getMessages: (state) => {
     const messages = [...state.messages]
-    messages.sort((a, b) => {
-      if (a.timestamp > b.timestamp) return 1
-      else if (a.timestamp < b.timestamp) return -1
-      else return 0
-    })
+    messages
+      .sort((a, b) => {
+        if (a.timestamp > b.timestamp) return 1
+        else if (a.timestamp < b.timestamp) return -1
+        else return 0
+      })
+      .filter((v, i, a) => a.indexOf(v) === i)
     return messages
   },
   getReceivedMessages: (state) => state.receivedMessages,
