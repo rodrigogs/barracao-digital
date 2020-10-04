@@ -43,7 +43,10 @@
         </template>
       </v-data-table>
 
-      <infinite-loading @infinite="handleNextPageRequest"></infinite-loading>
+      <infinite-loading @infinite="handleNextPageRequest">
+        <template slot="no-results"><span></span></template>
+        <template slot="no-more"><span></span></template>
+      </infinite-loading>
     </v-card>
 
     <DoctorsResourceModal
@@ -57,6 +60,7 @@
 
 <script>
 import * as R from 'ramda'
+import InfiniteLoading from 'vue-infinite-loading'
 import DoctorsResourceModal from '~/components/manage/DoctorsResourceModal'
 
 const getAllDoctors = ($api) => ({ lastEvaluatedKey = '' } = {}) =>
@@ -85,6 +89,7 @@ export default {
   middleware: ['auth', 'isAdminOrMaster'],
   components: {
     DoctorsResourceModal,
+    InfiniteLoading,
   },
   asyncData({ app, error }) {
     const listFunction = app.$auth.user.master

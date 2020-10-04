@@ -35,7 +35,10 @@
         </template>
       </v-data-table>
 
-      <infinite-loading @infinite="handleNextPageRequest"></infinite-loading>
+      <infinite-loading @infinite="handleNextPageRequest">
+        <template slot="no-results"><span></span></template>
+        <template slot="no-more"><span></span></template>
+      </infinite-loading>
     </v-card>
 
     <FacilitiesResourceModal
@@ -50,6 +53,7 @@
 <script>
 import * as R from 'ramda'
 import promisePool from '@rodrigogs/promise-pool'
+import InfiniteLoading from 'vue-infinite-loading'
 import FacilitiesResourceModal from '~/components/manage/FacilitiesResourceModal'
 import chunkArray from '~/utils/chunkArray'
 import promiseRetry from '~/utils/promiseRetry'
@@ -68,6 +72,7 @@ export default {
   middleware: ['auth', 'isAdminOrMaster'],
   components: {
     FacilitiesResourceModal,
+    InfiniteLoading,
   },
   asyncData({ app, error }) {
     return getAllFacilities(app.$api).then(
