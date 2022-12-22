@@ -21,7 +21,7 @@
     "serverless-domain-manager": "^4.2.0",
     "serverless-finch": "^2.6.0",
     "serverless-layers": "^2.2.4",
-    "serverless-offline": "^6.5.0"
+    "serverless-offline": "^12.0.3"
   },
   "scripts": {
     "install:all": "npm run install:frontend & npm run install:backend",
