@@ -17,7 +17,7 @@
     "lint-staged": "^10.2.11",
     "prettier": "^2.0.5",
     "serverless": "^1.77.1",
-    "serverless-bundle": "^2.0.0",
+    "serverless-bundle": "^5.5.0",
     "serverless-domain-manager": "^4.2.0",
     "serverless-finch": "^2.6.0",
     "serverless-layers": "^2.2.4",
